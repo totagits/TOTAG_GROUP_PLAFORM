@@ -12,6 +12,8 @@ interface HeaderProps {
   onOpenAbout: () => void;
   onOpenContact: () => void;
   onOpenPwaModal: () => void;
+  onResetDatabase?: () => void;
+  onExportSnapshot?: () => void;
   isHighContrast: boolean;
   setIsHighContrast: (val: boolean) => void;
   isOffline: boolean;
@@ -28,6 +30,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAbout,
   onOpenContact,
   onOpenPwaModal,
+  onResetDatabase,
+  onExportSnapshot,
   isHighContrast,
   setIsHighContrast,
   isOffline,
@@ -180,16 +184,36 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* ABAC Policy Scope Configurator Button (Internal Workspace Tools) */}
+            {/* ABAC Policy Scope & Interoperability Data Hub Tools */}
             {activeTab !== 'landing' && (
-              <div className="pt-3">
+              <div className="pt-3 flex items-center gap-1.5">
                 <button
                   onClick={onOpenAssignmentModal}
-                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                   title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
                 >
                   <span>ABAC Config</span>
                 </button>
+
+                {onExportSnapshot && (
+                  <button
+                    onClick={onExportSnapshot}
+                    className="bg-sky-600 hover:bg-sky-500 text-white font-bold px-2.5 py-1.5 rounded-lg text-xs transition-colors shadow-xs cursor-pointer"
+                    title="Export complete 12-module platform JSON database snapshot for FAO audit"
+                  >
+                    Snapshot
+                  </button>
+                )}
+
+                {onResetDatabase && (
+                  <button
+                    onClick={onResetDatabase}
+                    className="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-2.5 py-1.5 rounded-lg text-xs transition-colors shadow-xs cursor-pointer"
+                    title="Reset all tables to official seed baseline"
+                  >
+                    Reset DB
+                  </button>
+                )}
               </div>
             )}
           </div>

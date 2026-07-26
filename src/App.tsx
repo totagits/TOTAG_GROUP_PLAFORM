@@ -30,7 +30,7 @@ import {
   type MobileMoneyProvider
 } from './types';
 
-import { db, initializeDatabase, logAuditEvent } from './services/db';
+import { db, initializeDatabase, logAuditEvent, resetDatabaseToBaseline, exportPlatformSnapshot } from './services/db';
 import { checkForDuplicates } from './services/duplicateEngine';
 import {
   INITIAL_FARMERS,
@@ -233,6 +233,32 @@ export function App() {
     );
     await db.farmers.update(farmerId, { verificationStatus: newStatus, notes });
 
+    // Interoperability Trigger: Auto-issue FAO Input Voucher upon verification approval
+    if (newStatus === 'APPROVED') {
+      const farmer = farmers.find((f) => f.id === farmerId);
+      if (farmer) {
+        const defaultProg = programs[0] || INITIAL_PROGRAMS[0];
+        const autoVoucher: Voucher = {
+          id: `v-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          voucherCode: `LDFR-VCH-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+          qrCodeUrl: `LDFR-VCH-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+          programId: defaultProg.id,
+          programName: defaultProg.name,
+          farmerId: farmer.id,
+          farmerName: `${farmer.firstName} ${farmer.lastName}`,
+          farmerPhone: farmer.primaryPhone,
+          valueUsd: defaultProg.benefitValueUsd || 150,
+          valueLrd: (defaultProg.benefitValueUsd || 150) * 195,
+          approvedInputs: ['25kg Certified Rice Seed', '50kg NPK Fertilizer', 'Pesticide Pack'],
+          status: 'ISSUED',
+          issuedDate: new Date().toISOString()
+        };
+
+        setVouchers((prev) => [autoVoucher, ...prev]);
+        await db.vouchers.add(autoVoucher);
+      }
+    }
+
     await logAuditEvent(
       'County Officer',
       currentRole,
@@ -427,6 +453,31 @@ export function App() {
     setAuditLogs(updatedAudits);
   };
 
+  const handleResetDatabase = async () => {
+    if (window.confirm('Reset all platform tables back to official initial seed records?')) {
+      await resetDatabaseToBaseline();
+      const fList = await db.farmers.toArray();
+      const pList = await db.parcels.toArray();
+      const prgList = await db.programs.toArray();
+      const vList = await db.vouchers.toArray();
+      const payList = await db.payments.toArray();
+      const dupList = await db.duplicates.toArray();
+      const grvList = await db.grievances.toArray();
+      const audList = await db.auditLogs.toArray();
+
+      setFarmers(fList);
+      setParcels(pList);
+      setPrograms(prgList);
+      setVouchers(vList);
+      setPayments(payList);
+      setDuplicates(dupList);
+      setGrievances(grvList);
+      setAuditLogs(audList);
+
+      alert('LDFR Platform Database reset back to official baseline seed data.');
+    }
+  };
+
   // Compute ABAC Scoped Data subsets based on Active Policy Assignment
   const scopedFarmers = filterFarmersByAssignment(farmers, activeAssignment);
   const scopedParcels = filterParcelsByAssignment(parcels, activeAssignment);
@@ -443,6 +494,8 @@ export function App() {
         onOpenAbout={() => setIsAboutModalOpen(true)}
         onOpenContact={() => setIsContactModalOpen(true)}
         onOpenPwaModal={() => setIsPwaModalOpen(true)}
+        onResetDatabase={handleResetDatabase}
+        onExportSnapshot={exportPlatformSnapshot}
         isHighContrast={isHighContrast}
         setIsHighContrast={setIsHighContrast}
         isOffline={isOffline}
