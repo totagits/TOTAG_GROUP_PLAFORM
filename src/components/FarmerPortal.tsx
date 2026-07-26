@@ -91,24 +91,37 @@ export const FarmerPortal: React.FC<FarmerPortalProps> = ({
 
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
-                  <div className="text-[10px] text-slate-400 font-bold uppercase">National ID (NIN)</div>
-                  <div className="font-mono font-bold text-slate-900 mt-0.5">{farmer.nationalIdNumber}</div>
+                  <div className="text-[10px] text-slate-400 font-bold uppercase">Producer Classification</div>
+                  <div className="font-extrabold text-slate-900 mt-0.5">
+                    {farmer.entityRegistrationType ? farmer.entityRegistrationType.replace(/_/g, ' ') : 'Smallholder Subsistence'}
+                  </div>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">County &amp; District</div>
-                  <div className="font-bold text-slate-900 mt-0.5">{farmer.county} ({farmer.district})</div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase">MoA Accreditation</div>
+                  <div className="font-extrabold text-sky-800 mt-0.5">
+                    {farmer.valueChainClassification?.isMoaAccredited ? (
+                      <span className="text-emerald-700 font-bold">✓ Accredited ({farmer.valueChainClassification.moaAccreditationNumber || 'MOA-ACC-2026'})</span>
+                    ) : (
+                      <span className="text-slate-500">Unaccredited / Pending</span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Mobile Money</div>
-                  <div className="font-bold text-slate-900 mt-0.5">{farmer.mobileMoneyProvider}</div>
-                  <div className="text-[10px] text-slate-500 font-mono">{farmer.mobileMoneyNumber}</div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase">Grant / Loan History</div>
+                  <div className="font-bold text-amber-700 mt-0.5">
+                    {farmer.interventionAndFinance?.hasReceivedFinancialAssistance && farmer.interventionAndFinance.hasReceivedFinancialAssistance !== 'NO_ASSISTANCE' ? (
+                      <span>${farmer.interventionAndFinance.totalAssistanceAmountUsd || 1500} USD ({farmer.interventionAndFinance.hasReceivedFinancialAssistance.replace(/_/g, ' ')})</span>
+                    ) : (
+                      <span className="text-slate-500">No Past Aid</span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/60">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase">Community</div>
-                  <div className="font-bold text-emerald-800 mt-0.5">{farmer.community}</div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase">County &amp; Community</div>
+                  <div className="font-bold text-emerald-800 mt-0.5">{farmer.county} ({farmer.community || farmer.district})</div>
                 </div>
               </div>
             </div>

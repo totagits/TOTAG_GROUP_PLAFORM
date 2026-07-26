@@ -329,6 +329,53 @@ export type MobileMoneyProvider = 'MTN_MOBILE_MONEY' | 'ORANGE_MONEY' | 'OTHER_B
 export type PaymentStatus = 'PENDING' | 'PROCESSING' | 'SUCCESSFUL' | 'FAILED' | 'REVERSED';
 export type VoucherStatus = 'ISSUED' | 'REDEEMED' | 'EXPIRED' | 'CANCELLED';
 
+// Producer Entity & Scale Classification
+export type EntityRegistrationType =
+  | 'INDIVIDUAL_FARMER'
+  | 'SMALLHOLDER_SUBSISTENCE'
+  | 'COOPERATIVE'
+  | 'SEMI_COMMERCIAL_MEDIUM'
+  | 'PLANTATION_FARMER';
+
+export type AgricultureType =
+  | 'CROP_FARMING'
+  | 'LIVESTOCK'
+  | 'AQUACULTURE'
+  | 'AGRO_FORESTRY'
+  | 'MIXED_FARMING';
+
+export interface ValueChainClassification {
+  agricultureTypes: AgricultureType[];
+  primaryCropsList: string[]; // e.g. ['Lowland Paddy Rice', 'Cassava', 'Cocoa', 'Coffee']
+  exactVegetablesList: string[]; // e.g. ['Habenero/Scotch Bonnet Pepper', 'Bitterball', 'Okra', 'Tomato', 'Eggplant', 'Watermelon']
+  exactTreeCropsList: string[]; // e.g. ['Cocoa (Criollo/Forastero)', 'Coffee (Robusta)', 'Coffee (Liberica)', 'Oil Palm', 'Rubber', 'Cashew', 'Citrus']
+  customSpecialtyCommodity?: string;
+  isMoaAccredited: boolean;
+  moaAccreditationNumber?: string;
+}
+
+export type FinancialAssistanceType = 'GRANT_ONLY' | 'LOAN_ONLY' | 'BOTH_GRANT_AND_LOAN' | 'NO_ASSISTANCE';
+
+export type AssistingEntity =
+  | 'FAO'
+  | 'MOA_STARP_REDISP'
+  | 'WORLD_BANK_IFAD'
+  | 'USAID_FEED_THE_FUTURE'
+  | 'AFDB'
+  | 'CBL_LBDI_BANK'
+  | 'COMMERCIAL_BANKS_MFIS'
+  | 'COOPERATIVES_NGOS'
+  | 'OTHER';
+
+export interface InterventionAndFinance {
+  hasReceivedFinancialAssistance: FinancialAssistanceType;
+  assistingEntities: AssistingEntity[];
+  otherEntityName?: string;
+  totalAssistanceAmountUsd?: number;
+  disbursementYear?: string;
+  interventionToolsReceived?: string[]; // e.g. ['Cutlasses & Hoes', 'Power Tiller', 'Motorized Sprayer', 'Solar Irrigation Pump']
+}
+
 // Farm Infrastructure & Conditions requested by user
 export interface FarmCondition {
   currentToolsUsed: Array<
@@ -407,7 +454,10 @@ export interface FarmerProfile {
   bankName?: string;
   bankAccountNumberMasked?: string;
   
-  // Farm & Conditions
+  // Farm & Classification
+  entityRegistrationType?: EntityRegistrationType;
+  valueChainClassification?: ValueChainClassification;
+  interventionAndFinance?: InterventionAndFinance;
   farmConditions: FarmCondition;
   
   // Status & Audit
