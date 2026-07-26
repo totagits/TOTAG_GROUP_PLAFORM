@@ -11,6 +11,7 @@ interface HeaderProps {
   setActiveTab: (tab: string) => void;
   onOpenAbout: () => void;
   onOpenContact: () => void;
+  onOpenPwaModal: () => void;
   isHighContrast: boolean;
   setIsHighContrast: (val: boolean) => void;
   isOffline: boolean;
@@ -26,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onOpenAbout,
   onOpenContact,
+  onOpenPwaModal,
   isHighContrast,
   setIsHighContrast,
   isOffline,
@@ -221,6 +223,13 @@ export const Header: React.FC<HeaderProps> = ({
               className="px-4 py-3 font-semibold border-b-2 border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30 transition-colors"
             >
               Contact &amp; Support Directory
+            </button>
+
+            <button
+              onClick={onOpenPwaModal}
+              className="px-3.5 py-1.5 my-2 ml-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+            >
+              <span>Install Mobile App</span>
             </button>
           </div>
 

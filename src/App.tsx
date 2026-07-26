@@ -46,6 +46,8 @@ import {
 import { Sidebar } from './components/Sidebar';
 import { AboutUsModal } from './components/AboutUsModal';
 import { ContactUsModal } from './components/ContactUsModal';
+import { PWAPromptBanner } from './components/PWAPromptBanner';
+import { PWAInstallModal } from './components/PWAInstallModal';
 import { AssignmentSwitcherModal } from './components/AssignmentSwitcherModal';
 import { filterFarmersByAssignment, filterParcelsByAssignment } from './services/securityEngine';
 import type { UserAssignment } from './types';
@@ -58,6 +60,7 @@ export function App() {
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
 
   // Active ABAC Assignment State
   const [activeAssignment, setActiveAssignment] = useState<UserAssignment>({
@@ -439,6 +442,7 @@ export function App() {
         setActiveTab={setActiveTab}
         onOpenAbout={() => setIsAboutModalOpen(true)}
         onOpenContact={() => setIsContactModalOpen(true)}
+        onOpenPwaModal={() => setIsPwaModalOpen(true)}
         isHighContrast={isHighContrast}
         setIsHighContrast={setIsHighContrast}
         isOffline={isOffline}
@@ -496,6 +500,15 @@ export function App() {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
         onNavigateToGrievances={() => setActiveTab('grievances')}
+      />
+
+      <PWAInstallModal
+        isOpen={isPwaModalOpen}
+        onClose={() => setIsPwaModalOpen(false)}
+      />
+
+      <PWAPromptBanner
+        onOpenModal={() => setIsPwaModalOpen(true)}
       />
 
       {/* Main Container with Collapsible Left Sidebar for Logged-In Workspaces */}
