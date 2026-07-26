@@ -36,11 +36,11 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Top Disclaimer & Network Status Bar */}
       <div className="bg-slate-900 text-slate-300 text-xs px-4 py-1.5 flex flex-wrap justify-between items-center gap-2">
         <div className="flex items-center gap-2">
-          <span className="bg-emerald-600 text-white font-bold text-[10px] uppercase px-1.5 py-0.5 rounded-sm">
-            Republic of Liberia
+          <span className="bg-sky-600 text-white font-bold text-[10px] uppercase px-1.5 py-0.5 rounded-sm">
+            FAO Initiative
           </span>
-          <span className="hidden md:inline">
-            Liberia Digital Public Infrastructure • Ministry of Agriculture &amp; FAO
+          <span className="hidden md:inline font-medium">
+            Food and Agriculture Organization (FAO) • In Technical Collaboration with Ministry of Agriculture (MoA) Liberia
           </span>
         </div>
 
@@ -77,26 +77,26 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Main Header with Official Provided Logo Assets */}
+      {/* Main Header with FAO Highlighted as Primary Requesting Entity */}
       <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
-        {/* Left: Ministry of Agriculture Liberia Logo */}
+        {/* Left: FAO UN Highlighted Primary Logo & Organization Name */}
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center p-1 shadow-sm overflow-hidden shrink-0">
+          <div className="w-16 h-16 bg-white border-2 border-sky-600 rounded-full flex items-center justify-center p-1 shadow-md overflow-hidden shrink-0">
             <img
-              src="/moa_logo.png"
-              alt="Ministry of Agriculture Liberia Logo"
+              src="/fao_logo.png"
+              alt="Food and Agriculture Organization FAO Logo"
               className="w-full h-full object-contain"
             />
           </div>
           <div>
-            <div className="text-[11px] font-bold tracking-wide text-emerald-800 uppercase">
-              Republic of Liberia
+            <div className="text-[11px] font-extrabold tracking-wide text-sky-800 uppercase flex items-center gap-1">
+              <span>United Nations Specialized Agency</span>
             </div>
-            <h1 className="text-lg font-extrabold text-slate-900 leading-tight">
-              Ministry of Agriculture
+            <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
+              Food and Agriculture Organization (FAO)
             </h1>
-            <div className="text-[10px] text-slate-500 font-medium">
-              Digital Farmer Registry Platform (LDFR)
+            <div className="text-[11px] text-emerald-800 font-bold">
+              In Technical Collaboration with Ministry of Agriculture (MoA Liberia)
             </div>
           </div>
         </div>
@@ -111,12 +111,12 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right: FAO UN Partner Logo & Role Switcher */}
+        {/* Right: Ministry of Agriculture Collaborating Logo & Role Switcher */}
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center p-1 shadow-sm overflow-hidden shrink-0">
+          <div className="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center p-1 shadow-sm overflow-hidden shrink-0" title="Ministry of Agriculture (MoA) Liberia - Collaborating Ministry">
             <img
-              src="/fao_logo.png"
-              alt="Food and Agriculture Organization FAO Logo"
+              src="/moa_logo.png"
+              alt="Ministry of Agriculture Liberia Logo"
               className="w-full h-full object-contain"
             />
           </div>
@@ -211,7 +211,7 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onOpenAbout}
               className="px-4 py-3 font-semibold border-b-2 border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30 transition-colors"
             >
-              About Us (MoA &amp; FAO)
+              About FAO &amp; MoA Initiative
             </button>
 
             <button
@@ -222,9 +222,9 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-[11px] text-emerald-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Official Government Public Portal</span>
+          <div className="hidden sm:flex items-center gap-2 text-[11px] text-sky-200">
+            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+            <span>FAO UN Technical Assistance Project</span>
           </div>
         </div>
       </nav>

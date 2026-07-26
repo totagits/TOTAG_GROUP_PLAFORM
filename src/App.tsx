@@ -496,23 +496,31 @@ export function App() {
         onNavigateToGrievances={() => setActiveTab('grievances')}
       />
 
-      {/* Main Container with Collapsible Left Sidebar */}
+      {/* Main Container with Collapsible Left Sidebar for Logged-In Workspaces */}
       <div className="flex-1 flex w-full min-h-[calc(100vh-10rem)]">
-        <Sidebar
-          currentRole={currentRole}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          assignment={activeAssignment}
-          onOpenAssignmentModal={() => setIsAssignmentModalOpen(true)}
-          unreadGrievanceCount={grievances.filter((g) => g.status === 'OPEN').length}
-        />
+        {activeTab !== 'landing' && (
+          <Sidebar
+            currentRole={currentRole}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            assignment={activeAssignment}
+            onOpenAssignmentModal={() => setIsAssignmentModalOpen(true)}
+            unreadGrievanceCount={grievances.filter((g) => g.status === 'OPEN').length}
+          />
+        )}
 
         {/* Main App Content View Switcher */}
-        <main className="flex-1 p-6 overflow-x-hidden w-full">
+        <main className={`flex-1 overflow-x-hidden w-full ${activeTab === 'landing' ? 'p-0' : 'p-6'}`}>
         {activeTab === 'landing' && (
           <LandingPage
-            onRegisterClick={() => setActiveTab('registration')}
-            onExploreGis={() => setActiveTab('gis')}
+            onRegisterClick={() => {
+              setCurrentRole('FARMER');
+              setActiveTab('registration');
+            }}
+            onExploreGis={() => {
+              setCurrentRole('GIS_OFFICER');
+              setActiveTab('gis');
+            }}
           />
         )}
 
@@ -570,7 +578,7 @@ export function App() {
         )}
 
         {activeTab === 'portal' && (
-          <FarmerPortal farmers={scopedFarmers} parcels={scopedParcels} vouchers={vouchers} />
+          <FarmerPortal farmers={farmers} parcels={parcels} vouchers={vouchers} />
         )}
 
         {activeTab === 'dashboards' && (
