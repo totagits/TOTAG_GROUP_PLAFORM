@@ -75,8 +75,8 @@ export const FarmerPortal: React.FC<FarmerPortalProps> = ({
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-9 h-9 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center font-bold text-xs font-mono">
-                    {farmer.firstName[0]}
-                    {farmer.lastName[0]}
+                    {farmer.firstName?.[0] || 'F'}
+                    {farmer.lastName?.[0] || 'R'}
                   </div>
                   <div>
                     <div className="text-xs font-extrabold text-slate-900">National Farmer Registry Card</div>

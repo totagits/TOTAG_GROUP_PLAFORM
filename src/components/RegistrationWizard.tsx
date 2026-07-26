@@ -15,7 +15,8 @@ import {
   Layers,
   Sprout,
   ShieldCheck,
-  Tag
+  Tag,
+  Building2
 } from 'lucide-react';
 import { LIBERIA_COUNTIES } from '../data/liberiaGeo';
 import type {
@@ -39,8 +40,10 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   const [step, setStep] = useState(1);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // STEP 1: Entity & Personal Identity
+  // STEP 1: Entity Scale Selection
   const [entityRegistrationType, setEntityRegistrationType] = useState<EntityRegistrationType>('SMALLHOLDER_SUBSISTENCE');
+
+  // Individual Farmer State
   const [firstName, setFirstName] = useState('');
   const [middleName, setMiddleName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -54,6 +57,29 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   const [isDisabilityRegistered, setIsDisabilityRegistered] = useState(false);
   const [isYouth, setIsYouth] = useState(false);
   const [isFemaleHeadedHousehold, setIsFemaleHeadedHousehold] = useState(false);
+
+  // Cooperative Details State
+  const [cooperativeName, setCooperativeName] = useState('');
+  const [cooperativeRegNumber, setCooperativeRegNumber] = useState('');
+  const [cooperativeYearEstablished, setCooperativeYearEstablished] = useState('2018');
+  const [totalMembersCount, setTotalMembersCount] = useState(120);
+  const [maleMembersCount, setMaleMembersCount] = useState(65);
+  const [femaleMembersCount, setFemaleMembersCount] = useState(55);
+  const [executiveChairpersonName, setExecutiveChairpersonName] = useState('');
+  const [executivePhone, setExecutivePhone] = useState('');
+  const [executiveEmail, setExecutiveEmail] = useState('');
+
+  // Enterprise / Plantation Details State
+  const [companyName, setCompanyName] = useState('');
+  const [tinNumber, setTinNumber] = useState('');
+  const [businessLicenseNumber, setBusinessLicenseNumber] = useState('');
+  const [yearIncorporated, setYearIncorporated] = useState('2012');
+  const [managingDirectorName, setManagingDirectorName] = useState('');
+  const [corporateContactPhone, setCorporateContactPhone] = useState('');
+  const [corporateEmail, setCorporateEmail] = useState('');
+  const [permanentEmployeesCount, setPermanentEmployeesCount] = useState(45);
+  const [seasonalOutgrowersCount, setSeasonalOutgrowersCount] = useState(250);
+  const [concessionLeaseStatus, setConcessionLeaseStatus] = useState('Government Concession Lease Agreement');
 
   // STEP 2: Value-Chain Classification & MoA Accreditation
   const [agricultureTypes, setAgricultureTypes] = useState<AgricultureType[]>(['CROP_FARMING']);
@@ -74,7 +100,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
   const [gpsLatitude, setGpsLatitude] = useState(8.3512);
   const [gpsLongitude, setGpsLongitude] = useState(-10.2245);
 
-  // STEP 4: Intervention-Tools & Financial-Grant/Loan & Farm Conditions
+  // STEP 4: Intervention-Tools & Financial-Grant/Loan
   const [interventionTools, setInterventionTools] = useState<string[]>([
     'Cutlasses & Hoes',
     'Motorized Knapsack Sprayer'
@@ -113,12 +139,12 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
     'CASSAVA_GARI_PRESS'
   ];
 
-  // STEP 5: Household
+  // STEP 5: Household / Workforce
   const [householdSize, setHouseholdSize] = useState(5);
   const [dependentsCount, setDependentsCount] = useState(3);
   const [agriculturalWorkersCount, setAgriculturalWorkersCount] = useState(2);
 
-  // STEP 6: Financial Mobile Money
+  // STEP 6: Financial Mobile Money / Bank
   const [mobileMoneyProvider, setMobileMoneyProvider] = useState<'MTN_MOBILE_MONEY' | 'ORANGE_MONEY' | 'OTHER_BANK'>('MTN_MOBILE_MONEY');
   const [mobileMoneyNumber, setMobileMoneyNumber] = useState('');
   const [mobileMoneyAccountName, setMobileMoneyAccountName] = useState('');
@@ -127,7 +153,6 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
   const currentCounty = LIBERIA_COUNTIES.find((c) => c.name === selectedCountyName) || LIBERIA_COUNTIES[0];
 
-  // Helper multi-select toggles
   const handleAgricultureTypeToggle = (type: AgricultureType) => {
     if (agricultureTypes.includes(type)) {
       setAgricultureTypes(agricultureTypes.filter((t) => t !== type));
@@ -193,22 +218,46 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName || !lastName || !primaryPhone) {
-      alert('Please fill in required fields (First Name, Last Name, Primary Phone).');
-      return;
+
+    // Derived identity names depending on Entity Type
+    let finalFirstName = firstName;
+    let finalLastName = lastName;
+    let finalPhone = primaryPhone;
+
+    if (entityRegistrationType === 'COOPERATIVE') {
+      if (!cooperativeName || !executivePhone) {
+        alert('Please fill in required Cooperative fields (Cooperative Name, Executive Phone).');
+        return;
+      }
+      finalFirstName = 'Cooperative';
+      finalLastName = cooperativeName;
+      finalPhone = executivePhone;
+    } else if (entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM') {
+      if (!companyName || !corporateContactPhone) {
+        alert('Please fill in required Commercial Enterprise fields (Company/Plantation Name, Corporate Phone).');
+        return;
+      }
+      finalFirstName = 'Enterprise';
+      finalLastName = companyName;
+      finalPhone = corporateContactPhone;
+    } else {
+      if (!firstName || !lastName || !primaryPhone) {
+        alert('Please fill in required fields (First Name, Last Name, Primary Phone).');
+        return;
+      }
     }
 
     const newFarmer: FarmerProfile = {
       id: `f-${Date.now()}`,
       farmerRegistryNumber: `LDFR-2026-${Math.floor(10000 + Math.random() * 90000)}`,
-      firstName,
+      firstName: finalFirstName,
       middleName,
-      lastName,
+      lastName: finalLastName,
       preferredName,
       dateOfBirth,
       sex,
-      nationalIdNumber: nationalIdNumber || `NIN-LR-${Math.floor(10000000 + Math.random() * 90000000)}`,
-      primaryPhone,
+      nationalIdNumber: nationalIdNumber || (entityRegistrationType === 'COOPERATIVE' ? cooperativeRegNumber : tinNumber) || `NIN-LR-${Math.floor(10000000 + Math.random() * 90000000)}`,
+      primaryPhone: finalPhone,
       alternativePhone,
       preferredLanguage,
       isDisabilityRegistered,
@@ -226,11 +275,34 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
       dependentsCount,
       agriculturalWorkersCount,
       mobileMoneyProvider,
-      mobileMoneyNumber: mobileMoneyNumber || primaryPhone,
-      mobileMoneyAccountName: mobileMoneyAccountName || `${firstName} ${lastName}`,
+      mobileMoneyNumber: mobileMoneyNumber || finalPhone,
+      mobileMoneyAccountName: mobileMoneyAccountName || (entityRegistrationType === 'COOPERATIVE' ? cooperativeName : entityRegistrationType === 'PLANTATION_FARMER' ? companyName : `${firstName} ${lastName}`),
       bankName,
       bankAccountNumberMasked,
       entityRegistrationType,
+      cooperativeDetails: entityRegistrationType === 'COOPERATIVE' ? {
+        cooperativeName,
+        cooperativeRegNumber: cooperativeRegNumber || `CDA-REG-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+        yearEstablished: cooperativeYearEstablished,
+        totalMembersCount: Number(totalMembersCount),
+        maleMembersCount: Number(maleMembersCount),
+        femaleMembersCount: Number(femaleMembersCount),
+        executiveChairpersonName,
+        executivePhone,
+        executiveEmail
+      } : undefined,
+      enterpriseDetails: (entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM') ? {
+        companyName,
+        tinNumber: tinNumber || `TIN-LR-${Math.floor(100000 + Math.random() * 900000)}`,
+        businessLicenseNumber: businessLicenseNumber || `MOCI-LIC-${Math.floor(1000 + Math.random() * 9000)}`,
+        yearIncorporated,
+        managingDirectorName,
+        contactPhone: corporateContactPhone,
+        corporateEmail,
+        permanentEmployeesCount: Number(permanentEmployeesCount),
+        seasonalOutgrowersCount: Number(seasonalOutgrowersCount),
+        concessionLeaseStatus
+      } : undefined,
       valueChainClassification: {
         agricultureTypes,
         primaryCropsList,
@@ -287,7 +359,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
     };
 
     onSaveFarmer(newFarmer);
-    setSuccessMessage(`Farmer Profile successfully created with Registry ID [${newFarmer.farmerRegistryNumber}]! Status: SUBMITTED for County Officer Verification.`);
+    setSuccessMessage(`Registration Profile [${newFarmer.farmerRegistryNumber}] submitted for County Officer Verification! Entity Scale: ${entityRegistrationType.replace(/_/g, ' ')}.`);
   };
 
   return (
@@ -304,7 +376,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               Farmer Registration &amp; Farm Profile Wizard
             </h2>
             <p className="text-xs text-slate-300 mt-1">
-              Supports full farmer classification, value-chain commodities, MoA accreditation, intervention tools, grant/loan history, and 15-county GIS mapping.
+              Dynamic entity-tailored form engine for Individual Farmers, Cooperatives, Semi-Commercial &amp; Commercial Plantations.
             </p>
           </div>
           <div className="bg-emerald-950 border border-emerald-700/60 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-300">
@@ -352,7 +424,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
               step === 5 ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-800 text-slate-400 hover:text-slate-200'
             }`}
           >
-            5. Household
+            5. Household / Staff
           </button>
           <button
             onClick={() => setStep(6)}
@@ -383,7 +455,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="p-6 space-y-6 text-xs">
-          {/* STEP 1: ENTITY SCALE & PERSONAL IDENTITY */}
+          {/* STEP 1: ENTITY SCALE & DYNAMIC IDENTITY FORM */}
           {step === 1 && (
             <div className="space-y-6">
               {/* Producer Entity Scale Selector */}
@@ -429,143 +501,388 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 </div>
               </div>
 
-              {/* Personal Identity Details */}
-              <div className="space-y-4">
-                <h3 className="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
-                  <User className="w-5 h-5 text-emerald-700" /> Personal Identity Details
-                </h3>
+              {/* DYNAMIC FORM CONDITIONAL BRANCH 1: INDIVIDUAL / SMALLHOLDER */}
+              {(entityRegistrationType === 'INDIVIDUAL_FARMER' || entityRegistrationType === 'SMALLHOLDER_SUBSISTENCE') && (
+                <div className="space-y-4 animate-fade-in">
+                  <h3 className="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
+                    <User className="w-5 h-5 text-emerald-700" /> Individual Farmer Identity Details
+                  </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">First Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="e.g. Hawa"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Middle Name</label>
-                    <input
-                      type="text"
-                      value={middleName}
-                      onChange={(e) => setMiddleName(e.target.value)}
-                      placeholder="e.g. Kollie"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Last Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="e.g. Flomo"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Date of Birth</label>
-                    <input
-                      type="date"
-                      value={dateOfBirth}
-                      onChange={(e) => setDateOfBirth(e.target.value)}
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Sex</label>
-                    <select
-                      value={sex}
-                      onChange={(e) => setSex(e.target.value as any)}
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    >
-                      <option value="FEMALE">Female</option>
-                      <option value="MALE">Male</option>
-                      <option value="OTHER">Other / Prefer not to say</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">National ID (NIN / Voter ID)</label>
-                    <input
-                      type="text"
-                      value={nationalIdNumber}
-                      onChange={(e) => setNationalIdNumber(e.target.value)}
-                      placeholder="e.g. NIN-LR-88291049"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Primary Telephone *</label>
-                    <input
-                      type="tel"
-                      required
-                      value={primaryPhone}
-                      onChange={(e) => setPrimaryPhone(e.target.value)}
-                      placeholder="e.g. +231770123456"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">Alternative Phone</label>
-                    <input
-                      type="tel"
-                      value={alternativePhone}
-                      onChange={(e) => setAlternativePhone(e.target.value)}
-                      placeholder="e.g. +231886123456"
-                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Social Inclusion Flags */}
-                <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
-                  <div className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
-                    Social Inclusion &amp; Vulnerability Classifications
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">First Name *</label>
                       <input
-                        type="checkbox"
-                        checked={isFemaleHeadedHousehold}
-                        onChange={(e) => setIsFemaleHeadedHousehold(e.target.checked)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
+                        type="text"
+                        required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="e.g. Hawa"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
-                      <span className="font-semibold text-slate-800">Female-Headed Household</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Middle Name</label>
                       <input
-                        type="checkbox"
-                        checked={isYouth}
-                        onChange={(e) => setIsYouth(e.target.checked)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
+                        type="text"
+                        value={middleName}
+                        onChange={(e) => setMiddleName(e.target.value)}
+                        placeholder="e.g. Kollie"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
-                      <span className="font-semibold text-slate-800">Youth Farmer (&lt; 35 years)</span>
-                    </label>
-
-                    <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Last Name *</label>
                       <input
-                        type="checkbox"
-                        checked={isDisabilityRegistered}
-                        onChange={(e) => setIsDisabilityRegistered(e.target.checked)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
+                        type="text"
+                        required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="e.g. Flomo"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                       />
-                      <span className="font-semibold text-slate-800">Persons with Disability</span>
-                    </label>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Date of Birth</label>
+                      <input
+                        type="date"
+                        value={dateOfBirth}
+                        onChange={(e) => setDateOfBirth(e.target.value)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Sex</label>
+                      <select
+                        value={sex}
+                        onChange={(e) => setSex(e.target.value as any)}
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      >
+                        <option value="FEMALE">Female</option>
+                        <option value="MALE">Male</option>
+                        <option value="OTHER">Other / Prefer not to say</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">National ID (NIN / Voter ID)</label>
+                      <input
+                        type="text"
+                        value={nationalIdNumber}
+                        onChange={(e) => setNationalIdNumber(e.target.value)}
+                        placeholder="e.g. NIN-LR-88291049"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Primary Telephone *</label>
+                      <input
+                        type="tel"
+                        required
+                        value={primaryPhone}
+                        onChange={(e) => setPrimaryPhone(e.target.value)}
+                        placeholder="e.g. +231770123456"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Alternative Phone</label>
+                      <input
+                        type="tel"
+                        value={alternativePhone}
+                        onChange={(e) => setAlternativePhone(e.target.value)}
+                        placeholder="e.g. +231886123456"
+                        className="w-full border border-slate-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Social Inclusion Flags */}
+                  <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
+                    <div className="text-xs font-extrabold text-slate-800 uppercase tracking-wider">
+                      Social Inclusion &amp; Vulnerability Classifications
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                        <input
+                          type="checkbox"
+                          checked={isFemaleHeadedHousehold}
+                          onChange={(e) => setIsFemaleHeadedHousehold(e.target.checked)}
+                          className="rounded text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span className="font-semibold text-slate-800">Female-Headed Household</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                        <input
+                          type="checkbox"
+                          checked={isYouth}
+                          onChange={(e) => setIsYouth(e.target.checked)}
+                          className="rounded text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span className="font-semibold text-slate-800">Youth Farmer (&lt; 35 years)</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200">
+                        <input
+                          type="checkbox"
+                          checked={isDisabilityRegistered}
+                          onChange={(e) => setIsDisabilityRegistered(e.target.checked)}
+                          className="rounded text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span className="font-semibold text-slate-800">Persons with Disability</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+
+              {/* DYNAMIC FORM CONDITIONAL BRANCH 2: COOPERATIVE SOCIETY */}
+              {entityRegistrationType === 'COOPERATIVE' && (
+                <div className="space-y-4 bg-emerald-50/50 border border-emerald-200 p-5 rounded-2xl animate-fade-in">
+                  <h3 className="text-base font-extrabold text-emerald-950 border-b border-emerald-200 pb-2 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-emerald-700" /> Registered Farmers Cooperative Society Identity
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">Registered Cooperative Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={cooperativeName}
+                        onChange={(e) => setCooperativeName(e.target.value)}
+                        placeholder="e.g. Foya Cocoa &amp; Rice Farmers Cooperative Society"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">CDA / MoA Registration License Number *</label>
+                      <input
+                        type="text"
+                        required
+                        value={cooperativeRegNumber}
+                        onChange={(e) => setCooperativeRegNumber(e.target.value)}
+                        placeholder="e.g. CDA-REG-2026-8842"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">Year Established</label>
+                      <input
+                        type="text"
+                        value={cooperativeYearEstablished}
+                        onChange={(e) => setCooperativeYearEstablished(e.target.value)}
+                        placeholder="e.g. 2018"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">Executive Chairperson / Lead Contact *</label>
+                      <input
+                        type="text"
+                        required
+                        value={executiveChairpersonName}
+                        onChange={(e) => setExecutiveChairpersonName(e.target.value)}
+                        placeholder="e.g. Elder Tamba Taylor"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">Executive Contact Phone *</label>
+                      <input
+                        type="tel"
+                        required
+                        value={executivePhone}
+                        onChange={(e) => setExecutivePhone(e.target.value)}
+                        placeholder="e.g. +231777553300"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-emerald-900 mb-1">Executive Contact Email</label>
+                      <input
+                        type="email"
+                        value={executiveEmail}
+                        onChange={(e) => setExecutiveEmail(e.target.value)}
+                        placeholder="e.g. info@foyacoop.org"
+                        className="w-full border border-emerald-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cooperative Member Roster Counts */}
+                  <div className="bg-white border border-emerald-200 p-4 rounded-xl space-y-2">
+                    <div className="text-xs font-extrabold text-emerald-900 uppercase">
+                      Cooperative Membership Roster Breakdown
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Total Registered Farmer Members *</label>
+                        <input
+                          type="number"
+                          value={totalMembersCount}
+                          onChange={(e) => setTotalMembersCount(Number(e.target.value))}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs font-bold text-emerald-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Male Members Count</label>
+                        <input
+                          type="number"
+                          value={maleMembersCount}
+                          onChange={(e) => setMaleMembersCount(Number(e.target.value))}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Female Members Count</label>
+                        <input
+                          type="number"
+                          value={femaleMembersCount}
+                          onChange={(e) => setFemaleMembersCount(Number(e.target.value))}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* DYNAMIC FORM CONDITIONAL BRANCH 3: COMMERCIAL PLANTATION / SEMI-COMMERCIAL */}
+              {(entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM') && (
+                <div className="space-y-4 bg-sky-50/50 border border-sky-200 p-5 rounded-2xl animate-fade-in">
+                  <h3 className="text-base font-extrabold text-sky-950 border-b border-sky-200 pb-2 flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-sky-700" /> Commercial Plantation &amp; Agricultural Enterprise Identity
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">Commercial Plantation / Company Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        placeholder="e.g. Liberian Agricultural Company (LAC)"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">Tax Identification Number (TIN) *</label>
+                      <input
+                        type="text"
+                        required
+                        value={tinNumber}
+                        onChange={(e) => setTinNumber(e.target.value)}
+                        placeholder="e.g. TIN-LR-10099432"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">MoCI Business License Number</label>
+                      <input
+                        type="text"
+                        value={businessLicenseNumber}
+                        onChange={(e) => setBusinessLicenseNumber(e.target.value)}
+                        placeholder="e.g. MOCI-LIC-2026-9921"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">Year Incorporated</label>
+                      <input
+                        type="text"
+                        value={yearIncorporated}
+                        onChange={(e) => setYearIncorporated(e.target.value)}
+                        placeholder="e.g. 2012"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">General Manager / Managing Director *</label>
+                      <input
+                        type="text"
+                        required
+                        value={managingDirectorName}
+                        onChange={(e) => setManagingDirectorName(e.target.value)}
+                        placeholder="e.g. Dr. Arthur Johnson"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">Corporate Contact Phone *</label>
+                      <input
+                        type="tel"
+                        required
+                        value={corporateContactPhone}
+                        onChange={(e) => setCorporateContactPhone(e.target.value)}
+                        placeholder="e.g. +231888001122"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-sky-900 mb-1">Corporate Email Address</label>
+                      <input
+                        type="email"
+                        value={corporateEmail}
+                        onChange={(e) => setCorporateEmail(e.target.value)}
+                        placeholder="e.g. contact@lac-liberia.com"
+                        className="w-full border border-sky-300 rounded-lg p-2.5 text-xs bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Plantation Workforce & Concession Lease Details */}
+                  <div className="bg-white border border-sky-200 p-4 rounded-xl space-y-3">
+                    <div className="text-xs font-extrabold text-sky-900 uppercase">
+                      Plantation Workforce &amp; Land Concession Status
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Permanent Employees Count *</label>
+                        <input
+                          type="number"
+                          value={permanentEmployeesCount}
+                          onChange={(e) => setPermanentEmployeesCount(Number(e.target.value))}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs font-bold text-sky-800"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Seasonal / Outgrower Workers</label>
+                        <input
+                          type="number"
+                          value={seasonalOutgrowersCount}
+                          onChange={(e) => setSeasonalOutgrowersCount(Number(e.target.value))}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700">Land Tenure / Lease Agreement</label>
+                        <select
+                          value={concessionLeaseStatus}
+                          onChange={(e) => setConcessionLeaseStatus(e.target.value)}
+                          className="w-full border border-slate-300 rounded-lg p-2 text-xs"
+                        >
+                          <option value="Government Concession Lease Agreement">Government Concession Lease</option>
+                          <option value="Private Customary Lease">Private Customary Lease</option>
+                          <option value="Freehold Title Deed">Freehold Title Deed</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -1113,48 +1430,95 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
             </div>
           )}
 
-          {/* STEP 5: HOUSEHOLD & LABOR FORCE */}
+          {/* STEP 5: DYNAMIC HOUSEHOLD / WORKFORCE DEMOGRAPHICS */}
           {step === 5 && (
             <div className="space-y-4">
               <h3 className="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
-                <Users className="w-5 h-5 text-emerald-700" /> Household Demographics &amp; Farm Labor
+                <Users className="w-5 h-5 text-emerald-700" />
+                {entityRegistrationType === 'COOPERATIVE'
+                  ? 'Cooperative Membership & Cluster Demographics'
+                  : (entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM')
+                  ? 'Plantation Workforce & Outgrower Network'
+                  : 'Household Demographics & Farm Labor'}
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Total Household Size</label>
-                  <input
-                    type="number"
-                    value={householdSize}
-                    onChange={(e) => setHouseholdSize(Number(e.target.value))}
-                    className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
-                  />
-                </div>
+              {(entityRegistrationType === 'INDIVIDUAL_FARMER' || entityRegistrationType === 'SMALLHOLDER_SUBSISTENCE') && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Total Household Size</label>
+                    <input
+                      type="number"
+                      value={householdSize}
+                      onChange={(e) => setHouseholdSize(Number(e.target.value))}
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Dependents Count</label>
-                  <input
-                    type="number"
-                    value={dependentsCount}
-                    onChange={(e) => setDependentsCount(Number(e.target.value))}
-                    className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
-                  />
-                </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Dependents Count</label>
+                    <input
+                      type="number"
+                      value={dependentsCount}
+                      onChange={(e) => setDependentsCount(Number(e.target.value))}
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Active Agricultural Workers</label>
-                  <input
-                    type="number"
-                    value={agriculturalWorkersCount}
-                    onChange={(e) => setAgriculturalWorkersCount(Number(e.target.value))}
-                    className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
-                  />
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Active Agricultural Workers</label>
+                    <input
+                      type="number"
+                      value={agriculturalWorkersCount}
+                      onChange={(e) => setAgriculturalWorkersCount(Number(e.target.value))}
+                      className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {entityRegistrationType === 'COOPERATIVE' && (
+                <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-3">
+                  <div className="font-extrabold text-emerald-950 text-xs uppercase">
+                    Cooperative Membership Summary
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-white p-3 rounded-lg border border-emerald-200">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase">Total Members</div>
+                      <div className="text-lg font-black text-emerald-800">{totalMembersCount}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border border-emerald-200">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase">Male Members</div>
+                      <div className="text-lg font-black text-slate-800">{maleMembersCount}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border border-emerald-200">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase">Female Members</div>
+                      <div className="text-lg font-black text-slate-800">{femaleMembersCount}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {(entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM') && (
+                <div className="bg-sky-50 border border-sky-200 p-4 rounded-xl space-y-3">
+                  <div className="font-extrabold text-sky-950 text-xs uppercase">
+                    Enterprise Workforce &amp; Outgrower Network
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white p-3 rounded-lg border border-sky-200">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase">Permanent Employees</div>
+                      <div className="text-lg font-black text-sky-900">{permanentEmployeesCount}</div>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg border border-sky-200">
+                      <div className="text-[10px] text-slate-500 font-bold uppercase">Seasonal / Outgrower Farmers</div>
+                      <div className="text-lg font-black text-sky-900">{seasonalOutgrowersCount}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* STEP 6: PAYMENT & FINAL REVIEW */}
+          {/* STEP 6: PAYMENT & DYNAMIC FINAL REVIEW */}
           {step === 6 && (
             <div className="space-y-6">
               <h3 className="text-base font-bold text-slate-900 border-b pb-2 flex items-center gap-2">
@@ -1180,7 +1544,7 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                   <input
                     type="tel"
                     required
-                    value={mobileMoneyNumber || primaryPhone}
+                    value={mobileMoneyNumber || (entityRegistrationType === 'COOPERATIVE' ? executivePhone : entityRegistrationType === 'PLANTATION_FARMER' ? corporateContactPhone : primaryPhone)}
                     onChange={(e) => setMobileMoneyNumber(e.target.value)}
                     placeholder="e.g. +231770123456"
                     className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
@@ -1192,15 +1556,15 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                   <input
                     type="text"
                     required
-                    value={mobileMoneyAccountName || `${firstName} ${lastName}`}
+                    value={mobileMoneyAccountName || (entityRegistrationType === 'COOPERATIVE' ? cooperativeName : entityRegistrationType === 'PLANTATION_FARMER' ? companyName : `${firstName} ${lastName}`)}
                     onChange={(e) => setMobileMoneyAccountName(e.target.value)}
-                    placeholder="e.g. Hawa Flomo"
+                    placeholder="e.g. Account / Company Name"
                     className="w-full border border-slate-300 rounded-lg p-2.5 text-xs"
                   />
                 </div>
               </div>
 
-              {/* Summary Card */}
+              {/* Dynamic Summary Card */}
               <div className="bg-slate-900 text-white p-5 rounded-xl space-y-3">
                 <div className="text-amber-400 font-extrabold text-xs uppercase tracking-wider">
                   Registration Profile Summary &amp; Verification Preview
@@ -1208,11 +1572,13 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs border-t border-slate-800 pt-3">
                   <div>
                     <div className="text-slate-400 text-[10px]">Entity Scale</div>
-                    <div className="font-bold text-white">{entityRegistrationType.replace('_', ' ')}</div>
+                    <div className="font-bold text-white">{entityRegistrationType.replace(/_/g, ' ')}</div>
                   </div>
                   <div>
-                    <div className="text-slate-400 text-[10px]">Farmer Name</div>
-                    <div className="font-bold text-white">{firstName} {lastName}</div>
+                    <div className="text-slate-400 text-[10px]">Primary Registered Entity Name</div>
+                    <div className="font-bold text-white">
+                      {entityRegistrationType === 'COOPERATIVE' ? cooperativeName : (entityRegistrationType === 'PLANTATION_FARMER' || entityRegistrationType === 'SEMI_COMMERCIAL_MEDIUM') ? companyName : `${firstName} ${lastName}`}
+                    </div>
                   </div>
                   <div>
                     <div className="text-slate-400 text-[10px]">Location</div>

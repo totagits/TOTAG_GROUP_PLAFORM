@@ -413,6 +413,31 @@ export interface FarmCondition {
   };
 }
 
+export interface CooperativeDetails {
+  cooperativeName: string;
+  cooperativeRegNumber: string;
+  yearEstablished: string;
+  totalMembersCount: number;
+  maleMembersCount: number;
+  femaleMembersCount: number;
+  executiveChairpersonName: string;
+  executivePhone: string;
+  executiveEmail?: string;
+}
+
+export interface EnterpriseDetails {
+  companyName: string;
+  tinNumber: string;
+  businessLicenseNumber: string;
+  yearIncorporated: string;
+  managingDirectorName: string;
+  contactPhone: string;
+  corporateEmail?: string;
+  permanentEmployeesCount: number;
+  seasonalOutgrowersCount: number;
+  concessionLeaseStatus: string;
+}
+
 export interface FarmerProfile {
   id: string;
   farmerRegistryNumber: string; // e.g. LDFR-2026-88392
@@ -456,6 +481,8 @@ export interface FarmerProfile {
   
   // Farm & Classification
   entityRegistrationType?: EntityRegistrationType;
+  cooperativeDetails?: CooperativeDetails;
+  enterpriseDetails?: EnterpriseDetails;
   valueChainClassification?: ValueChainClassification;
   interventionAndFinance?: InterventionAndFinance;
   farmConditions: FarmCondition;
