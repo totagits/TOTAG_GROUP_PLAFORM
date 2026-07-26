@@ -9,11 +9,12 @@ interface HeaderProps {
   onOpenAssignmentModal: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onOpenAbout: () => void;
+  onOpenContact: () => void;
   isHighContrast: boolean;
   setIsHighContrast: (val: boolean) => void;
   isOffline: boolean;
   setIsOffline: (val: boolean) => void;
-  unreadGrievanceCount?: number;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,11 +24,12 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAssignmentModal,
   activeTab,
   setActiveTab,
+  onOpenAbout,
+  onOpenContact,
   isHighContrast,
   setIsHighContrast,
   isOffline,
-  setIsOffline,
-  unreadGrievanceCount = 0
+  setIsOffline
 }) => {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-xs">
@@ -35,10 +37,10 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="bg-slate-900 text-slate-300 text-xs px-4 py-1.5 flex flex-wrap justify-between items-center gap-2">
         <div className="flex items-center gap-2">
           <span className="bg-emerald-600 text-white font-bold text-[10px] uppercase px-1.5 py-0.5 rounded-sm">
-            Prototype Concept
+            Republic of Liberia
           </span>
           <span className="hidden md:inline">
-            Liberia Digital Public Infrastructure • Stakeholder Demonstration Model
+            Liberia Digital Public Infrastructure • Ministry of Agriculture &amp; FAO
           </span>
         </div>
 
@@ -109,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Right: FAO UN Partner Logo */}
+        {/* Right: FAO UN Partner Logo & Role Switcher */}
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-white border border-slate-200 rounded-full flex items-center justify-center p-1 shadow-sm overflow-hidden shrink-0">
             <img
@@ -190,161 +192,40 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Main Primary Navigation Tabs */}
-      <nav className="bg-emerald-950 text-white px-4">
-        <div className="max-w-7xl mx-auto flex items-center overflow-x-auto no-scrollbar gap-1 text-xs">
-          <button
-            onClick={() => setActiveTab('landing')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'landing'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Public Landing Page
-          </button>
+      {/* General Public Top Navigation Bar (Home, About Us, Contact, Public Directory) */}
+      <nav className="bg-emerald-950 text-white px-4 border-t border-emerald-900">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 text-xs">
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setActiveTab('landing')}
+              className={`px-4 py-3 font-bold transition-colors border-b-2 ${
+                activeTab === 'landing'
+                  ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
+                  : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
+              }`}
+            >
+              Home (Public Portal)
+            </button>
 
-          <button
-            onClick={() => setActiveTab('registration')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'registration'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Farmer Registration
-          </button>
+            <button
+              onClick={onOpenAbout}
+              className="px-4 py-3 font-semibold border-b-2 border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30 transition-colors"
+            >
+              About Us (MoA &amp; FAO)
+            </button>
 
-          <button
-            onClick={() => setActiveTab('gis')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'gis'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            GIS Parcel Mapping
-          </button>
+            <button
+              onClick={onOpenContact}
+              className="px-4 py-3 font-semibold border-b-2 border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30 transition-colors"
+            >
+              Contact &amp; Support Directory
+            </button>
+          </div>
 
-          <button
-            onClick={() => setActiveTab('offline')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap flex items-center gap-1.5 transition-colors border-b-2 ${
-              activeTab === 'offline'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Field App (PWA)
-            {isOffline && (
-              <span className="bg-amber-400 text-slate-950 font-extrabold text-[9px] px-1 rounded">
-                OFFLINE
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('duplicates')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'duplicates'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Duplicate Engine
-          </button>
-
-          <button
-            onClick={() => setActiveTab('verification')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'verification'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Verifications
-          </button>
-
-          <button
-            onClick={() => setActiveTab('programs')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'programs'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Programs & Eligibility
-          </button>
-
-          <button
-            onClick={() => setActiveTab('vouchers')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'vouchers'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Digital Vouchers
-          </button>
-
-          <button
-            onClick={() => setActiveTab('payments')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'payments'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Mobile Money Payouts
-          </button>
-
-          <button
-            onClick={() => setActiveTab('portal')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'portal'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Farmer Self-Service
-          </button>
-
-          <button
-            onClick={() => setActiveTab('dashboards')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'dashboards'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Executive Analytics
-          </button>
-
-          <button
-            onClick={() => setActiveTab('grievances')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 flex items-center gap-1 ${
-              activeTab === 'grievances'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Grievances & Helpdesk
-            {unreadGrievanceCount > 0 && (
-              <span className="bg-rose-500 text-white font-bold text-[9px] px-1.5 py-0.2 rounded-full">
-                {unreadGrievanceCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('audit')}
-            className={`px-4 py-3 font-semibold whitespace-nowrap transition-colors border-b-2 ${
-              activeTab === 'audit'
-                ? 'border-amber-400 text-amber-300 bg-emerald-900/60'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-emerald-900/30'
-            }`}
-          >
-            Audit Trail
-          </button>
+          <div className="hidden sm:flex items-center gap-2 text-[11px] text-emerald-300">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Official Government Public Portal</span>
+          </div>
         </div>
       </nav>
     </header>

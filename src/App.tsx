@@ -43,6 +43,9 @@ import {
   INITIAL_AUDIT_LOGS
 } from './data/mockData';
 
+import { Sidebar } from './components/Sidebar';
+import { AboutUsModal } from './components/AboutUsModal';
+import { ContactUsModal } from './components/ContactUsModal';
 import { AssignmentSwitcherModal } from './components/AssignmentSwitcherModal';
 import { filterFarmersByAssignment, filterParcelsByAssignment } from './services/securityEngine';
 import type { UserAssignment } from './types';
@@ -53,6 +56,8 @@ export function App() {
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   // Active ABAC Assignment State
   const [activeAssignment, setActiveAssignment] = useState<UserAssignment>({
@@ -432,11 +437,12 @@ export function App() {
         onOpenAssignmentModal={() => setIsAssignmentModalOpen(true)}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenAbout={() => setIsAboutModalOpen(true)}
+        onOpenContact={() => setIsContactModalOpen(true)}
         isHighContrast={isHighContrast}
         setIsHighContrast={setIsHighContrast}
         isOffline={isOffline}
         setIsOffline={setIsOffline}
-        unreadGrievanceCount={grievances.filter((g) => g.status === 'OPEN').length}
       />
 
       {/* Mandatory Scope Banner (Combined RBAC + ABAC Policy Display) */}
@@ -479,8 +485,30 @@ export function App() {
         }}
       />
 
-      {/* Main App Content View Switcher */}
-      <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+      <AboutUsModal
+        isOpen={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
+      />
+
+      <ContactUsModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
+        onNavigateToGrievances={() => setActiveTab('grievances')}
+      />
+
+      {/* Main Container with Collapsible Left Sidebar */}
+      <div className="flex-1 flex w-full">
+        <Sidebar
+          currentRole={currentRole}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          assignment={activeAssignment}
+          onOpenAssignmentModal={() => setIsAssignmentModalOpen(true)}
+          unreadGrievanceCount={grievances.filter((g) => g.status === 'OPEN').length}
+        />
+
+        {/* Main App Content View Switcher */}
+        <main className="flex-1 p-6 overflow-x-hidden max-w-7xl mx-auto w-full">
         {activeTab === 'landing' && (
           <LandingPage
             onRegisterClick={() => setActiveTab('registration')}
@@ -564,6 +592,7 @@ export function App() {
 
         {activeTab === 'audit' && <AuditTrailModule auditLogs={auditLogs} />}
       </main>
+      </div>
 
       <Footer />
     </div>
