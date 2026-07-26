@@ -178,16 +178,18 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* ABAC Policy Scope Configurator Button */}
-            <div className="pt-3">
-              <button
-                onClick={onOpenAssignmentModal}
-                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
-                title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
-              >
-                <span>ABAC Config</span>
-              </button>
-            </div>
+            {/* ABAC Policy Scope Configurator Button (Internal Workspace Tools) */}
+            {activeTab !== 'landing' && (
+              <div className="pt-3">
+                <button
+                  onClick={onOpenAssignmentModal}
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                  title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
+                >
+                  <span>ABAC Config</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
