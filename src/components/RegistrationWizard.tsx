@@ -923,117 +923,191 @@ export const RegistrationWizard: React.FC<RegistrationWizardProps> = ({
                 </div>
               </div>
 
-              {/* Main Staples & Value Chains */}
-              <div className="space-y-3">
-                <label className="block text-xs font-bold text-slate-800">
-                  Primary Staple &amp; Commodity Value Chains
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  {[
-                    'Lowland Paddy Rice',
-                    'Upland Seed Rice',
-                    'Cassava',
-                    'Cocoa',
-                    'Coffee',
-                    'Oil Palm',
-                    'Rubber',
-                    'Vegetables & Horticulture',
-                    'Tree Crops',
-                    'Livestock & Poultry'
-                  ].map((crop) => (
-                    <label
-                      key={crop}
-                      className={`p-2.5 rounded-lg border flex items-center gap-2 cursor-pointer transition-all ${
-                        primaryCropsList.includes(crop)
-                          ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-bold'
-                          : 'border-slate-200 bg-white text-slate-700'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={primaryCropsList.includes(crop)}
-                        onChange={() => handlePrimaryCropToggle(crop)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span>{crop}</span>
+              {/* DYNAMIC SUB-SECTION 1: CROP FARMING & STAPLES */}
+              {(agricultureTypes.includes('CROP_FARMING') || agricultureTypes.includes('MIXED_FARMING')) && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-3">
+                    <label className="block text-xs font-bold text-slate-800">
+                      Primary Staple &amp; Cereal Value Chains (Crop Farming)
                     </label>
-                  ))}
-                </div>
-              </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {[
+                        'Lowland Paddy Rice',
+                        'Upland Seed Rice',
+                        'Cassava',
+                        'Maize / Corn',
+                        'Yam & Sweet Potato',
+                        'Plantain & Banana',
+                        'Soya Beans',
+                        'Vegetables & Horticulture'
+                      ].map((crop) => (
+                        <label
+                          key={crop}
+                          className={`p-2.5 rounded-lg border flex items-center gap-2 cursor-pointer transition-all ${
+                            primaryCropsList.includes(crop)
+                              ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-bold'
+                              : 'border-slate-200 bg-white text-slate-700'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={primaryCropsList.includes(crop)}
+                            onChange={() => handlePrimaryCropToggle(crop)}
+                            className="rounded text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <span>{crop}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
 
-              {/* Granular Vegetables List (Specify Exact) */}
-              <div className="space-y-2.5 bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                <div className="font-extrabold text-slate-900 text-xs uppercase flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5 text-emerald-700" /> Vegetables &amp; Horticulture (Specify Exact Crops)
+                  {/* Granular Vegetables List (Specify Exact) */}
+                  <div className="space-y-2.5 bg-slate-50 border border-slate-200 p-4 rounded-xl">
+                    <div className="font-extrabold text-slate-900 text-xs uppercase flex items-center gap-1.5">
+                      <Tag className="w-3.5 h-3.5 text-emerald-700" /> Vegetables &amp; Horticulture (Specify Exact Crops)
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      {[
+                        'Scotch Bonnet Pepper',
+                        'Bitterball',
+                        'Okra',
+                        'Tomato',
+                        'Eggplant',
+                        'Cucumber',
+                        'Cabbage',
+                        'Watermelon',
+                        'Leafy Greens (Plassas)',
+                        'Sweet Pepper'
+                      ].map((veg) => (
+                        <label
+                          key={veg}
+                          className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
+                            exactVegetablesList.includes(veg)
+                              ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold'
+                              : 'border-slate-200 bg-white text-slate-700'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={exactVegetablesList.includes(veg)}
+                            onChange={() => handleVegetableToggle(veg)}
+                            className="rounded text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <span>{veg}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {[
-                    'Scotch Bonnet Pepper',
-                    'Bitterball',
-                    'Okra',
-                    'Tomato',
-                    'Eggplant',
-                    'Cucumber',
-                    'Cabbage',
-                    'Watermelon',
-                    'Leafy Greens (Plassas)',
-                    'Sweet Pepper'
-                  ].map((veg) => (
-                    <label
-                      key={veg}
-                      className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
-                        exactVegetablesList.includes(veg)
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold'
-                          : 'border-slate-200 bg-white text-slate-700'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={exactVegetablesList.includes(veg)}
-                        onChange={() => handleVegetableToggle(veg)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span>{veg}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+              )}
 
-              {/* Granular Tree Crops List (Be Specific) */}
-              <div className="space-y-2.5 bg-slate-50 border border-slate-200 p-4 rounded-xl">
-                <div className="font-extrabold text-slate-900 text-xs uppercase flex items-center gap-1.5">
-                  <Sprout className="w-3.5 h-3.5 text-emerald-700" /> Tree Crops (Be Specific)
+              {/* DYNAMIC SUB-SECTION 2: AGRO-FORESTRY & TREE CROPS */}
+              {(agricultureTypes.includes('AGRO_FORESTRY') || agricultureTypes.includes('MIXED_FARMING')) && (
+                <div className="space-y-2.5 bg-emerald-50/60 border border-emerald-200 p-4 rounded-xl animate-fade-in">
+                  <div className="font-extrabold text-emerald-950 text-xs uppercase flex items-center gap-1.5">
+                    <Sprout className="w-3.5 h-3.5 text-emerald-700" /> Agro-Forestry &amp; Tree Crops (Be Specific)
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      'Cocoa (Criollo/Forastero)',
+                      'Coffee (Robusta)',
+                      'Coffee (Liberica)',
+                      'Oil Palm (Tenera)',
+                      'Rubber',
+                      'Coconut',
+                      'Cashew Nut',
+                      'Citrus (Orange/Grapefruit)'
+                    ].map((tree) => (
+                      <label
+                        key={tree}
+                        className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
+                          exactTreeCropsList.includes(tree)
+                            ? 'border-emerald-600 bg-white text-emerald-950 font-bold shadow-xs'
+                            : 'border-emerald-200/80 bg-white/60 text-slate-700'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={exactTreeCropsList.includes(tree)}
+                          onChange={() => handleTreeCropToggle(tree)}
+                          className="rounded text-emerald-600 focus:ring-emerald-500"
+                        />
+                        <span>{tree}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {[
-                    'Cocoa (Criollo/Forastero)',
-                    'Coffee (Robusta)',
-                    'Coffee (Liberica)',
-                    'Oil Palm (Tenera)',
-                    'Rubber',
-                    'Coconut',
-                    'Cashew Nut',
-                    'Citrus (Orange/Grapefruit)'
-                  ].map((tree) => (
-                    <label
-                      key={tree}
-                      className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
-                        exactTreeCropsList.includes(tree)
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold'
-                          : 'border-slate-200 bg-white text-slate-700'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={exactTreeCropsList.includes(tree)}
-                        onChange={() => handleTreeCropToggle(tree)}
-                        className="rounded text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <span>{tree}</span>
-                    </label>
-                  ))}
+              )}
+
+              {/* DYNAMIC SUB-SECTION 3: LIVESTOCK & POULTRY */}
+              {(agricultureTypes.includes('LIVESTOCK') || agricultureTypes.includes('MIXED_FARMING')) && (
+                <div className="space-y-2.5 bg-amber-50/60 border border-amber-200 p-4 rounded-xl animate-fade-in">
+                  <div className="font-extrabold text-amber-950 text-xs uppercase flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-amber-700" /> Livestock &amp; Small Ruminants Breakdown
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      'Poultry (Broilers & Layers)',
+                      'Swine / Pigs',
+                      'Goats & Sheep',
+                      'Cattle / Bovine',
+                      'Rabbits & Micro-Livestock',
+                      'Beekeeping / Honey Production'
+                    ].map((lst) => (
+                      <label
+                        key={lst}
+                        className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
+                          primaryCropsList.includes(lst)
+                            ? 'border-amber-600 bg-white text-amber-950 font-bold shadow-xs'
+                            : 'border-amber-200/80 bg-white/60 text-slate-700'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={primaryCropsList.includes(lst)}
+                          onChange={() => handlePrimaryCropToggle(lst)}
+                          className="rounded text-amber-600 focus:ring-amber-500"
+                        />
+                        <span>{lst}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* DYNAMIC SUB-SECTION 4: AQUACULTURE & FISHERIES */}
+              {(agricultureTypes.includes('AQUACULTURE') || agricultureTypes.includes('MIXED_FARMING')) && (
+                <div className="space-y-2.5 bg-sky-50/60 border border-sky-200 p-4 rounded-xl animate-fade-in">
+                  <div className="font-extrabold text-sky-950 text-xs uppercase flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-sky-700" /> Aquaculture &amp; Inland Fisheries Breakdown
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      'Tilapia Fresh Water Ponds',
+                      'Catfish Hatchery & Nursery',
+                      'Floating Cage Culture',
+                      'Artisanal River & Coastal Fisheries'
+                    ].map((aqua) => (
+                      <label
+                        key={aqua}
+                        className={`p-2 rounded-lg border flex items-center gap-2 cursor-pointer text-[11px] ${
+                          primaryCropsList.includes(aqua)
+                            ? 'border-sky-600 bg-white text-sky-950 font-bold shadow-xs'
+                            : 'border-sky-200/80 bg-white/60 text-slate-700'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={primaryCropsList.includes(aqua)}
+                          onChange={() => handlePrimaryCropToggle(aqua)}
+                          className="rounded text-sky-600 focus:ring-sky-500"
+                        />
+                        <span>{aqua}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Other Specialty Commodity Field */}
               <div>
