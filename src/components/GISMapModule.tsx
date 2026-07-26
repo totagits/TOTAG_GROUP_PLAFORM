@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Polygon, Marker, Popup, useMapEvents } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Polygon, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Download, Plus, Compass } from 'lucide-react';
 import type { Parcel } from '../types';
@@ -11,6 +11,15 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png'
 });
+
+// Helper component to dynamically re-center map view when selected county changes
+const ChangeView = ({ center }: { center: [number, number] }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, 11, { animate: true });
+  }, [center, map]);
+  return null;
+};
 
 interface GISMapModuleProps {
   parcels: Parcel[];
@@ -235,6 +244,7 @@ export const GISMapModule: React.FC<GISMapModuleProps> = ({ parcels, onSaveParce
               style={{ height: '100%', width: '100%' }}
               scrollWheelZoom={true}
             >
+              <ChangeView center={selectedCounty.center} />
               <MapClickHandler />
               {mapLayer === 'SATELLITE' ? (
                 <TileLayer
