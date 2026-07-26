@@ -23,12 +23,61 @@ export type UserRole =
   | 'READONLY_OVERSIGHT'
   | 'INDEPENDENT_AUDITOR';
 
+export type DataSensitivityLevel =
+  | 'PUBLIC'
+  | 'INTERNAL'
+  | 'CONFIDENTIAL'
+  | 'HIGHLY_RESTRICTED'
+  | 'AUDIT_RESTRICTED';
+
+export type PermissionAction =
+  | 'VIEW'
+  | 'CREATE'
+  | 'EDIT_DRAFT'
+  | 'SUBMIT'
+  | 'RETURN_FOR_CORRECTION'
+  | 'VERIFY'
+  | 'RECOMMEND'
+  | 'APPROVE'
+  | 'REJECT'
+  | 'SUSPEND'
+  | 'REACTIVATE'
+  | 'ASSIGN'
+  | 'ISSUE'
+  | 'REDEEM'
+  | 'RECONCILE'
+  | 'EXPORT'
+  | 'PRINT'
+  | 'CONFIGURE'
+  | 'ADMINISTER_USERS'
+  | 'VIEW_AUDIT_RECORDS';
+
+export interface UserAssignment {
+  id: string;
+  userRole: UserRole;
+  organization: string;
+  programId: string;
+  programName: string;
+  county: string;
+  district: string;
+  dataSensitivity: DataSensitivityLevel;
+  recordOwnershipOnly: boolean;
+  validFrom: string;
+  validUntil: string;
+  approvalLimitUSD: number;
+  delegationStatus: 'DIRECT_AUTHORITY' | 'ACTING_DELEGATE' | 'EXPIRED_DELEGATION';
+  permittedActions: PermissionAction[];
+}
+
 export interface RoleMetadata {
   code: UserRole;
   title: string;
   category: 'FARMER_COMMUNITY' | 'FIELD_OPS' | 'COUNTY_DISTRICT' | 'PROGRAM_PAYMENT' | 'ANALYTICS_GIS' | 'GOVERNANCE_AUDIT';
   description: string;
   scope: string;
+  defaultSensitivity: DataSensitivityLevel;
+  allowedActions: PermissionAction[];
+  maxApprovalLimitUSD: number;
 }
 
 export const ROLE_DEFINITIONS: Record<UserRole, RoleMetadata> = {
@@ -37,161 +86,230 @@ export const ROLE_DEFINITIONS: Record<UserRole, RoleMetadata> = {
     title: 'Farmer',
     category: 'FARMER_COMMUNITY',
     description: 'Individual smallholder, commercial farmer, or land manager.',
-    scope: 'Self-service profile, own parcels, voucher wallet, extension alerts'
+    scope: 'Self-service profile, own parcels, voucher wallet, extension alerts',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'PRINT'],
+    maxApprovalLimitUSD: 0
   },
   HOUSEHOLD_REP: {
     code: 'HOUSEHOLD_REP',
     title: 'Farmer Household Representative',
     category: 'FARMER_COMMUNITY',
     description: 'Designated representative managing household farm data.',
-    scope: 'Household member updates, assistance applications'
+    scope: 'Household member updates, assistance applications',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'PRINT'],
+    maxApprovalLimitUSD: 0
   },
   COOPERATIVE_REP: {
     code: 'COOPERATIVE_REP',
     title: 'Cooperative Representative',
     category: 'FARMER_COMMUNITY',
     description: 'Leader of registered farmers cooperative society.',
-    scope: 'Cooperative member roster, collective voucher redemptions'
+    scope: 'Cooperative member roster, collective voucher redemptions',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'EXPORT', 'PRINT'],
+    maxApprovalLimitUSD: 5000
   },
   ENUMERATOR: {
     code: 'ENUMERATOR',
     title: 'Enumerator',
     category: 'FIELD_OPS',
     description: 'Field officer capturing farmer identity and GPS parcel boundaries.',
-    scope: 'Offline enrollment, GPS drawing, draft creation'
+    scope: 'Offline enrollment, GPS drawing, draft creation',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT'],
+    maxApprovalLimitUSD: 0
   },
   SENIOR_ENUMERATOR: {
     code: 'SENIOR_ENUMERATOR',
     title: 'Senior Enumerator',
     category: 'FIELD_OPS',
     description: 'Supervisor reviewing field enumerator submissions.',
-    scope: 'Field verification, quality check, return for correction'
+    scope: 'Field verification, quality check, return for correction',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'RETURN_FOR_CORRECTION', 'RECOMMEND', 'ASSIGN'],
+    maxApprovalLimitUSD: 0
   },
   COUNTY_AGRICULTURAL_OFFICER: {
     code: 'COUNTY_AGRICULTURAL_OFFICER',
     title: 'County Agricultural Officer',
     category: 'COUNTY_DISTRICT',
     description: 'Senior Ministry representative overseeing county agricultural affairs.',
-    scope: 'County-wide maker-checker approvals, supervisor review'
+    scope: 'County-wide maker-checker approvals, supervisor review',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'VERIFY', 'RECOMMEND', 'APPROVE', 'REJECT', 'RETURN_FOR_CORRECTION', 'ASSIGN', 'EXPORT'],
+    maxApprovalLimitUSD: 25000
   },
   DISTRICT_AGRICULTURAL_OFFICER: {
     code: 'DISTRICT_AGRICULTURAL_OFFICER',
     title: 'District Agricultural Officer',
     category: 'COUNTY_DISTRICT',
     description: 'District lead coordinating extension agents and local registries.',
-    scope: 'District verification, local extension routing'
+    scope: 'District verification, local extension routing',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'VERIFY', 'RECOMMEND', 'RETURN_FOR_CORRECTION', 'ASSIGN', 'EXPORT'],
+    maxApprovalLimitUSD: 10000
   },
   EXTENSION_AGENT: {
     code: 'EXTENSION_AGENT',
     title: 'Extension Agent',
     category: 'FIELD_OPS',
     description: 'Agricultural extension advisor delivering agronomic advisories.',
-    scope: 'Farmer advisory visits, crop disease reporting'
+    scope: 'Farmer advisory visits, crop disease reporting',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'CREATE', 'SUBMIT', 'ASSIGN'],
+    maxApprovalLimitUSD: 0
   },
   VERIFICATION_OFFICER: {
     code: 'VERIFICATION_OFFICER',
     title: 'Verification Officer',
     category: 'COUNTY_DISTRICT',
     description: 'Officer assigned to verify identity credentials and land claims.',
-    scope: 'Field & remote verification, document validation'
+    scope: 'Field & remote verification, document validation',
+    defaultSensitivity: 'HIGHLY_RESTRICTED',
+    allowedActions: ['VIEW', 'VERIFY', 'RECOMMEND', 'APPROVE', 'REJECT', 'RETURN_FOR_CORRECTION'],
+    maxApprovalLimitUSD: 15000
   },
   PROGRAM_OFFICER: {
     code: 'PROGRAM_OFFICER',
     title: 'Program Officer',
     category: 'PROGRAM_PAYMENT',
     description: 'Manager of national agricultural subsidy and resilience programs.',
-    scope: 'Program rules setup, eligibility evaluation, beneficiary enrollment'
+    scope: 'Program rules setup, eligibility evaluation, beneficiary enrollment',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'CONFIGURE', 'RECOMMEND', 'EXPORT'],
+    maxApprovalLimitUSD: 50000
   },
   VOUCHER_ADMINISTRATOR: {
     code: 'VOUCHER_ADMINISTRATOR',
     title: 'Voucher Administrator',
     category: 'PROGRAM_PAYMENT',
     description: 'Administrator managing digital input voucher campaigns.',
-    scope: 'Voucher generation, campaign parameters, vendor allocation'
+    scope: 'Voucher generation, campaign parameters, vendor allocation',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'ISSUE', 'SUSPEND', 'REACTIVATE', 'RECONCILE', 'EXPORT'],
+    maxApprovalLimitUSD: 25000
   },
   INPUT_DISTRIBUTION_OFFICER: {
     code: 'INPUT_DISTRIBUTION_OFFICER',
     title: 'Input-Distribution Officer',
     category: 'PROGRAM_PAYMENT',
     description: 'Agro-dealer or warehouse officer managing physical seed/fertilizer stock.',
-    scope: 'QR voucher scanning, input release, inventory deduction'
+    scope: 'QR voucher scanning, input release, inventory deduction',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'REDEEM', 'RECONCILE', 'PRINT'],
+    maxApprovalLimitUSD: 5000
   },
   PAYMENT_OFFICER: {
     code: 'PAYMENT_OFFICER',
     title: 'Payment Officer',
     category: 'PROGRAM_PAYMENT',
     description: 'Financial officer executing mobile money and bank transfers.',
-    scope: 'Payout batch creation, MTN/Orange Money authorization'
+    scope: 'Payout batch creation, MTN/Orange Money authorization',
+    defaultSensitivity: 'HIGHLY_RESTRICTED',
+    allowedActions: ['VIEW', 'SUBMIT', 'RECOMMEND', 'APPROVE', 'RECONCILE', 'EXPORT'],
+    maxApprovalLimitUSD: 100000
   },
   MONITORING_EVALUATION_OFFICER: {
     code: 'MONITORING_EVALUATION_OFFICER',
     title: 'Monitoring and Evaluation Officer',
     category: 'ANALYTICS_GIS',
     description: 'M&E specialist assessing program outcomes and indicator progress.',
-    scope: 'Indicator dashboards, impact evaluation, survey data'
+    scope: 'Indicator dashboards, impact evaluation, survey data',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'CONFIGURE', 'EXPORT'],
+    maxApprovalLimitUSD: 0
   },
   GIS_OFFICER: {
     code: 'GIS_OFFICER',
     title: 'GIS Officer',
     category: 'ANALYTICS_GIS',
     description: 'Remote sensing and cadastre specialist managing spatial data.',
-    scope: 'Satellite layers, spatial overlap analysis, GeoJSON exports'
+    scope: 'Satellite layers, spatial overlap analysis, GeoJSON exports',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'EDIT_DRAFT', 'EXPORT', 'CONFIGURE'],
+    maxApprovalLimitUSD: 0
   },
   DATA_ANALYST: {
     code: 'DATA_ANALYST',
     title: 'Data Analyst',
     category: 'ANALYTICS_GIS',
     description: 'Agricultural statistician analyzing production trends.',
-    scope: 'Demographic reports, yield forecasts, CSV/PDF exports'
+    scope: 'Demographic reports, yield forecasts, CSV/PDF exports',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'EXPORT'],
+    maxApprovalLimitUSD: 0
   },
   HELPDESK_OFFICER: {
     code: 'HELPDESK_OFFICER',
     title: 'Help-Desk Officer',
     category: 'GOVERNANCE_AUDIT',
     description: 'Customer service agent addressing grievances and correction tickets.',
-    scope: 'Support tickets, tracking code search, SLA resolution'
+    scope: 'Support tickets, tracking code search, SLA resolution',
+    defaultSensitivity: 'CONFIDENTIAL',
+    allowedActions: ['VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'ASSIGN'],
+    maxApprovalLimitUSD: 0
   },
   DEVELOPMENT_PARTNER: {
     code: 'DEVELOPMENT_PARTNER',
     title: 'Development-Partner User',
     category: 'GOVERNANCE_AUDIT',
     description: 'Authorized FAO, World Bank, or donor organization representative.',
-    scope: 'Anonymized oversight analytics, program monitoring'
+    scope: 'Anonymized oversight analytics, program monitoring',
+    defaultSensitivity: 'PUBLIC',
+    allowedActions: ['VIEW', 'EXPORT'],
+    maxApprovalLimitUSD: 0
   },
   MINISTRY_ADMINISTRATOR: {
     code: 'MINISTRY_ADMINISTRATOR',
     title: 'Ministry Administrator',
     category: 'GOVERNANCE_AUDIT',
     description: 'Senior MoA executive managing platform parameters.',
-    scope: 'National configuration, master tables, policy governance'
+    scope: 'National configuration, master tables, policy governance',
+    defaultSensitivity: 'HIGHLY_RESTRICTED',
+    allowedActions: ['VIEW', 'CONFIGURE', 'ADMINISTER_USERS', 'APPROVE', 'EXPORT'],
+    maxApprovalLimitUSD: 500000
   },
   SYSTEM_ADMINISTRATOR: {
     code: 'SYSTEM_ADMINISTRATOR',
     title: 'System Administrator',
     category: 'GOVERNANCE_AUDIT',
     description: 'IT infrastructure administrator managing access controls.',
-    scope: 'Role assignment, system configuration, maintenance'
+    scope: 'Role assignment, system configuration, maintenance',
+    defaultSensitivity: 'INTERNAL',
+    allowedActions: ['VIEW', 'CONFIGURE', 'ADMINISTER_USERS', 'VIEW_AUDIT_RECORDS'],
+    maxApprovalLimitUSD: 0
   },
   SECURITY_AUDITOR: {
     code: 'SECURITY_AUDITOR',
     title: 'Security Auditor',
     category: 'GOVERNANCE_AUDIT',
     description: 'Cybersecurity specialist reviewing system integrity and logs.',
-    scope: 'Audit trail inspection, access log analysis, security alerts'
+    scope: 'Audit trail inspection, access log analysis, security alerts',
+    defaultSensitivity: 'AUDIT_RESTRICTED',
+    allowedActions: ['VIEW', 'VIEW_AUDIT_RECORDS', 'EXPORT'],
+    maxApprovalLimitUSD: 0
   },
   READONLY_OVERSIGHT: {
     code: 'READONLY_OVERSIGHT',
     title: 'Read-Only Oversight User',
     category: 'GOVERNANCE_AUDIT',
     description: 'Government oversight officer with view-only privileges.',
-    scope: 'Read-only access to dashboards and non-sensitive registries'
+    scope: 'Read-only access to dashboards and non-sensitive registries',
+    defaultSensitivity: 'PUBLIC',
+    allowedActions: ['VIEW'],
+    maxApprovalLimitUSD: 0
   },
   INDEPENDENT_AUDITOR: {
     code: 'INDEPENDENT_AUDITOR',
     title: 'Independent Audit User',
     category: 'GOVERNANCE_AUDIT',
     description: 'External auditor verifying program compliance and expenditure.',
-    scope: 'Independent audit logs, financial reconciliation reports'
+    scope: 'Independent audit logs, financial reconciliation reports',
+    defaultSensitivity: 'AUDIT_RESTRICTED',
+    allowedActions: ['VIEW', 'VIEW_AUDIT_RECORDS', 'EXPORT', 'PRINT'],
+    maxApprovalLimitUSD: 0
   }
 };
 

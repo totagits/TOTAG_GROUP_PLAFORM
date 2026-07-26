@@ -43,15 +43,47 @@ import {
   INITIAL_AUDIT_LOGS
 } from './data/mockData';
 
+import { AssignmentSwitcherModal } from './components/AssignmentSwitcherModal';
+import { filterFarmersByAssignment, filterParcelsByAssignment } from './services/securityEngine';
+import type { UserAssignment } from './types';
+
 export function App() {
   const [activeTab, setActiveTab] = useState('landing');
   const [currentRole, setCurrentRole] = useState<UserRole>('SYSTEM_ADMINISTRATOR');
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+  const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
 
-  // Map role changes directly to dedicated dashboard views
+  // Active ABAC Assignment State
+  const [activeAssignment, setActiveAssignment] = useState<UserAssignment>({
+    id: 'ASG-2026-DEFAULT',
+    userRole: 'SYSTEM_ADMINISTRATOR',
+    organization: 'Ministry of Agriculture (MoA Liberia)',
+    programId: 'ALL_PROGRAMS',
+    programName: 'All National Programs',
+    county: 'Lofa',
+    district: 'Foya District',
+    dataSensitivity: 'HIGHLY_RESTRICTED',
+    recordOwnershipOnly: false,
+    validFrom: '2026-01-01',
+    validUntil: '2026-12-31',
+    approvalLimitUSD: 500000,
+    delegationStatus: 'DIRECT_AUTHORITY',
+    permittedActions: [
+      'VIEW', 'CREATE', 'EDIT_DRAFT', 'SUBMIT', 'RETURN_FOR_CORRECTION',
+      'VERIFY', 'RECOMMEND', 'APPROVE', 'REJECT', 'SUSPEND', 'REACTIVATE',
+      'ASSIGN', 'ISSUE', 'REDEEM', 'RECONCILE', 'EXPORT', 'PRINT',
+      'CONFIGURE', 'ADMINISTER_USERS', 'VIEW_AUDIT_RECORDS'
+    ]
+  });
+
+  // Map role changes directly to dedicated dashboard views & sync assignment
   const handleRoleChange = (newRole: UserRole) => {
     setCurrentRole(newRole);
+    setActiveAssignment((prev) => ({
+      ...prev,
+      userRole: newRole
+    }));
 
     switch (newRole) {
       case 'FARMER':
@@ -387,11 +419,17 @@ export function App() {
     setAuditLogs(updatedAudits);
   };
 
+  // Compute ABAC Scoped Data subsets based on Active Policy Assignment
+  const scopedFarmers = filterFarmersByAssignment(farmers, activeAssignment);
+  const scopedParcels = filterParcelsByAssignment(parcels, activeAssignment);
+
   return (
     <div className={`min-h-screen flex flex-col ${isHighContrast ? 'contrast-125 bg-black text-yellow-300' : 'bg-slate-100 text-slate-900'}`}>
       <Header
         currentRole={currentRole}
         setCurrentRole={handleRoleChange}
+        assignment={activeAssignment}
+        onOpenAssignmentModal={() => setIsAssignmentModalOpen(true)}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         isHighContrast={isHighContrast}
@@ -401,27 +439,45 @@ export function App() {
         unreadGrievanceCount={grievances.filter((g) => g.status === 'OPEN').length}
       />
 
-      {/* Interactive Active Role Context Banner */}
-      <div className="bg-slate-900 text-white border-b border-slate-800 py-2.5 px-4">
+      {/* Mandatory Scope Banner (Combined RBAC + ABAC Policy Display) */}
+      <div className="bg-slate-900 text-white border-b border-slate-800 py-2.5 px-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <span className="bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded">
-              Active Role Dashboard
+            <span className="bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded tracking-wide">
+              Current Assignment
             </span>
             <span className="font-extrabold text-amber-300">
               {ROLE_DEFINITIONS[currentRole]?.title || currentRole}
             </span>
-            <span className="text-slate-400 hidden sm:inline">•</span>
-            <span className="text-slate-300 hidden sm:inline">
-              {ROLE_DEFINITIONS[currentRole]?.description}
-            </span>
+            <span className="text-slate-400 font-bold">—</span>
+            <span className="text-emerald-400 font-extrabold">{activeAssignment.programName}</span>
+            <span className="text-slate-400 hidden md:inline">—</span>
+            <span className="text-slate-300 hidden md:inline">{activeAssignment.organization}</span>
+            <span className="text-slate-400 font-bold">—</span>
+            <span className="text-sky-300 font-bold">{activeAssignment.county} County ({activeAssignment.district})</span>
           </div>
 
-          <div className="text-[11px] text-slate-400 font-medium italic">
-            Scope: <span className="text-slate-200">{ROLE_DEFINITIONS[currentRole]?.scope}</span>
+          <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-300 font-medium">
+            <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-amber-300 font-mono text-[10px]">
+              Sensitivity: {activeAssignment.dataSensitivity}
+            </span>
+            <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-300 font-mono text-[10px]">
+              Limit: ${activeAssignment.approvalLimitUSD.toLocaleString()} USD
+            </span>
+            <span className="text-slate-400 italic hidden lg:inline">Valid through {activeAssignment.validUntil}</span>
           </div>
         </div>
       </div>
+
+      <AssignmentSwitcherModal
+        isOpen={isAssignmentModalOpen}
+        onClose={() => setIsAssignmentModalOpen(false)}
+        assignment={activeAssignment}
+        onUpdateAssignment={(updated) => {
+          setActiveAssignment(updated);
+          setCurrentRole(updated.userRole);
+        }}
+      />
 
       {/* Main App Content View Switcher */}
       <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
@@ -440,14 +496,14 @@ export function App() {
         )}
 
         {activeTab === 'gis' && (
-          <GISMapModule parcels={parcels} onSaveParcel={handleSaveParcel} />
+          <GISMapModule parcels={scopedParcels} onSaveParcel={handleSaveParcel} />
         )}
 
         {activeTab === 'offline' && (
           <OfflineFieldApp
             isOffline={isOffline}
             setIsOffline={setIsOffline}
-            savedFarmers={farmers}
+            savedFarmers={scopedFarmers}
             onSyncAll={() => alert('Offline field data synchronized with central LDFR database!')}
           />
         )}
@@ -455,19 +511,19 @@ export function App() {
         {activeTab === 'duplicates' && (
           <DuplicateWorkbench
             duplicates={duplicates}
-            farmers={farmers}
+            farmers={scopedFarmers}
             onResolveDuplicate={handleResolveDuplicate}
           />
         )}
 
         {activeTab === 'verification' && (
-          <VerificationModule farmers={farmers} onUpdateStatus={handleUpdateFarmerStatus} />
+          <VerificationModule farmers={scopedFarmers} onUpdateStatus={handleUpdateFarmerStatus} />
         )}
 
         {activeTab === 'programs' && (
           <ProgramsModule
             programs={programs}
-            farmers={farmers}
+            farmers={scopedFarmers}
             parcels={parcels}
             onEnrollFarmer={handleEnrollFarmerInProgram}
           />
@@ -486,13 +542,13 @@ export function App() {
         )}
 
         {activeTab === 'portal' && (
-          <FarmerPortal farmers={farmers} parcels={parcels} vouchers={vouchers} />
+          <FarmerPortal farmers={scopedFarmers} parcels={scopedParcels} vouchers={vouchers} />
         )}
 
         {activeTab === 'dashboards' && (
           <DashboardsModule
-            farmers={farmers}
-            parcels={parcels}
+            farmers={scopedFarmers}
+            parcels={scopedParcels}
             programs={programs}
             onLogExportAudit={handleLogExportAudit}
           />

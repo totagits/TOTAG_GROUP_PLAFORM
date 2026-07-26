@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { CheckCircle2, XCircle, RotateCcw, Wrench } from 'lucide-react';
+import { CheckCircle2, XCircle, RotateCcw, Wrench, Eye, EyeOff } from 'lucide-react';
 import type { FarmerProfile, VerificationStatus } from '../types';
+import { maskNationalID, maskPhone, maskMobileMoneyNumber } from '../services/securityEngine';
 
 interface VerificationModuleProps {
   farmers: FarmerProfile[];
@@ -11,8 +12,11 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
   farmers,
   onUpdateStatus
 }) => {
-  const [selectedFarmer, setSelectedFarmer] = useState<FarmerProfile | null>(farmers[0] || null);
+  const [selectedFarmerId, setSelectedFarmerId] = useState<string>(farmers[0]?.id || '');
   const [reviewNotes, setReviewNotes] = useState('');
+  const [showPII, setShowPII] = useState(false);
+
+  const selectedFarmer = farmers.find(f => f.id === selectedFarmerId) || null;
 
   const pendingQueue = farmers.filter(
     (f) => f.verificationStatus !== 'APPROVED' && f.verificationStatus !== 'REJECTED'
@@ -22,7 +26,7 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
     if (!selectedFarmer) return;
     onUpdateStatus(selectedFarmer.id, status, reviewNotes || 'Verification review decision completed.');
     alert(`Status for farmer [${selectedFarmer.firstName} ${selectedFarmer.lastName}] updated to: ${status}`);
-    setSelectedFarmer(null);
+    setSelectedFarmerId('');
     setReviewNotes('');
   };
 
@@ -58,7 +62,7 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
             {farmers.map((farmer) => (
               <div
                 key={farmer.id}
-                onClick={() => setSelectedFarmer(farmer)}
+                onClick={() => setSelectedFarmerId(farmer.id)}
                 className={`p-4 cursor-pointer transition-colors ${
                   selectedFarmer?.id === farmer.id ? 'bg-emerald-50 border-l-4 border-emerald-700' : 'hover:bg-slate-50'
                 }`}
@@ -98,14 +102,32 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
             <>
               <div className="border-b pb-4 flex justify-between items-start">
                 <div>
-                  <div className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
-                    Registration Record Verification Inspector
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                      Registration Record Verification Inspector
+                    </div>
+                    <button
+                      onClick={() => setShowPII(!showPII)}
+                      className="bg-slate-200 hover:bg-slate-300 text-slate-800 text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1 transition-colors"
+                    >
+                      {showPII ? <EyeOff className="w-3 h-3 text-red-600" /> : <Eye className="w-3 h-3 text-emerald-700" />}
+                      {showPII ? 'Mask Sensitive PII' : 'Unmask PII (Authorized)'}
+                    </button>
                   </div>
                   <h3 className="text-xl font-extrabold text-slate-900">
                     {selectedFarmer.firstName} {selectedFarmer.middleName} {selectedFarmer.lastName}
                   </h3>
-                  <div className="text-xs text-slate-500 font-mono mt-0.5">
-                    {selectedFarmer.farmerRegistryNumber} • NIN: {selectedFarmer.nationalIdNumber}
+                  <div className="text-xs text-slate-500 font-mono mt-0.5 flex items-center gap-2">
+                    <span>{selectedFarmer.farmerRegistryNumber}</span>
+                    <span>•</span>
+                    <span>
+                      National ID: {showPII ? selectedFarmer.nationalIdNumber : maskNationalID(selectedFarmer.nationalIdNumber)}
+                    </span>
+                    {!showPII && (
+                      <span className="bg-amber-100 text-amber-800 text-[9px] font-bold px-1.5 py-0.2 rounded uppercase">
+                        [MASKED BY DEFAULT]
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -122,6 +144,9 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
                     {selectedFarmer.county} / {selectedFarmer.district}
                   </div>
                   <div className="text-slate-600">
+                    Phone: {showPII ? selectedFarmer.primaryPhone : maskPhone(selectedFarmer.primaryPhone)}
+                  </div>
+                  <div className="text-slate-600">
                     Clan: {selectedFarmer.clan} • Community: {selectedFarmer.community}
                   </div>
                   <div className="text-[10px] text-slate-500 font-mono pt-1">
@@ -132,7 +157,9 @@ export const VerificationModule: React.FC<VerificationModuleProps> = ({
                 <div className="bg-slate-50 p-3.5 rounded-xl space-y-1">
                   <div className="text-[10px] text-slate-500 font-bold uppercase">Financial &amp; Mobile Money</div>
                   <div className="font-bold text-slate-800">{selectedFarmer.mobileMoneyProvider}</div>
-                  <div className="text-slate-600">Account No: {selectedFarmer.mobileMoneyNumber}</div>
+                  <div className="text-slate-600">
+                    Account No: {showPII ? selectedFarmer.mobileMoneyNumber : maskMobileMoneyNumber(selectedFarmer.mobileMoneyNumber)}
+                  </div>
                   <div className="text-slate-600">Registered Name: {selectedFarmer.mobileMoneyAccountName}</div>
                 </div>
               </div>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Eye, Globe, UserCheck } from 'lucide-react';
-import type { UserRole } from '../types';
+import type { UserRole, UserAssignment } from '../types';
 
 interface HeaderProps {
   currentRole: UserRole;
   setCurrentRole: (role: UserRole) => void;
+  assignment: UserAssignment;
+  onOpenAssignmentModal: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isHighContrast: boolean;
@@ -17,6 +19,8 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   currentRole,
   setCurrentRole,
+  assignment,
+  onOpenAssignmentModal,
   activeTab,
   setActiveTab,
   isHighContrast,
@@ -115,59 +119,72 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </div>
 
-          {/* Quick Role Switcher Dropdown (23 Target User Roles) */}
-          <div className="relative group">
-            <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider text-right mb-0.5">
-              Active Target Role (23 Roles)
+          {/* Quick Role Switcher Dropdown & ABAC Policy Button */}
+          <div className="flex items-center gap-2">
+            <div className="relative group">
+              <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider text-right mb-0.5">
+                Active Target Role (23 Roles)
+              </div>
+              <div className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg cursor-pointer transition-colors">
+                <UserCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+                <select
+                  value={currentRole}
+                  onChange={(e) => setCurrentRole(e.target.value as UserRole)}
+                  className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer pr-2"
+                >
+                  <optgroup label="Farmer & Community Roles">
+                    <option value="FARMER">Farmer (Self-Service)</option>
+                    <option value="HOUSEHOLD_REP">Farmer Household Representative</option>
+                    <option value="COOPERATIVE_REP">Cooperative Representative</option>
+                  </optgroup>
+
+                  <optgroup label="Field Operations & Extension">
+                    <option value="ENUMERATOR">Enumerator</option>
+                    <option value="SENIOR_ENUMERATOR">Senior Enumerator</option>
+                    <option value="EXTENSION_AGENT">Extension Agent</option>
+                  </optgroup>
+
+                  <optgroup label="County & District Officers">
+                    <option value="COUNTY_AGRICULTURAL_OFFICER">County Agricultural Officer</option>
+                    <option value="DISTRICT_AGRICULTURAL_OFFICER">District Agricultural Officer</option>
+                    <option value="VERIFICATION_OFFICER">Verification Officer</option>
+                  </optgroup>
+
+                  <optgroup label="Programs, Vouchers & Payments">
+                    <option value="PROGRAM_OFFICER">Program Officer</option>
+                    <option value="VOUCHER_ADMINISTRATOR">Voucher Administrator</option>
+                    <option value="INPUT_DISTRIBUTION_OFFICER">Input-Distribution Officer</option>
+                    <option value="PAYMENT_OFFICER">Payment & Mobile Money Officer</option>
+                  </optgroup>
+
+                  <optgroup label="Analytics, M&E & GIS">
+                    <option value="MONITORING_EVALUATION_OFFICER">Monitoring & Evaluation Officer</option>
+                    <option value="GIS_OFFICER">GIS & Remote Sensing Officer</option>
+                    <option value="DATA_ANALYST">Data Analyst</option>
+                  </optgroup>
+
+                  <optgroup label="Governance, Administration & Audit">
+                    <option value="HELPDESK_OFFICER">Help-Desk Officer</option>
+                    <option value="DEVELOPMENT_PARTNER">Development-Partner User (FAO / Donors)</option>
+                    <option value="MINISTRY_ADMINISTRATOR">Ministry Administrator</option>
+                    <option value="SYSTEM_ADMINISTRATOR">System Administrator</option>
+                    <option value="SECURITY_AUDITOR">Security Auditor</option>
+                    <option value="READONLY_OVERSIGHT">Read-Only Oversight User</option>
+                    <option value="INDEPENDENT_AUDITOR">Independent Audit User</option>
+                  </optgroup>
+                </select>
+              </div>
             </div>
-            <div className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg cursor-pointer transition-colors">
-              <UserCheck className="w-4 h-4 text-emerald-700 shrink-0" />
-              <select
-                value={currentRole}
-                onChange={(e) => setCurrentRole(e.target.value as UserRole)}
-                className="bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer pr-2"
+
+            {/* ABAC Policy Scope Configurator Button */}
+            <div className="pt-3">
+              <button
+                onClick={onOpenAssignmentModal}
+                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+                title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
               >
-                <optgroup label="Farmer & Community Roles">
-                  <option value="FARMER">Farmer (Self-Service)</option>
-                  <option value="HOUSEHOLD_REP">Farmer Household Representative</option>
-                  <option value="COOPERATIVE_REP">Cooperative Representative</option>
-                </optgroup>
-
-                <optgroup label="Field Operations & Extension">
-                  <option value="ENUMERATOR">Enumerator</option>
-                  <option value="SENIOR_ENUMERATOR">Senior Enumerator</option>
-                  <option value="EXTENSION_AGENT">Extension Agent</option>
-                </optgroup>
-
-                <optgroup label="County & District Officers">
-                  <option value="COUNTY_AGRICULTURAL_OFFICER">County Agricultural Officer</option>
-                  <option value="DISTRICT_AGRICULTURAL_OFFICER">District Agricultural Officer</option>
-                  <option value="VERIFICATION_OFFICER">Verification Officer</option>
-                </optgroup>
-
-                <optgroup label="Programs, Vouchers & Payments">
-                  <option value="PROGRAM_OFFICER">Program Officer</option>
-                  <option value="VOUCHER_ADMINISTRATOR">Voucher Administrator</option>
-                  <option value="INPUT_DISTRIBUTION_OFFICER">Input-Distribution Officer</option>
-                  <option value="PAYMENT_OFFICER">Payment & Mobile Money Officer</option>
-                </optgroup>
-
-                <optgroup label="Analytics, M&E & GIS">
-                  <option value="MONITORING_EVALUATION_OFFICER">Monitoring & Evaluation Officer</option>
-                  <option value="GIS_OFFICER">GIS & Remote Sensing Officer</option>
-                  <option value="DATA_ANALYST">Data Analyst</option>
-                </optgroup>
-
-                <optgroup label="Governance, Administration & Audit">
-                  <option value="HELPDESK_OFFICER">Help-Desk Officer</option>
-                  <option value="DEVELOPMENT_PARTNER">Development-Partner User (FAO / Donors)</option>
-                  <option value="MINISTRY_ADMINISTRATOR">Ministry Administrator</option>
-                  <option value="SYSTEM_ADMINISTRATOR">System Administrator</option>
-                  <option value="SECURITY_AUDITOR">Security Auditor</option>
-                  <option value="READONLY_OVERSIGHT">Read-Only Oversight User</option>
-                  <option value="INDEPENDENT_AUDITOR">Independent Audit User</option>
-                </optgroup>
-              </select>
+                <span>ABAC Config</span>
+              </button>
             </div>
           </div>
         </div>
