@@ -497,7 +497,7 @@ export function App() {
       />
 
       {/* Main Container with Collapsible Left Sidebar */}
-      <div className="flex-1 flex w-full">
+      <div className="flex-1 flex w-full min-h-[calc(100vh-10rem)]">
         <Sidebar
           currentRole={currentRole}
           activeTab={activeTab}
@@ -508,7 +508,7 @@ export function App() {
         />
 
         {/* Main App Content View Switcher */}
-        <main className="flex-1 p-6 overflow-x-hidden max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-6 overflow-x-hidden w-full">
         {activeTab === 'landing' && (
           <LandingPage
             onRegisterClick={() => setActiveTab('registration')}

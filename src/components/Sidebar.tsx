@@ -115,6 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       case 'vouchers':
         return [
+          'FARMER',
           'VOUCHER_ADMINISTRATOR',
           'INPUT_DISTRIBUTION_OFFICER',
           'COOPERATIVE_REP'
@@ -153,19 +154,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
     }
   };
 
-  // Menu items list
+  const isFarmerGroup = ['FARMER', 'HOUSEHOLD_REP', 'COOPERATIVE_REP'].includes(currentRole);
+
+  // Menu items list with dynamic role labels
   const ALL_MENUS: MenuItem[] = [
-    { id: 'portal', label: 'Farmer Self-Service', icon: User },
-    { id: 'registration', label: 'Farmer Registration', icon: UserCheck },
-    { id: 'gis', label: 'GIS Parcel Mapping', icon: MapPin },
+    { id: 'portal', label: isFarmerGroup ? 'My Portal & Wallet' : 'Farmer Self-Service', icon: User },
+    { id: 'registration', label: isFarmerGroup ? 'Register / Update My Farm' : 'Farmer Registration Wizard', icon: UserCheck },
+    { id: 'gis', label: isFarmerGroup ? 'My GIS Farm Parcels' : 'GIS Parcel Mapping', icon: MapPin },
     { id: 'offline', label: 'Field App (PWA)', icon: WifiOff, badge: 'Offline Mode' },
     { id: 'duplicates', label: 'Duplicate Workbench', icon: CopyCheck, badge: '2 Alerts', badgeColor: 'bg-amber-500' },
-    { id: 'verification', label: 'Verifications', icon: ShieldCheck, badge: '3 Pending' },
+    { id: 'verification', label: 'Verifications Desk', icon: ShieldCheck, badge: '3 Pending' },
     { id: 'programs', label: 'Programs & Eligibility', icon: Layers },
-    { id: 'vouchers', label: 'Digital Vouchers', icon: QrCode },
+    { id: 'vouchers', label: isFarmerGroup ? 'My Input Vouchers' : 'Digital Vouchers', icon: QrCode },
     { id: 'payments', label: 'Mobile Money Payouts', icon: CreditCard },
     { id: 'dashboards', label: 'Executive Analytics', icon: BarChart3 },
-    { id: 'grievances', label: 'Grievances & Helpdesk', icon: HelpCircle, badge: unreadGrievanceCount || undefined, badgeColor: 'bg-rose-500' },
+    { id: 'grievances', label: isFarmerGroup ? 'Helpdesk & Appeals' : 'Grievances & Helpdesk', icon: HelpCircle, badge: unreadGrievanceCount || undefined, badgeColor: 'bg-rose-500' },
     { id: 'audit', label: 'Audit Trail & Logs', icon: FileText }
   ];
 
