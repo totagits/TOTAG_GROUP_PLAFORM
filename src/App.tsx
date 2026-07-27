@@ -49,6 +49,7 @@ import { ContactUsModal } from './components/ContactUsModal';
 import { PWAPromptBanner } from './components/PWAPromptBanner';
 import { PWAInstallModal } from './components/PWAInstallModal';
 import { AssignmentSwitcherModal } from './components/AssignmentSwitcherModal';
+import { RTMTraceabilityModal } from './components/RTMTraceabilityModal';
 import { filterFarmersByAssignment, filterParcelsByAssignment } from './services/securityEngine';
 import type { UserAssignment } from './types';
 
@@ -61,6 +62,7 @@ export function App() {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [isRtmModalOpen, setIsRtmModalOpen] = useState(false);
 
   // Active ABAC Assignment State
   const [activeAssignment, setActiveAssignment] = useState<UserAssignment>({
@@ -494,6 +496,7 @@ export function App() {
         onOpenAbout={() => setIsAboutModalOpen(true)}
         onOpenContact={() => setIsContactModalOpen(true)}
         onOpenPwaModal={() => setIsPwaModalOpen(true)}
+        onOpenRtmModal={() => setIsRtmModalOpen(true)}
         onResetDatabase={handleResetDatabase}
         onExportSnapshot={exportPlatformSnapshot}
         isHighContrast={isHighContrast}
@@ -669,6 +672,9 @@ export function App() {
         {activeTab === 'audit' && <AuditTrailModule auditLogs={auditLogs} />}
       </main>
       </div>
+
+      {/* RTM Traceability & Proposal Reconciliation Modal */}
+      <RTMTraceabilityModal isOpen={isRtmModalOpen} onClose={() => setIsRtmModalOpen(false)} />
 
       <Footer />
     </div>

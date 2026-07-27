@@ -12,6 +12,7 @@ interface HeaderProps {
   onOpenAbout: () => void;
   onOpenContact: () => void;
   onOpenPwaModal: () => void;
+  onOpenRtmModal?: () => void;
   onResetDatabase?: () => void;
   onExportSnapshot?: () => void;
   isHighContrast: boolean;
@@ -30,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAbout,
   onOpenContact,
   onOpenPwaModal,
+  onOpenRtmModal,
   onResetDatabase,
   onExportSnapshot,
   isHighContrast,
@@ -187,6 +189,16 @@ export const Header: React.FC<HeaderProps> = ({
             {/* ABAC Policy Scope & Interoperability Data Hub Tools */}
             {activeTab !== 'landing' && (
               <div className="pt-3 flex items-center gap-1.5">
+                {onOpenRtmModal && (
+                  <button
+                    onClick={onOpenRtmModal}
+                    className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition-colors shadow-xs cursor-pointer"
+                    title="Open Requirements Traceability Matrix & Master Proposal Reconciliation Engine"
+                  >
+                    <span>RTM Engine</span>
+                  </button>
+                )}
+
                 <button
                   onClick={onOpenAssignmentModal}
                   className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
