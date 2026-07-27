@@ -16,10 +16,10 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Tubmanburg',
     center: [6.8687, -10.7567],
     districts: [
-      { name: 'Klay', clans: ['Klay Central', 'Mana Clan', 'Gola Clan'] },
-      { name: 'Dewein', clans: ['Dewein Central', 'Jene Wonde'] },
-      { name: 'Senjeh', clans: ['Senjeh Chiefdom', 'Tubmanburg Urban'] },
-      { name: 'Seimavula', clans: ['Seimavula West', 'Upper Bomi'] }
+      { name: 'Klay', clans: ['Klay Central', 'Mana Clan', 'Gola Clan', 'Tubmanburg South'] },
+      { name: 'Dewein', clans: ['Dewein Central', 'Jene Wonde', 'Bolea'] },
+      { name: 'Senjeh', clans: ['Senjeh Chiefdom', 'Tubmanburg Urban', 'Beafinie'] },
+      { name: 'Seimavula', clans: ['Seimavula West', 'Upper Bomi', 'Gbonyea'] }
     ]
   },
   {
@@ -28,11 +28,16 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Gbarnga',
     center: [6.9944, -9.5786],
     districts: [
-      { name: 'Jorquelleh', clans: ['Gbarnga Central', 'Jorquelleh #1', 'Jorquelleh #2'] },
-      { name: 'Fuamah', clans: ['Dobli Clan', 'Bong Mines Urban'] },
-      { name: 'Suakoko', clans: ['Suakoko Central', 'Cuttington'] },
-      { name: 'Salala', clans: ['Salala Central', 'Totota'] },
-      { name: 'Zota', clans: ['Zota Central', 'Nyanfor Clan'] }
+      { name: 'Jorquelleh', clans: ['Gbarnga Central', 'Jorquelleh #1', 'Jorquelleh #2', 'Leleypaye'] },
+      { name: 'Fuamah', clans: ['Dobli Clan', 'Bong Mines Urban', 'Lain'] },
+      { name: 'Suakoko', clans: ['Suakoko Central', 'Cuttington', 'Kpaai'] },
+      { name: 'Salala', clans: ['Salala Central', 'Totota', 'Sanoyea Border'] },
+      { name: 'Sanoyea', clans: ['Sanoyea Urban', 'Walapolu', 'Gola Clan'] },
+      { name: 'Zota', clans: ['Zota Central', 'Nyanfor Clan', 'Belefanai'] },
+      { name: 'Kokoyah', clans: ['Kokoyah Statutory', 'Botota', 'Togbata'] },
+      { name: 'Yellequelleh', clans: ['Yellequelleh North', 'Gbanqua', 'Kpaai'] },
+      { name: 'Kpaii', clans: ['Kpaii Central', 'Palala', 'Gbartala'] },
+      { name: 'Boinsen', clans: ['Boinsen Central', 'Bendu Clan'] }
     ]
   },
   {
@@ -41,10 +46,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Bopolu',
     center: [7.5253, -10.0469],
     districts: [
-      { name: 'Bopolu', clans: ['Bopolu City', 'Bopolu North'] },
-      { name: 'Bokomu', clans: ['Bokomu Central', 'Farwenta'] },
-      { name: 'Gbarma', clans: ['Gbarma Town', 'Weasua'] },
-      { name: 'Kongba', clans: ['Kongba West', 'Normon'] }
+      { name: 'Bopolu', clans: ['Bopolu City', 'Bopolu North', 'Yoma'] },
+      { name: 'Bokomu', clans: ['Bokomu Central', 'Farwenta', 'Tumu'] },
+      { name: 'Gbarma', clans: ['Gbarma Town', 'Weasua', 'Kungba'] },
+      { name: 'Kongba', clans: ['Kongba West', 'Normon', 'Zuie'] },
+      { name: 'Gou Nwolaila', clans: ['Gou Nwolaila Central', 'Lofa Border'] }
     ]
   },
   {
@@ -53,10 +59,13 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Buchanan',
     center: [6.1558, -9.9706],
     districts: [
-      { name: 'District #1', clans: ['Lloydsville', 'Owensgrove'] },
-      { name: 'District #2', clans: ['Compound #2', 'Gbee'] },
-      { name: 'District #3', clans: ['Buchanan City', 'Harmonsville'] },
-      { name: 'District #4', clans: ['Compound #4', 'Neekreen'] }
+      { name: 'Commonwealth (Buchanan)', clans: ['Buchanan City Central', 'Fairground', 'Kilby Town'] },
+      { name: 'District #1', clans: ['Lloydsville', 'Owensgrove', 'Frank Town'] },
+      { name: 'District #2', clans: ['Compound #2', 'Gbee', 'Barconnie'] },
+      { name: 'District #3', clans: ['Compound #3', 'Harmonsville', 'St. John River'] },
+      { name: 'District #4', clans: ['Compound #4', 'Neekreen', 'Gorblee'] },
+      { name: 'Neekreen', clans: ['Neekreen Central', 'Bassa Coast'] },
+      { name: 'Owensgrove', clans: ['Owensgrove Urban', 'Edina'] }
     ]
   },
   {
@@ -65,10 +74,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Robertsport',
     center: [7.1333, -11.0833],
     districts: [
-      { name: 'Garwula', clans: ['Sinje', 'Garwula Central'] },
-      { name: 'Gola Konneh', clans: ['Tewor', 'Gola North'] },
-      { name: 'Porkpa', clans: ['Bo Waterside', 'Dambala'] },
-      { name: 'Porkpa West', clans: ['Robertsport Coastal', 'Fishermen Clan'] }
+      { name: 'Tewor', clans: ['Tewor Central', 'Bo Waterside', 'Robor', 'Mendemassa', 'Tia'] },
+      { name: 'Garwula', clans: ['Sinje', 'Garwula Central', 'Kaidii', 'Manoballa'] },
+      { name: 'Gola Konneh', clans: ['Gola North', 'Mana Clan', 'Lofa Tower', 'Pokpa Border'] },
+      { name: 'Porkpa', clans: ['Dambala', 'Sokpo', 'Porkpa Central', 'Bamballa'] },
+      { name: 'Commonwealth', clans: ['Robertsport Urban', 'Fishermen Clan', 'Kru Town', 'Lake Piso'] }
     ]
   },
   {
@@ -77,9 +87,12 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Zwedru',
     center: [5.9231, -8.1356],
     districts: [
-      { name: 'Tchien', clans: ['Zwedru Urban', 'Tchien North'] },
-      { name: 'Gbarzon', clans: ['Gbarzon Central', 'Tobli'] },
-      { name: 'Konobo', clans: ['Konobo East', 'Zai Town'] }
+      { name: 'Tchien', clans: ['Zwedru Urban', 'Tchien North', 'Puh'] },
+      { name: 'Gbarzon', clans: ['Gbarzon Central', 'Tobli', 'Gorbo'] },
+      { name: 'Konobo', clans: ['Konobo East', 'Zai Town', 'Glia'] },
+      { name: 'Cavalla', clans: ['Cavalla Main', 'Ziah Town'] },
+      { name: 'Glio-Twarbo', clans: ['Glio', 'Twarbo'] },
+      { name: 'B\'hai', clans: ['B\'hai Central', 'Toe Town'] }
     ]
   },
   {
@@ -88,9 +101,13 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Barclayville',
     center: [4.7175, -8.2289],
     districts: [
-      { name: 'Barclayville', clans: ['Barclayville City', 'Kru Coast'] },
-      { name: 'Trehn', clans: ['Grand Cess', 'Trehn Central'] },
-      { name: 'Sasstown', clans: ['Sasstown Urban', 'Picnicess'] }
+      { name: 'Barclayville', clans: ['Barclayville City', 'Kru Coast', 'Topoh'] },
+      { name: 'Forpoh', clans: ['Forpoh Central', 'Parluken'] },
+      { name: 'Garraway', clans: ['Garraway Beach', 'Po River'] },
+      { name: 'Grand Cess', clans: ['Grand Cess Urban', 'Wropluken'] },
+      { name: 'Kpi', clans: ['Kpi Central', 'Nwabey'] },
+      { name: 'Sasstown', clans: ['Sasstown Urban', 'Picnicess', 'Filorken'] },
+      { name: 'Trehn', clans: ['Trehn Central', 'Wedabo'] }
     ]
   },
   {
@@ -99,11 +116,13 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Voinjama',
     center: [8.4219, -9.7478],
     districts: [
-      { name: 'Voinjama', clans: ['Voinjama City', 'Voinjama Rural', 'Koli Clan'] },
-      { name: 'Foya', clans: ['Foya Central', 'Shello Clan', 'Tengia'] },
-      { name: 'Kolahun', clans: ['Kolahun Town', 'Lukasu', 'Wassakor'] },
-      { name: 'Zorzor', clans: ['Zorzor Central', 'Fisibu', 'Kpai'] },
-      { name: 'Salayea', clans: ['Salayea Town', 'Ganglota'] }
+      { name: 'Voinjama', clans: ['Voinjama City', 'Voinjama Rural', 'Koli Clan', 'Lola Clan'] },
+      { name: 'Foya', clans: ['Foya Central', 'Shello Clan', 'Tengia', 'Kpasagizia'] },
+      { name: 'Kolahun', clans: ['Kolahun Town', 'Lukasu', 'Wassakor', 'Tahn'] },
+      { name: 'Zorzor', clans: ['Zorzor Central', 'Fisibu', 'Kpai', 'Borkeza'] },
+      { name: 'Salayea', clans: ['Salayea Town', 'Ganglota', 'Yeala'] },
+      { name: 'Quardu Gboni', clans: ['Barkedu', 'Quardu Gboni Central'] },
+      { name: 'Lukambeh', clans: ['Lukambeh Central', 'Kolahun East'] }
     ]
   },
   {
@@ -112,10 +131,10 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Kakata',
     center: [6.5317, -10.3533],
     districts: [
-      { name: 'Kakata', clans: ['Kakata City', 'Chugbor', 'E.J. Roye'] },
-      { name: 'Firestone', clans: ['Harbel', 'Division 1-10'] },
-      { name: 'Mambah-Kaba', clans: ['Marshall', 'Smell-No-Taste'] },
-      { name: 'Gibi', clans: ['Gibi North', 'Bendu'] }
+      { name: 'Kakata', clans: ['Kakata City', 'Chugbor', 'E.J. Roye', 'Weala'] },
+      { name: 'Firestone', clans: ['Harbel', 'Division 1-10', 'Division 11-45'] },
+      { name: 'Mambah-Kaba', clans: ['Marshall', 'Smell-No-Taste', 'Kaba Chiefdom'] },
+      { name: 'Gibi', clans: ['Gibi North', 'Bendu', 'Borlor'] }
     ]
   },
   {
@@ -124,9 +143,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Harper',
     center: [4.5828, -7.7169],
     districts: [
-      { name: 'Harper', clans: ['Harper City', 'Cavalla', 'Cape Palmas'] },
-      { name: 'Pleebo/Sodeken', clans: ['Pleebo Urban', 'Sodeken', 'Gbolobo'] },
-      { name: 'Karluway #1', clans: ['Karloken', 'Manolu'] }
+      { name: 'Harper', clans: ['Harper City', 'Cavalla', 'Cape Palmas', 'Hoffman'] },
+      { name: 'Pleebo/Sodeken', clans: ['Pleebo Urban', 'Sodeken', 'Gbolobo', 'Old Sodoken'] },
+      { name: 'Karluway #1', clans: ['Karloken', 'Manolu', 'Yobloke'] },
+      { name: 'Karluway #2', clans: ['Karluway West', 'Pedebo'] },
+      { name: 'Barrobo', clans: ['Barrobo Central', 'Whojah', 'Subroken'] }
     ]
   },
   {
@@ -135,10 +156,10 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Bensonville',
     center: [6.4527, -10.6019],
     districts: [
-      { name: 'Careysburg', clans: ['Careysburg City', 'Mount Barclay'] },
-      { name: 'Todee', clans: ['Nyenhn Clan', 'Bensonville Rural'] },
-      { name: 'St. Paul River', clans: ['Caldwell', 'Louisiana', 'Clay-Ashland'] },
-      { name: 'Greater Monrovia', clans: ['Paynesville Rural', 'Gardnersville Outskirts'] }
+      { name: 'Greater Monrovia', clans: ['Sinkor', 'Bushrod Island', 'Congotown', 'Paynesville', 'Gardnersville'] },
+      { name: 'Careysburg', clans: ['Careysburg City', 'Mount Barclay', 'Crozierville'] },
+      { name: 'Todee', clans: ['Nyenhn Clan', 'Bensonville Rural', 'Gobahn Clan'] },
+      { name: 'St. Paul River', clans: ['Caldwell', 'Louisiana', 'Clay-Ashland', 'Virginia'] }
     ]
   },
   {
@@ -147,11 +168,14 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Sanniquellie',
     center: [6.8600, -8.7100],
     districts: [
-      { name: 'Sanniquellie-Mah', clans: ['Sanniquellie Urban', 'Yarmein'] },
-      { name: 'Ganta / Leewehpea', clans: ['Ganta City', 'Gbao', 'Gbi & Duru'] },
-      { name: 'Saclepea-Mah', clans: ['Saclepea Urban', 'Zao', 'Dao'] },
-      { name: 'Tappita', clans: ['Tappita City', 'Zuluyee', 'Gbao'] },
-      { name: 'Zoegeh', clans: ['Karnplay', 'Bhai'] }
+      { name: 'Sanniquellie-Mah', clans: ['Sanniquellie Urban', 'Yarmein', 'Gparblee'] },
+      { name: 'Ganta / Bain-Garr', clans: ['Ganta City', 'Gbao', 'Gbi & Duru', 'Bain'] },
+      { name: 'Saclepea-Mah', clans: ['Saclepea Urban', 'Zao', 'Dao', 'Gbehlay-Geh'] },
+      { name: 'Tappita', clans: ['Tappita City', 'Zuluyee', 'Gbao', 'Neezoin'] },
+      { name: 'Zoegeh', clans: ['Karnplay', 'Bhai', 'Gbor Clan'] },
+      { name: 'Yarwein Mehnsonnoh', clans: ['Yarwein', 'Mehnsonnoh', 'Zualay'] },
+      { name: 'Gbee & Duru', clans: ['Gbee', 'Duru'] },
+      { name: 'Buu-Yao', clans: ['Buu', 'Yao'] }
     ]
   },
   {
@@ -160,9 +184,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Cestos City',
     center: [5.7333, -9.4333],
     districts: [
-      { name: 'Cestos', clans: ['Cestos City', 'Fen River'] },
-      { name: 'Timbo', clans: ['Yarpah Town', 'Timbo Central'] },
-      { name: 'Neezuoin', clans: ['Neezuoin North', 'Gbaingbasia'] }
+      { name: 'Cestos / Jo River', clans: ['Cestos City', 'Fen River', 'Jo River Central'] },
+      { name: 'Timbo', clans: ['Yarpah Town', 'Timbo Central', 'Gbaboe'] },
+      { name: 'Neezuoin', clans: ['Neezuoin North', 'Gbaingbasia', 'Zahn'] },
+      { name: 'Central River Cess', clans: ['Kploh', 'Monweh'] },
+      { name: 'Doar River', clans: ['Doar River North', 'Sehnchia'] }
     ]
   },
   {
@@ -171,9 +197,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Fish Town',
     center: [5.2611, -7.8767],
     districts: [
-      { name: 'Tienpo', clans: ['Fish Town Urban', 'Tienpo East'] },
-      { name: 'Chedepo', clans: ['Kilmako', 'Kanweake'] },
-      { name: 'Gbeapo', clans: ['Gbeapo Central', 'Sarbo'] }
+      { name: 'Fish Town / Tienpo', clans: ['Fish Town Urban', 'Tienpo East', 'Gelepo'] },
+      { name: 'Chedepo', clans: ['Kilmako', 'Kanweake', 'Tuobo'] },
+      { name: 'Gbeapo', clans: ['Gbeapo Central', 'Sarbo', 'Paleken'] },
+      { name: 'Webbo', clans: ['Webbo Main', 'Flebo'] },
+      { name: 'Karforh', clans: ['Karforh Main', 'Gelepo South'] }
     ]
   },
   {
@@ -182,10 +210,13 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Greenville',
     center: [5.3408, -8.9669],
     districts: [
-      { name: 'Greenville', clans: ['Greenville City', 'Mississippi in Africa'] },
-      { name: 'Juarzon', clans: ['Juarzon Town', 'Kabu'] },
-      { name: 'Kpanyan', clans: ['Tajuowon', 'Kanyan West'] },
-      { name: 'Sanquin', clans: ['Sanquin River', 'Numopoh'] }
+      { name: 'Greenville', clans: ['Greenville City', 'Mississippi in Africa', 'Farmer Town'] },
+      { name: 'Juarzon', clans: ['Juarzon Town', 'Kabu', 'Bawor'] },
+      { name: 'Kpanyan', clans: ['Tajuowon', 'Kanyan West', 'Kabada'] },
+      { name: 'Sanquin District #1', clans: ['Sanquin River', 'Numopoh'] },
+      { name: 'Sanquin District #2', clans: ['Sanquin Central', 'Pynes'] },
+      { name: 'Dugbe River', clans: ['Dugbe Main', 'Seton'] },
+      { name: 'Jaedae', clans: ['Jaedae Town', 'Kulu'] }
     ]
   }
 ];
