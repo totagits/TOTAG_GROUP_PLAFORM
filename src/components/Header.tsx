@@ -186,10 +186,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* ABAC Policy Scope & Interoperability Data Hub Tools */}
+            {/* System Administrative & Audit Tools (Only visible to System/Ministry Administrators, Security Auditors & Authorized Partners) */}
             {activeTab !== 'landing' && (
               <div className="pt-3 flex items-center gap-1.5">
-                {onOpenRtmModal && (
+                {(currentRole === 'SYSTEM_ADMINISTRATOR' || currentRole === 'MINISTRY_ADMINISTRATOR' || currentRole === 'SECURITY_AUDITOR' || currentRole === 'DEVELOPMENT_PARTNER') && onOpenRtmModal && (
                   <button
                     onClick={onOpenRtmModal}
                     className="bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1 transition-colors shadow-xs cursor-pointer"
@@ -199,15 +199,17 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                 )}
 
-                <button
-                  onClick={onOpenAssignmentModal}
-                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
-                  title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
-                >
-                  <span>ABAC Config</span>
-                </button>
+                {(currentRole === 'SYSTEM_ADMINISTRATOR' || currentRole === 'MINISTRY_ADMINISTRATOR' || currentRole === 'SECURITY_AUDITOR') && (
+                  <button
+                    onClick={onOpenAssignmentModal}
+                    className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                    title={`ABAC Assignment (${assignment.organization} — ${assignment.county} County)`}
+                  >
+                    <span>ABAC Config</span>
+                  </button>
+                )}
 
-                {onExportSnapshot && (
+                {(currentRole === 'SYSTEM_ADMINISTRATOR' || currentRole === 'MINISTRY_ADMINISTRATOR' || currentRole === 'SECURITY_AUDITOR' || currentRole === 'DEVELOPMENT_PARTNER') && onExportSnapshot && (
                   <button
                     onClick={onExportSnapshot}
                     className="bg-sky-600 hover:bg-sky-500 text-white font-bold px-2.5 py-1.5 rounded-lg text-xs transition-colors shadow-xs cursor-pointer"
@@ -217,7 +219,7 @@ export const Header: React.FC<HeaderProps> = ({
                   </button>
                 )}
 
-                {onResetDatabase && (
+                {currentRole === 'SYSTEM_ADMINISTRATOR' && onResetDatabase && (
                   <button
                     onClick={onResetDatabase}
                     className="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-2.5 py-1.5 rounded-lg text-xs transition-colors shadow-xs cursor-pointer"
