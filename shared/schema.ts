@@ -2006,7 +2006,95 @@ export type Asset = typeof assets.$inferSelect;
 export type InsertAsset = z.infer<typeof insertAssetSchema>;
 export type AssetMaintenanceRecord = typeof assetMaintenance.$inferSelect;
 export type InsertAssetMaintenance = z.infer<typeof insertAssetMaintenanceSchema>;
-export type BankAccount = typeof bankAccounts.$inferSelect;
-export type InsertBankAccount = z.infer<typeof insertBankAccountSchema>;
-export type BankTransaction = typeof bankTransactions.$inferSelect;
-export type InsertBankTransaction = z.infer<typeof insertBankTransactionSchema>;
+// Cargo Handling & Maritime Logistics Tables
+export const cargoShipments = pgTable("cargo_shipments", {
+  id: serial("id").primaryKey(),
+  trackingNumber: text("tracking_number").notNull().unique(),
+  blNumber: text("bl_number").notNull(),
+  shipper: text("shipper").notNull(),
+  consignee: text("consignee").notNull(),
+  originPort: text("origin_port").notNull(),
+  destinationPort: text("destination_port").notNull(),
+  containerType: text("container_type").notNull().default("20ft_Standard"), // 20ft_Standard, 40ft_HighCube, Breakbulk
+  weightKg: numeric("weight_kg", { precision: 10, scale: 2 }).notNull(),
+  status: text("status").notNull().default("in_transit"), // in_transit, custom_clearance, port_arrived, delivered
+  estimatedArrival: timestamp("estimated_arrival"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Petroleum Services Tables
+export const petroleumOrders = pgTable("petroleum_orders", {
+  id: serial("id").primaryKey(),
+  orderNumber: text("order_number").notNull().unique(),
+  clientName: text("client_name").notNull(),
+  clientEmail: text("client_email").notNull(),
+  fuelType: text("fuel_type").notNull(), // AGO_Diesel, PMS_Gasoline, Jet_A1, Marine_Bunkering
+  quantityLiters: numeric("quantity_liters", { precision: 12, scale: 2 }).notNull(),
+  deliveryLocation: text("delivery_location").notNull(),
+  quotedPriceUsd: numeric("quoted_price_usd", { precision: 12, scale: 2 }),
+  status: text("status").notNull().default("pending_quote"), // pending_quote, confirmed, dispatched, delivered
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Construction Heavy Equipment Fleet Tables
+export const equipmentRentals = pgTable("equipment_rentals", {
+  id: serial("id").primaryKey(),
+  equipmentName: text("equipment_name").notNull(),
+  equipmentType: text("equipment_type").notNull(), // excavator, bulldozer, grader, crane, dump_truck
+  dailyRateUsd: numeric("daily_rate_usd", { precision: 10, scale: 2 }).notNull(),
+  clientName: text("client_name").notNull(),
+  clientPhone: text("client_phone").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  status: text("status").notNull().default("pending"), // pending, active, completed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Stationery & Office Procurement Tables
+export const stationeryOrders = pgTable("stationery_orders", {
+  id: serial("id").primaryKey(),
+  orderNumber: text("order_number").notNull().unique(),
+  organizationName: text("organization_name").notNull(),
+  contactEmail: text("contact_email").notNull(),
+  orderType: text("order_type").notNull().default("office_bundle"), // office_bundle, school_bundle, custom_print, recurring_sub
+  totalItems: integer("total_items").notNull().default(1),
+  estimatedCostUsd: numeric("estimated_cost_usd", { precision: 10, scale: 2 }),
+  status: text("status").notNull().default("processing"), // processing, fulfilled, recurring_active
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Solar & Smart Energy Audit Tables
+export const solarAudits = pgTable("solar_audits", {
+  id: serial("id").primaryKey(),
+  clientName: text("client_name").notNull(),
+  propertyType: text("property_type").notNull().default("commercial"), // residential, commercial, industrial
+  location: text("location").notNull(),
+  dailyKwhUsage: numeric("daily_kwh_usage", { precision: 10, scale: 2 }).notNull(),
+  recommendedPvKw: numeric("recommended_pv_kw", { precision: 8, scale: 2 }),
+  recommendedBatteryKwh: numeric("recommended_battery_kwh", { precision: 8, scale: 2 }),
+  status: text("status").notNull().default("requested"), // requested, scheduled, completed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Zod schemas & types for new operations
+export const insertCargoShipmentSchema = createInsertSchema(cargoShipments).omit({ id: true, createdAt: true });
+export type CargoShipment = typeof cargoShipments.$inferSelect;
+export type InsertCargoShipment = z.infer<typeof insertCargoShipmentSchema>;
+
+export const insertPetroleumOrderSchema = createInsertSchema(petroleumOrders).omit({ id: true, createdAt: true });
+export type PetroleumOrder = typeof petroleumOrders.$inferSelect;
+export type InsertPetroleumOrder = z.infer<typeof insertPetroleumOrderSchema>;
+
+export const insertEquipmentRentalSchema = createInsertSchema(equipmentRentals).omit({ id: true, createdAt: true });
+export type EquipmentRental = typeof equipmentRentals.$inferSelect;
+export type InsertEquipmentRental = z.infer<typeof insertEquipmentRentalSchema>;
+
+export const insertStationeryOrderSchema = createInsertSchema(stationeryOrders).omit({ id: true, createdAt: true });
+export type StationeryOrder = typeof stationeryOrders.$inferSelect;
+export type InsertStationeryOrder = z.infer<typeof insertStationeryOrderSchema>;
+
+export const insertSolarAuditSchema = createInsertSchema(solarAudits).omit({ id: true, createdAt: true });
+export type SolarAudit = typeof solarAudits.$inferSelect;
+export type InsertSolarAudit = z.infer<typeof insertSolarAuditSchema>;
+

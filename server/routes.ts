@@ -58,6 +58,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mount SaaS routes
   app.use("/api/saas", saasRoutes);
   app.use("/api/catering", cateringRoutes);
+
+  // Cargo Operations Endpoints
+  app.get("/api/cargo/shipments", async (req, res) => {
+    try {
+      const shipments = await storage.getCargoShipments();
+      res.json(shipments);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.get("/api/cargo/track/:trackingNumber", async (req, res) => {
+    try {
+      const shipment = await storage.getCargoShipmentByTracking(req.params.trackingNumber);
+      if (!shipment) return res.status(404).json({ error: "Shipment not found" });
+      res.json(shipment);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/cargo/shipments", async (req, res) => {
+    try {
+      const shipment = await storage.createCargoShipment(req.body);
+      res.status(201).json(shipment);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Petroleum Operations Endpoints
+  app.get("/api/petroleum/orders", async (req, res) => {
+    try {
+      const orders = await storage.getPetroleumOrders();
+      res.json(orders);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/petroleum/orders", async (req, res) => {
+    try {
+      const order = await storage.createPetroleumOrder(req.body);
+      res.status(201).json(order);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Heavy Equipment Rental Endpoints
+  app.get("/api/equipment/rentals", async (req, res) => {
+    try {
+      const rentals = await storage.getEquipmentRentals();
+      res.json(rentals);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/equipment/rentals", async (req, res) => {
+    try {
+      const rental = await storage.createEquipmentRental(req.body);
+      res.status(201).json(rental);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Stationery Procurement Endpoints
+  app.get("/api/stationery/orders", async (req, res) => {
+    try {
+      const orders = await storage.getStationeryOrders();
+      res.json(orders);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/stationery/orders", async (req, res) => {
+    try {
+      const order = await storage.createStationeryOrder(req.body);
+      res.status(201).json(order);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Solar & Smart Power Audit Endpoints
+  app.get("/api/solar/audits", async (req, res) => {
+    try {
+      const audits = await storage.getSolarAudits();
+      res.json(audits);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/solar/audits", async (req, res) => {
+    try {
+      const audit = await storage.createSolarAudit(req.body);
+      res.status(201).json(audit);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
   // Contact inquiries routes
   app.post("/api/contact", async (req, res) => {
     try {

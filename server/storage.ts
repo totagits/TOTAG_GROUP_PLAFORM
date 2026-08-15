@@ -31,7 +31,23 @@ import {
   payroll,
   performanceReviews,
   products,
+  cargoShipments,
+  petroleumOrders,
+  equipmentRentals,
+  stationeryOrders,
+  solarAudits,
+  type CargoShipment,
+  type InsertCargoShipment,
+  type PetroleumOrder,
+  type InsertPetroleumOrder,
+  type EquipmentRental,
+  type InsertEquipmentRental,
+  type StationeryOrder,
+  type InsertStationeryOrder,
+  type SolarAudit,
+  type InsertSolarAudit,
   type User, 
+
   type InsertUser,
   type ContactInquiry,
   type InsertContactInquiry,
@@ -263,7 +279,29 @@ export interface IStorage {
   getCateringQuotationById(id: number): Promise<CateringQuotation | undefined>;
   getCateringQuotationsByRequestId(requestId: number): Promise<CateringQuotation[]>;
   updateCateringQuotation(id: number, updates: Partial<CateringQuotation>): Promise<CateringQuotation | undefined>;
+
+  // Cargo Operations
+  getCargoShipments(): Promise<CargoShipment[]>;
+  getCargoShipmentByTracking(trackingNumber: string): Promise<CargoShipment | undefined>;
+  createCargoShipment(shipment: InsertCargoShipment): Promise<CargoShipment>;
+
+  // Petroleum Operations
+  getPetroleumOrders(): Promise<PetroleumOrder[]>;
+  createPetroleumOrder(order: InsertPetroleumOrder): Promise<PetroleumOrder>;
+
+  // Equipment Rental Operations
+  getEquipmentRentals(): Promise<EquipmentRental[]>;
+  createEquipmentRental(rental: InsertEquipmentRental): Promise<EquipmentRental>;
+
+  // Stationery Operations
+  getStationeryOrders(): Promise<StationeryOrder[]>;
+  createStationeryOrder(order: InsertStationeryOrder): Promise<StationeryOrder>;
+
+  // Solar Audit Operations
+  getSolarAudits(): Promise<SolarAudit[]>;
+  createSolarAudit(audit: InsertSolarAudit): Promise<SolarAudit>;
 }
+
 
 export class DatabaseStorage implements IStorage {
   // User methods
@@ -1341,6 +1379,62 @@ export class DatabaseStorage implements IStorage {
     const [updated] = await db.update(cateringQuotations).set({ ...updates, updatedAt: new Date() }).where(eq(cateringQuotations.id, id)).returning();
     return updated || undefined;
   }
+
+  // Cargo Operations
+  async getCargoShipments(): Promise<CargoShipment[]> {
+    return await db.select().from(cargoShipments).orderBy(desc(cargoShipments.createdAt));
+  }
+
+  async getCargoShipmentByTracking(trackingNumber: string): Promise<CargoShipment | undefined> {
+    const [shipment] = await db.select().from(cargoShipments).where(eq(cargoShipments.trackingNumber, trackingNumber));
+    return shipment || undefined;
+  }
+
+  async createCargoShipment(shipment: InsertCargoShipment): Promise<CargoShipment> {
+    const [created] = await db.insert(cargoShipments).values(shipment).returning();
+    return created;
+  }
+
+  // Petroleum Operations
+  async getPetroleumOrders(): Promise<PetroleumOrder[]> {
+    return await db.select().from(petroleumOrders).orderBy(desc(petroleumOrders.createdAt));
+  }
+
+  async createPetroleumOrder(order: InsertPetroleumOrder): Promise<PetroleumOrder> {
+    const [created] = await db.insert(petroleumOrders).values(order).returning();
+    return created;
+  }
+
+  // Equipment Rental Operations
+  async getEquipmentRentals(): Promise<EquipmentRental[]> {
+    return await db.select().from(equipmentRentals).orderBy(desc(equipmentRentals.createdAt));
+  }
+
+  async createEquipmentRental(rental: InsertEquipmentRental): Promise<EquipmentRental> {
+    const [created] = await db.insert(equipmentRentals).values(rental).returning();
+    return created;
+  }
+
+  // Stationery Operations
+  async getStationeryOrders(): Promise<StationeryOrder[]> {
+    return await db.select().from(stationeryOrders).orderBy(desc(stationeryOrders.createdAt));
+  }
+
+  async createStationeryOrder(order: InsertStationeryOrder): Promise<StationeryOrder> {
+    const [created] = await db.insert(stationeryOrders).values(order).returning();
+    return created;
+  }
+
+  // Solar Audit Operations
+  async getSolarAudits(): Promise<SolarAudit[]> {
+    return await db.select().from(solarAudits).orderBy(desc(solarAudits.createdAt));
+  }
+
+  async createSolarAudit(audit: InsertSolarAudit): Promise<SolarAudit> {
+    const [created] = await db.insert(solarAudits).values(audit).returning();
+    return created;
+  }
 }
 
 export const storage = new DatabaseStorage();
+
