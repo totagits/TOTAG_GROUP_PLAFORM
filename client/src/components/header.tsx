@@ -84,13 +84,24 @@ export default function Header() {
         <div className="flex items-center justify-between">
           
           {/* Brand Logo */}
-          <Link href="/" className="flex items-center space-x-3 group cursor-pointer">
+          <Link href="/" className="flex items-center space-x-3.5 group cursor-pointer py-1">
             <img 
               src="/images/totag-logo.png" 
               alt="TOTAG Group Logo" 
-              className="h-12 sm:h-14 w-auto object-contain hover:scale-105 transition-transform duration-200" 
+              className="h-14 sm:h-18 w-auto object-contain hover:scale-105 transition-transform duration-200" 
             />
+            <div className="flex flex-col justify-center">
+              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
+                <span className="text-emerald-600 dark:text-emerald-400">TOTAG</span>{" "}
+                <span className="text-sky-600 dark:text-sky-400">Group</span>{" "}
+                <span className="text-xs sm:text-sm font-semibold text-amber-600 dark:text-amber-400 block sm:inline">of Companies Ltd</span>
+              </span>
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300 tracking-wide mt-0.5">
+                Innovating Tomorrow, Empowering Today
+              </span>
+            </div>
           </Link>
+
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-2 font-semibold text-sm text-slate-700 dark:text-slate-200">
