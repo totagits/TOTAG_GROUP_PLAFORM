@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: totag-platform
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/services
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: totagdb
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: RESEND_API_KEY
+        sync: false
+    domains:
+      - totaggroup.com
+      - www.totaggroup.com
+
+databases:
+  - name: totagdb
+    databaseName: totaggroup
+    plan: starter

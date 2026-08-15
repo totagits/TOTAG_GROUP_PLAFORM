@@ -1,0 +1,257 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fix Select dropdown z-index issues in dialogs */
+[data-radix-popper-content-wrapper] {
+  z-index: 10001 !important;
+}
+
+[data-state="open"][data-side="top"],
+[data-state="open"][data-side="bottom"],
+[data-state="open"][data-side="left"],
+[data-state="open"][data-side="right"] {
+  z-index: 10001 !important;
+}
+
+/* Ensure dialog overlay doesn't interfere with dropdowns */
+[data-radix-dialog-overlay] {
+  z-index: 9998;
+}
+
+/* Ensure dialog content is above overlay but below dropdowns */
+[data-radix-dialog-content] {
+  z-index: 9999;
+}
+
+/* Native select dropdown styling */
+select option {
+  background-color: white;
+  color: black;
+  padding: 8px;
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(210, 10%, 15%);
+  --muted: hsl(210, 5%, 95%);
+  --muted-foreground: hsl(210, 6%, 45%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 10%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 10%, 15%);
+  --border: hsl(210, 10%, 88%);
+  --input: hsl(210, 10%, 88%);
+  --primary: hsl(142, 76%, 36%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(210, 16%, 82%);
+  --secondary-foreground: hsl(210, 10%, 15%);
+  --accent: hsl(213, 88%, 55%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(142, 76%, 36%);
+  --radius: 0.5rem;
+  
+  /* TOTAG Brand Colors */
+  --totag-green: hsl(142, 76%, 36%);
+  --totag-blue: hsl(213, 88%, 55%);
+  --totag-orange: hsl(21, 94%, 53%);
+  --totag-gray: hsl(210, 10%, 15%);
+}
+
+.dark {
+  --background: hsl(210, 15%, 5%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(210, 10%, 12%);
+  --muted-foreground: hsl(210, 5%, 65%);
+  --popover: hsl(210, 15%, 5%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(210, 12%, 8%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(210, 8%, 18%);
+  --input: hsl(210, 8%, 18%);
+  --primary: hsl(142, 76%, 42%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(210, 8%, 18%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(213, 88%, 60%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 62.8%, 50%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 76%, 42%);
+  --radius: 0.5rem;
+  
+  /* TOTAG Brand Colors - Dark Mode */
+  --totag-green: hsl(142, 76%, 42%);
+  --totag-blue: hsl(213, 88%, 60%);
+  --totag-orange: hsl(21, 94%, 58%);
+  --totag-gray: hsl(0, 0%, 98%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--totag-green) 0%, var(--totag-blue) 100%);
+  }
+  
+  .gradient-accent {
+    background: linear-gradient(135deg, var(--totag-blue) 0%, var(--totag-orange) 100%);
+  }
+  
+  .gradient-hero {
+    background: linear-gradient(135deg, var(--totag-orange) 0%, var(--totag-blue) 50%, var(--totag-green) 100%);
+    opacity: 0.1;
+  }
+  
+  .gradient-hero-overlay {
+    background: linear-gradient(135deg, 
+      rgba(249, 115, 22, 0.5) 0%, 
+      rgba(59, 130, 246, 0.5) 50%, 
+      rgba(34, 197, 94, 0.5) 100%
+    );
+  }
+  
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+  
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+  
+  .line-clamp-4 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+  
+  .text-totag-green {
+    color: var(--totag-green);
+  }
+  
+  .text-totag-blue {
+    color: var(--totag-blue);
+  }
+  
+  .text-totag-orange {
+    color: var(--totag-orange);
+  }
+  
+  .bg-totag-green {
+    background-color: var(--totag-green);
+  }
+  
+  .bg-totag-blue {
+    background-color: var(--totag-blue);
+  }
+  
+  .bg-totag-orange {
+    background-color: var(--totag-orange);
+  }
+
+  /* Custom Glassmorphism System Utilities */
+  .glass-panel {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glass-card {
+    background: rgba(30, 41, 59, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    background: rgba(30, 41, 59, 0.65);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 10px 30px -5px rgba(16, 185, 129, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .glass-header {
+    background: rgba(3, 7, 18, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-input {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f8fafc;
+    transition: all 0.2s ease;
+  }
+
+  .glass-badge-emerald {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+  }
+
+  .glass-badge-sky {
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+  }
+
+  .glass-badge-amber {
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
+  }
+
+  .text-gradient-emerald {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fef08a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-sky {
+    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #7dd3fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

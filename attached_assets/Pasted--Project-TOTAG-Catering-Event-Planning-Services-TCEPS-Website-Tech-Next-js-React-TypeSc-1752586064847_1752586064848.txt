@@ -1,0 +1,241 @@
+/*
+Project: TOTAG Catering & Event Planning Services (TCEPS) Website
+Tech: Next.js (React), TypeScript, Tailwind CSS, Framer Motion
+Structure:
+  /components
+    - Header.tsx
+    - Footer.tsx
+    - ServiceCard.tsx
+    - ContactForm.tsx
+  /pages
+    - _app.tsx
+    - index.tsx
+    - corporate-catering.tsx
+    - event-planning.tsx
+    - social-celebrations.tsx
+    - specialty-menus.tsx
+    - beverage-services.tsx
+    - on-site-coordination.tsx
+    - post-event-wrapup.tsx
+    - api/contact.ts
+  /public
+    - logo.svg
+  /styles
+    - globals.css
+  tailwind.config.js
+  postcss.config.js
+  next.config.js
+  package.json
+*/
+
+// package.json
+{
+  "name": "totag-tceps-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "framer-motion": "^8.0.0",
+    "nodemailer": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.0.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^13.0.0"
+  }
+}
+
+// tailwind.config.js
+module.exports = {
+  content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: {} },
+  plugins: []
+};
+
+// postcss.config.js
+module.exports = {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {}
+  }
+};
+
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = { reactStrictMode: true };
+module.exports = nextConfig;
+
+// styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// components/Header.tsx
+import Link from 'next/link';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const services = [
+  { name: 'Corporate Catering', href: '/corporate-catering' },
+  { name: 'Event Planning & Design', href: '/event-planning' },
+  { name: 'Social Celebrations', href: '/social-celebrations' },
+  { name: 'Specialty Menus', href: '/specialty-menus' },
+  { name: 'Beverage Services', href: '/beverage-services' },
+  { name: 'On-Site Coordination', href: '/on-site-coordination' },
+  { name: 'Post-Event Wrap-Up', href: '/post-event-wrapup' }
+];
+
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  return (
+    <header className="bg-white shadow fixed w-full z-50">
+      <div className="container mx-auto flex items-center justify-between p-4">
+        <Link href="/"><a className="text-2xl font-bold">TCEPS</a></Link>
+        <nav className="flex items-center space-x-6">
+          <div className="relative">
+            <button onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)} className="font-medium">Services</button>
+            <AnimatePresence>
+              {open && (
+                <motion.div
+                  onMouseEnter={() => setOpen(true)}
+                  onMouseLeave={() => setOpen(false)}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute left-0 mt-2 w-64 bg-white shadow-lg rounded-lg z-50"
+                >
+                  <div className="flex flex-col p-4">
+                    {services.map(s => (
+                      <Link key={s.href} href={s.href}>
+                        <a className="px-2 py-1 rounded hover:bg-gray-100">{s.name}</a>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <Link href="/#contact"><a className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Contact</a></Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+// components/ServiceCard.tsx
+import { motion } from 'framer-motion';
+export interface ServiceCardProps { title: string; description: string; href: string; }
+export default function ServiceCard({ title, description, href }: ServiceCardProps) {
+  return (
+    <motion.div className="p-6 bg-white rounded-lg shadow hover:shadow-md transition" whileHover={{ scale: 1.02 }}>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600 mb-4">{description}</p>
+      <a href={href} className="text-blue-600 hover:underline">Learn More →</a>
+    </motion.div>
+  );
+}
+
+// components/ContactForm.tsx
+import { useState } from 'react';
+export default function ContactForm() {
+  const [status, setStatus] = useState<'idle'|'sending'|'success'|'error'>('idle');
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); setStatus('sending');
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(form) });
+      if (res.ok) setStatus('success'); else throw new Error();
+    } catch { setStatus('error'); }
+  };
+  return (
+    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4 text-center">Get in Touch</h2>
+      {status==='success' && <p className="text-green-600 mb-4">Thank you! We'll be in touch.</p>}
+      {status==='error' && <p className="text-red-600 mb-4">Something went wrong. Try again.</p>}
+      <input name="name" placeholder="Name" required value={form.name} onChange={handleChange} className="w-full mb-3 p-2 border rounded" />
+      <input type="email" name="email" placeholder="Email" required value={form.email} onChange={handleChange} className="w-full mb-3 p-2 border rounded" />
+      <textarea name="message" placeholder="Message" required value={form.message} onChange={handleChange} className="w-full mb-3 p-2 border rounded h-32"></textarea>
+      <button type="submit" disabled={status==='sending'} className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">{status==='sending'?'Sending...':'Send Message'}</button>
+    </form>
+  );
+}
+
+// components/Footer.tsx
+export default function Footer() {
+  return (
+    <footer className="bg-gray-800 text-white py-6 mt-16">
+      <div className="container mx-auto text-center">
+        <p>&copy; {new Date().getFullYear()} TCEPS. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+}
+
+// pages/_app.tsx
+import '../styles/globals.css';
+import type { AppProps } from 'next/app';
+export default function App({ Component, pageProps }: AppProps) { return <Component {...pageProps} />; }
+
+// pages/index.tsx
+import Header from '../components/Header';
+import ServiceCard from '../components/ServiceCard';
+import ContactForm from '../components/ContactForm';
+import Footer from '../components/Footer';
+
+const services = [
+  { title: 'Corporate Catering', description: 'Breakfast buffets, working lunches & gala dinners.', href: '/corporate-catering' },
+  { title: 'Event Planning & Design', description: 'Venue scouting, décor & logistics.', href: '/event-planning' },
+  { title: 'Social Celebrations', description: 'Weddings, anniversaries & cultural ceremonies.', href: '/social-celebrations' },
+  { title: 'Specialty Menus', description: 'Vegan, gluten-free, live stations & more.', href: '/specialty-menus' },
+  { title: 'Beverage Services', description: 'Open bars, cocktails & juice bars.', href: '/beverage-services' },
+  { title: 'On-Site Coordination', description: 'Day-of management & vendor liaison.', href: '/on-site-coordination' },
+  { title: 'Post-Event Wrap-Up', description: 'Cleanup, surveys & final reporting.', href: '/post-event-wrapup' }
+];
+
+export default function Home() {
+  return (
+    <>
+      <Header />
+      <main className="pt-24 container mx-auto px-4">
+        <section className="text-center py-16">
+          <h1 className="text-4xl font-bold mb-4">TOTAG Catering & Event Planning</h1>
+          <p className="text-gray-700 max-w-2xl mx-auto">Creating unforgettable events with culinary excellence and impeccable planning.</p>
+        </section>
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map(s => <ServiceCard key={s.title} {...s} />)}
+        </section>
+      </main>
+      <section id="contact" className="py-16 bg-gray-50"><ContactForm/></section>
+      <Footer />
+    </>
+  );
+}
+
+// pages/corporate-catering.tsx
+import Header from '../components/Header'; import Footer from '../components/Footer'; import ContactForm from '../components/ContactForm';
+export default function CorporateCatering() {return (<><Header/><main className="pt-24 container mx-auto px-4"><h1 className="text-3xl font-bold mb-4">Corporate Catering</h1><p className="text-gray-700 mb-6">Buffets, boxed meals, coffee breaks & gala dinners tailored for your business events.</p></main><section className="py-16 bg-gray-50"><ContactForm/></section><Footer/></>);}  
+
+// Repeat similar structure for other pages: event-planning.tsx, social-celebrations.tsx, specialty-menus.tsx, beverage-services.tsx, on-site-coordination.tsx, post-event-wrapup.tsx  
+
+// pages/api/contact.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import nodemailer from 'nodemailer';
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') return res.status(405).end();
+  const { name, email, message } = req.body;
+  if (!name||!email||!message) return res.status(400).json({ error: 'All fields are required' });
+  const transporter = nodemailer.createTransport({ host: process.env.SMTP_HOST, port: 587, auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } });
+  try { await transporter.sendMail({ from: `"TCEPS" <${process.env.SMTP_USER}>`, to: 'catering@totag-group.com', subject: `Contact from ${name}`, text: message });
+    return res.status(200).json({ success: true });
+  } catch { return res.status(500).json({ error: 'Mail send failed' }); }
+}

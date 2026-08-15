@@ -1,0 +1,217 @@
+/*
+Project: TGM Digital Platform v2
+Purpose: Support core services & offerings:
+ 1. Wholesale Distribution
+ 2. Retail Operations
+ 3. Inventory Management
+ 4. Logistics & Delivery
+ 5. Supplier Partnerships
+
+Tech: Next.js, TypeScript, Tailwind CSS, Prisma (PostgreSQL), React Query, Axios, React-Leaflet, Chart.js
+
+Structure:
+/prisma/schema.prisma
+/.env.example
+/package.json
+/tsconfig.json
+/tailwind.config.js
+/postcss.config.js
+/next.config.js
+
+/components
+  - Header.tsx
+  - Footer.tsx
+  - InventoryTable.tsx
+  - WholesaleOrderForm.tsx
+  - RetailSaleForm.tsx
+  - SupplierForm.tsx
+  - SupplierList.tsx
+  - LogisticsMap.tsx
+  - InventoryForecastChart.tsx
+/pages
+  - _app.tsx
+  - index.tsx          (Dashboard)
+  - wholesale.tsx     (Wholesale Distribution)
+  - retail.tsx        (Retail Operations)
+  - inventory.tsx     (Inventory Management)
+  - suppliers.tsx     (Supplier Partnerships)
+  - logistics.tsx     (Logistics & Delivery)
+/pages/api
+  - wholesale.ts      (GET/POST wholesale orders)
+  - retail.ts         (GET/POST retail sales)
+  - inventory.ts      (CRUD inventory)
+  - suppliers.ts      (CRUD suppliers)
+  - logistics.ts      (GET logistics)
+*/
+
+// package.json
+{
+  "name": "tgm-platform",
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "migrate": "prisma migrate dev"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "axios": "^1.4.0",
+    "@tanstack/react-query": "^4.29.0",
+    "prisma": "^4.15.0",
+    "@prisma/client": "^4.15.0",
+    "react-leaflet": "^4.2.0",
+    "leaflet": "^1.9.3",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^13.4.4"
+  }
+}
+
+// prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Inventory {
+  id          Int      @id @default(autoincrement())
+  sku         String   @unique
+  name        String
+  quantity    Int      @default(0)
+  price       Float
+  updatedAt   DateTime @updatedAt
+  wholesale   WholesaleOrder[]
+  retail      RetailSale[]
+}
+
+model WholesaleOrder {
+  id           Int      @id @default(autoincrement())
+  inventory    Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId  Int
+  quantity     Int
+  partner      String
+  createdAt    DateTime @default(now())
+}
+
+model RetailSale {
+  id           Int      @id @default(autoincrement())
+  inventory    Inventory @relation(fields: [inventoryId], references: [id])
+  inventoryId  Int
+  quantity     Int
+  outlet       String
+  saleDate     DateTime @default(now())
+}
+
+model Supplier {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phone        String
+  address      String
+  createdAt    DateTime @default(now())
+}
+
+model Logistics {
+  id           Int      @id @default(autoincrement())
+  orderType    String   // "wholesale" or "retail"
+  orderId      Int
+  lat          Float
+  lng          Float
+  updatedAt    DateTime @updatedAt
+}
+
+
+// .env.example
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+
+// tailwind.config.js
+module.exports = {
+  content: ["./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: {} },
+  plugins: []
+};
+
+// postcss.config.js
+module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } };
+
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = { reactStrictMode: true };
+module.exports = nextConfig;
+
+// tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es6",
+    "strict": true,
+    "jsx": "preserve",
+    //... other settings
+  },
+  "include": ["**/*.ts","**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+
+// components/Header.tsx
+import Link from 'next/link'; import { useRouter } from 'next/router';
+export default function Header(){ const nav=[
+  {name:'Dashboard',href:'/'},{name:'Wholesale',href:'/wholesale'},{name:'Retail',href:'/retail'},{name:'Inventory',href:'/inventory'},{name:'Suppliers',href:'/suppliers'},{name:'Logistics',href:'/logistics'}];
+  const rt = useRouter();
+  return (<header className="bg-white shadow sticky top-0 z-50"><div className="container mx-auto flex p-4 justify-between"><h1 className="font-bold text-xl">TGM</h1><nav className="space-x-4">{nav.map(i=><Link key={i.href} href={i.href}><a className={`${rt.pathname===i.href?'text-blue-600':'text-gray-700'} hover:text-blue-600`}>{i.name}</a></Link>)}</nav></div></header>);
+}
+
+// components/Footer.tsx
+export default function Footer(){ return (<footer className="bg-gray-800 text-white py-4 mt-8"><div className="container mx-auto text-center">&copy;{new Date().getFullYear()} TGM</div></footer>); }
+
+// components/InventoryTable.tsx
+import { useQuery } from '@tanstack/react-query'; import axios from 'axios';
+export default function InventoryTable(){ const {data,isLoading}=useQuery(['inv'],()=>axios.get('/api/inventory').then(r=>r.data)); if(isLoading)return<>'Loading'</>;
+  return(<table className="w-full bg-white"><thead><tr><th>SKU</th><th>Name</th><th>Qty</th><th>Price</th><th>Updated</th></tr></thead><tbody>{data.map((i:any)=><tr key={i.id}><td>{i.sku}</td><td>{i.name}</td><td>{i.quantity}</td><td>${i.price.toFixed(2)}</td><td>{new Date(i.updatedAt).toLocaleDateString()}</td></tr>)}</tbody></table>);
+}
+
+// components/WholesaleOrderForm.tsx
+import { useState } from 'react'; import { useQuery,useMutation,useQueryClient } from '@tanstack/react-query'; import axios from 'axios';
+export default function WholesaleOrderForm(){ const qc=useQueryClient(); const {data:inv}=useQuery(['inv'],()=>axios.get('/api/inventory').then(r=>r.data)); const [f,setF]=useState({inventoryId:'',quantity:'',partner:''}); const mut=useMutation((d:any)=>axios.post('/api/wholesale',d),{onSuccess:()=>qc.invalidateQueries(['wholesale'])});
+  return(<form onSubmit={e=>{e.preventDefault(); mut.mutate({inventoryId:+f.inventoryId,quantity:+f.quantity,partner:f.partner});}} className="space-y-2 p-4 bg-white rounded">
+    <select name="inventoryId" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"><option value="">Product</option>{inv?.map((i:any)=><option key={i.id} value={i.id}>{i.name}</option>)}</select>
+    <input type="number" name="quantity" placeholder="Quantity" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"/>
+    <input type="text" name="partner" placeholder="Partner Name" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"/>
+    <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Place Wholesale Order</button>
+  </form>);
+}
+
+// components/RetailSaleForm.tsx
+import { useState } from 'react'; import { useQuery,useMutation,useQueryClient } from '@tanstack/react-query'; import axios from 'axios';
+export default function RetailSaleForm(){ const qc=useQueryClient(); const {data:inv}=useQuery(['inv'],()=>axios.get('/api/inventory').then(r=>r.data)); const [f,setF]=useState({inventoryId:'',quantity:'',outlet:''}); const mut=useMutation((d:any)=>axios.post('/api/retail',d),{onSuccess:()=>qc.invalidateQueries(['retail'])});
+  return(<form onSubmit={e=>{e.preventDefault(); mut.mutate({inventoryId:+f.inventoryId,quantity:+f.quantity,outlet:f.outlet});}} className="space-y-2 p-4 bg-white rounded">
+    <select name="inventoryId" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"><option value="">Product</option>{inv?.map((i:any)=><option key={i.id} value={i.id}>{i.name}</option>)}</select>
+    <input type="number" name="quantity" placeholder="Quantity Sold" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"/>
+    <input type="text" name="outlet" placeholder="Outlet Name" onChange={e=>setF({...f,[e.target.name]:e.target.value})} required className="border p-2 rounded w-full"/>
+    <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Record Sale</button>
+  </form>);
+}
+
+// components/SupplierForm.tsx & SupplierList.tsx (similar CRUD/s) ...
+// components/LogisticsMap.tsx, InventoryForecastChart.tsx (use Chart.js) ...
+
+// pages/wholesale.tsx / retail.tsx / inventory.tsx / suppliers.tsx / logistics.tsx follow pattern: import Header, component forms/lists, Footer.
+
+// pages/api/wholesale.ts
+import {PrismaClient} from '@prisma/client'; const prisma=new PrismaClient(); export default async function h(req,res){ if(req.method==='GET'){const data=await prisma.wholesaleOrder.findMany();return res.json(data);} if(req.method==='POST'){const {inventoryId,quantity,partner}=req.body;const o=await prisma.wholesaleOrder.create({data:{inventoryId,quantity,partner}});return res.json(o);} }
+
+// pages/api/retail.ts, inventory.ts, suppliers.ts, logistics.ts similarly CRUD.
+*/

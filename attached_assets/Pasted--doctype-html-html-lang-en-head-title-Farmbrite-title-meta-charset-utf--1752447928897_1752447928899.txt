@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>
+  Farmbrite
+</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex,nofollow">
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="hUdaDX9/xKxTiMtbroHeCfFnRk7riI39gc9a9j93Et/W28HaAQLAQ7yMahZRSiR98YAcYmvXlZ/F6mgNLMCQDA==" />
+<meta name="google-site-verification" content="MrTM4P4UbNGu7-JmApcb3zuxLDyiGsWMqAjNiaiQfjk" />
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--JQuery!-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" media="all" href="https://assets.farmbrite.com/assets/application-e61a85613fe35189dd845c36f70f0b2208c8ee05706e862ddad831a11d76965c.css" />
+<script src="https://assets.farmbrite.com/assets/application-c83a43bea65124f3c89629651ca474447e9ad0918cd2fa2c63c8507e20ba6a6f.js" crossorigin="anonymous"></script>
+  <script src="https://assets.farmbrite.com/assets/pages/activities-beaeb6eed14c108525c7648cff92b5db1df7aecb88390006f99c342945b52431.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous" defer></script>
+<script src="https://kit.fontawesome.com/ebe8d45cbf.js" crossorigin="anonymous" defer></script>
+
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+  </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-97J79G7BWJ"></script>
+    <script>
+      gtag('js', new Date());
+      // gtag('config', 'UA-46786405-1'); //GA Universal
+      gtag('config', 'G-97J79G7BWJ'); //GA4
+      gtag('config', 'AW-984470342'); //Adwords
+    </script>
+
+  </head>
+  <body data-page="activities_index" id="activities_index" class="">
+
+    <nav class="navbar navbar-static-top navbar-fixed-top top-nav" id="top-nav" role="navigation">
+  <div>
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".main-nav-tabs">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+      <a id="fb-logo" class="navbar-brand hidden-xs hidden-sm" href="/home"></a>
+      <a id="fb-badge" class="navbar-brand visible-xs visible-sm" href="/home"></a>
+      <span class="product-name"></span>
+  </div>
+
+      <div class="navbar-form navbar-left global-nav-search online-only">
+          <div class="suggest-field-wrapper">
+            <input type="text" id="global-search" class="form-control suggest-field" placeholder="Search..." name="q" value="" , minlength="3" maxlength="50" />
+          </div>
+      </div>
+
+    <ul class="nav navbar-nav navbar-right hidden-xs">
+        <li>
+          <a href="http://help.farmbrite.com" target="_blank" title="Help" id="ko-launch" rel="tooltip" data-placement="bottom">
+            <i class="far fa-question-circle"></i>
+          </a>
+        </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Account and Settings" rel="tooltip" data-placement="bottom">
+              <span><i class="far fa-cog"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+                  <li>
+                    <a href="/account/edit">Settings</a>
+                  </li>
+                <li>
+                  <a href="/users">Users</a>
+                </li>
+                 <li>
+                  <a href="/teams">Teams</a>
+                </li>
+                  <li>
+                      <a href="/transaction_categories">Chart of Accounts</a>
+                  </li>
+                  <li>
+                      <a href="/custom_fields">Custom Fields</a>
+                  </li>
+                <li>
+                  <a href="/files">Files</a>
+                </li>
+                <li>
+                  <a href="/photos">Photos</a>
+                </li>
+                <li>
+                  <a href="/integrations">Integrations</a>
+                </li>
+                <li>
+                  <a href="/webhooks">Webhooks</a>
+                </li>
+                  <li>
+                    <a href="/billing">Billing</a>
+                  </li>
+            </ul>
+          </li>
+
+          <li class="dropdown hidden-xs">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Your Profile and Settings" rel="tooltip" data-placement="bottom">
+              <span><i class="far fa-user-circle"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                  <a href="/profile">Your Profile</a>
+                </li>
+                <li>
+                  <a href="/scout">Go Offline</a>
+                </li>
+                <li>
+                  <a href="/search/activate_scanner">Start Scanning Session</a>
+                </li>
+                  <li>
+                    <a href="https://www.surveygizmo.com/s3/1786253/Farmbrite-user-survey?email=totagfarm@gmail.com" target="_blank">Feedback</a>
+                  </li>
+                <li role="separator" class="divider"></li>
+              <li>
+                <a class="always-visible" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+              </li>
+            </ul>
+          </li>
+        
+    </ul>
+
+    <div class="navbar-right">
+      
+<!--Global Add Button!-->
+<div class="dropdown global-nav-add-btn" id="global-add">
+    <a class="btn btn-link dropdown-toggle mobile-flat-btn" type="button" id="global-add-btn" data-toggle="dropdown" title="Quick Add" rel="tooltip" data-placement="bottom">
+             <i class="fas fa-plus-circle fa-lg text-success hidden-xs"></i>
+             <i class="fas fa-plus-circle fa-2x text-success visible-xs"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right">
+        <li class="dropdown-header dropdown-main-header">Select an Action <span class="js-action-for"></span></li>
+            <li>
+                <a data-remote="true" href="/notes/new"><i class="far fa-comment-dots"></i> Note</a>
+            </li>
+            <li>
+                <a class="" data-remote="true" href="/tasks/new"><i class="far fa-check-circle"></i> Task</a>
+            </li>
+            <li>
+                <a data-remote="true" href="/transactions/new"><i class="far fa-coins"></i> Transaction</a>
+            </li>
+             <li class="online-only no-id-action">
+                <a data-remote="true" href="/inventory/add"><i class="far fa-truck-loading"></i> Add Inventory</a>
+            </li>
+            <li class="online-only no-id-action">
+                <a data-remote="true" href="/inventory/remove"><i class="far fa-box-open"></i> Use Inventory</a>
+            </li>
+            <li class="no-id-action">
+                <a data-remote="true" href="/climate_logs/new"><i class="far fa-cloud-sun-rain"></i> Climate Log</a>
+            </li>
+        <li>
+            <a data-remote="true" href="/photos/new"><i class="far fa-image"></i> Photo</a>
+        </li>
+            <!--livestock actions!-->
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-header" data-type="animal">Livestock</li>
+            <li class="js-add-new-id-btn xoffline-only" data-type="animal">
+                <a class="" data-remote="true" href="/livestock/bulk_add"><i class="far fa-cow"></i> Add Animals</a>
+            </li>
+            <li data-type="animal">
+                <a data-remote="true" href="/treatments/animal/new"><i class="far fa-syringe"></i> Treatment</a>
+            </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/feedings/livestock_group/new"><i class="far fa-cookie-bite"></i> Feeding</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/inputs/new"><i class="far fa-plus-square"></i> Input</a>
+                </li>
+                <li>
+                    <a data-remote="true" href="/measurements/new"><i class="far fa-weight"></i> Measurement</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/breedings/new"><i class="far fa-dna"></i> Breeding</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/harvests/animals/new"><i class="far fa-egg"></i> Animal Yield</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/grazings/new"><i class="far fa-location-arrow"></i> Move Grazing</a>
+                </li>
+
+            <!-- crops !-->
+            <li role="separator" class="divider no-id-action"></li>
+            <li class="dropdown-header no-id-action">Plantings</li>
+            <li class="online-only no-id-action">
+                <a data-remote="true" href="/crops/new"><i class="far fa-seedling"></i> Add Planting</a>
+            </li>
+            <li class="no-id-action">
+                <a data-remote="true" href="/treatments/crop/new"><i class="far fa-spray-can"></i> Treatment</a>
+            </li>
+                <li class="no-id-action">
+                    <a data-remote="true" href="/new_plant_harvest"><i class="far fa-shopping-basket"></i> Crop Harvest</a>
+                </li>
+    </ul>
+</div>
+
+
+    </div>
+
+  </div>
+</nav>
+     <!--loading indicator!-->
+     <div id="ajax-loading-indicator" class="bar-loader hidden"></div>
+
+      <div class="app-container" id="main">
+          <!--Error Notifcations!-->
+<div id="js-alert" class="hidden-print main-alert alert alert-default hidden">
+	<a class="close" onclick="$('.alert').addClass('slideout')">&#215;</a>
+	<span class="message"></span>
+</div>
+
+
+            <nav id="main-navigation" class="side-nav main-nav" role="navigation">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse main-nav-tabs">
+      <ul class="nav nav-tabs">
+      <!--schedule!-->
+        <li class="has-child-nav active nav-open">
+          <a href="/activities"><i class="far fa-calendar-alt"></i> Schedule</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li class=active>
+             <a href="/activities">Calendar</a>
+            </li>
+            <li >
+               <a href="/select_plan?feature=TIMETRACKING" title="Upgrade to access this feature" class="plan-block">Timesheets</a>
+            </li>
+          </ul>
+        </li>
+        <!--tasks!-->
+        <li >
+             <a href="/tasks"><i class="far fa-check-circle"></i> Tasks</a>
+        </li>
+        <!--livestock!-->
+        <li class="has-child-nav ">
+          <a href="/animals"><i class="far fa-cow"></i> Livestock</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+               <a href="/animals">Animals</a>
+            </li>
+            <li >
+                <a href="/livestock_groups">Livestock Groups</a>
+            </li>
+            <li >
+                <a href="/grazings">Grazing</a>
+            </li>
+          </ul>
+        </li>
+        <!--Crops!-->
+        <li class="has-child-nav ">
+            <a href="/plants"><i class="far fa-seedling"></i> Plantings</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+             <a href="/plants">My Crops</a>
+            </li>
+              <li >
+                <a href="/plots">Grow Locations</a>
+              </li>
+            <li >
+              <a href="/crop_plan">Crop Plan</a>
+            </li>
+            <li >
+              <a href="/locations/map">Location Map</a>
+            </li>
+            <li >
+                <a href="/harvests/plant/comparison">Yield Comparison</a>
+            </li>
+          </ul>
+        </li>
+        <!--Resources!-->
+        <li class="has-child-nav ">
+            <a href="/tools"><i class="far fa-tractor"></i> Resources</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+                <a href="/tools">Equipment</a>
+            </li>
+            <li >
+              <a href="/warehouses">Warehouses</a>
+            </li>
+            <li >
+              <a href="/inventories">Inventory</a>
+            </li>
+          </ul>
+        </li>
+        <!--Accounting!-->
+        <li class="has-child-nav ">
+          <a href="/transactions"><i class="far fa-calculator"></i> Accounting</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+              <a href="/transactions">Transactions</a>
+            </li>
+            <li >
+                <a href="/accounting/pl">P&amp;L Statement</a>
+            </li>
+            <li >
+                <a href="/accounting/cash_flow">Cash Flow</a>
+            </li>
+            <li >
+                <a href="/accounting/balance_sheet">Balance Sheet</a>
+            </li>
+            <li >
+                <a href="/budgets">Budgeting</a>
+            </li>
+          </ul>
+        </li>
+        <!--Market!-->
+       <li class="has-child-nav ">
+          <a href="/market"><i class="far fa-cash-register"></i> Market</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+                <a href="/market">Dashboard</a>
+            </li>
+            <li >
+              <a href="/products">Products</a>
+            </li>
+            <li >
+              <a href="/orders">Orders</a>
+            </li>
+              <li >
+              <a href="/farmstand">Settings</a>
+            </li>
+          </ul>
+        </li>
+        <li >
+          <a href="/contacts"><i class="far fa-address-book"></i> Contacts</a>
+        </li>
+        <li >
+          <a href="/places"><i class="far fa-map"></i> Farm Map</a>
+        </li>
+        <!--CLIMATE!-->
+        <li class="has-child-nav ">
+          <a href="/climate"><i class="far fa-cloud-sun-rain"></i> Climate</a>
+           <span class="nav-expander"></span>
+            <ul class="child-nav">
+              <li >
+                  <a href="/climate">Weather History</a>
+              </li>
+              <li >
+                <a href="/climate_gauges">Gauges</a>
+              </li>
+              <li >
+                <a href="/climate_logs"><span class="translation_missing" title="translation missing: en.features.climate_logs">Climate Logs</span></a>
+              </li>
+              <li >
+                  <a href="/climate/map">Weather Map</a>
+              </li>
+            </ul>
+        </li>
+        <!--Reports!-->
+        <li class="has-child-nav ">
+          <a href="/reports"><i class="far fa-file-chart-line"></i> Reports</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+              <a href="/reports">Standard Reports</a>
+            </li>
+             <li >
+              <a href="/custom_reports">Custom Reports</a>
+            </li>
+          </ul>
+        </li>
+
+          <li class="visible-xs hidden-md hidden-lg hidden-sm ">
+            <a href="/account/edit"><i class="far fa-cog"></i> Settings</a>
+          </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a href="/profile"><i class="far fa-user"></i> Your Profile</a>
+        </li>
+          <li class="visible-xs hidden-md hidden-lg hidden-sm">
+            <a href="/scout"><i class="far fa-wifi-slash"></i> Go Offline</a>
+          </li>
+          <li class="visible-xs hidden-md hidden-lg hidden-sm">
+            <a href="/search/activate_scanner"><i class="far fa-scanner"></i> Start Scanning Session</a>
+          </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a href="http://help.farmbrite.com" target="_blank"><i class="far fa-question-circle"></i> Need Help?</a>
+        </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a rel="nofollow" data-method="delete" href="/users/sign_out"><i class="far fa-sign-out-alt"></i> Sign Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+          
+          <div class="main-content">
+                    
+
+
+              
+	<div class="sub-header">
+	        <div class="page-title">Schedule</div>
+
+	</div>
+
+              
+	<div class="row list-header">
+		<div class="col-sm-7">
+			<a class="btn btn-success" data-remote="true" href="/activities/new">Add Event</a>
+				<a class="btn btn-default" data-remote="true" href="/tasks/new">Add Task</a>
+			<div class="btn-group hidden-print hidden-xs">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				<i class="fas fa-ellipsis-h"></i>
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+						<a data-remote="true" href="/activities/new?allday=true&amp;title=Activity+Journal">Add Activity Journal</a>
+					</li>
+					<li>
+						<a href="/activities/export.csv">Download All Records</a>
+					</li>
+						<li>
+							<a href="/profile">Publish Calendar</a>
+						</li>
+							<li>
+								<a href="https://app.farmbrite.com/calendar/ical/pSd94ep66c09co47dsdfY084cJd955050493ce4dr09e05cd7dPoed64r56H49004ox8" target="_blank">Download Calendar</a>
+							</li>
+					<li role="separator" class="divider"></li>
+					<li>
+						<a href="javascript:print();">Print</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-5 text-right">
+				
+	<div class="btn-group">
+	  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	  	<span class="thumb_with_name">All Users</span> <span class="caret"></span>
+	  </button>
+	  <ul class="dropdown-menu dropdown-menu-right">
+	    <li>
+	    	<a href="/activities?uid=6609945d95dcd4000c487e4e">My Calendar</a>
+	    </li>
+	    <li>
+	    	<a href="/activities?uid=unassigned">Unassigned</a>
+	    </li>
+		<li>
+			<a href="/activities?uid=all">All Users</a>
+		</li>
+				<li role="separator" class="divider"></li>
+					<li>
+						<a href="/activities?uid=679fbc59e03d24000c29932a"><span class="thumb_with_name"><span class="thumbnail-badge badge-md" rel="tooltip" title="Milton B Shannon "><span>MB</span></span>Milton B Shannon </span></a>
+					</li>
+					<li>
+						<a href="/activities?uid=679f6103e03d2400082990bc"><span class="thumb_with_name"><span class="thumbnail-badge badge-md" rel="tooltip" title="Ceo"><span>CE</span></span>Ceo</span></a>
+					</li>
+					<li>
+						<a href="/activities?uid=6609945d95dcd4000c487e4e"><span class="thumb_with_name"><span class="thumbnail-badge badge-md" rel="tooltip" title="Michael"><span>MI</span></span>Michael</span> (Me)</a>
+					</li>
+	  </ul>
+	</div>
+
+		</div>
+	</div>
+<div id='calendar'></div>
+
+<input type="hidden" id="tasks_only" value="false"/>
+<input type="hidden" id="def_view" value="week"/>
+
+<style>
+	#calendar{
+		max-height: calc(100vh - 180px)
+	}
+	@media (max-width: 480px) {
+		#calendar .fc-header-title h2{
+			font-size: 15px;
+		}
+		html .fc, .fc table{
+			font-size: 0.8em;
+		}
+		#calendar .fc-header .fc-header-left .fc-button-today{
+			display:none;
+		}
+	}
+	@media print { @page {size: auto;  margin: 10mm; }
+		body .app-container .main-content{
+			padding: 0;
+		}
+		.fc-view .fc-border-separate tr.fc-last th, .fc-border-separate tr.fc-last td{
+			border:none;
+		}
+		.fc-button,
+		.page-title{
+			display: none;
+		}
+		body{
+			/*transform:scale(.65);*/
+			transform-origin: top left;
+		}
+		.rot-90{
+			transform:rotate(90deg) translateX(200px);
+		}
+		.fc-view,
+		.fc-view *{
+			overflow: visible !important;
+		}
+		.fc-event{
+			-webkit-print-color-adjust: exact !important;
+			background-color: #fbfafa !important;
+   			border: 3px solid;
+		}
+		.fc-event-inner{
+			overflow:hidden !important;
+		}
+	}
+</style>
+
+		
+              
+          </div>
+      </div>
+      <div class="modal fade xmodal-full" id="main-modal" data-backdrop="static" data-keyboard="true">
+	<div class="modal-dialog">
+		  <div class="modal-content"> 
+
+		    <div class="modal-header">
+		        <a class="close" data-dismiss="modal">&times;</a>
+		        <h3 class="modal-title"></h3>
+		    </div>
+		    <div class="modal-body"></div>
+		</div>
+	</div>
+</div>
+
+<!--dialog/small modal!-->
+<div class="modal fade" id="dialog-modal" data-backdrop="static" data-keyboard="true">
+	<div class="modal-dialog">
+		  <div class="modal-content"> 
+
+		    <div class="modal-header">
+		        <a class="close" data-dismiss="modal">&times;</a>
+		        <h3 class="modal-title"></h3>
+		    </div>
+		    <div class="modal-body"></div>
+		</div>
+	</div>
+</div>
+
+<!--delete confirmation !-->
+<div class="modal in" id="delete-modal" data-backdrop="false" data-keyboard="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3 id="delete-modal-message">Are you sure you want to delete this record?</h3>
+			</div>
+			<div class="modal-body">
+				<h4>Be sure...once it's gone, it's gone for good.</h4>
+			</div>
+			<div id="delete-modal-footer" class="modal-footer">
+				<a data-dismiss="modal" class="btn btn-default">Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>
+      	<script>
+		//set current time based on customer time zone to show proper highlight on calendar.
+		const customer_now = "2025-07-13T00:00:00+00:00";
+		//set customer first day of week based on account settings
+		let customer_first_day_of_week = null;
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales-all.global.min.js"></script>
+ 
+      <script type="module">
+    import { } from "https://assets.farmbrite.com/assets/init-messaging-83c78a2d567c7b39a4ddabd52e6ff56b59fffbf04aa83539c084c9761f5b7159.js"
+ </script>
+  </body>
+  <script type="text/javascript">
+    var _ko19 = _ko19 || {};
+    _ko19.__pc = '5c47ce22ec161cc122a0a937-5c47ce35ec161cb925a0a8f5';
+    _ko19.base_url = 'https://help.farmbrite.com';
+    
+    !function() {
+      var ko = document.createElement('script');
+      ko.type = 'text/javascript';
+      ko.async = true;
+      
+      ko.src = _ko19.base_url + '/widget/load';
+      document.head.appendChild(ko);
+    }();	
+    //populate user's email addreess
+    _ko19.onOpen = function() {
+       _ko19.updateContact({name: 'Michael', email: 'totagfarm@gmail.com'});
+    }
+  </script>
+
+</html>
+<!--deffered css!-->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600" rel="stylesheet"/>

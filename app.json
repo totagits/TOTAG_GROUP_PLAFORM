@@ -1,0 +1,63 @@
+{
+  "name": "TOTAG Group Platform",
+  "description": "Comprehensive business platform for TOTAG Group's subsidiaries with e-commerce, CMS, and HRMIS capabilities",
+  "repository": "https://github.com/your-username/totag-platform",
+  "logo": "https://totaggroup.com/images/totag-logo.png",
+  "keywords": [
+    "ecommerce",
+    "cms",
+    "hrmis", 
+    "business-platform",
+    "react",
+    "express",
+    "postgresql"
+  ],
+  "image": "heroku/nodejs",
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini"
+    }
+  ],
+  "env": {
+    "NODE_ENV": {
+      "description": "Environment setting",
+      "value": "production"
+    },
+    "SESSION_SECRET": {
+      "description": "Secret key for session management",
+      "generator": "secret"
+    },
+    "RESEND_API_KEY": {
+      "description": "API key for Resend email service (optional)",
+      "required": false
+    }
+  },
+  "scripts": {
+    "postdeploy": "npm run db:push && npm run seed"
+  },
+  "environments": {
+    "test": {
+      "addons": [
+        "heroku-postgresql:mini"
+      ],
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "scripts": {
+        "test": "npm test"
+      }
+    }
+  }
+}

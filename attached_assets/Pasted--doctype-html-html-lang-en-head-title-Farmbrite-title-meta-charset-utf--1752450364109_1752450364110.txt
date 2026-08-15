@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>
+  Farmbrite
+</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="robots" content="noindex,nofollow">
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="eeS17+W8WDlP345pduoTLH8DGkBsx7btpwdPOcMV+LIqeC44m8Fc1qDbLySJIelYf+RAbOyYro/jIn3C0KJ6YQ==" />
+<meta name="google-site-verification" content="MrTM4P4UbNGu7-JmApcb3zuxLDyiGsWMqAjNiaiQfjk" />
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="/icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--JQuery!-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" media="all" href="https://assets.farmbrite.com/assets/application-e61a85613fe35189dd845c36f70f0b2208c8ee05706e862ddad831a11d76965c.css" />
+<script src="https://assets.farmbrite.com/assets/application-c83a43bea65124f3c89629651ca474447e9ad0918cd2fa2c63c8507e20ba6a6f.js" crossorigin="anonymous"></script>
+  <script src="https://assets.farmbrite.com/assets/pages/animals-9ca2256cdf9d740d902fb086d41696158289db4df92dba7da449bfb8284b18d0.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous" defer></script>
+<script src="https://kit.fontawesome.com/ebe8d45cbf.js" crossorigin="anonymous" defer></script>
+
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+  </script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-97J79G7BWJ"></script>
+    <script>
+      gtag('js', new Date());
+      // gtag('config', 'UA-46786405-1'); //GA Universal
+      gtag('config', 'G-97J79G7BWJ'); //GA4
+      gtag('config', 'AW-984470342'); //Adwords
+    </script>
+
+  </head>
+  <body data-page="animals_index" id="animals_index" class="">
+
+    <nav class="navbar navbar-static-top navbar-fixed-top top-nav" id="top-nav" role="navigation">
+  <div>
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".main-nav-tabs">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+      <a id="fb-logo" class="navbar-brand hidden-xs hidden-sm" href="/home"></a>
+      <a id="fb-badge" class="navbar-brand visible-xs visible-sm" href="/home"></a>
+      <span class="product-name"></span>
+  </div>
+
+      <div class="navbar-form navbar-left global-nav-search online-only">
+          <div class="suggest-field-wrapper">
+            <input type="text" id="global-search" class="form-control suggest-field" placeholder="Search..." name="q" value="" , minlength="3" maxlength="50" />
+          </div>
+      </div>
+
+    <ul class="nav navbar-nav navbar-right hidden-xs">
+        <li>
+          <a href="http://help.farmbrite.com" target="_blank" title="Help" id="ko-launch" rel="tooltip" data-placement="bottom">
+            <i class="far fa-question-circle"></i>
+          </a>
+        </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Account and Settings" rel="tooltip" data-placement="bottom">
+              <span><i class="far fa-cog"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+                  <li>
+                    <a href="/account/edit">Settings</a>
+                  </li>
+                <li>
+                  <a href="/users">Users</a>
+                </li>
+                 <li>
+                  <a href="/teams">Teams</a>
+                </li>
+                  <li>
+                      <a href="/transaction_categories">Chart of Accounts</a>
+                  </li>
+                  <li>
+                      <a href="/custom_fields">Custom Fields</a>
+                  </li>
+                <li>
+                  <a href="/files">Files</a>
+                </li>
+                <li>
+                  <a href="/photos">Photos</a>
+                </li>
+                <li>
+                  <a href="/integrations">Integrations</a>
+                </li>
+                <li>
+                  <a href="/webhooks">Webhooks</a>
+                </li>
+                  <li>
+                    <a href="/billing">Billing</a>
+                  </li>
+            </ul>
+          </li>
+
+          <li class="dropdown hidden-xs">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Your Profile and Settings" rel="tooltip" data-placement="bottom">
+              <span><i class="far fa-user-circle"></i></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                  <a href="/profile">Your Profile</a>
+                </li>
+                <li>
+                  <a href="/scout">Go Offline</a>
+                </li>
+                <li>
+                  <a href="/search/activate_scanner">Start Scanning Session</a>
+                </li>
+                  <li>
+                    <a href="https://www.surveygizmo.com/s3/1786253/Farmbrite-user-survey?email=totagfarm@gmail.com" target="_blank">Feedback</a>
+                  </li>
+                <li role="separator" class="divider"></li>
+              <li>
+                <a class="always-visible" rel="nofollow" data-method="delete" href="/users/sign_out">Sign Out</a>
+              </li>
+            </ul>
+          </li>
+        
+    </ul>
+
+    <div class="navbar-right">
+      
+<!--Global Add Button!-->
+<div class="dropdown global-nav-add-btn" id="global-add">
+    <a class="btn btn-link dropdown-toggle mobile-flat-btn" type="button" id="global-add-btn" data-toggle="dropdown" title="Quick Add" rel="tooltip" data-placement="bottom">
+             <i class="fas fa-plus-circle fa-lg text-success hidden-xs"></i>
+             <i class="fas fa-plus-circle fa-2x text-success visible-xs"></i>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-right">
+        <li class="dropdown-header dropdown-main-header">Select an Action <span class="js-action-for"></span></li>
+            <li>
+                <a data-remote="true" href="/notes/new"><i class="far fa-comment-dots"></i> Note</a>
+            </li>
+            <li>
+                <a class="" data-remote="true" href="/tasks/new"><i class="far fa-check-circle"></i> Task</a>
+            </li>
+            <li>
+                <a data-remote="true" href="/transactions/new"><i class="far fa-coins"></i> Transaction</a>
+            </li>
+             <li class="online-only no-id-action">
+                <a data-remote="true" href="/inventory/add"><i class="far fa-truck-loading"></i> Add Inventory</a>
+            </li>
+            <li class="online-only no-id-action">
+                <a data-remote="true" href="/inventory/remove"><i class="far fa-box-open"></i> Use Inventory</a>
+            </li>
+            <li class="no-id-action">
+                <a data-remote="true" href="/climate_logs/new"><i class="far fa-cloud-sun-rain"></i> Climate Log</a>
+            </li>
+        <li>
+            <a data-remote="true" href="/photos/new"><i class="far fa-image"></i> Photo</a>
+        </li>
+            <!--livestock actions!-->
+            <li role="separator" class="divider"></li>
+            <li class="dropdown-header" data-type="animal">Livestock</li>
+            <li class="js-add-new-id-btn xoffline-only" data-type="animal">
+                <a class="" data-remote="true" href="/livestock/bulk_add"><i class="far fa-cow"></i> Add Animals</a>
+            </li>
+            <li data-type="animal">
+                <a data-remote="true" href="/treatments/animal/new"><i class="far fa-syringe"></i> Treatment</a>
+            </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/feedings/livestock_group/new"><i class="far fa-cookie-bite"></i> Feeding</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/inputs/new"><i class="far fa-plus-square"></i> Input</a>
+                </li>
+                <li>
+                    <a data-remote="true" href="/measurements/new"><i class="far fa-weight"></i> Measurement</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/breedings/new"><i class="far fa-dna"></i> Breeding</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/harvests/animals/new"><i class="far fa-egg"></i> Animal Yield</a>
+                </li>
+                <li data-type="animal">
+                    <a data-remote="true" href="/grazings/new"><i class="far fa-location-arrow"></i> Move Grazing</a>
+                </li>
+
+            <!-- crops !-->
+            <li role="separator" class="divider no-id-action"></li>
+            <li class="dropdown-header no-id-action">Plantings</li>
+            <li class="online-only no-id-action">
+                <a data-remote="true" href="/crops/new"><i class="far fa-seedling"></i> Add Planting</a>
+            </li>
+            <li class="no-id-action">
+                <a data-remote="true" href="/treatments/crop/new"><i class="far fa-spray-can"></i> Treatment</a>
+            </li>
+                <li class="no-id-action">
+                    <a data-remote="true" href="/new_plant_harvest"><i class="far fa-shopping-basket"></i> Crop Harvest</a>
+                </li>
+    </ul>
+</div>
+
+
+    </div>
+
+  </div>
+</nav>
+     <!--loading indicator!-->
+     <div id="ajax-loading-indicator" class="bar-loader hidden"></div>
+
+      <div class="app-container" id="main">
+          <!--Error Notifcations!-->
+<div id="js-alert" class="hidden-print main-alert alert alert-default hidden">
+	<a class="close" onclick="$('.alert').addClass('slideout')">&#215;</a>
+	<span class="message"></span>
+</div>
+
+
+            <nav id="main-navigation" class="side-nav main-nav" role="navigation">
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse main-nav-tabs">
+      <ul class="nav nav-tabs">
+      <!--schedule!-->
+        <li class="has-child-nav ">
+          <a href="/activities"><i class="far fa-calendar-alt"></i> Schedule</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+             <a href="/activities">Calendar</a>
+            </li>
+            <li >
+               <a href="/select_plan?feature=TIMETRACKING" title="Upgrade to access this feature" class="plan-block">Timesheets</a>
+            </li>
+          </ul>
+        </li>
+        <!--tasks!-->
+        <li >
+             <a href="/tasks"><i class="far fa-check-circle"></i> Tasks</a>
+        </li>
+        <!--livestock!-->
+        <li class="has-child-nav active nav-open">
+          <a href="/animals"><i class="far fa-cow"></i> Livestock</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li class=active>
+               <a href="/animals">Animals</a>
+            </li>
+            <li >
+                <a href="/livestock_groups">Livestock Groups</a>
+            </li>
+            <li >
+                <a href="/grazings">Grazing</a>
+            </li>
+          </ul>
+        </li>
+        <!--Crops!-->
+        <li class="has-child-nav ">
+            <a href="/plants"><i class="far fa-seedling"></i> Plantings</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+             <a href="/plants">My Crops</a>
+            </li>
+              <li >
+                <a href="/plots">Grow Locations</a>
+              </li>
+            <li >
+              <a href="/crop_plan">Crop Plan</a>
+            </li>
+            <li >
+              <a href="/locations/map">Location Map</a>
+            </li>
+            <li >
+                <a href="/harvests/plant/comparison">Yield Comparison</a>
+            </li>
+          </ul>
+        </li>
+        <!--Resources!-->
+        <li class="has-child-nav ">
+            <a href="/tools"><i class="far fa-tractor"></i> Resources</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+                <a href="/tools">Equipment</a>
+            </li>
+            <li >
+              <a href="/warehouses">Warehouses</a>
+            </li>
+            <li >
+              <a href="/inventories">Inventory</a>
+            </li>
+          </ul>
+        </li>
+        <!--Accounting!-->
+        <li class="has-child-nav ">
+          <a href="/transactions"><i class="far fa-calculator"></i> Accounting</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+              <a href="/transactions">Transactions</a>
+            </li>
+            <li >
+                <a href="/accounting/pl">P&amp;L Statement</a>
+            </li>
+            <li >
+                <a href="/accounting/cash_flow">Cash Flow</a>
+            </li>
+            <li >
+                <a href="/accounting/balance_sheet">Balance Sheet</a>
+            </li>
+            <li >
+                <a href="/budgets">Budgeting</a>
+            </li>
+          </ul>
+        </li>
+        <!--Market!-->
+       <li class="has-child-nav ">
+          <a href="/market"><i class="far fa-cash-register"></i> Market</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+                <a href="/market">Dashboard</a>
+            </li>
+            <li >
+              <a href="/products">Products</a>
+            </li>
+            <li >
+              <a href="/orders">Orders</a>
+            </li>
+              <li >
+              <a href="/farmstand">Settings</a>
+            </li>
+          </ul>
+        </li>
+        <li >
+          <a href="/contacts"><i class="far fa-address-book"></i> Contacts</a>
+        </li>
+        <li >
+          <a href="/places"><i class="far fa-map"></i> Farm Map</a>
+        </li>
+        <!--CLIMATE!-->
+        <li class="has-child-nav ">
+          <a href="/climate"><i class="far fa-cloud-sun-rain"></i> Climate</a>
+           <span class="nav-expander"></span>
+            <ul class="child-nav">
+              <li >
+                  <a href="/climate">Weather History</a>
+              </li>
+              <li >
+                <a href="/climate_gauges">Gauges</a>
+              </li>
+              <li >
+                <a href="/climate_logs"><span class="translation_missing" title="translation missing: en.features.climate_logs">Climate Logs</span></a>
+              </li>
+              <li >
+                  <a href="/climate/map">Weather Map</a>
+              </li>
+            </ul>
+        </li>
+        <!--Reports!-->
+        <li class="has-child-nav ">
+          <a href="/reports"><i class="far fa-file-chart-line"></i> Reports</a>
+          <span class="nav-expander"></span>
+          <ul class="child-nav">
+            <li >
+              <a href="/reports">Standard Reports</a>
+            </li>
+             <li >
+              <a href="/custom_reports">Custom Reports</a>
+            </li>
+          </ul>
+        </li>
+
+          <li class="visible-xs hidden-md hidden-lg hidden-sm ">
+            <a href="/account/edit"><i class="far fa-cog"></i> Settings</a>
+          </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a href="/profile"><i class="far fa-user"></i> Your Profile</a>
+        </li>
+          <li class="visible-xs hidden-md hidden-lg hidden-sm">
+            <a href="/scout"><i class="far fa-wifi-slash"></i> Go Offline</a>
+          </li>
+          <li class="visible-xs hidden-md hidden-lg hidden-sm">
+            <a href="/search/activate_scanner"><i class="far fa-scanner"></i> Start Scanning Session</a>
+          </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a href="http://help.farmbrite.com" target="_blank"><i class="far fa-question-circle"></i> Need Help?</a>
+        </li>
+        <li class="visible-xs hidden-md hidden-lg hidden-sm">
+          <a rel="nofollow" data-method="delete" href="/users/sign_out"><i class="far fa-sign-out-alt"></i> Sign Out</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+          
+          <div class="main-content">
+                    
+
+
+              
+	<div class="sub-header">
+	        <div class="page-title">Livestock</div>
+
+	</div>
+
+              
+<div id="list-header">
+    <div class="row list-header">
+  <div class="col-sm-5 col-xs-12">
+        <a title="Create a new animal" class="btn btn-success" href="/animals/new">Add Animal</a>
+          <a title="Create a new livestock group" class="btn btn-default" href="/livestock_groups/new">Add Group</a>
+
+        <div class="btn-group hidden-print hidden-xs">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a href="/import/animal/start?path=%2Fanimals%2Fimport">Import Records</a>
+              </li>
+              <li>
+                <a data-remote="true" href="/livestock/bulk_add">Bulk Add Animals</a>
+              </li>
+                <li>
+                  <a href="/import/animal/start?update=1&amp;path=%2Fanimals%2Fimport">Bulk Update from File</a>
+                </li>
+              <li>
+                <a href="/animals/export.csv?_=1752449980&amp;search=&amp;filter%5Bstatus%5D%5B%5D=Active&amp;filter%5Bstatus%5D%5B%5D=Dry&amp;filter%5Bstatus%5D%5B%5D=Finishing&amp;filter%5Bstatus%5D%5B%5D=Lactating&amp;filter%5Bstatus%5D%5B%5D=Lost&amp;filter%5Bstatus%5D%5B%5D=Quarantined&amp;filter%5Bstatus%5D%5B%5D=Sick&amp;filter%5Bstatus%5D%5B%5D=Weaning">Download Records</a>
+              </li>
+              <li>
+                <a href="/animals/export.csv">Download All Records</a>
+              </li>
+              <li role="separator" class="divider"></li>
+              <li>
+                <a href="javascript:print();">Print</a>
+              </li>
+            </ul>
+        </div>
+  </div>  
+  <div class="col-sm-7 col-xs-12">
+    <!---search !--->
+<form id="search-form" action="/animals" accept-charset="UTF-8" data-remote="true" method="get">
+	<div class="text-right">
+		<div class="input-group round">
+			<!--filter-dropdown!-->
+		    <input type="text" name="search" id="search" class="form-control search-query" placeholder="Search Animals" minlength="3" maxlength="50" />
+		    <i class="fas fa-times" style="display:none" id="clear-search"></i>
+		    <span class="input-group-btn">
+		    	<button type="submit" class="btn btn-default btn-search" title="Search Records"><i class="far fa-search fa-md"></i></button>
+			</span>
+		</div>
+	</div>
+</form><!---filter !--->
+<form id="filter-form" action="/animals" accept-charset="UTF-8" data-remote="true" method="get">
+	<!--advanced filters!-->
+		<div class="search-filter-ctrl">
+			        <span class="text-md text-muted">Criteria: </span>
+    <span class="js-filter-badges text-right">
+
+
+                <a class="js-filter-btn btn btn-default btn-xs" href="javascript:void(0);" rel="tooltip" data-original-title="Status: Multiple">Status: Multiple</a>
+    </span>
+
+			<a class="btn btn-default btn-xs js-filter-btn" title="Filter Records"><i class="far fa-sliders-h"></i> Filter &nbsp;<i class="fas fa-caret-down"></i></a>
+		</div>
+		<div class="panel panel-primary hidden filter-panel" id="filter-panel">
+			<div class="panel-heading text-left">
+				<strong>Filters</strong>
+				<span class="js-filter-btn pull-right"><i class="fas fa-caret-up"></i></span>
+			</div>
+			<div class="panel-body js-filter-body">
+				<!--advanced filters!-->
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Breed:</label>
+		<div class="row">
+				<div class="col-tight-right col-sm-4">
+					<select name="filter[breed_operator" class="form-control">
+							<option value="" selected=&#39;selected&#39;></option>
+							<option value="starts_with" >Starts with</option>
+							<option value="eq" >Equals</option>
+							<option value="contains" >Contains</option>
+					</select>
+				</div>
+				<div class="col-tight col-sm-8">
+	          		<input type="text" name="filter[breed]" id="filter_breed" class="form-control" />
+			  </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Gender:</label>
+		<div class="row">
+			
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Female"  name="filter[gender][]"/> Female
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Male"  name="filter[gender][]"/> Male
+					</label>
+				</div>
+
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Status:</label>
+		<div class="row">
+			
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Active" checked name="filter[status][]"/> Active
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Archived"  name="filter[status][]"/> Archived
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Butchered"  name="filter[status][]"/> Butchered
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Culled"  name="filter[status][]"/> Culled
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Deceased"  name="filter[status][]"/> Deceased
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Dry" checked name="filter[status][]"/> Dry
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Finishing" checked name="filter[status][]"/> Finishing
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="For Sale"  name="filter[status][]"/> For Sale
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Lactating" checked name="filter[status][]"/> Lactating
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Lost" checked name="filter[status][]"/> Lost
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Off Farm"  name="filter[status][]"/> Off Farm
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Quarantined" checked name="filter[status][]"/> Quarantined
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Reference"  name="filter[status][]"/> Reference
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Sick" checked name="filter[status][]"/> Sick
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Sold"  name="filter[status][]"/> Sold
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Weaning" checked name="filter[status][]"/> Weaning
+					</label>
+				</div>
+
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Keywords:</label>
+		<div class="row">
+				<div class="col-tight-right col-sm-4">
+					<select name="filter[keywords_operator" class="form-control">
+							<option value="" selected=&#39;selected&#39;></option>
+							<option value="starts_with" >Starts with</option>
+							<option value="eq" >Equals</option>
+							<option value="contains" >Contains</option>
+					</select>
+				</div>
+				<div class="col-tight col-sm-8">
+	          		<input type="text" name="filter[keywords]" id="filter_keywords" class="form-control" />
+			  </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Breeding Status:</label>
+		<div class="row">
+			
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Exposed"  name="filter[breeding_status][]"/> Exposed
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Open"  name="filter[breeding_status][]"/> Open
+					</label>
+				</div>
+				<div class="col-sm-4 js-filter-multi ">
+					<label>
+						<input type="checkbox" value="Pregnant"  name="filter[breeding_status][]"/> Pregnant
+					</label>
+				</div>
+
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Breeding Stock:</label>
+		<div class="row">
+		 	<div class="col-sm-12">
+				<label class="radio-inline">
+					<input type="radio" name="filter[breeding_stock]" id="filter_breeding_stock_true" value="true" />
+					True
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="filter[breeding_stock]" id="filter_breeding_stock_false" value="false" />
+					False
+				</label>
+			</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Neutered:</label>
+		<div class="row">
+		 	<div class="col-sm-12">
+				<label class="radio-inline">
+					<input type="radio" name="filter[is_neutered]" id="filter_is_neutered_true" value="true" />
+					True
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="filter[is_neutered]" id="filter_is_neutered_false" value="false" />
+					False
+				</label>
+			</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Condition Score:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[condition_score_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[condition_score]" id="filter_condition_score" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Famacha Score:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[famacha_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[famacha]" id="filter_famacha" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Retention Score:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[retention_score_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[retention_score]" id="filter_retention_score" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Estimated Value:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[estimated_value_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[estimated_value]" id="filter_estimated_value" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Weight:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[weight_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[weight]" id="filter_weight" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Birth Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[birth_date][quick_date]" id="filter_birth_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[birth_date][start_date]" id="filter_birth_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[birth_date][end_date]" id="filter_birth_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Date Exposed Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[bred_date][quick_date]" id="filter_bred_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[bred_date][start_date]" id="filter_bred_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[bred_date][end_date]" id="filter_bred_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Expected Due Date:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[due_date][quick_date]" id="filter_due_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[due_date][start_date]" id="filter_due_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[due_date][end_date]" id="filter_due_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Expected Maturity Date:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[expected_maturity_date][quick_date]" id="filter_expected_maturity_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[expected_maturity_date][start_date]" id="filter_expected_maturity_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[expected_maturity_date][end_date]" id="filter_expected_maturity_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Last Measurement Date:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[measurement_date][quick_date]" id="filter_measurement_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[measurement_date][start_date]" id="filter_measurement_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[measurement_date][end_date]" id="filter_measurement_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Purchased:</label>
+		<div class="row">
+		 	<div class="col-sm-12">
+				<label class="radio-inline">
+					<input type="radio" name="filter[purchased]" id="filter_purchased_true" value="true" />
+					True
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="filter[purchased]" id="filter_purchased_false" value="false" />
+					False
+				</label>
+			</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Donated/Gifted:</label>
+		<div class="row">
+		 	<div class="col-sm-12">
+				<label class="radio-inline">
+					<input type="radio" name="filter[donated]" id="filter_donated_true" value="true" />
+					True
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="filter[donated]" id="filter_donated_false" value="false" />
+					False
+				</label>
+			</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Purchase Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[purchase_date][quick_date]" id="filter_purchase_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[purchase_date][start_date]" id="filter_purchase_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[purchase_date][end_date]" id="filter_purchase_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Donated Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[donated_date][quick_date]" id="filter_donated_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[donated_date][start_date]" id="filter_donated_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[donated_date][end_date]" id="filter_donated_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Withdrawal Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[treatments.withdrawal_date][quick_date]" id="filter_treatments.withdrawal_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[treatments.withdrawal_date][start_date]" id="filter_treatments-withdrawal_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[treatments.withdrawal_date][end_date]" id="filter_treatments-withdrawal_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Booster Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[treatments.retreat_date][quick_date]" id="filter_treatments.retreat_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[treatments.retreat_date][start_date]" id="filter_treatments-retreat_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[treatments.retreat_date][end_date]" id="filter_treatments-retreat_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Weaned Date Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[weaned_date][quick_date]" id="filter_weaned_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[weaned_date][start_date]" id="filter_weaned_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[weaned_date][end_date]" id="filter_weaned_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Wellness Score:</label>
+		<div class="row">
+	    	<div class="col-tight-right col-sm-4">
+	        	<select name="filter[wellness_score_operator" class="form-control">
+	        			<option value="" selected=&#39;selected&#39;></option>
+	        			<option value="lt" >&lt;</option>
+	        			<option value="lte" >&lt;=</option>
+	        			<option value="eq" >=</option>
+	        			<option value="gte" >&gt;=</option>
+	        			<option value="gt" >&gt;</option>
+			    </select>
+			</div>
+		    <div class="col-tight col-sm-8">
+	    		<input type="text" name="filter[wellness_score]" id="filter_wellness_score" class="form-control" />
+	    	</div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Date Deceased Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[death_date][quick_date]" id="filter_death_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[death_date][start_date]" id="filter_death_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[death_date][end_date]" id="filter_death_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+	 <div class="form-group filter-row text-left">
+	    <label class="control-label">Date Sold Range:</label>
+		<div class="row">
+	    	  <div class="col-tight-right col-sm-4">
+	    	  	<select name="filter[sale_date][quick_date]" id="filter_sale_date_quick_date" class="form-control js-quick-date"><option value="" label=" "></option><option value="custom">Custom</option>
+<option value="this_year">This Year</option>
+<option value="last_year">Last Year</option>
+<option value="this_month">This Month</option>
+<option value="last_month">Last Month</option>
+<option value="this_quarter">This Quarter</option>
+<option value="this_week">This Week</option>
+<option value="in_the_last_90_days">In the Last 90 Days</option>
+<option value="in_the_last_6_months">In the Last 6 Months</option>
+<option value="in_the_last_12_months">In the Last 12 Months</option>
+<option value="in_the_last_18_months">In the Last 18 Months</option>
+<option value="in_the_last_24_months">In the Last 24 Months</option>
+<option value="in_the_last_36_months">In the Last 36 Months</option>
+<option value="more_than_6_months_ago">More than 6 Months Ago</option>
+<option value="more_than_12_months_ago">More than 12 Months Ago</option>
+<option value="more_than_18_months_ago">More than 18 Months Ago</option>
+<option value="more_than_24_months_ago">More than 24 Months Ago</option>
+<option value="more_than_36_months_ago">More than 36 Months Ago</option>
+<option value="next_month">Next Month</option>
+<option value="next_quarter">Next Quarter</option>
+<option value="all_dates">All Dates</option>
+<option value="not_set">Not Set</option></select>
+	    	  </div>
+	    	  <div class="col-tight col-sm-4">
+			  	<input type="date" name="filter[sale_date][start_date]" id="filter_sale_date_start_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+		      </div>
+		      <div class="col-tight col-sm-4">
+		          <input type="date" name="filter[sale_date][end_date]" id="filter_sale_date_end_date" value="" class="form-control" min="1925-07-13" max="2035-07-13" />
+			   </div>
+	      </div>
+	  </div>
+<!--advanced filters!-->
+
+			</div>
+			<div class="panel-footer text-right">
+				<a class="btn btn-link pull-left js-clear-filters" data-remote="true" href="?reset_filters=1">
+					<i class="far fa-undo"></i> Reset
+</a>				<a class="btn btn-link pull-left js-clear-filters text-danger" data-remote="true" href="?clear_filters=1">
+					<i class="fas fa-times"></i> Clear
+</a>				<a href="javascript:void(0)" class="js-filter-btn btn btn-default">Close</a>
+				<input type="submit" name="commit" value="Apply Filters" class="btn btn-success" data-disable-with="Apply Filters" />
+			</div>
+		</div>
+		<script>
+			var filter_options = {"Animal Type":{"field":"type","type":"multiple","values":"distinct_animal_types"},"Breed":{"field":"breed","type":"string"},"Gender":{"field":"gender","type":"multiple","values":["Male","Female"]},"Status":{"field":"status","type":"multiple","values":["Active","Butchered","Culled","Deceased","Dry","Finishing","For Sale","Lactating","Lost","Off Farm","Quarantined","Reference","Sick","Sold","Weaning","Archived"]},"Keywords":{"field":"keywords","type":"string"},"Breeding Status":{"field":"breeding_status","type":"multiple","values":["Open","Exposed","Pregnant"]},"Breeding Stock":{"field":"breeding_stock","type":"boolean"},"Neutered":{"field":"is_neutered","type":"boolean"},"Condition Score":{"field":"condition_score","type":"number"},"Famacha Score":{"field":"famacha","type":"number"},"Retention Score":{"field":"retention_score","type":"number"},"Estimated Value":{"field":"estimated_value","type":"number"},"Weight":{"field":"weight","type":"number"},"Birth Date Range":{"field":"birth_date","type":"date_range"},"Date Exposed Range":{"field":"bred_date","type":"date_range"},"Expected Due Date":{"field":"due_date","type":"date_range"},"Expected Maturity Date":{"field":"expected_maturity_date","type":"date_range"},"Last Measurement Date":{"field":"measurement_date","type":"date_range"},"Purchased":{"field":"purchased","type":"boolean"},"Donated/Gifted":{"field":"donated","type":"boolean"},"Purchase Date Range":{"field":"purchase_date","type":"date_range"},"Donated Date Range":{"field":"donated_date","type":"date_range"},"Withdrawal Date Range":{"field":"treatments.withdrawal_date","type":"date_range"},"Booster Date Range":{"field":"treatments.retreat_date","type":"date_range"},"Weaned Date Range":{"field":"weaned_date","type":"date_range"},"Wellness Score":{"field":"wellness_score","type":"number"},"Date Deceased Range":{"field":"death_date","type":"date_range"},"Date Sold Range":{"field":"sale_date","type":"date_range"},"Group":{"field":"id","type":"filters","values":"livestock_groups_list","lookup":"group_members_filters"}};
+		</script>
+	<!--advanced filters!-->
+
+</form>
+  </div>
+</div>
+<!--summary!-->
+
+</div>
+
+<div id="animals">
+        <div class="content-wrapper nothing">
+    <div class="text-muted">
+      <i class="far fas fa-tag fa-4x"></i>
+    </div>
+    <div class="header">
+      No animals yet?
+    </div>
+    Add a new animal and they'll show up here.
+      <h5>
+        Need help? Check out this <a href="https://help.farmbrite.com/help/getting-started-guides-getting-started-with-livestock" target="_blank">Getting Started Guide.</a>
+      </h5>
+</div>
+
+</div>
+              
+          </div>
+      </div>
+      <div class="modal fade xmodal-full" id="main-modal" data-backdrop="static" data-keyboard="true">
+	<div class="modal-dialog">
+		  <div class="modal-content"> 
+
+		    <div class="modal-header">
+		        <a class="close" data-dismiss="modal">&times;</a>
+		        <h3 class="modal-title"></h3>
+		    </div>
+		    <div class="modal-body"></div>
+		</div>
+	</div>
+</div>
+
+<!--dialog/small modal!-->
+<div class="modal fade" id="dialog-modal" data-backdrop="static" data-keyboard="true">
+	<div class="modal-dialog">
+		  <div class="modal-content"> 
+
+		    <div class="modal-header">
+		        <a class="close" data-dismiss="modal">&times;</a>
+		        <h3 class="modal-title"></h3>
+		    </div>
+		    <div class="modal-body"></div>
+		</div>
+	</div>
+</div>
+
+<!--delete confirmation !-->
+<div class="modal in" id="delete-modal" data-backdrop="false" data-keyboard="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3 id="delete-modal-message">Are you sure you want to delete this record?</h3>
+			</div>
+			<div class="modal-body">
+				<h4>Be sure...once it's gone, it's gone for good.</h4>
+			</div>
+			<div id="delete-modal-footer" class="modal-footer">
+				<a data-dismiss="modal" class="btn btn-default">Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>
+      
+      <script type="module">
+    import { } from "https://assets.farmbrite.com/assets/init-messaging-83c78a2d567c7b39a4ddabd52e6ff56b59fffbf04aa83539c084c9761f5b7159.js"
+ </script>
+  </body>
+  <script type="text/javascript">
+    var _ko19 = _ko19 || {};
+    _ko19.__pc = '5c47ce22ec161cc122a0a937-5c47ce35ec161cb925a0a8f5';
+    _ko19.base_url = 'https://help.farmbrite.com';
+    
+    !function() {
+      var ko = document.createElement('script');
+      ko.type = 'text/javascript';
+      ko.async = true;
+      
+      ko.src = _ko19.base_url + '/widget/load';
+      document.head.appendChild(ko);
+    }();	
+    //populate user's email addreess
+    _ko19.onOpen = function() {
+       _ko19.updateContact({name: 'Michael', email: 'totagfarm@gmail.com'});
+    }
+  </script>
+
+</html>
+<!--deffered css!-->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,500,600" rel="stylesheet"/>

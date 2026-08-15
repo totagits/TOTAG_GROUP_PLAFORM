@@ -1,0 +1,30 @@
+{
+  "name": "TOTAG Group Platform",
+  "description": "Comprehensive business platform for TOTAG Group's subsidiaries",
+  "type": "docker-compose",
+  "compose_file": "coolify-docker-compose.yml",
+  "environment": {
+    "NODE_ENV": "production",
+    "DATABASE_URL": "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/totaggroup",
+    "SESSION_SECRET": "${SESSION_SECRET}",
+    "RESEND_API_KEY": "${RESEND_API_KEY}",
+    "POSTGRES_PASSWORD": "${POSTGRES_PASSWORD}"
+  },
+  "domains": [
+    {
+      "domain": "totaggroup.yourdomain.com",
+      "port": 3000
+    }
+  ],
+  "volumes": [
+    {
+      "name": "postgres_data",
+      "mount_path": "/var/lib/postgresql/data"
+    }
+  ],
+  "healthcheck": {
+    "path": "/api/services",
+    "port": 3000,
+    "interval": 30
+  }
+}

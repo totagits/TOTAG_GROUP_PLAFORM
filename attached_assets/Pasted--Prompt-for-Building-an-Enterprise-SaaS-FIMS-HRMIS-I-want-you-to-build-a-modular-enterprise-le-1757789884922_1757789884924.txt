@@ -1,0 +1,71 @@
+# Prompt for Building an Enterprise SaaS: FIMS & HRMIS
+
+I want you to build a modular, enterprise-level SaaS for a subscription-based Financial Information Management System (FIMS) and Human Resource Management Information System (HRMIS), combined into a single platform. This product will be a subservice of TOTAG IT Services (core service: Managed IT Services) as seen at [www.totaggroup.com/it-service](https://www.totaggroup.com/it-service).
+
+## Key Requirements
+
+### 1. **Modular Subscription Architecture**
+- Users can select any combination of 14 modules from FIMS and HRMIS.
+- Subscribers may intermingle modules from both segments (e.g., 1 HRMIS + 3 FIMS).
+- Each module is independently deployable and billable.
+- Subscription is monthly, auto-renewed, but will be suspended on non-payment and reinstated upon payment.
+- Charges are based on module count and a one-time onboarding fee.
+- Payment options: credit/debit card, mobile money (MTN/Orange), and bank transfer.
+
+### 2. **HRMIS Modules & Features**
+- **Core HR & Admin:** Employee database, org chart, workflow automation, secure document management.
+- **Recruitment & Onboarding:** ATS, AI resume screening, onboarding portal, interview scheduling.
+- **Talent Management:** Performance reviews, LMS, succession planning, skills matrix.
+- **Compensation & Benefits:** Payroll (with Liberian law compliance), mobile money, benefits administration.
+- **Employee & Manager Self-Service:** Mobile-first, manager dashboard, leave management.
+- **Analytics & Reporting:** Real-time dashboards, predictive analytics, compliance reporting.
+
+### 3. **FIMS Modules & Features**
+- **General Ledger:** Unified GL, automated entries, multi-currency/entity, bank reconciliation, flexible chart of accounts.
+- **Accounts Payable/Receivable:** AI invoice processing, 3-way matching, automated payments, AR invoicing, online payment portal, automated dunning.
+- **Treasury & Cash Management:** Real-time cash dashboard, cash flow forecasting, debt/investment management.
+- **Budgeting & Forecasting:** Collaborative tools, scenario modeling, rolling forecasts, budget vs. actuals.
+- **Procurement, Expense & Asset Management:** PO management, mobile expense, asset lifecycle.
+- **Financial Reporting & Analytics:** Custom dashboards, financial statements, drill-down, predictive analytics.
+- **Security, Compliance & Integration:** RBAC, audit trail, IFRS compliance, API integrations.
+
+### 4. **Platform & Technical Requirements**
+- Multi-tenant SaaS: Data isolation per subscriber.
+- Microservices or modular monolith architecture.
+- RESTful APIs and API Gateway.
+- PostgreSQL (or equivalent) as the main DB; Redis for caching.
+- Role-based access control (RBAC) and audit logging.
+- Authentication: OAuth2/JWT; support for SSO.
+- Payment integration with Stripe/Paystack/Flutterwave, plus custom for mobile money/bank transfer.
+- Responsive web (React/Vue/Angular) and mobile (Flutter/React Native) interfaces.
+- Hosting: Cloud native, Dockerized, ready for scale.
+- Localization for Liberian labor/tax law and currency.
+
+### 5. **User Experience**
+- Self-service portal for subscription management, invoices, payments, and module selection.
+- Manager and Employee dashboards.
+- Real-time notifications (email/SMS/push).
+- Branded as “Powered by TOTAG IT Services”.
+
+### 6. **Deliverables**
+- Backend and frontend scaffolding for the above.
+- Example implementation for at least 1 HRMIS and 1 FIMS module.
+- Subscription engine with payment integration.
+- Documentation and API specs.
+
+---
+
+## Instructions
+
+- Scaffold the project as a modular, scalable SaaS platform.
+- Use best practices for code organization, security, and scalability.
+- Include README and comments for clarity.
+- Prioritize modularity and extensibility.
+
+---
+
+**If you need demo data or further workflow details, ask for clarification.**
+
+---
+
+**Begin by generating the project structure, database schema, and code for user authentication, subscription billing, and at least one sample module from each segment.**

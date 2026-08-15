@@ -1,0 +1,202 @@
+1) Core HR & Admin (System of Record)
+
+What it should do
+
+Employee master record: biodata, contacts, IDs, dependents, emergency, bank, tax, pension, skills, licenses, attachments.
+
+Org structure & job architecture: departments, locations, cost centers, job families, grades/steps, positions, reporting lines, org chart.
+
+Employment lifecycle: hire, confirmation/probation, transfers, promotions, acting roles, secondments, contract renewals, status changes.
+
+Policy & compliance records: contract templates, policy acknowledgements, disciplinary actions, warnings, commendations.
+
+Document & records management: employee file (structured + attachments), retention rules, versioning.
+
+Best-practice note: Core HR should include Position Management / Establishment Control (especially in government) and cost center/budget tagging for every role/transaction.
+
+2) Recruitment & Onboarding
+
+What it should do
+
+Requisitions: vacancy requests tied to approved positions/headcount; approvals and budget checks.
+
+ATS: posting, sourcing, screening, scoring, interviews, panels, tests, background checks, reference checks.
+
+Offers & hiring: offer generation, negotiations, e-sign, pre-employment docs.
+
+Onboarding workflows: tasks for HR/IT/Finance, provisioning, policy signoffs, training assignments, probation plan.
+
+What many systems miss: structured selection audit trail (who scored what, when, why) and fairness/EEO reporting where applicable.
+
+3) Talent Management
+
+This label is broad. In best practice it’s usually a suite:
+
+What it should do
+
+Performance management: goals/KPIs, cascades, check-ins, 360 feedback, calibration, ratings, improvement plans.
+
+Succession planning: critical roles, readiness levels, talent pools, 9-box, development actions.
+
+Career & development: career paths, competency frameworks, individual development plans (IDPs).
+
+Common gap: treating “Talent” as separate from Learning (LMS) and Workforce Planning (see missing modules).
+
+4) Compensation & Benefits
+
+What it should do
+
+Structures: grades/steps, pay bands, allowances, per diems, hazard pay, overtime rules.
+
+Benefits admin: eligibility, enrollments, dependents, employer/employee contributions, vendors.
+
+Comp planning: merit cycles, promotions, bonuses, acting/temporary pay, retro adjustments.
+
+Total rewards statements and payslip visibility (usually via self-service).
+
+Best-practice note: This module should produce payroll-ready inputs, even if payroll is a separate system.
+
+5) Employee & Manager Self-Service (ESS/MSS)
+
+What it should do
+
+ESS: update profile (with controls), request leave, view schedules, payslips, letters, training, performance goals, submit claims.
+
+MSS: approve requests, manage team time/leave, initiate staff actions, view team analytics, run lightweight reports.
+
+Case/request center: “HR helpdesk” tickets (letters, corrections, disputes).
+
+Best-practice note: Self-service isn’t a module—it’s a channel sitting on top of workflows, permissions, and audit.
+
+6) Biometrics Punch In/Out
+
+This should be designed as part of a broader Time & Attendance capability.
+
+What it should do
+
+Device management: device registry, firmware/config, site mapping, offline buffering, syncing.
+
+Attendance rules engine: shifts, grace periods, late/early, overtime, weekends/holidays, exceptions.
+
+Exception handling: missed punches, manual corrections with approvals, geo-fence or site validation if needed.
+
+Anti-fraud controls: liveness checks (where supported), duplicate detection, audit trail, supervisor attestations.
+
+Outputs: timesheets, overtime approvals, payroll inputs, compliance reports.
+
+Common gap: biometrics without a rules engine + exception workflow becomes a data dump and creates payroll disputes.
+
+7) Analytics & Reporting
+
+What it should do
+
+Operational dashboards: headcount, attendance, leave liability, vacancies, overtime, turnover.
+
+Strategic HR analytics: workforce trends, hiring funnel, performance distribution, comp equity, succession coverage.
+
+Regulatory/statutory reporting: tax/pension, labor reporting, audits.
+
+Ad hoc reporting: report builder with row-level security; export; scheduled reports.
+
+Best-practice note: analytics must respect row-level access, not just “who can open the dashboard”.
+
+What you likely left out (must-haves for international best practice)
+A) Time, Leave, Scheduling (beyond biometrics)
+
+Even if you keep “biometrics” as the capture method, you still need:
+
+leave types/policies, accruals, carryover, approvals
+
+shift rosters, timesheets, overtime approvals
+
+holiday calendars, multi-location rules
+
+B) Payroll (or at least Payroll Interface)
+
+An HRMIS that can’t reliably produce payroll inputs is incomplete for most organizations.
+
+earnings/deductions elements, retro, arrears
+
+integration/export to payroll system (or built-in payroll if that’s your product scope)
+
+C) Learning Management (LMS) + Compliance Training
+
+course catalog, enrollments, completions, certifications, renewals
+
+mandatory training tracking and manager visibility
+
+D) Employee Relations / Case Management
+
+grievances, disciplinary cases, investigations, outcomes
+
+incident logging (where relevant), policy breaches
+
+structured workflow + evidence attachments + audit trail
+
+E) Offboarding & Exit Management
+
+resignations/terminations, clearance workflows, asset return, access removal
+
+exit interviews and attrition reasons analytics
+
+F) Position Control / Headcount & Budget Controls (especially government)
+
+establishment register, approved posts, vacancy control
+
+link staff actions to approved positions and budget lines
+
+G) Document Management & E-Signature
+
+templated letters/contracts, version control
+
+e-signing and secure storage; policy acknowledgement tracking
+
+H) Platform Governance (non-negotiable)
+
+To meet international expectations, you need these as first-class capabilities:
+
+RBAC/ABAC (role + attribute based access), separation of duties
+
+Workflow engine (configurable approvals, SLAs, escalations)
+
+Audit logs for every change (who/what/when/before-after)
+
+Security: SSO/SAML/OIDC, MFA, encryption at rest/in transit, secrets management
+
+Data protection: consent, retention, right-to-access/export, anonymization
+
+Multi-tenant controls (if SaaS): tenant isolation, tenant-level configs, per-tenant encryption keys (ideal)
+
+Backup/DR: RPO/RTO targets, immutable backups, restore drills
+
+I) Integrations Layer
+
+APIs + webhooks, import/export tooling, scheduled jobs
+
+integrations: finance/FMIS, payroll, identity provider, email/SMS, devices, pension/tax, document signing
+
+A clean “international-standard HRMIS” module map (recommended)
+
+If you want a universal HRMIS portal that matches best practice, consider packaging like this:
+
+Core HR (People + Org + Positions)
+
+Recruitment (ATS) + Onboarding
+
+Time, Leave, Scheduling + Attendance (biometrics as capture)
+
+Performance + Succession + Career
+
+Learning (LMS) + Compliance
+
+Compensation & Benefits + Payroll Interface
+
+Employee Relations (Cases/Grievances/Discipline)
+
+Documents + Templates + E-Signature
+
+Self-Service (ESS/MSS) as the UX layer
+
+Analytics + Data Warehouse/Reporting
+
+Platform: Security, Workflows, Audit, Integrations, Admin

@@ -1,0 +1,47 @@
+# Coolify Docker Compose for TOTAG Group Platform
+version: '3.8'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    labels:
+      - "coolify.managed=true"
+      - "coolify.type=application"
+      - "coolify.name=totag-platform"
+      - "coolify.port=3000"
+      - "coolify.domain=totaggroup.yourdomain.com"
+    networks:
+      - coolify
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=totaggroup
+      - POSTGRES_USER=postgres  
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    labels:
+      - "coolify.managed=true"
+      - "coolify.type=database"
+    networks:
+      - coolify
+
+volumes:
+  postgres_data:
+
+networks:
+  coolify:
+    external: true

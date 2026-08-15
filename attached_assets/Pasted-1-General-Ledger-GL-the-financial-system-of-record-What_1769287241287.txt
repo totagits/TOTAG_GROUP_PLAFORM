@@ -1,0 +1,202 @@
+1) General Ledger (GL) — the financial system of record
+
+What it should do
+
+Own the Chart of Accounts (CoA) and accounting rules: funds, segments (entity/department/program/project/location), natural accounts, cost centers, activities.
+
+Support multi-entity (ministries/units/branches), multi-fund, multi-currency, and (if needed) consolidation and inter-entity eliminations.
+
+Run the period close process: accruals, allocations, reclassifications, reversals, adjustments, closing calendar, close checklists.
+
+Provide journal management with approvals, supporting documents, recurring journals, and strong audit trail.
+
+Enforce posting controls (valid segment combinations, posting periods, tolerance rules, suspense handling).
+
+Best-practice outcomes
+
+Every financial transaction (AP, AR, procurement, assets, payroll interface) posts to the GL with a consistent CoA and full traceability.
+
+2) Accounts Payable (AP) — liabilities and supplier payments
+
+What it should do
+
+Vendor invoice capture (manual, e-invoice, OCR optional), 3-way match (PO–GRN–Invoice) where procurement applies.
+
+Payment processing: payment runs, approval steps, payment methods (bank transfer, checks), withholding rules, remittances.
+
+Vendor statement reconciliation, credit notes, debit notes, disputes, duplicate invoice detection.
+
+Integrate with commitment control and budget availability checks before liabilities and payments are approved.
+
+Best-practice outcomes
+
+No payment without authorization, budget availability, and full audit trail from requisition → PO → receipt → invoice → payment → GL.
+
+3) Accounts Receivable (AR) — billing, collections, and customer accounts
+
+What it should do
+
+Customer master data, invoicing/billing, receipts, allocations, credit management, dunning/collections.
+
+Support multiple revenue streams and channels (POS, online payments, bank deposits), plus automated matching.
+
+Recognize revenue correctly (cash vs accrual basis) and support revenue reconciliation to bank.
+
+Best-practice outcomes
+
+Clean linkage between billed amounts, collected cash, and revenue recognition; minimal “unidentified receipts.”
+
+4) Treasury & Cash Management — liquidity, bank, and payments control
+
+What it should do
+
+Bank account management, bank reconciliation (automated import + matching rules), cash positioning.
+
+Cash forecasting, cash concentration (where applicable), signatory controls, payment security.
+
+Manage payment files, bank connectivity, and controls for release/confirmation.
+
+Government best-practice extras (if relevant)
+
+Treasury Single Account (TSA) concepts, cash pooling, warrant releases, and centralized cash visibility.
+
+5) Budgeting & Forecasting — planning + budget execution discipline
+
+What it should do
+
+Budget formulation: ceilings, proposals, review cycles, scenarios, MTEF (if used), versioning.
+
+Budget execution controls: appropriations, allotments, virements, supplementary budgets; carryovers.
+
+Real-time comparison: budget vs commitments vs actuals.
+
+Forecasting: rolling forecasts, cash forecasts, and scenario planning tied to actuals.
+
+Best-practice outcomes
+
+The budget is not a spreadsheet on the side—FMIS enforces it at transaction time.
+
+6) Procurement & Expense Management — spend governance and P2P execution
+
+What it should do
+
+Procurement workflows: requisitions, approvals, sourcing/RFQs (optional), POs, receipts (GRN), supplier performance basics.
+
+Expense management: travel, per diem, advances, reimbursements, mileage, receipt capture, policy enforcement.
+
+Contract-linked purchasing and spend tracking against contracts/frameworks.
+
+Best-practice outcomes
+
+Clear separation between “procurement spend” and “employee expense spend,” but both controlled and posted correctly.
+
+7) Financial Reporting & Analytics — statutory + management reporting
+
+What it should do
+
+Standard statements (trial balance, balance sheet, income statement/cash basis reports), plus budget execution reports.
+
+Configurable report builder with row-level security and segment filters.
+
+A reporting layer/data mart for dashboards without impacting transaction performance.
+
+Audit-ready outputs: drill-down from statements → journal → source transaction → attached evidence.
+
+8) Security, Compliance & Integration — platform controls (non-negotiable)
+
+What it should do
+
+Role-based access with segregation of duties (SoD), maker-checker approvals, delegation, and strong audit logs.
+
+Identity: SSO/MFA, access reviews, account lifecycle, privileged access controls.
+
+Compliance controls: immutable logs, retention policies, exception reporting, configuration change tracking.
+
+Integration: APIs/webhooks, ETL, file-based imports where needed, integration monitoring and retries.
+
+What’s missing to meet best international practices
+
+Your list is strong, but most “international-grade” FMIS implementations add these because they close critical control gaps:
+
+A) Commitment Control (Funds Control / Budget Availability Control)
+
+Why it matters: This is the backbone of disciplined budget execution.
+
+Reserve budget at requisition/PO, check availability at invoice/payment, prevent overspend, manage multi-stage commitments.
+
+B) Fixed Assets Management
+
+Asset register, capitalization rules, depreciation, revaluation/disposal, tagging, physical verification, asset lifecycle.
+Without this: balance sheet integrity suffers; audits flag missing/incorrect asset records.
+
+C) Inventory & Stores (if you manage goods)
+
+Stock receipts/issues, warehouses, reorder points, valuation, stock counts, consumption posting to GL.
+Even if minimal: government/health/education often need it.
+
+D) Contract Management (especially for government and large enterprises)
+
+Contract registry, milestones, deliverables, variations, retention, performance securities, expiry alerts, spend against contract.
+Without this: procurement-to-payment traceability breaks on long-running agreements.
+
+E) Project/Program/Grant Accounting
+
+Project budgets, funding sources, donor restrictions, cost allocation, reporting by program/project.
+Critical for donors and public investment programs.
+
+F) Revenue Management (beyond AR)
+
+If revenue is complex (fees, licenses, levies), you often need:
+
+tariff schedules, assessments, exemptions, penalties/interest, receipting controls, reconciliation.
+Otherwise AR is too generic.
+
+G) Debt & Investment Management (Treasury depth)
+
+Debt schedules, servicing, guarantees, on-lending, investment instruments, compliance reporting.
+(Highly relevant for finance ministries/large entities.)
+
+H) Close & Financial Controls Workspace
+
+Close calendar, checklists, auto-reconciliations, exception queues, approval of adjustments, close sign-off.
+This is how you operationalize reliable reporting.
+
+I) Master Data Management (MDM) + Data Governance
+
+Supplier/customer master governance, CoA governance, validation rules, duplicate prevention, change approvals.
+Most FMIS failures are master-data failures.
+
+J) Document Management & E-Signatures (evidence-by-design)
+
+Attachments to every transaction, versioning, retention, and optional e-sign for approvals/contracts.
+Audit readiness improves dramatically.
+
+K) Payment Gateway / Digital Payments (where applicable)
+
+Integration with banks, mobile money, card processors; reconciliation and settlement controls.
+
+L) Risk, Internal Controls & Audit Toolkit
+
+SoD conflict reports, continuous controls monitoring, audit sampling exports, anomaly detection, exception dashboards.
+
+A best-practice FMIS “module map” you can use
+
+If you want the “complete” internationally credible structure:
+
+Core Ledger & Close (GL, COA, period close, consolidation)
+
+Budget Formulation + Budget Execution / Commitment Control
+
+Procure-to-Pay (supplier mgmt, contracts, procurement, AP, payments)
+
+Order-to-Cash / Revenue (billing/assessments, AR, collections)
+
+Treasury (cash, bank, reconciliation, forecasting, debt/investments if needed)
+
+Assets + Inventory (as applicable)
+
+Projects/Grants/Programs (if applicable)
+
+Reporting/BI + Audit (drill-down, statutory + management reporting)
+
+Platform (security/SoD, workflows, integration, document management, monitoring)

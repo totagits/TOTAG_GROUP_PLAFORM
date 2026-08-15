@@ -1,0 +1,24 @@
+# Coolify Configuration Directory
+# This directory contains Coolify-specific deployment configurations
+
+# Files in this directory:
+# - coolify-docker-compose.yml: Docker Compose configuration for Coolify
+# - coolify.json: Coolify application configuration
+# - COOLIFY-DEPLOYMENT.md: Complete deployment guide
+
+# Environment Variables Required:
+# - NODE_ENV=production
+# - DATABASE_URL=postgresql://postgres:password@postgres:5432/totaggroup  
+# - SESSION_SECRET=your-super-secure-session-secret
+# - POSTGRES_PASSWORD=your-secure-postgres-password
+# - RESEND_API_KEY=your-resend-api-key (optional)
+
+# Deployment Steps:
+# 1. Push code to Git repository
+# 2. Create new Docker Compose resource in Coolify
+# 3. Configure environment variables
+# 4. Set domain name
+# 5. Deploy
+
+# The application will be available at your configured domain
+# Default admin credentials: admin/admin123 (change after deployment)
