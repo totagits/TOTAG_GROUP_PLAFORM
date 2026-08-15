@@ -44,6 +44,11 @@ import AdminLoginPage from "@/pages/admin-login";
 import AdminDashboardPage from "@/pages/admin-dashboard";
 import SubsidiaryEmailManagement from "@/pages/subsidiary-email-management";
 import DomainVerificationGuide from "@/pages/domain-verification-guide";
+import CargoPage from "@/pages/cargo";
+import PetroleumPage from "@/pages/petroleum";
+import ConstructionPage from "@/pages/construction";
+import RealEstatePage from "@/pages/real-estate";
+import ConsultingPage from "@/pages/consulting";
 import SaaSLanding from "@/pages/saas/landing";
 import SaaSRegister from "@/pages/saas/register";
 import SaaSLogin from "@/pages/saas/login";
@@ -52,6 +57,7 @@ import PaymentSuccessPage from "@/pages/saas/payment-success";
 import { ChangePasswordPage } from "@/pages/saas/change-password";
 import SubscriptionPage from "@/pages/saas/subscription";
 import UserManagement from "@/pages/saas/users";
+
 
 // HRMIS Module Pages
 import HRCorePage from "@/pages/saas/modules/hr-core";
@@ -116,7 +122,13 @@ function Router() {
       <Route path="/catering/ops/login" component={CateringOpsLogin} />
       <Route path="/catering/ops/dashboard" component={CateringDashboard} />
       <Route path="/general-merchandise" component={GeneralMerchandisePage} />
+      <Route path="/cargo" component={CargoPage} />
+      <Route path="/petroleum" component={PetroleumPage} />
+      <Route path="/construction" component={ConstructionPage} />
+      <Route path="/real-estate" component={RealEstatePage} />
+      <Route path="/consulting" component={ConsultingPage} />
       <Route path="/order-tracking" component={OrderTrackingPage} />
+
       <Route path="/merchant-login" component={MerchantLogin} />
       <Route path="/merchant-dashboard-new" component={MerchantDashboard} />
       <Route path="/customer-dashboard" component={CustomerDashboard} />

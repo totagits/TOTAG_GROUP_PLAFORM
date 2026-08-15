@@ -12,10 +12,15 @@
   },
   "domains": [
     {
-      "domain": "totaggroup.yourdomain.com",
+      "domain": "totag.network",
+      "port": 3000
+    },
+    {
+      "domain": "www.totag.network",
       "port": 3000
     }
   ],
+
   "volumes": [
     {
       "name": "postgres_data",

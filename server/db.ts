@@ -5,11 +5,11 @@ import * as schema from "@shared/schema";
 
 neonConfig.webSocketConstructor = ws;
 
+const databaseUrl = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/totaggroup";
+
 if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+  console.warn("⚠️ DATABASE_URL not set. Operating with fallback storage mode.");
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+export const pool = new Pool({ connectionString: databaseUrl });
+export const db = drizzle({ client: pool, schema });

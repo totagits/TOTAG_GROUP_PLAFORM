@@ -20,7 +20,8 @@ services:
       - "coolify.type=application"
       - "coolify.name=totag-platform"
       - "coolify.port=3000"
-      - "coolify.domain=totaggroup.yourdomain.com"
+      - "coolify.domain=totag.network,www.totag.network"
+
     networks:
       - coolify
 

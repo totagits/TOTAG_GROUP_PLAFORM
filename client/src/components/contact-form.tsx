@@ -27,14 +27,17 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const services = [
-  { value: "cargo", label: "Cargo Handling" },
-  { value: "farm", label: "TOTAG FARM" },
-  { value: "petroleum", label: "Petroleum Services" },
-  { value: "construction", label: "General Construction" },
-  { value: "merchandise", label: "General Merchandise" },
-  { value: "it", label: "IT Services" },
-  { value: "catering", label: "TOTAG Catering & Events Planning Services" },
+  { value: "cargo", label: "TOTAG Cargo Handling & Maritime Logistics" },
+  { value: "farm", label: "TOTAG Farm & Agribusiness" },
+  { value: "petroleum", label: "TOTAG Petroleum & Energy Services" },
+  { value: "construction", label: "TOTAG General Construction & Infrastructure" },
+  { value: "general-merchandise", label: "TOTAG General Merchandise & Supply Chain" },
+  { value: "it-services", label: "TOTAG IT Services & Enterprise SaaS" },
+  { value: "catering", label: "TOTAG Catering & Hospitality Services (TOCEPS)" },
+  { value: "real-estate", label: "TOTAG Real Estate & Property Management" },
+  { value: "consulting", label: "TOTAG Consulting & Financial Advisory Services" },
 ];
+
 
 export default function ContactForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);

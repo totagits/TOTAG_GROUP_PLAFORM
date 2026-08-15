@@ -1,6 +1,20 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExternalLink, ShoppingBag, Laptop, ChefHat, Wheat, Truck, HardHat, Briefcase } from "lucide-react";
+import { 
+  ArrowRight, 
+  ShoppingBag, 
+  Laptop, 
+  ChefHat, 
+  Wheat, 
+  Truck, 
+  HardHat, 
+  Briefcase,
+  Building,
+  TrendingUp,
+  Fuel,
+  Ship,
+  Sparkles
+} from "lucide-react";
 import { useLocation } from "wouter";
 
 interface ServiceCardProps {
@@ -15,48 +29,48 @@ interface ServiceCardProps {
 
 const colorClasses = {
   primary: {
-    iconBg: "bg-green-100 group-hover:bg-totag-green",
-    iconText: "text-totag-green group-hover:text-white",
-    tags: "text-totag-green"
+    iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white border-emerald-500/20",
+    badge: "glass-badge-emerald",
+    accent: "text-emerald-600 dark:text-emerald-400"
   },
   green: {
-    iconBg: "bg-green-100 group-hover:bg-totag-green",
-    iconText: "text-totag-green group-hover:text-white",
-    tags: "text-totag-green"
+    iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white border-emerald-500/20",
+    badge: "glass-badge-emerald",
+    accent: "text-emerald-600 dark:text-emerald-400"
   },
   orange: {
-    iconBg: "bg-orange-100 group-hover:bg-totag-orange",
-    iconText: "text-totag-orange group-hover:text-white",
-    tags: "text-totag-orange"
+    iconBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-500 group-hover:text-white border-amber-500/20",
+    badge: "glass-badge-amber",
+    accent: "text-amber-600 dark:text-amber-400"
   },
   yellow: {
-    iconBg: "bg-orange-100 group-hover:bg-totag-orange",
-    iconText: "text-totag-orange group-hover:text-white",
-    tags: "text-totag-orange"
+    iconBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400 group-hover:bg-amber-500 group-hover:text-white border-amber-500/20",
+    badge: "glass-badge-amber",
+    accent: "text-amber-600 dark:text-amber-400"
   },
   purple: {
-    iconBg: "bg-blue-100 group-hover:bg-totag-blue",
-    iconText: "text-totag-blue group-hover:text-white",
-    tags: "text-totag-blue"
+    iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400 group-hover:bg-purple-500 group-hover:text-white border-purple-500/20",
+    badge: "glass-badge-purple",
+    accent: "text-purple-600 dark:text-purple-400"
   },
   blue: {
-    iconBg: "bg-blue-100 group-hover:bg-totag-blue",
-    iconText: "text-totag-blue group-hover:text-white",
-    tags: "text-totag-blue"
+    iconBg: "bg-sky-500/10 text-sky-600 dark:text-sky-400 group-hover:bg-sky-500 group-hover:text-white border-sky-500/20",
+    badge: "glass-badge-sky",
+    accent: "text-sky-600 dark:text-sky-400"
   },
   red: {
-    iconBg: "bg-orange-100 group-hover:bg-totag-orange",
-    iconText: "text-totag-orange group-hover:text-white",
-    tags: "text-totag-orange"
+    iconBg: "bg-rose-500/10 text-rose-600 dark:text-rose-400 group-hover:bg-rose-500 group-hover:text-white border-rose-500/20",
+    badge: "glass-badge-amber",
+    accent: "text-rose-600 dark:text-rose-400"
   },
   cyan: {
-    iconBg: "bg-cyan-100 group-hover:bg-cyan-600",
-    iconText: "text-cyan-600 group-hover:text-white",
-    tags: "text-cyan-600"
+    iconBg: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 group-hover:bg-cyan-500 group-hover:text-white border-cyan-500/20",
+    badge: "glass-badge-sky",
+    accent: "text-cyan-600 dark:text-cyan-400"
   }
 };
 
-// Icon mapping for TOTAG services
+// Icon mapping for all 9 TOTAG subsidiaries
 const getIconComponent = (iconName: string) => {
   const icons: Record<string, any> = {
     'ShoppingBag': ShoppingBag,
@@ -65,26 +79,31 @@ const getIconComponent = (iconName: string) => {
     'Wheat': Wheat,
     'Truck': Truck,
     'HardHat': HardHat,
-    'Briefcase': Briefcase
+    'Briefcase': Briefcase,
+    'Building': Building,
+    'TrendingUp': TrendingUp,
+    'Fuel': Fuel,
+    'Ship': Ship
   };
   const IconComponent = icons[iconName] || Briefcase;
-  return <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8" />;
+  return <IconComponent className="w-6 h-6 sm:w-7 sm:h-7" />;
 };
 
-// TOTAG Service URLs - farm and IT go to internal platforms
+// Service URLs mapping for all 9 specialized subsidiaries
 const getServiceUrl = (slug: string): string => {
   const urls: Record<string, string> = {
-    'general-merchandise': '/general-merchandise', // Internal TOTAG General Merchandise platform
-    'merchandise': '/general-merchandise', // Database slug variant
-    'it-services': '/it-services', // Internal TOTAG IT Services overview page
-    'it': '/it-services', // Database slug variant
+    'cargo': '/cargo',
+    'farm': '/farm',
+    'petroleum': '/petroleum',
+    'construction': '/construction',
+    'general-merchandise': '/general-merchandise',
+    'merchandise': '/general-merchandise',
+    'it-services': '/it-services',
+    'it': '/it-services',
     'catering': '/catering',
-    'farm': '/farm', // Internal TOTAG FARM platform
-    'logistics': 'https://www.dhl.com/logistics',
-    'construction': 'https://www.turner.com/services',
+    'real-estate': '/real-estate',
     'consulting': '/consulting',
-    'cargo': '/cargo', // Database slug for cargo
-    'petroleum': '/petroleum' // Database slug for petroleum
+    'saas': '/saas'
   };
   return urls[slug] || '#';
 };
@@ -100,10 +119,8 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
     if (slug) {
       const url = getServiceUrl(slug);
       if (url.startsWith('/')) {
-        // Internal navigation using Wouter
         setLocation(url);
       } else {
-        // External URL
         window.open(url, '_blank', 'noopener,noreferrer');
       }
     }
@@ -111,35 +128,48 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
+      whileHover={{ y: -6 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.25 }}
       className="h-full"
     >
       <Card 
         id={id} 
         onClick={handleCardClick}
-        className="h-full bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 group cursor-pointer
-                   p-4 sm:p-6 lg:p-8
-                   transform hover:-translate-y-1"
+        className="h-full glass-card-interactive backdrop-blur-xl border border-white/60 dark:border-white/10 group cursor-pointer p-6 flex flex-col justify-between relative overflow-hidden"
       >
-        <CardContent className="p-0 h-full flex flex-col">
-          <div className="flex-1 mb-4 sm:mb-6">
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 ${colorClass.iconBg} rounded-xl flex items-center justify-center mb-3 sm:mb-4 transition-colors duration-300`}>
-              <div className={`${colorClass.iconText} transition-colors duration-300`}>
-                {getIconComponent(icon)}
-              </div>
+        {/* Subtle Background Glow Mesh */}
+        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500/10 to-sky-500/10 blur-2xl group-hover:scale-150 transition-transform duration-500" />
+        
+        <div>
+          <div className="flex items-center justify-between mb-5">
+            <div className={`w-14 h-14 rounded-2xl border ${colorClass.iconBg} flex items-center justify-center transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-110`}>
+              {getIconComponent(icon)}
             </div>
-            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2">{title}</h3>
-            <p className="text-gray-600 leading-relaxed text-sm sm:text-base line-clamp-3 lg:line-clamp-4">{description}</p>
+            <span className={`text-xs px-3 py-1 rounded-full font-medium ${colorClass.badge}`}>
+              Subsidiary
+            </span>
           </div>
-          
-          <div className="pt-3 sm:pt-4 border-t border-gray-100 flex items-center justify-between">
-            <span className={`text-xs sm:text-sm font-medium ${colorClass.tags} line-clamp-1 flex-1`}>{tags}</span>
-            <ExternalLink className={`w-4 h-4 sm:w-5 sm:h-5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${colorClass.iconText}`} />
+
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200">
+            {title}
+          </h3>
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">
+            {description}
+          </p>
+        </div>
+
+        <div className="pt-4 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between mt-auto">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[70%]">
+            {tags}
+          </span>
+          <div className="flex items-center space-x-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-200">
+            <span>Explore</span>
+            <ArrowRight className="w-4 h-4" />
           </div>
-        </CardContent>
+        </div>
       </Card>
     </motion.div>
   );
 }
+

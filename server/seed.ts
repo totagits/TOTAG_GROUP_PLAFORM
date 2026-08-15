@@ -38,80 +38,101 @@ export async function seedDatabase() {
       }
     ]).onConflictDoNothing();
 
-    // Seed services (TOTAG Group subsidiaries)
-    console.log("🏢 Seeding services...");
+    // Seed services (All 9 TOTAG Group specialized subsidiaries)
+    console.log("🏢 Seeding 9 specialized subsidiaries...");
     await db.insert(services).values([
       {
         id: 1,
-        name: "TOTAG Cargo Handling",
-        description: "Port management, cargo handling, and logistics services",
-        icon: "🚢",
+        name: "TOTAG Cargo Handling & Maritime Logistics",
+        description: "Port management, cargo handling, container shipping, and international logistics services",
+        icon: "Truck",
         color: "blue",
-        tags: "logistics, cargo, port",
+        tags: "logistics, cargo, maritime, shipping",
         slug: "cargo",
         isActive: true
       },
       {
         id: 2,
-        name: "TOTAG FARM",
-        description: "Agricultural operations, livestock management, and fresh produce",
-        icon: "🌾",
+        name: "TOTAG Farm & Agribusiness",
+        description: "Integrated agricultural operations, livestock management, crop farming, and fresh produce market",
+        icon: "Wheat",
         color: "green",
-        tags: "agriculture, farming, livestock",
+        tags: "agriculture, farming, livestock, organic",
         slug: "farm",
         isActive: true
       },
       {
         id: 3,
-        name: "TOTAG Petroleum Services",
-        description: "Fuel distribution, storage facilities, and petroleum products",
-        icon: "⛽",
+        name: "TOTAG Petroleum & Energy Services",
+        description: "Bulk fuel distribution, petroleum storage facilities, energy logistics, and lubricant supply",
+        icon: "Briefcase",
         color: "orange",
-        tags: "petroleum, fuel, energy",
+        tags: "petroleum, fuel, energy, oil",
         slug: "petroleum",
         isActive: true
       },
       {
         id: 4,
-        name: "TOTAG General Construction",
-        description: "Infrastructure development, civil works, and construction services",
-        icon: "🏗️",
+        name: "TOTAG General Construction & Infrastructure",
+        description: "Civil engineering works, infrastructure development, heavy equipment fleet, and structural building",
+        icon: "HardHat",
         color: "yellow",
-        tags: "construction, infrastructure, building",
+        tags: "construction, infrastructure, engineering",
         slug: "construction",
         isActive: true
       },
       {
         id: 5,
-        name: "TOTAG General Merchandise",
-        description: "Wholesale and retail operations across various product categories",
-        icon: "🛒",
+        name: "TOTAG General Merchandise & Supply Chain",
+        description: "Wholesale distribution, retail outlets, merchant network, and e-commerce supply chain",
+        icon: "ShoppingBag",
         color: "purple",
-        tags: "retail, wholesale, merchandise",
-        slug: "merchandise",
+        tags: "retail, wholesale, merchandise, commerce",
+        slug: "general-merchandise",
         isActive: true
       },
       {
         id: 6,
-        name: "TOTAG IT Services",
-        description: "Technology solutions, system integration, and IT consulting",
-        icon: "💻",
+        name: "TOTAG IT Services & Enterprise SaaS",
+        description: "Managed IT services, cloud infrastructure, cybersecurity, and enterprise FIMS & HRMIS software",
+        icon: "Laptop",
         color: "cyan",
-        tags: "technology, IT, digital",
-        slug: "it",
+        tags: "technology, IT, SaaS, enterprise",
+        slug: "it-services",
         isActive: true
       },
       {
         id: 7,
-        name: "TOTAG Catering & Events Planning Services",
-        description: "Food service operations, event catering, and hospitality",
-        icon: "🍽️",
+        name: "TOTAG Catering & Hospitality Services",
+        description: "Institutional and corporate catering, event planning, hall rentals, and HACCP-certified food safety",
+        icon: "ChefHat",
         color: "red",
-        tags: "catering, food, hospitality",
+        tags: "catering, food, events, hospitality",
         slug: "catering",
+        isActive: true
+      },
+      {
+        id: 8,
+        name: "TOTAG Real Estate & Property Management",
+        description: "Commercial and residential property management, land development, facility management, and leasing",
+        icon: "Briefcase",
+        color: "green",
+        tags: "real-estate, property, leasing, facilities",
+        slug: "real-estate",
+        isActive: true
+      },
+      {
+        id: 9,
+        name: "TOTAG Consulting & Financial Advisory Services",
+        description: "Corporate management consulting, financial audit advisory, business process optimization, and strategy",
+        icon: "Briefcase",
+        color: "blue",
+        tags: "consulting, advisory, finance, strategy",
+        slug: "consulting",
         isActive: true
       }
     ]).onConflictDoNothing();
+
 
     // Seed market products
     console.log("🛒 Seeding market products...");

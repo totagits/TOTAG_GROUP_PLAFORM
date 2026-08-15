@@ -83,11 +83,16 @@ app.post(
 // Add CORS headers for production domain support
 app.use((req, res, next) => {
   const allowedOrigins = [
+    'https://totag.network',
+    'https://www.totag.network',
     'https://totaggroup.com',
     'https://www.totaggroup.com', 
     'http://localhost:5000',
-    'http://127.0.0.1:5000'
+    'http://127.0.0.1:5000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
   ];
+
   
   const origin = req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
