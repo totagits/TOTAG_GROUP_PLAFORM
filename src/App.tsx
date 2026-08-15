@@ -485,7 +485,14 @@ export function App() {
   const scopedParcels = filterParcelsByAssignment(parcels, activeAssignment);
 
   return (
-    <div className={`min-h-screen flex flex-col ${isHighContrast ? 'contrast-125 bg-black text-yellow-300' : 'bg-slate-100 text-slate-900'}`}>
+    <div className={`min-h-screen flex flex-col relative ${isHighContrast ? 'contrast-125 bg-black text-yellow-300' : 'bg-slate-950 text-slate-100'}`}>
+      {/* Ambient Animated Mesh Background Blobs */}
+      <div className="ambient-mesh">
+        <div className="ambient-blob-1" />
+        <div className="ambient-blob-2" />
+        <div className="ambient-blob-3" />
+      </div>
+
       <Header
         currentRole={currentRole}
         setCurrentRole={handleRoleChange}
@@ -507,28 +514,28 @@ export function App() {
 
       {/* Mandatory Scope Banner (Combined RBAC + ABAC Policy Display for Internal Workspaces) */}
       {activeTab !== 'landing' && (
-        <div className="bg-slate-900 text-white border-b border-slate-800 py-2.5 px-4 shadow-sm">
+        <div className="glass-panel text-white border-b border-white/10 py-2.5 px-4 shadow-lg backdrop-blur-md">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex items-center gap-2">
-              <span className="bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-2 py-0.5 rounded tracking-wide">
+              <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-black text-[10px] uppercase px-2.5 py-0.5 rounded shadow-sm tracking-wide">
                 Current Assignment
               </span>
               <span className="font-extrabold text-amber-300">
                 {ROLE_DEFINITIONS[currentRole]?.title || currentRole}
               </span>
-              <span className="text-slate-400 font-bold">—</span>
+              <span className="text-slate-500 font-bold">—</span>
               <span className="text-emerald-400 font-extrabold">{activeAssignment.programName}</span>
-              <span className="text-slate-400 hidden md:inline">—</span>
+              <span className="text-slate-500 hidden md:inline">—</span>
               <span className="text-slate-300 hidden md:inline">{activeAssignment.organization}</span>
-              <span className="text-slate-400 font-bold">—</span>
+              <span className="text-slate-500 font-bold">—</span>
               <span className="text-sky-300 font-bold">{activeAssignment.county} County ({activeAssignment.district})</span>
             </div>
 
             <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-300 font-medium">
-              <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-amber-300 font-mono text-[10px]">
+              <span className="glass-badge-amber px-2 py-0.5 rounded font-mono text-[10px]">
                 Sensitivity: {activeAssignment.dataSensitivity}
               </span>
-              <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded text-emerald-300 font-mono text-[10px]">
+              <span className="glass-badge-emerald px-2 py-0.5 rounded font-mono text-[10px]">
                 Limit: ${activeAssignment.approvalLimitUSD.toLocaleString()} USD
               </span>
               <span className="text-slate-400 italic hidden lg:inline">Valid through {activeAssignment.validUntil}</span>

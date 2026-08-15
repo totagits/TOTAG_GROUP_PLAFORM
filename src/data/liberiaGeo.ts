@@ -74,11 +74,11 @@ export const LIBERIA_COUNTIES: LiberianCounty[] = [
     capital: 'Robertsport',
     center: [7.1333, -11.0833],
     districts: [
-      { name: 'Tewor', clans: ['Tewor Central', 'Bo Waterside', 'Robor', 'Mendemassa', 'Tia'] },
       { name: 'Garwula', clans: ['Sinje', 'Garwula Central', 'Kaidii', 'Manoballa'] },
-      { name: 'Gola Konneh', clans: ['Gola North', 'Mana Clan', 'Lofa Tower', 'Pokpa Border'] },
+      { name: 'Golakonneh (Gola Konneh)', clans: ['Gola North', 'Mana Clan', 'Lofa Tower', 'Pokpa Border'] },
       { name: 'Porkpa', clans: ['Dambala', 'Sokpo', 'Porkpa Central', 'Bamballa'] },
-      { name: 'Commonwealth', clans: ['Robertsport Urban', 'Fishermen Clan', 'Kru Town', 'Lake Piso'] }
+      { name: 'Commonwealth Robertsport', clans: ['Robertsport Urban', 'Fishermen Clan', 'Kru Town', 'Lake Piso'] },
+      { name: 'Tewor', clans: ['Tewor Central', 'Bo Waterside', 'Robor', 'Mendemassa', 'Tia'] }
     ]
   },
   {

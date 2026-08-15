@@ -75,49 +75,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   return (
     <div className="space-y-12 pb-12">
       {/* HERO SECTION */}
-      <section className="bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white py-12 px-4 shadow-lg border-b-4 border-amber-500">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <section className="glass-panel text-white py-14 px-6 shadow-2xl border-b border-emerald-500/30 rounded-3xl relative overflow-hidden backdrop-blur-2xl">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
           {/* Left Column Text & CTAs */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-emerald-800/60 border border-emerald-500/40 px-3 py-1.5 rounded-full text-xs font-semibold text-emerald-300">
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>National Digital Public Infrastructure for Liberia</span>
+            <div className="inline-flex items-center gap-2 glass-badge-emerald px-4 py-1.5 rounded-full text-xs font-bold shadow-md">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>TOTAG OF COMPANIES LTD Platform • FAO UN RFP 137641</span>
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-amber-400 font-extrabold text-sm uppercase tracking-widest">
+              <h2 className="text-gradient-gold font-black text-xs sm:text-sm uppercase tracking-widest">
                 Every Farmer Counted. Every Farm Connected. Every Opportunity Delivered.
               </h2>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
-                Building a Smarter, More Inclusive Agricultural Future for Liberia
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight">
+                Empowering Liberia’s Agricultural Digital Future
               </h1>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Create a secure national digital platform that identifies farmers, maps farms, strengthens agricultural planning and connects eligible producers to inputs, extension services, vouchers, financing, markets and transparent government assistance.
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+                A state-of-the-art national digital public infrastructure built to register smallholders, map GIS boundaries, automate mobile money payouts, issue QR input vouchers, and connect farmers to markets across all 15 counties.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-wrap gap-4 pt-2">
               <button
                 onClick={onRegisterClick}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-sm px-7 py-3.5 rounded-2xl shadow-lg shadow-emerald-500/25 transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5 cursor-pointer border border-emerald-400/30"
               >
-                <Sprout className="w-4 h-4 text-amber-300" />
+                <Sprout className="w-4.5 h-4.5 text-emerald-200" />
                 Register as a Farmer
               </button>
 
               <button
                 onClick={onExploreGis}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-100 font-semibold text-sm px-5 py-3 rounded-lg border border-slate-700 hover:border-slate-600 transition-colors flex items-center gap-2 cursor-pointer"
+                className="glass-card hover:bg-slate-800/80 text-white font-bold text-sm px-6 py-3.5 rounded-2xl border border-white/15 transition-all hover:scale-[1.03] flex items-center gap-2.5 cursor-pointer shadow-md"
               >
-                <MapPin className="w-4 h-4 text-emerald-400" />
+                <MapPin className="w-4.5 h-4.5 text-sky-400" />
                 Explore 15-County GIS Map
               </button>
             </div>
 
             {/* Application Tracking Mini-Form */}
-            <div className="bg-slate-800/80 border border-slate-700 p-4 rounded-xl space-y-3">
-              <div className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
-                <span>Track Registration or Program Application</span>
+            <div className="glass-card p-4 rounded-2xl space-y-3 border border-white/10 shadow-xl">
+              <div className="text-xs font-black text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                <span className="text-gradient-sky">Track Registration or Program Application</span>
                 <span className="text-[10px] text-amber-400 font-normal">Real-Time Search</span>
               </div>
               <form onSubmit={handleTrackSubmit} className="flex gap-2">
