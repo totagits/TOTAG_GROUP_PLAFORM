@@ -1,8 +1,5 @@
 import { Link } from "wouter";
 import { 
-  Building2, 
-  Globe, 
-  ShieldCheck, 
   Truck, 
   Wheat, 
   Briefcase, 
@@ -10,22 +7,22 @@ import {
   ShoppingBag, 
   Laptop, 
   ChefHat, 
-  Building, 
-  TrendingUp,
+  FileText, 
+  Zap,
   Sparkles,
   ArrowUpRight
 } from "lucide-react";
 
 const subsidiariesLinks = [
-  { name: "TOTAG Cargo & Logistics", href: "/cargo", icon: Truck },
-  { name: "TOTAG Farm & Agribusiness", href: "/farm", icon: Wheat },
-  { name: "TOTAG Petroleum & Energy", href: "/petroleum", icon: Briefcase },
-  { name: "TOTAG Construction & Infra", href: "/construction", icon: HardHat },
+  { name: "TOTAG Cargo Handling", href: "/cargo", icon: Truck },
+  { name: "TOTAG FARM", href: "/farm", icon: Wheat },
+  { name: "TOTAG Petroleum Services", href: "/petroleum", icon: Briefcase },
+  { name: "TOTAG General Construction", href: "/construction", icon: HardHat },
   { name: "TOTAG General Merchandise", href: "/general-merchandise", icon: ShoppingBag },
-  { name: "TOTAG IT Services & SaaS", href: "/it-services", icon: Laptop },
-  { name: "TOTAG Catering Services", href: "/catering", icon: ChefHat },
-  { name: "TOTAG Real Estate", href: "/real-estate", icon: Building },
-  { name: "TOTAG Consulting", href: "/consulting", icon: TrendingUp },
+  { name: "TOTAG Catering & Events", href: "/catering", icon: ChefHat },
+  { name: "TOTAG IT Services", href: "/it-services", icon: Laptop },
+  { name: "TOTAG Stationery Supplies", href: "/stationery", icon: FileText },
+  { name: "TOTAG Solar Energy", href: "/solar", icon: Zap },
 ];
 
 export default function Footer() {
@@ -45,18 +42,15 @@ export default function Footer() {
           {/* Col 1: Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-sky-600 to-amber-500 p-0.5 shadow-md">
-                <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                  <span className="font-extrabold text-emerald-400 text-lg">T</span>
-                </div>
-              </div>
-              <span className="text-2xl font-bold tracking-tight text-white">
-                TOTAG <span className="text-gradient-emerald">GROUP</span>
-              </span>
+              <img 
+                src="/images/totag-logo.png" 
+                alt="TOTAG Group Logo" 
+                className="h-16 w-auto object-contain bg-white/90 p-1.5 rounded-xl shadow-md" 
+              />
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              TOTAG Group of Companies Ltd is a premier multi-sector enterprise headquartered in Liberia, operating nine specialized subsidiaries across maritime logistics, agribusiness, petroleum, construction, retail, technology, hospitality, property, and consulting.
+              TOTAG Group of Companies Ltd — Innovating Tomorrow, Empowering Today. A premier multi-sector enterprise operating nine specialized subsidiaries across cargo, agribusiness, petroleum, construction, retail, technology, catering, stationery, and solar power.
             </p>
 
             {/* Live Operational Status Indicator */}
@@ -65,6 +59,7 @@ export default function Footer() {
               <span>Platform Active • totag.network</span>
             </div>
           </div>
+
 
           {/* Col 2: 9 Subsidiaries (Part 1) */}
           <div className="space-y-3">

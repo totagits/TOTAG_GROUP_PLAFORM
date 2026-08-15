@@ -49,7 +49,10 @@ import PetroleumPage from "@/pages/petroleum";
 import ConstructionPage from "@/pages/construction";
 import RealEstatePage from "@/pages/real-estate";
 import ConsultingPage from "@/pages/consulting";
+import StationeryPage from "@/pages/stationery";
+import SolarPage from "@/pages/solar";
 import SaaSLanding from "@/pages/saas/landing";
+
 import SaaSRegister from "@/pages/saas/register";
 import SaaSLogin from "@/pages/saas/login";
 import SaaSDashboard from "@/pages/saas/dashboard";
@@ -127,7 +130,10 @@ function Router() {
       <Route path="/construction" component={ConstructionPage} />
       <Route path="/real-estate" component={RealEstatePage} />
       <Route path="/consulting" component={ConsultingPage} />
+      <Route path="/stationery" component={StationeryPage} />
+      <Route path="/solar" component={SolarPage} />
       <Route path="/order-tracking" component={OrderTrackingPage} />
+
 
       <Route path="/merchant-login" component={MerchantLogin} />
       <Route path="/merchant-dashboard-new" component={MerchantDashboard} />

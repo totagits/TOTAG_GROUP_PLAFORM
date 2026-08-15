@@ -85,94 +85,57 @@ export default function Header() {
           
           {/* Brand Logo */}
           <Link href="/" className="flex items-center space-x-3 group cursor-pointer">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-sky-600 to-amber-500 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-200">
-              <div className="w-full h-full bg-white dark:bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <span className="font-extrabold text-emerald-600 dark:text-emerald-400 text-lg">T</span>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1">
-                <span>TOTAG</span>
-                <span className="text-gradient-emerald">GROUP</span>
-              </span>
-              <span className="text-[10px] uppercase font-semibold text-slate-500 dark:text-slate-400 tracking-wider">
-                9 Specialized Subsidiaries
-              </span>
-            </div>
+            <img 
+              src="/images/totag-logo.png" 
+              alt="TOTAG Group Logo" 
+              className="h-12 sm:h-14 w-auto object-contain hover:scale-105 transition-transform duration-200" 
+            />
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-1 font-medium text-sm">
+          <nav className="hidden lg:flex items-center space-x-1 font-semibold text-sm text-slate-700 dark:text-slate-200">
             <button
               onClick={() => handleNavClick("#home")}
-              className="px-3.5 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               Home
             </button>
 
-            {/* 9 Subsidiaries Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all group">
-                  <span>9 Subsidiaries</span>
-                  <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform duration-200 text-slate-400" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent 
-                align="start" 
-                className="w-80 p-2 glass-panel-light dark:glass-panel border-white/60 dark:border-white/10 shadow-2xl rounded-2xl animate-in fade-in-80 zoom-in-95"
-              >
-                <DropdownMenuLabel className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  TOTAG Business Divisions
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-slate-200/60 dark:bg-white/10" />
-                <div className="grid grid-cols-1 gap-1 max-h-[380px] overflow-y-auto">
-                  {subsidiariesList.map((sub) => (
-                    <DropdownMenuItem
-                      key={sub.name}
-                      onClick={() => setLocation(sub.href)}
-                      className="flex items-center space-x-3 p-2.5 rounded-xl cursor-pointer hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-slate-800 dark:text-slate-100 transition-all group"
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <sub.icon className="w-4 h-4" />
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-xs text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                          {sub.name}
-                        </span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
-                          {sub.tag}
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </div>
-                <DropdownMenuSeparator className="bg-slate-200/60 dark:bg-white/10 my-1" />
-                <DropdownMenuItem
-                  onClick={() => setLocation("/saas")}
-                  className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer bg-gradient-to-r from-emerald-600/10 to-sky-600/10 text-emerald-700 dark:text-emerald-300 hover:from-emerald-600/20 hover:to-sky-600/20"
-                >
-                  <span className="font-semibold text-xs flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-                    Enterprise SaaS (HRMIS & FIMS)
-                  </span>
-                  <span className="text-[10px] bg-emerald-500 text-white px-2 py-0.5 rounded-full font-bold">
-                    Platform
-                  </span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
             <button
-              onClick={() => handleNavClick("#services")}
-              className="px-3.5 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              onClick={() => handleNavClick("#about")}
+              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
-              Divisions
+              About Us
             </button>
 
             <button
+              onClick={() => handleNavClick("#services")}
+              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+            >
+              Services
+            </button>
+
+            <Link href="/cargo">
+              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
+                Cargo
+              </span>
+            </Link>
+
+            <Link href="/petroleum">
+              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
+                Petroleum
+              </span>
+            </Link>
+
+            <Link href="/construction">
+              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
+                Construction
+              </span>
+            </Link>
+
+            <button
               onClick={() => handleNavClick("#contact")}
-              className="px-3.5 py-2 rounded-lg text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               Contact
             </button>
@@ -180,36 +143,16 @@ export default function Header() {
 
           {/* Quick Auth Actions */}
           <div className="hidden lg:flex items-center space-x-3">
-            <Link href="/merchant-login">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-xs font-semibold text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400"
-              >
-                Merchant Portal
-              </Button>
-            </Link>
-
-            <Link href="/saas/login">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-xs font-semibold border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 rounded-xl"
-              >
-                SaaS Portal
-              </Button>
-            </Link>
-
             <Link href="/admin-login">
               <Button 
                 size="sm" 
-                className="bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white text-xs font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg px-5 py-2.5 shadow-md"
               >
-                <Lock className="w-3.5 h-3.5 mr-1.5" />
-                Admin
+                Admin Login
               </Button>
             </Link>
           </div>
+
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center space-x-2">

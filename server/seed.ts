@@ -38,100 +38,101 @@ export async function seedDatabase() {
       }
     ]).onConflictDoNothing();
 
-    // Seed services (All 9 TOTAG Group specialized subsidiaries)
+    // Seed services (All 9 official TOTAG Group specialized subsidiaries)
     console.log("🏢 Seeding 9 specialized subsidiaries...");
     await db.insert(services).values([
       {
         id: 1,
-        name: "TOTAG Cargo Handling & Maritime Logistics",
-        description: "Port management, cargo handling, container shipping, and international logistics services",
+        name: "TOTAG Cargo Handling",
+        description: "Efficient and secure cargo logistics and port management services. We handle comprehensive freight forwarding, warehousing, and distribution solutions for businesses of all sizes.",
         icon: "Truck",
         color: "blue",
-        tags: "logistics, cargo, maritime, shipping",
+        tags: "Port Management • Logistics • Warehousing",
         slug: "cargo",
         isActive: true
       },
       {
         id: 2,
-        name: "TOTAG Farm & Agribusiness",
-        description: "Integrated agricultural operations, livestock management, crop farming, and fresh produce market",
+        name: "TOTAG FARM",
+        description: "Integrated agribusiness solutions from seed to market. Our comprehensive farming operations include crop production, livestock management, and agricultural technology implementation.",
         icon: "Wheat",
         color: "green",
-        tags: "agriculture, farming, livestock, organic",
+        tags: "Agriculture • Livestock • Technology",
         slug: "farm",
         isActive: true
       },
       {
         id: 3,
-        name: "TOTAG Petroleum & Energy Services",
-        description: "Bulk fuel distribution, petroleum storage facilities, energy logistics, and lubricant supply",
+        name: "TOTAG Petroleum Services",
+        description: "Professional fuel distribution and petroleum logistics. We provide reliable fuel supply, storage solutions, and distribution networks for commercial and industrial clients.",
         icon: "Briefcase",
         color: "orange",
-        tags: "petroleum, fuel, energy, oil",
+        tags: "Fuel Distribution • Storage • Logistics",
         slug: "petroleum",
         isActive: true
       },
       {
         id: 4,
-        name: "TOTAG General Construction & Infrastructure",
-        description: "Civil engineering works, infrastructure development, heavy equipment fleet, and structural building",
+        name: "TOTAG General Construction",
+        description: "Quality civil works, infrastructure development, and comprehensive project management. From residential buildings to large-scale infrastructure projects.",
         icon: "HardHat",
         color: "yellow",
-        tags: "construction, infrastructure, engineering",
+        tags: "Infrastructure • Project Management • Civil Works",
         slug: "construction",
         isActive: true
       },
       {
         id: 5,
-        name: "TOTAG General Merchandise & Supply Chain",
-        description: "Wholesale distribution, retail outlets, merchant network, and e-commerce supply chain",
+        name: "TOTAG General Merchandise",
+        description: "Wholesale and retail supply of diversified goods. We maintain extensive inventory and distribution networks for consumer goods, industrial supplies, and specialty products.",
         icon: "ShoppingBag",
         color: "purple",
-        tags: "retail, wholesale, merchandise, commerce",
+        tags: "Wholesale • Retail • Distribution",
         slug: "general-merchandise",
         isActive: true
       },
       {
         id: 6,
-        name: "TOTAG IT Services & Enterprise SaaS",
-        description: "Managed IT services, cloud infrastructure, cybersecurity, and enterprise FIMS & HRMIS software",
-        icon: "Laptop",
-        color: "cyan",
-        tags: "technology, IT, SaaS, enterprise",
-        slug: "it-services",
-        isActive: true
-      },
-      {
-        id: 7,
-        name: "TOTAG Catering & Hospitality Services",
-        description: "Institutional and corporate catering, event planning, hall rentals, and HACCP-certified food safety",
+        name: "TOTAG Catering & Events Planning Services",
+        description: "Professional catering and event hospitality services. From corporate events to large-scale celebrations, we deliver exceptional culinary experiences.",
         icon: "ChefHat",
         color: "red",
-        tags: "catering, food, events, hospitality",
+        tags: "Event Catering • Corporate Services • Hospitality",
         slug: "catering",
         isActive: true
       },
       {
+        id: 7,
+        name: "TOTAG IT Services - Managed IT Services",
+        description: "Enterprise SaaS solutions including 14 modular FIMS & HRMIS platform ($35-$75/month per module), custom software development, system integration, and digital transformation services.",
+        icon: "Laptop",
+        color: "cyan",
+        tags: "SaaS Platform • FIMS/HRMIS • Software Development",
+        slug: "it-services",
+        isActive: true
+      },
+      {
         id: 8,
-        name: "TOTAG Real Estate & Property Management",
-        description: "Commercial and residential property management, land development, facility management, and leasing",
-        icon: "Briefcase",
-        color: "green",
-        tags: "real-estate, property, leasing, facilities",
-        slug: "real-estate",
+        name: "TOTAG Stationery Supplies",
+        description: "Comprehensive office and educational stationery supply services for businesses, institutions, and individuals.",
+        icon: "FileText",
+        color: "blue",
+        tags: "stationery, office supplies, printing",
+        slug: "stationery",
         isActive: true
       },
       {
         id: 9,
-        name: "TOTAG Consulting & Financial Advisory Services",
-        description: "Corporate management consulting, financial audit advisory, business process optimization, and strategy",
-        icon: "Briefcase",
-        color: "blue",
-        tags: "consulting, advisory, finance, strategy",
-        slug: "consulting",
+        name: "TOTAG Solar Energy & Smart Power Solutions",
+        description: "Supply, installation, commissioning, monitoring, and maintenance of solar photovoltaic and energy-storage systems for residential, commercial, institutional, industrial, and public-sector clients.",
+        icon: "Zap",
+        color: "amber",
+        tags: "solar, renewable energy, power solutions",
+        slug: "solar",
         isActive: true
       }
     ]).onConflictDoNothing();
+
 
 
     // Seed market products
