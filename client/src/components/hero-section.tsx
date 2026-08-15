@@ -14,12 +14,17 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 
+const estYear = 2019;
+const currentYear = new Date().getFullYear();
+const yearsOfExperience = `${Math.max(1, currentYear - estYear)}+ Yrs`;
+
 const stats = [
   { label: "Specialized Subsidiaries", value: "9", icon: Building2, color: "text-emerald-600 dark:text-emerald-400" },
-  { label: "Enterprise Experience", value: "10+ Yrs", icon: Award, color: "text-sky-600 dark:text-sky-400" },
+  { label: "Enterprise Experience", value: yearsOfExperience, icon: Award, color: "text-sky-600 dark:text-sky-400" },
   { label: "Operational Reliability", value: "99.9%", icon: ShieldCheck, color: "text-amber-600 dark:text-amber-400" },
   { label: "Global Reach & Ports", value: "Pan-African", icon: Globe, color: "text-purple-600 dark:text-purple-400" },
 ];
+
 
 export default function HeroSection() {
   const handleNavClick = (href: string) => {

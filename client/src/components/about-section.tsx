@@ -15,8 +15,9 @@ export default function AboutSection() {
             className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-badge-emerald mb-4 text-xs font-semibold uppercase tracking-wider"
           >
             <Building2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>About TOTAG Group</span>
+            <span>About TOTAG Group • Est. Feb 2019</span>
           </motion.div>
+
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
