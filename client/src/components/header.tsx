@@ -93,53 +93,36 @@ export default function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-1 font-semibold text-sm text-slate-700 dark:text-slate-200">
+          <nav className="hidden lg:flex items-center space-x-2 font-semibold text-sm text-slate-700 dark:text-slate-200">
             <button
               onClick={() => handleNavClick("#home")}
-              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               Home
             </button>
 
             <button
               onClick={() => handleNavClick("#about")}
-              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               About Us
             </button>
 
             <button
               onClick={() => handleNavClick("#services")}
-              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               Services
             </button>
 
-            <Link href="/cargo">
-              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
-                Cargo
-              </span>
-            </Link>
-
-            <Link href="/petroleum">
-              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
-                Petroleum
-              </span>
-            </Link>
-
-            <Link href="/construction">
-              <span className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
-                Construction
-              </span>
-            </Link>
-
             <button
               onClick={() => handleNavClick("#contact")}
-              className="px-3 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
+              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all"
             >
               Contact
             </button>
           </nav>
+
 
           {/* Quick Auth Actions */}
           <div className="hidden lg:flex items-center space-x-3">
