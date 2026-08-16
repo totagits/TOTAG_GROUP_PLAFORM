@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { 
@@ -15,21 +15,62 @@ import {
   ShoppingBag,
   UtensilsCrossed,
   Cpu,
-  FileText
+  FileText,
+  MapPin
 } from "lucide-react";
 import { Link } from "wouter";
 
-// 9 Subsidiaries Carousel Data (Ready for upcoming user uploaded images)
+// 9 Subsidiaries Carousel Data with User Uploaded Real Operational Assets
 const HERO_SLIDES = [
   {
-    id: "solar",
-    title: "TOTAG Solar Energy & Smart Power",
-    subtitle: "Tier-1 Deye Hybrid Inverters, Jinko 550W PV Modules & LiFePO4 Battery Banks for Resilient Microgrids.",
+    id: "solar-rooftop",
+    title: "TOTAG Solar Energy & Rooftop Microgrids",
+    subtitle: "Turnkey Commercial & Residential Solar Installations, Tier-1 Deye Inverters & High-Efficiency PV Arrays.",
     href: "/solar",
     icon: Sun,
-    gradient: "from-amber-500/30 via-orange-600/20 to-slate-950",
-    badge: "Renewable Energy Leader",
-    image: "/images/pv/jinko-solar-field-arrays.png"
+    gradient: "from-amber-500/40 via-orange-600/20 to-slate-950",
+    badge: "Renewable Energy Installation",
+    image: "/images/hero/solar-rooftop-team.jpg"
+  },
+  {
+    id: "farm-rice",
+    title: "TOTAG FARM Rice Production",
+    subtitle: "Sustainable Commercial Rice Agriculture & Grain Processing Empowering Liberian Farmers.",
+    href: "/farm",
+    icon: Sprout,
+    gradient: "from-emerald-600/40 via-teal-900 to-slate-950",
+    badge: "Liberia Agribusiness Leader",
+    image: "/images/hero/farm-rice-harvest.jpg"
+  },
+  {
+    id: "farm-cocoa",
+    title: "TOTAG Cocoa & Tree Crops Division",
+    subtitle: "High-Yield Export Cocoa Cultivation, Agro-Forestry & Organic Farming in Liberia.",
+    href: "/farm",
+    icon: Sprout,
+    gradient: "from-amber-700/40 via-stone-900 to-slate-950",
+    badge: "Export Agribusiness",
+    image: "/images/hero/farm-cocoa-harvest.jpg"
+  },
+  {
+    id: "farm-precision",
+    title: "TOTAG Precision Agritech & Monitoring",
+    subtitle: "Digital Crop Mapping, Soil Analytics & Tech-Driven Agriculture Management in West Africa.",
+    href: "/farm",
+    icon: Sprout,
+    gradient: "from-cyan-600/40 via-blue-950 to-slate-950",
+    badge: "Smart Agritech Solutions",
+    image: "/images/hero/farm-surveyor-field.jpg"
+  },
+  {
+    id: "solar-battery",
+    title: "TOTAG Energy Storage & Battery Systems",
+    subtitle: "Rackmounted Pylontech US5000 48V LiFePO4 Battery Banks for Continuous 24/7 Clean Power.",
+    href: "/solar",
+    icon: Sun,
+    gradient: "from-sky-600/40 via-slate-900 to-slate-950",
+    badge: "LiFePO4 Storage Systems",
+    image: "/images/pv/pylontech-us5000-battery.png"
   },
   {
     id: "cargo",
@@ -40,16 +81,6 @@ const HERO_SLIDES = [
     gradient: "from-blue-600/30 via-slate-900 to-slate-950",
     badge: "Pan-African Port Operations",
     image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&h=800&fit=crop"
-  },
-  {
-    id: "farm",
-    title: "TOTAG FARM & Agribusiness",
-    subtitle: "Sustainable Commercial Agriculture, Cold-Chain Logistics, Organic Produce & Agro-Processing.",
-    href: "/farm",
-    icon: Sprout,
-    gradient: "from-emerald-600/30 via-teal-900 to-slate-950",
-    badge: "Food Security & Agribusiness",
-    image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&h=800&fit=crop"
   },
   {
     id: "petroleum",
@@ -72,26 +103,6 @@ const HERO_SLIDES = [
     image: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?w=1600&h=800&fit=crop"
   },
   {
-    id: "general-merchandise",
-    title: "TOTAG General Merchandise",
-    subtitle: "Wholesale Enterprise Supply Chain, Heavy Equipment Procurement & Industrial Materials.",
-    href: "/general-merchandise",
-    icon: ShoppingBag,
-    gradient: "from-indigo-600/30 via-slate-900 to-slate-950",
-    badge: "Global Enterprise Trading",
-    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&h=800&fit=crop"
-  },
-  {
-    id: "catering",
-    title: "TOCEPS Catering & Events Planning",
-    subtitle: "Corporate Catering, Diplomatic Banquets, Large-Scale Industrial Camp Dining & Event Management.",
-    href: "/catering",
-    icon: UtensilsCrossed,
-    gradient: "from-orange-600/30 via-rose-950 to-slate-950",
-    badge: "Enterprise Hospitality",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?w=1600&h=800&fit=crop"
-  },
-  {
     id: "it-services",
     title: "TOTAG IT Services & SaaS",
     subtitle: "Custom Enterprise Software, Government HRMIS/FIMS SaaS Solutions & Cybersecurity Infrastructure.",
@@ -100,23 +111,11 @@ const HERO_SLIDES = [
     gradient: "from-cyan-600/30 via-blue-950 to-slate-950",
     badge: "Digital Transformation & Cloud",
     image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&h=800&fit=crop"
-  },
-  {
-    id: "stationery",
-    title: "TOTAG Stationery Supplies",
-    subtitle: "Bulk Educational Supplies, Corporate Office Paper Products & Institutional Printing.",
-    href: "/stationery",
-    icon: FileText,
-    gradient: "from-purple-600/30 via-slate-900 to-slate-950",
-    badge: "Institutional Supply Leader",
-    image: "https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?w=1600&h=800&fit=crop"
   }
 ];
 
 export default function CinematicOpeningHero() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isPlayingIntro, setIsPlayingIntro] = useState<boolean>(true);
-  const [introPhase, setIntroPhase] = useState<"map" | "burst" | "text" | "complete">("map");
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
 
@@ -125,198 +124,45 @@ export default function CinematicOpeningHero() {
     if (isPlayingIntro || isPaused) return;
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 6000);
+    }, 6500);
     return () => clearInterval(timer);
   }, [isPlayingIntro, isPaused]);
-
-  // Timeline driver for the Opening Video Animation
-  useEffect(() => {
-    if (!isPlayingIntro) return;
-
-    setIntroPhase("map");
-    const t1 = setTimeout(() => setIntroPhase("burst"), 2200);
-    const t2 = setTimeout(() => setIntroPhase("text"), 4500);
-    const t3 = setTimeout(() => {
-      setIntroPhase("complete");
-    }, 12000);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [isPlayingIntro]);
-
-  // HTML5 Canvas Rendering for Illuminated Africa Vector Map & Horizon Sunburst
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || 650);
-
-    const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-      height = canvas.height = canvas.parentElement?.clientHeight || 650;
-    };
-    window.addEventListener("resize", handleResize);
-
-    // Simplified Africa Continent Coordinates relative to canvas center
-    const africaPath = [
-      [0.05, -0.35], [0.18, -0.32], [0.28, -0.22], [0.38, -0.05], [0.42, 0.12], 
-      [0.32, 0.28], [0.22, 0.42], [0.12, 0.52], [-0.02, 0.48], [-0.12, 0.35], 
-      [-0.18, 0.18], [-0.32, 0.05], [-0.35, -0.08], [-0.28, -0.22], [-0.15, -0.32], [0.05, -0.35]
-    ];
-
-    // Liberia exact relative position on West Africa coast
-    const liberiaPos = [-0.26, 0.04];
-
-    let pulseAngle = 0;
-    let rayAngle = 0;
-
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      const centerX = width * 0.5;
-      const centerY = height * 0.45;
-      const scale = Math.min(width, height) * 0.75;
-
-      // 1. Draw Space Grid Stars
-      ctx.fillStyle = "rgba(255, 255, 255, 0.15)";
-      for (let i = 0; i < 40; i++) {
-        const sx = (Math.sin(i * 99 + rayAngle * 0.01) * 0.5 + 0.5) * width;
-        const sy = (Math.cos(i * 33 + rayAngle * 0.01) * 0.5 + 0.5) * height;
-        ctx.beginPath();
-        ctx.arc(sx, sy, Math.sin(i + rayAngle * 0.05) > 0 ? 1.5 : 0.8, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 2. Draw Illuminated Africa Map Contour
-      ctx.beginPath();
-      africaPath.forEach(([rx, ry], idx) => {
-        const x = centerX + rx * scale;
-        const y = centerY + ry * scale;
-        if (idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.closePath();
-
-      // Ambient Map Fill
-      const mapGrad = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, scale * 0.6);
-      mapGrad.addColorStop(0, "rgba(14, 165, 233, 0.15)");
-      mapGrad.addColorStop(0.5, "rgba(16, 185, 129, 0.1)");
-      mapGrad.addColorStop(1, "rgba(15, 23, 42, 0.8)");
-      ctx.fillStyle = mapGrad;
-      ctx.fill();
-
-      // Glowing Map Border Lines
-      ctx.strokeStyle = "rgba(56, 189, 248, 0.6)";
-      ctx.lineWidth = 2;
-      ctx.shadowColor = "#38bdf8";
-      ctx.shadowBlur = 15;
-      ctx.stroke();
-
-      const libX = centerX + liberiaPos[0] * scale;
-      const libY = centerY + liberiaPos[1] * scale;
-
-      // 3. Horizon Sunburst Rays emanating from Liberia across West Africa
-      if (introPhase === "burst" || introPhase === "text" || introPhase === "complete") {
-        rayAngle += 0.01;
-        const numRays = 16;
-        for (let r = 0; r < numRays; r++) {
-          const angle = (r / numRays) * Math.PI * 2 + rayAngle * 0.2;
-          const endX = libX + Math.cos(angle) * width;
-          const endY = libY + Math.sin(angle) * height;
-
-          const rayGrad = ctx.createLinearGradient(libX, libY, endX, endY);
-          rayGrad.addColorStop(0, "rgba(245, 158, 11, 0.6)");
-          rayGrad.addColorStop(0.3, "rgba(16, 185, 129, 0.3)");
-          rayGrad.addColorStop(1, "transparent");
-
-          ctx.beginPath();
-          ctx.moveTo(libX, libY);
-          ctx.lineTo(endX, endY);
-          ctx.strokeStyle = rayGrad;
-          ctx.lineWidth = 12 + Math.sin(angle * 3) * 6;
-          ctx.shadowBlur = 25;
-          ctx.shadowColor = "#f59e0b";
-          ctx.stroke();
-        }
-
-        // Broad Horizon Luminous Atmosphere
-        const horizonGrad = ctx.createRadialGradient(libX, libY, 5, libX, libY, scale * 0.8);
-        horizonGrad.addColorStop(0, "rgba(245, 158, 11, 0.8)");
-        horizonGrad.addColorStop(0.4, "rgba(16, 185, 129, 0.4)");
-        horizonGrad.addColorStop(0.8, "rgba(14, 165, 233, 0.15)");
-        horizonGrad.addColorStop(1, "transparent");
-
-        ctx.fillStyle = horizonGrad;
-        ctx.beginPath();
-        ctx.arc(libX, libY, scale * 0.8, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // 4. Highlighted Liberia Beacon Pulse
-      pulseAngle += 0.05;
-      const pulseRadius = 12 + Math.sin(pulseAngle) * 8;
-
-      ctx.beginPath();
-      ctx.arc(libX, libY, pulseRadius * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(245, 158, 11, 0.2)";
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(libX, libY, pulseRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(16, 185, 129, 0.9)";
-      ctx.shadowColor = "#10b981";
-      ctx.shadowBlur = 30;
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(libX, libY, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#ffffff";
-      ctx.fill();
-
-      // Label "LIBERIA - TOTAG HQ"
-      ctx.shadowBlur = 0;
-      ctx.font = "900 11px Inter, sans-serif";
-      ctx.fillStyle = "#f59e0b";
-      ctx.fillText("📍 LIBERIA (TOTAG HQ)", libX + 15, libY + 4);
-
-      animationFrameId = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isPlayingIntro, introPhase]);
 
   const currentSlide = HERO_SLIDES[activeSlide];
 
   return (
-    <section className="relative w-full bg-slate-950 text-white overflow-hidden min-h-[750px] flex flex-col justify-between">
+    <section className="relative w-full bg-slate-950 text-white overflow-hidden min-h-[720px] flex flex-col justify-between select-none">
 
-      {/* Background Canvas for Opening Sequence */}
-      <canvas 
-        ref={canvasRef} 
-        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none opacity-85"
-      />
+      {/* DEYE-STYLE HORIZON LIGHT ATMOSPHERE & RAYS */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        
+        {/* Deep Space / Dark Ambient Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black" />
 
-      {/* Dark Ambient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-slate-950/70 z-0 pointer-events-none" />
+        {/* Dynamic Horizon Light Flare emanating from West Africa / Liberia */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-amber-500/20 via-emerald-500/25 to-sky-500/20 rounded-full blur-[120px] animate-pulse" />
 
-      {/* Top Header Overlay */}
-      <div className="relative z-10 container mx-auto px-4 pt-6 flex items-center justify-between">
+        {/* Horizon Light Rays Sweep */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] opacity-30">
+          <div className="w-full h-full bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,#f59e0b_15deg,transparent_30deg,#10b981_45deg,transparent_60deg,#06b6d4_75deg,transparent_90deg)] animate-[spin_60s_linear_infinite]" />
+        </div>
+
+        {/* Ambient Grid Mesh */}
+        <div 
+          className="absolute inset-0 opacity-15"
+          style={{
+            backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px)`,
+            backgroundSize: "32px 32px"
+          }}
+        />
+
+      </div>
+
+      {/* TOP BAR / CONTROL OVERLAY */}
+      <div className="relative z-20 container mx-auto px-4 pt-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-lg">
-            <Sparkles className="w-3.5 h-3.5" />
+          <span className="px-3.5 py-1.5 rounded-full bg-slate-900/90 text-amber-400 border border-amber-500/40 font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-2xl backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" />
             Liberia • West Africa Operation Center
           </span>
         </div>
@@ -327,7 +173,7 @@ export default function CinematicOpeningHero() {
               onClick={() => setIsPlayingIntro(false)}
               size="sm"
               variant="outline"
-              className="bg-slate-900/80 border-slate-700 text-slate-200 hover:text-white text-xs font-bold rounded-xl backdrop-blur-md"
+              className="bg-slate-900/90 border-slate-700 text-slate-200 hover:text-white hover:border-amber-500 text-xs font-bold rounded-xl backdrop-blur-md shadow-xl"
             >
               Skip Intro to Carousel →
             </Button>
@@ -336,7 +182,7 @@ export default function CinematicOpeningHero() {
               onClick={() => setIsPlayingIntro(true)}
               size="sm"
               variant="outline"
-              className="bg-slate-900/80 border-slate-700 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl backdrop-blur-md"
+              className="bg-slate-900/90 border-slate-700 text-amber-400 hover:text-amber-300 text-xs font-bold rounded-xl backdrop-blur-md shadow-xl"
             >
               <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
               Replay Liberia Horizon Opening
@@ -345,105 +191,181 @@ export default function CinematicOpeningHero() {
         </div>
       </div>
 
-      {/* MAIN CONTENT AREA */}
-      <div className="relative z-10 container mx-auto px-4 py-12 flex-1 flex flex-col justify-center max-w-5xl text-center">
+      {/* MAIN CONTAINER */}
+      <div className="relative z-10 container mx-auto px-4 py-8 flex-1 flex flex-col justify-center max-w-6xl">
 
-        {/* INTRO ANIMATION DISPLAY MODE */}
+        {/* DEYE-INSPIRED OPENING SEQUENCE: AFRICA MAP + LIBERIA BEACON + HORIZON TEXT REVEAL */}
         {isPlayingIntro ? (
-          <div className="space-y-8 my-auto animate-fadeIn">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
             
-            {/* Luminous Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-tight"
+            {/* LEFT COLUMN: TEXT REVEAL COMING THROUGH THE HORIZON LIGHT */}
+            <motion.div 
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-7 space-y-6 text-left"
             >
-              Welcome to <span className="bg-gradient-to-r from-amber-400 via-emerald-400 to-sky-400 bg-clip-text text-transparent drop-shadow-2xl">TOTAG Group</span>
-            </motion.h1>
-
-            {/* Wording coming through the Horizon Light */}
-            <motion.p
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, delay: 0.4 }}
-              className="text-base sm:text-xl md:text-2xl text-slate-200 font-medium max-w-4xl mx-auto leading-relaxed drop-shadow-lg bg-slate-950/40 p-6 rounded-2xl border border-white/10 backdrop-blur-md"
-            >
-              Delivering excellence across diverse industries through our specialized subsidiaries. From cargo handling, agribusiness, and petroleum services to construction, IT solutions, stationery supplies, and renewable energy, we provide comprehensive business solutions with unwavering commitment to quality.
-            </motion.p>
-
-            {/* Sub-status Indicator */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="flex items-center justify-center gap-4 text-xs font-bold text-slate-400"
-            >
-              <span className="flex items-center gap-1.5 text-emerald-400">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-widest">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                Brightening Liberia & West Africa
-              </span>
-              <span>•</span>
-              <span className="text-amber-400">9 Enterprise Subsidiaries</span>
+                Brightening Liberia & Diverse Enterprise Sectors
+              </div>
+
+              {/* Exact Headline Requested */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
+                Welcome to <span className="bg-gradient-to-r from-amber-400 via-emerald-400 to-sky-400 bg-clip-text text-transparent drop-shadow-2xl">TOTAG Group</span>
+              </h1>
+
+              {/* Exact Subheadline Text Requested */}
+              <p className="text-base sm:text-lg text-slate-200 font-medium leading-relaxed bg-slate-900/60 p-6 rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl">
+                Delivering excellence across diverse industries through our specialized subsidiaries. From cargo handling, agribusiness, and petroleum services to construction, IT solutions, stationery supplies, and renewable energy, we provide comprehensive business solutions with unwavering commitment to quality.
+              </p>
+
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <Button
+                  onClick={() => setIsPlayingIntro(false)}
+                  size="lg"
+                  className="px-8 py-6 bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-500 hover:from-amber-400 hover:to-emerald-400 text-slate-950 font-black text-sm rounded-2xl shadow-2xl hover:scale-105 transition-all"
+                >
+                  <span>Explore Operational Subsidiaries</span>
+                  <ArrowRight className="ml-2.5 w-5 h-5" />
+                </Button>
+              </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
-              <Button
-                onClick={() => setIsPlayingIntro(false)}
-                size="lg"
-                className="px-8 py-6 bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-500 hover:from-amber-400 hover:to-emerald-400 text-slate-950 font-black text-base rounded-2xl shadow-2xl hover:scale-105 transition-all"
-              >
-                <span>Explore 9 Operational Subsidiaries</span>
-                <ArrowRight className="ml-2.5 w-5 h-5" />
-              </Button>
+            {/* RIGHT COLUMN: HIGH-PRECISION ILLUMINATED VECTOR SVG MAP OF AFRICA WITH LIBERIA HIGHLIGHT */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="lg:col-span-5 relative flex items-center justify-center"
+            >
+              
+              {/* Radial Glowing Light Aura behind Africa */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/20 via-emerald-500/30 to-cyan-500/20 rounded-full blur-3xl" />
+
+              {/* VECTOR SVG MAP OF AFRICA */}
+              <div className="relative w-full max-w-[420px] aspect-square p-4 glass-card rounded-3xl border-white/10 bg-slate-900/40 backdrop-blur-xl shadow-2xl flex items-center justify-center">
+                
+                <svg 
+                  viewBox="0 0 800 800" 
+                  className="w-full h-full drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]"
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {/* Africa Continental Vector Path */}
+                  <path 
+                    d="M380,120 C420,120 480,130 520,160 C560,190 620,240 640,300 C660,360 630,420 590,470 C550,520 500,580 460,640 C440,670 410,720 380,740 C360,720 340,660 320,620 C300,580 270,540 250,500 C230,460 200,420 180,380 C160,340 140,300 160,270 C180,240 240,220 280,220 C310,220 340,180 350,150 Z" 
+                    fill="url(#africaGrad)" 
+                    stroke="#38bdf8" 
+                    strokeWidth="3"
+                    strokeDasharray="6 4"
+                  />
+
+                  {/* SVG Gradients */}
+                  <defs>
+                    <radialGradient id="africaGrad" cx="300" cy="420" r="400" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.4" />
+                      <stop offset="30%" stopColor="#10b981" stopOpacity="0.3" />
+                      <stop offset="70%" stopColor="#0f172a" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#020617" stopOpacity="0.95" />
+                    </radialGradient>
+
+                    <radialGradient id="liberiaLightBurst" cx="260" cy="420" r="300" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
+                      <stop offset="40%" stopColor="#10b981" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Latitude / Longitude Network Lines */}
+                  <line x1="150" y1="420" x2="650" y2="420" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="1.5" />
+                  <line x1="260" y1="150" x2="260" y2="700" stroke="rgba(245, 158, 11, 0.2)" strokeWidth="1.5" />
+
+                  {/* Horizon Light Rays emanated from Liberia Coordinates (x: 260, y: 420) */}
+                  <circle cx="260" cy="420" r="280" fill="url(#liberiaLightBurst)" />
+
+                  {/* Expanding Pulse Rings over Liberia */}
+                  <circle cx="260" cy="420" r="40" stroke="#f59e0b" strokeWidth="2" opacity="0.6">
+                    <animate attributeName="r" values="10;80" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.8;0" dur="3s" repeatCount="indefinite" />
+                  </circle>
+                  
+                  <circle cx="260" cy="420" r="25" stroke="#10b981" strokeWidth="2.5" opacity="0.8">
+                    <animate attributeName="r" values="5;50" dur="2s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="1;0" dur="2s" repeatCount="indefinite" />
+                  </circle>
+
+                  {/* Glowing Liberia Core Pin */}
+                  <circle cx="260" cy="420" r="12" fill="#10b981" />
+                  <circle cx="260" cy="420" r="6" fill="#ffffff" />
+
+                  {/* Luminous Callout Pin for Liberia */}
+                  <g transform="translate(280, 395)">
+                    <rect x="0" y="0" width="210" height="42" rx="10" fill="#0f172a" stroke="#f59e0b" strokeWidth="2" />
+                    <text x="14" y="26" fill="#f59e0b" fontSize="15" fontWeight="900" fontFamily="Inter, sans-serif">
+                      📍 LIBERIA (TOTAG HQ)
+                    </text>
+                  </g>
+                </svg>
+
+                {/* Sub-badge below map */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-xl bg-slate-950/90 border border-emerald-500/40 text-[11px] font-extrabold text-emerald-400 uppercase tracking-wider whitespace-nowrap shadow-xl">
+                  Global Reach • Pan-African Operational Base
+                </div>
+
+              </div>
+
             </motion.div>
 
           </div>
         ) : (
-          /* HERO CAROUSEL ENGINE MODE */
-          <div className="my-auto space-y-8 animate-fadeIn">
+          /* HERO CAROUSEL ENGINE loaded with REAL USER UPLOADED PHOTOS */
+          <div className="my-auto animate-fadeIn">
             
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide.id}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.5 }}
-                className="glass-card border-white/20 dark:border-white/10 p-8 sm:p-12 rounded-3xl backdrop-blur-2xl relative overflow-hidden text-left bg-gradient-to-r shadow-2xl"
+                className="glass-card border-white/20 p-6 sm:p-10 rounded-3xl backdrop-blur-2xl relative overflow-hidden text-left shadow-2xl min-h-[460px] flex flex-col justify-end"
               >
-                {/* Background Image / Overlay */}
-                {currentSlide.image && (
-                  <div className="absolute inset-0 z-0">
-                    <img src={currentSlide.image} alt={currentSlide.title} className="w-full h-full object-cover opacity-30" />
-                    <div className={`absolute inset-0 bg-gradient-to-r ${currentSlide.gradient}`} />
-                  </div>
-                )}
+                {/* Real Operational Photo Background */}
+                <div className="absolute inset-0 z-0">
+                  <img 
+                    src={currentSlide.image} 
+                    alt={currentSlide.title} 
+                    className="w-full h-full object-cover opacity-45 scale-105 transition-transform duration-1000"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${currentSlide.gradient}`} />
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/50 to-transparent" />
+                </div>
 
-                <div className="relative z-10 max-w-3xl space-y-6">
+                <div className="relative z-10 max-w-3xl space-y-4">
                   <div className="flex items-center gap-3">
-                    <span className="px-3.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black text-xs uppercase tracking-wider flex items-center gap-2">
+                    <span className="px-3.5 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black text-xs uppercase tracking-wider flex items-center gap-2 backdrop-blur-md shadow-lg">
                       <currentSlide.icon className="w-4 h-4 text-amber-400" />
                       {currentSlide.badge}
                     </span>
-                    <span className="text-xs text-slate-400 font-mono font-bold">
+                    <span className="text-xs text-slate-300 font-mono font-bold bg-slate-950/60 px-2.5 py-1 rounded-lg border border-white/10">
                       Slide {activeSlide + 1} of {HERO_SLIDES.length}
                     </span>
                   </div>
 
-                  <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                  <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight drop-shadow-md">
                     {currentSlide.title}
                   </h2>
 
-                  <p className="text-base sm:text-lg text-slate-200 leading-relaxed font-medium">
+                  <p className="text-sm sm:text-base text-slate-200 leading-relaxed font-medium max-w-2xl drop-shadow-md">
                     {currentSlide.subtitle}
                   </p>
 
-                  <div className="pt-4 flex flex-wrap items-center gap-4">
+                  <div className="pt-2 flex flex-wrap items-center gap-4">
                     <Link href={currentSlide.href}>
                       <Button
                         size="lg"
-                        className="px-8 py-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm rounded-2xl shadow-xl hover:scale-105 transition-all"
+                        className="px-8 py-5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-2xl hover:scale-105 transition-all"
                       >
                         <span>Access Subsidiary Portal</span>
                         <ArrowRight className="ml-2.5 w-4 h-4" />
@@ -460,11 +382,11 @@ export default function CinematicOpeningHero() {
 
       </div>
 
-      {/* BOTTOM SLIDE NAVIGATION & INDICATOR BAR */}
-      <div className="relative z-10 container mx-auto px-4 pb-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-slate-800 pt-4">
+      {/* BOTTOM CAROUSEL THUMBNAIL NAVIGATION BAR */}
+      <div className="relative z-20 container mx-auto px-4 pb-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-slate-800/80 pt-4">
           
-          {/* Quick Subsidiary Jump Tabs */}
+          {/* Quick Jump Buttons for User Uploaded Images */}
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
             {HERO_SLIDES.map((slide, idx) => {
               const IconComp = slide.icon;
@@ -475,9 +397,9 @@ export default function CinematicOpeningHero() {
                     setIsPlayingIntro(false);
                     setActiveSlide(idx);
                   }}
-                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
                     !isPlayingIntro && activeSlide === idx
-                      ? "bg-amber-500 text-slate-950 font-black shadow-lg"
+                      ? "bg-amber-500 text-slate-950 font-black shadow-xl scale-105"
                       : "bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800"
                   }`}
                 >
@@ -488,28 +410,28 @@ export default function CinematicOpeningHero() {
             })}
           </div>
 
-          {/* Controls */}
+          {/* Pause / Play Controls */}
           {!isPlayingIntro && (
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setActiveSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center hover:bg-slate-800 transition-all"
+                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
 
               <button
                 onClick={() => setIsPaused(!isPaused)}
-                className="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all"
+                className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold text-slate-300 hover:text-white transition-all shadow-lg"
               >
                 {isPaused ? "▶ Auto-Play" : "⏸ Pause"}
               </button>
 
               <button
                 onClick={() => setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
-                className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center hover:bg-slate-800 transition-all"
+                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white flex items-center justify-center hover:bg-slate-800 transition-all shadow-lg"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           )}
