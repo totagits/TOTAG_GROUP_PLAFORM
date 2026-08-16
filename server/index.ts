@@ -1,9 +1,8 @@
-if (process.env.NODE_ENV !== "production") {
-  try {
-    await import("dotenv/config");
-  } catch (e) {}
-}
+try {
+  await import("dotenv/config");
+} catch (e) {}
 import express, { type Request, Response, NextFunction } from "express";
+
 
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
