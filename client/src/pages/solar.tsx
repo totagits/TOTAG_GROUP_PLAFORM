@@ -136,20 +136,34 @@ const DETAILED_COMPONENT_CATALOGUE = [
   },
   {
     id: "COMP-INV-VIC15K",
-    name: "Victron Quattro 15kVA Inverter/Charger",
+    name: "Victron Quattro 48/15000/200-100/100 277V 15kVA Inverter/Charger",
     category: "Inverter",
-    brand: "Victron Energy",
-    modelNo: "QUA48/15000/200-100/100",
+    brand: "Victron Energy (Blue Power)",
+    modelNo: "Quattro 48/15000/200-100/100 277V",
     priceUsd: 3850,
     warranty: "5-Year Victron Global Warranty",
-    certifications: "EN-IEC 60335-1, EN-IEC 62109-1, CE, ISO 9001",
-    specs: "15kVA • Dual AC Inputs • 48V 200A Charger • PowerAssist Peak Shaving",
-    dimensions: "470 x 350 x 280 mm (34.0 kg)",
-    description: "Heavy-duty industrial inverter/charger with dual AC inputs (Utility + Diesel Generator), seamless 20ms UPS transfer, and PowerAssist peak-load shaving.",
+    certifications: "EN-IEC 60335-1, EN-IEC 60335-2-29, EN-IEC 62109-1, CE, ISO 9001",
+    specs: "15,000 VA (15kVA / 12kW) Continuous • 25,000 W Peak Power • 48V DC Input • 200A Charger • 277V AC Output ± 2%",
+    dimensions: "572 x 488 x 344 mm (22.6 x 19.2 x 13.6 in) • Weight: 72 kg (160 lb)",
+    youtubeVideoUrl: "https://www.youtube.com/embed/mEN15Z_S4kE",
+    description: "The Victron Quattro 48/15000 is an industrial-grade 15kVA inverter and 200A battery charger featuring dual independent AC inputs with an integrated automatic transfer switch (less than 20ms transfer), dual AC outputs with load shedding, PowerAssist peak shaving, PowerControl generator limiting, and 3-phase parallel scalability up to 180kVA (144kW).",
+    features: [
+      "Two Independent AC Inputs: Automatic connection to grid or generator (2x 100A max feed-through current)",
+      "Two AC Outputs: Main output features no-break UPS functionality (<20ms transfer time); secondary output active only when AC input is available",
+      "PowerAssist Technology: Prevents generator or shore power overload by supplementing battery power during peak surges",
+      "PowerControl Generator Limiting: Sets maximum AC input current limit, prioritizing loads and using remaining power for battery charging",
+      "Parallel & 3-Phase Scalability: Up to 4 sets of 3 units in parallel (12 units total) delivering up to 180 kVA (144 kW) output and 2400A charging capacity",
+      "48V 200A Battery Charger: Adaptive 4-stage charge algorithm (Bulk, Absorption, Float, Storage) for Lead-Acid & Lithium (LiFePO4) chemistries",
+      "Advanced System Telemetry: Full integration with Cerbo GX, Ekrano GX, VRM Online Portal, Bluetooth Smart, and VictronConnect app",
+      "Robust Blue Aluminium Enclosure: IP21 protection category, four M8 DC connection bolts, M6 277 VAC connection bolts",
+      "Programmable Relays (3x): Configurable for general alarms, DC under-voltage trip, or automatic generator start/stop",
+      "Solar PV Integration: Compatible with off-grid and grid-tied solar systems with loss-of-mains detection software"
+    ],
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Front View: Industrial Powder-Coated Metal Enclosure & Status LEDs" },
-      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Terminal Block: Heavy Duty M8 Copper DC Terminals & Dual AC In/Out" },
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "System Integration: VE.Bus, VE.Can Protocol & Programmable Relays" }
+      { url: "/images/pv/victron-quattro-15kva-front.png", caption: "Victron Quattro 48/15000/200-100/100 277V Front View Panel & LED Status Display" },
+      { url: "/images/pv/victron-quattro-15kva-angled.png", caption: "Victron Quattro 15kVA 3D Angled Blue RAL 5012 Heavy-Duty Aluminium Enclosure" },
+      { url: "/images/pv/victron-quattro-15kva-datasheet-p1.png", caption: "Official Product Datasheet Page 1: Features, Dual AC Inputs/Outputs, VRM Remote Portal & System Architecture" },
+      { url: "/images/pv/victron-quattro-15kva-datasheet-p2.png", caption: "Official Product Datasheet Page 2: Complete Technical Data Table, Electrical Ratings, Enclosure Specs & Accessories" }
     ]
   },
   {
