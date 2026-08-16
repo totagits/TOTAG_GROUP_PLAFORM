@@ -256,14 +256,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1450,
     specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT (500V DC) • 1.3 DC/AC Ratio • IP65 Weatherproof",
     description: "Single-phase low voltage hybrid inverter with color touchscreen, 6 time periods for battery charging/discharging, and max 16pcs parallel operation.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact White Housing with Color Touch Screen LCD" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch, MC4 Solar Input & AC Cable Glands" },
-      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "Comm Board: CANbus, RS485 & Auto Generator Start Relay" }
-    ]
+    
   },
   {
     id: "DEYE-SP-02",
@@ -275,13 +277,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1550,
     specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • 6 Time Periods",
     description: "Enhanced SG05 Series single-phase LV hybrid inverter optimized for smart load management and diesel generator synchronization.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Dark LCD Panel with Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Internal Terminal Block: Dual AC Port & Heavy Duty DC Terminals" }
-    ]
+    
   },
   {
     id: "DEYE-SP-03",
@@ -293,13 +298,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1850,
     specs: "7-10 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit Capable • Zero Export Control",
     description: "High-capacity single-phase hybrid inverter designed for large residential and commercial off-grid/hybrid installations.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Weatherproof Outdoor Housing" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Plate: High Voltage DC & AC Wiring Connections" }
-    ]
+    
   },
   {
     id: "DEYE-SP-04",
@@ -311,13 +319,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2150,
     specs: "7-12 kW Output • 48V LV Battery • 3 MPPT • Triple String Tracking • 200% Overload",
     description: "Latest 2026 flagship single-phase hybrid inverter with 3 MPPT trackers for multi-orientated rooftop arrays.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Next-Gen Touch Screen Interface" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Triple MPPT Terminals: 3 Independent String Inputs" }
-    ]
+    
   },
   {
     id: "DEYE-SP-05",
@@ -329,12 +340,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-2.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2250,
     specs: "7.6-12 kW Output • 48V Battery • 2/3 MPPT • Microgrid Frequency Control",
     description: "Heavy-duty SG02 series single phase hybrid inverter with high charge/discharge current capacity.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Industrial Casing: Heavy Die-Cast Aluminum Enclosure" }
-    ]
+    
   },
   {
     id: "DEYE-SP-06",
@@ -346,12 +361,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-2.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2950,
     specs: "12-18 kW High Power • 48V Battery • 3 MPPT • 250A Battery Charge/Discharge",
     description: "Ultra-high power single phase LV hybrid inverter powering up to 18kW continuous load for heavy industrial facilities.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "18kW Master Enclosure: High Power Dual-Zone Heat Sink" }
-    ]
+    
   },
   {
     id: "DEYE-SP-07",
@@ -363,12 +382,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-3.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1150,
     specs: "3-6 kW Output • 48V Battery • 2 MPPT • Compact Light Weight Design",
     description: "Compact 3-6kW residential hybrid inverter with fast UPS response time under 4ms.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact Residential Form Factor" }
-    ]
+    
   },
   {
     id: "DEYE-SP-08",
@@ -380,12 +403,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-3.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1250,
     specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Smart Load & Generator Port",
     description: "Residential hybrid inverter with dedicated smart load output for high-surge appliances.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Compact Housing: Wall-Mount Ready Frame" }
-    ]
+    
   },
   {
     id: "DEYE-SP-09",
@@ -397,12 +424,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-3.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1180,
     specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Low Noise Passive Cooling",
     description: "Silent operation single-phase hybrid inverter for home office & clinic deployments.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: Silent Passive Heat Sink Design" }
-    ]
+    
   },
   {
     id: "DEYE-SP-10",
@@ -414,12 +445,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-single-phase-lv-3.png",
+    photos: [
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1220,
     specs: "3-6 kW Output • 48V Battery • 2 MPPT • CE & VDE Certified",
     description: "Standard EU-certified single-phase hybrid inverter with integrated DC switch.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Standard EU Grid Compliance Badge" }
-    ]
+    
   },
 
 
@@ -434,13 +469,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1980,
     specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • 100% Unbalanced Output • IP65 Weatherproof",
     description: "New 2026 compact three-phase low voltage hybrid inverter with 100% unbalanced phase output capability (each phase max output up to 50% rated power).",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Weatherproof Outdoor Housing & Color Touch LCD Interface" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: 3-Phase AC Output Terminals & Dual MPPT Input Glands" }
-    ]
+    
   },
   {
     id: "DEYE-TP-LV-02",
@@ -452,12 +490,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2050,
     specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • Max 10pcs Parallel",
     description: "Commercial 3-phase hybrid inverter with generator port for integrated automatic diesel generator synchronization.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: Industrial 3-Phase Status LED Display" }
-    ]
+    
   },
   {
     id: "DEYE-TP-LV-03",
@@ -469,12 +511,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2650,
     specs: "3-12 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit • 6 Time Periods",
     description: "Versatile 3-12kW three-phase hybrid inverter supporting both AC coupling for existing solar arrays and DC coupling for new battery storage.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Dark Touchscreen LCD Interface" }
-    ]
+    
   },
   {
     id: "DEYE-TP-LV-04",
@@ -486,12 +532,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-lv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 3450,
     specs: "14-20 kW Output • 48V LV Battery • 2 MPPT • 350A Max Battery Charge/Discharge",
     description: "High-power 20kW three-phase LV hybrid inverter featuring 350A continuous battery charging for rapid commercial battery recovery.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Heavy Duty Frame: 20kW Commercial Three-Phase Heat Sink" }
-    ]
+    
   },
   {
     id: "DEYE-TP-LV-05",
@@ -503,12 +553,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-lv-2.png",
+    photos: [
+      { url: "/images/deye/deye-tp-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2550,
     specs: "5-12 kW Output • 48V LV Battery • 2 MPPT • IP65 Weatherproof • Modbus RS485",
     description: "Heavy-duty SG04 series 3-phase hybrid inverter with die-cast IP65 aluminum casing.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Weatherproof Industrial Enclosure" }
-    ]
+    
   },
 
   // --- THREE-PHASE HIGH VOLTAGE HYBRID INVERTERS (10 Series Models) ---
@@ -522,12 +576,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2850,
     specs: "5-12 kW Output • 160V-800V High Voltage Battery • 2 MPPT • >97.6% Efficiency",
     description: "High-voltage battery 3-phase hybrid inverter with ultra-high round-trip efficiency and reduced cable losses.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: High Voltage DC Bus Status Touchscreen" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-02",
@@ -539,12 +597,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 3150,
     specs: "8-15 kW Output • 160V-800V HV Battery • 2 MPPT • UL1741 & IEEE 1547 Certified",
     description: "North American & international compliant HV battery 3-phase hybrid inverter with rapid shutdown integration.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: UL Certified Enclosure" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-03",
@@ -556,12 +618,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 3850,
     specs: "5-25 kW Output • HV Battery • 2 MPPT • 100% Unbalanced Load • 10 Units Parallel",
     description: "Commercial 25kW HV hybrid inverter capable of paralleling up to 10 units for 250kW microgrid systems.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "25kW Enclosure: Commercial Parallel Control Terminal" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-04",
@@ -573,12 +639,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 4650,
     specs: "25-30 kW Output • HV Battery • 3 MPPT • Triple String Tracking • Smart Load Port",
     description: "Industrial 30kW HV hybrid inverter featuring 3 independent MPPT trackers for complex commercial roofs.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 30kW Triple MPPT Control Panel" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-05",
@@ -590,12 +660,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-2.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 5950,
     specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • 100A Max Battery Charge • IP65",
     description: "50kW commercial & industrial HV hybrid inverter supporting high-capacity containerized energy storage systems.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "50kW Industrial Housing: Quad MPPT Bus & AC Terminals" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-06",
@@ -607,12 +681,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-2.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 6250,
     specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • Next-Gen Power Module • Active Cooling",
     description: "Flagship 2026 50kW HV hybrid inverter with high current input density for 650W+ TOPCon solar panels.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Next-Gen Touch Display & Active Heat Sink Fans" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-07",
@@ -624,12 +702,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-tp-hv-2.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 8950,
     specs: "60-80 kW Output • HV Battery • 6 MPPT • 6 Independent String Trackers • SCADA Ready",
     description: "Utility-scale 80kW HV hybrid inverter with 6 MPPTs and Modbus TCP/RTU SCADA integration.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "80kW Utility Enclosure: Hexa-MPPT Input Terminal Block" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-08",
@@ -641,12 +723,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-2.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 12850,
     specs: "100-125 kW Mega Power • HV Battery • 8/10 MPPT • 10 Independent String Trackers • Utility Microgrid",
     description: "Mega-scale 125kW HV hybrid inverter engineered for mini-grids, rural electrification, and mining facilities.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "125kW Mega Inverter: 10-MPPT Terminal Array & Fiber Optic Comm Port" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-09",
@@ -658,12 +744,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-3.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 3950,
     specs: "15-25 kW Output • HV Battery • 3 MPPT • Compact Commercial Design",
     description: "Compact 25kW HV hybrid inverter with Deye signature arc fault circuit interrupter (AFCI).",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Compact 25kW Housing with AFCI Protection" }
-    ]
+    
   },
   {
     id: "DEYE-TP-HV-10",
@@ -675,12 +765,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-3.png",
+    photos: [
+      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2950,
     specs: "5-12 kW Output • HV Battery • 2 MPPT • Light Weight High Efficiency",
     description: "High-efficiency 12kW HV hybrid inverter with smart frequency droop control for mini-grids.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact High Voltage Inverter Enclosure" }
-    ]
+    
   },
 
   // --- SPLIT PHASE HYBRID INVERTERS ---
@@ -694,13 +788,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 1950,
     specs: "5-8 kW Output • 120/240V Split Phase • 48V Battery • 2 MPPT • UL1741 & IEEE 1547",
     description: "Split phase hybrid inverter engineered for 120V/240V dual line grid standards with automatic generator start.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 120V/240V Split Phase Control Interface" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Internal Wiring: Dual Hot Line (L1/L2) & Neutral Terminals" }
-    ]
+    
   },
   {
     id: "DEYE-SPLIT-02",
@@ -712,12 +809,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2850,
     specs: "8-15 kW High Output • 120/240V Split Phase • High Voltage HV Battery (160V-800V) • 2 MPPT",
     description: "High-voltage battery split-phase hybrid inverter delivering maximum charge/discharge efficiency above 97.6%.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: High Voltage DC Bus Status Screen" }
-    ]
+    
   },
   {
     id: "DEYE-SPLIT-03",
@@ -729,12 +830,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2450,
     specs: "7.6-12 kW • 120/240V Split Phase • 48V LV Battery • 2/3 MPPT • 200A Pass Through",
     description: "Flagship 200A service entrance split phase hybrid inverter with whole-home backup switch.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 200A Whole Home Backup Controller" }
-    ]
+    
   },
   {
     id: "DEYE-SPLIT-04",
@@ -746,12 +851,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2350,
     specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Rapid Shutdown Ready",
     description: "Rapid shutdown compliant split-phase inverter for North American and regional grid codes.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: SunSpec Rapid Shutdown Transmitter Built-in" }
-    ]
+    
   },
   {
     id: "DEYE-SPLIT-05",
@@ -763,12 +872,16 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "LV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-2.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2550,
     specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Color LCD Touch Screen",
     description: "Sleek SG05 series split phase inverter with intuitive graphic user interface.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: High Resolution Color Touch Screen Display" }
-    ]
+    
   },
   {
     id: "DEYE-SPLIT-06",
@@ -780,16 +893,32 @@ const DEYE_CATALOGUE_ITEMS = [
     batterySupport: "HV Battery Supported",
     badge: null,
     image: "/images/deye/deye-split-phase-2.png",
+    photos: [
+      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+    ],
+    
     priceUsd: 2650,
     specs: "4.95-8 kW • 4 MPPT • High Voltage HV Battery • Circular Status LED Gauge",
     description: "Quad-MPPT high voltage battery hybrid inverter featuring Deye signature circular LED status ring.",
-    photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Signature Deye Circular LED Status Gauge Ring" }
-    ]
+    
   }
 ];
 
 export default function SolarPage() {
+  // RFQ Modal State
+  const [showRfqModal, setShowRfqModal] = useState<boolean>(false);
+  const [rfqItem, setRfqItem] = useState<any | null>(null);
+  const [rfqForm, setRfqForm] = useState({
+    clientName: "",
+    contactPhone: "",
+    email: "",
+    quantity: "1",
+    projectLocation: "Monrovia",
+    notes: ""
+  });
+
   const [selectedComponentGallery, setSelectedComponentGallery] = useState<any | null>(null);
   const [deyeActiveCat, setDeyeActiveCat] = useState<string>('sp-lv');
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
@@ -2290,7 +2419,7 @@ export default function SolarPage() {
                                 Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
                               </p>
                             </div>
-                            <span className="text-xl font-black text-emerald-500">${item.priceUsd.toLocaleString()} USD</span>
+                            <Button onClick={() => { setRfqItem(item); setShowRfqModal(true); }} size="sm" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3 py-1 rounded-lg">Request Quotation</Button>
                           </div>
 
                           <div className="grid grid-cols-4 gap-2">
@@ -3477,7 +3606,7 @@ export default function SolarPage() {
                                 Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
                               </p>
                             </div>
-                            <span className="text-xl font-black text-emerald-500">${item.priceUsd.toLocaleString()} USD</span>
+                            <Button onClick={() => { setRfqItem(item); setShowRfqModal(true); }} size="sm" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] px-3 py-1 rounded-lg">Request Quotation</Button>
                           </div>
 
                           <div className="grid grid-cols-4 gap-2">
@@ -3669,9 +3798,21 @@ export default function SolarPage() {
 
               {/* Right Column: Full Engineering Data Sheet */}
               <div className="md:col-span-5 space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs">
-                <div>
-                  <span className="text-[10px] text-slate-500 uppercase font-bold block">UNIT LIST PRICE</span>
-                  <span className="text-2xl font-black text-emerald-400">${selectedComponentGallery.priceUsd.toLocaleString()} USD</span>
+                <div className="bg-gradient-to-r from-amber-500/10 to-emerald-500/10 p-3.5 rounded-xl border border-amber-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider">PRICING UPON REQUEST</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">RFQ Enabled</span>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setRfqItem(selectedComponentGallery);
+                      setShowRfqModal(true);
+                    }}
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2"
+                  >
+                    <FileText className="w-4 h-4 text-slate-950" />
+                    <span>Request Official Quotation (RFQ)</span>
+                  </Button>
                 </div>
 
                 <div className="space-y-2 border-t border-slate-800 pt-3">
@@ -3700,6 +3841,118 @@ export default function SolarPage() {
               </div>
 
             </div>
+
+          </div>
+        </div>
+      )}
+
+
+      {/* Interactive Request for Quotation (RFQ) Form Modal */}
+      {showRfqModal && (
+        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
+            
+            <div className="flex items-start justify-between border-b border-slate-800 pb-3">
+              <div>
+                <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold text-[10px] uppercase tracking-wider">
+                  Official EPC Sales Quotation Request
+                </span>
+                <h3 className="text-xl font-black text-white mt-1">
+                  Request Official Quotation (RFQ)
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Item: <span className="text-amber-400 font-bold">{rfqItem?.seriesCode || rfqItem?.name}</span> ({rfqItem?.powerRange || rfqItem?.category})
+                </p>
+              </div>
+              <button onClick={() => setShowRfqModal(false)} className="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+            </div>
+
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              toast({
+                title: "✅ RFQ Submitted Successfully!",
+                description: `Official quotation for ${rfqItem?.seriesCode || rfqItem?.name} requested by ${rfqForm.clientName}. Our EPC sales engineers will contact you shortly.`
+              });
+              setShowRfqModal(false);
+            }} className="space-y-4 text-xs font-semibold">
+              <div>
+                <Label className="text-slate-300">Customer / Institution Name *</Label>
+                <Input 
+                  required
+                  value={rfqForm.clientName} 
+                  onChange={(e) => setRfqForm({ ...rfqForm, clientName: e.target.value })} 
+                  className="bg-slate-950 border-slate-700 text-white mt-1" 
+                  placeholder="e.g. UNDP Liberia / Monrovia Plaza Ltd" 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-slate-300">Phone / WhatsApp Contact *</Label>
+                  <Input 
+                    required
+                    value={rfqForm.contactPhone} 
+                    onChange={(e) => setRfqForm({ ...rfqForm, contactPhone: e.target.value })} 
+                    className="bg-slate-950 border-slate-700 text-white mt-1" 
+                    placeholder="+231 770 000 000" 
+                  />
+                </div>
+                <div>
+                  <Label className="text-slate-300">Email Address *</Label>
+                  <Input 
+                    required
+                    type="email"
+                    value={rfqForm.email} 
+                    onChange={(e) => setRfqForm({ ...rfqForm, email: e.target.value })} 
+                    className="bg-slate-950 border-slate-700 text-white mt-1" 
+                    placeholder="client@domain.com" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-slate-300">Quantity Required (Units/Sets) *</Label>
+                  <Input 
+                    required
+                    type="number"
+                    min="1"
+                    value={rfqForm.quantity} 
+                    onChange={(e) => setRfqForm({ ...rfqForm, quantity: e.target.value })} 
+                    className="bg-slate-950 border-slate-700 text-white mt-1" 
+                  />
+                </div>
+                <div>
+                  <Label className="text-slate-300">Delivery / Project Location *</Label>
+                  <Input 
+                    required
+                    value={rfqForm.projectLocation} 
+                    onChange={(e) => setRfqForm({ ...rfqForm, projectLocation: e.target.value })} 
+                    className="bg-slate-950 border-slate-700 text-white mt-1" 
+                    placeholder="Monrovia, Zwedru, Buchanan..." 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-slate-300">Project Requirements / Notes</Label>
+                <textarea 
+                  value={rfqForm.notes} 
+                  onChange={(e) => setRfqForm({ ...rfqForm, notes: e.target.value })} 
+                  className="w-full h-20 bg-slate-950 border border-slate-700 text-white rounded-xl p-2.5 mt-1 focus:outline-none focus:border-amber-500" 
+                  placeholder="Specify grid voltage, battery size preference, or installation timeline..." 
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+                <Button type="button" onClick={() => setShowRfqModal(false)} variant="outline" className="border-slate-700 text-slate-300 text-xs">
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6">
+                  Submit RFQ to TOTAG Solar EPC Sales
+                </Button>
+              </div>
+            </form>
 
           </div>
         </div>
