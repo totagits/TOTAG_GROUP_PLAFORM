@@ -181,9 +181,10 @@ export default function AdminDashboard() {
                   <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
                     <span>TOTAG Enterprise Digital Ecosystem</span>
                     <Badge className="bg-emerald-500 text-slate-950 font-black text-[11px] px-2.5 py-0.5">
-                      9 Subsidiaries Live
+                      10 Service Verticals Live
                     </Badge>
                   </h1>
+
                   <p className="text-xs text-slate-300 font-semibold">Master Governance, Shared Core Capabilities & Subsidiary Operations Console</p>
                 </div>
               </div>
@@ -227,8 +228,9 @@ export default function AdminDashboard() {
               className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
             >
               <Building2 className="h-4 w-4" />
-              9 Subsidiaries Console
+              10 Service Verticals Console
             </TabsTrigger>
+
             <TabsTrigger 
               value="institutional" 
               className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
