@@ -18,7 +18,11 @@ systemctl restart ssh || systemctl restart sshd || true
 echo "📦 Installing Node.js 18, PostgreSQL, Nginx, and PM2..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y curl git nginx postgresql postgresql-contrib build-essential ufw
+apt-get install -y curl git nginx postgresql postgresql-contrib build-essential ufw psmisc
+
+# Disable Apache if installed on fresh Ubuntu image
+systemctl stop apache2 2>/dev/null || true
+systemctl disable apache2 2>/dev/null || true
 
 curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 apt-get install -y nodejs
@@ -97,7 +101,7 @@ server {
 EOF
 
 ln -sf /etc/nginx/sites-available/totag /etc/nginx/sites-enabled/totag
-nginx -t
+fuser -k 80/tcp 2>/dev/null || true
 systemctl restart nginx
 
 # Enable Firewall Ports 80, 443, 22
