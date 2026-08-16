@@ -75,11 +75,12 @@ pm2 startup || true
 
 # 9. Configure Nginx Reverse Proxy
 echo "🌐 Configuring Nginx Reverse Proxy..."
-cat << 'EOF' > /etc/nginx/sites-available/default
+rm -f /etc/nginx/sites-enabled/default
+cat << 'EOF' > /etc/nginx/sites-available/totag
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name totag.network www.totag.network srv1902704.hstgr.cloud 2.24.115.245;
+    server_name _;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -95,7 +96,14 @@ server {
 }
 EOF
 
+ln -sf /etc/nginx/sites-available/totag /etc/nginx/sites-enabled/totag
+nginx -t
 systemctl restart nginx
+
+# Enable Firewall Ports 80, 443, 22
+ufw allow 22/tcp || true
+ufw allow 80/tcp || true
+ufw allow 443/tcp || true
 
 echo "========================================================"
 echo "✅ TOTAG ENTERPRISE PLATFORM DEPLOYED SUCCESSFULLY!"
