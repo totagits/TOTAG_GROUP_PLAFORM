@@ -140,23 +140,22 @@ export default function CargoPage() {
       <Header />
       
       <main className="pt-28 pb-20">
-        {/* Hero Banner */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-badge-sky text-xs font-semibold">
-              <Ship className="w-4 h-4 text-sky-500" />
-              <span>TOTAG Subsidiary • Port Operations & Cargo Logistics</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-              TOTAG <span className="text-gradient-sky">Cargo Handling</span> & Logistics
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Enterprise port stevedoring, container freight forwarding, LRA customs clearance, bonded warehousing, and cross-border haulage across Liberia and West Africa.
-            </p>
-          </div>
-        </section>
+        {/* Standardized Photo Carousel Hero Section */}
+        <SubsidiaryHeroCarousel
+          badge="TOTAG Subsidiary • Port Operations & Cargo Logistics"
+          titleHighlight="Cargo Handling & Logistics"
+          subtitle="Enterprise port stevedoring, container freight forwarding, LRA customs clearance, bonded warehousing, and cross-border haulage across Liberia and West Africa."
+          slides={[
+            { url: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&h=800&fit=crop", caption: "Freeport of Monrovia Berth Stevedoring Operations" },
+            { url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&h=800&fit=crop", caption: "TOTAG Bonded Container Freight Terminal" },
+            { url: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=1600&h=800&fit=crop", caption: "Cross-Border Fleet Haulage & Inland Logistics" }
+          ]}
+          stats={[
+            { label: "Active Waybills", value: "1,240+" },
+            { label: "Container TEUs", value: "8,500+" },
+            { label: "LRA Clearance", value: "99.4%" }
+          ]}
+        />
 
         {/* 1. Live Waybill & Bill of Lading (BL) Tracking Application */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">

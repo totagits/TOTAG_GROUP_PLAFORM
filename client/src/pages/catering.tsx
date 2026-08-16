@@ -360,62 +360,21 @@ export default function CateringPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <header className="relative shadow-sm border-b overflow-hidden">
-        <div className="slider absolute inset-0">
-          {headerImages.map((image, index) => (
-            <div
-              key={index}
-              className={`slider-item absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-1000 ${
-                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-              }`}
-              style={{ backgroundImage: `url(${image})` }}
-            />
-          ))}
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"></div>
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
-          {headerImages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentImageIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentImageIndex ? 'bg-white scale-110 shadow-lg' : 'bg-white/50 hover:bg-white/70'
-              }`}
-            />
-          ))}
-        </div>
-        <div className="absolute bottom-4 right-4 z-20">
-          <div className="bg-black/50 rounded px-2 py-1">
-            <span className="text-white text-sm">{currentImageIndex + 1} / {headerImages.length}</span>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 py-4 relative z-10">
-          <div className="flex items-start">
-            <div className="flex-shrink-0 mr-8 -ml-6">
-              <img 
-                src={cateringLogo} 
-                alt="TOTAG Catering & Event Planning" 
-                className="block"
-                style={{ width: '100px', height: '100px', objectFit: 'contain' }}
-              />
-            </div>
-            <div className="flex-1 pt-4">
-              <h1 className="text-4xl font-bold text-white mb-2">
-                TOTAG Catering & Events Planning Services
-              </h1>
-              <p className="text-xl text-white/90 leading-relaxed">
-                HACCP-Aligned | ISO 22000-Style Controls | Codex/WHO Good Hygiene Practices
-              </p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                <Badge className="bg-green-600 text-white border-0">HACCP Certified</Badge>
-                <Badge className="bg-blue-600 text-white border-0">WHO/Codex GHP</Badge>
-                <Badge className="bg-purple-600 text-white border-0">ISO 22000 Controls</Badge>
-                <Badge className="bg-orange-600 text-white border-0">UNGM Registered</Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      <SubsidiaryHeroCarousel
+        badge="TOTAG Subsidiary • Institutional & Event Hospitality"
+        titleHighlight="Catering & Events Services"
+        subtitle="Premier institutional culinary management, corporate event catering, luxury banquet spreads, and professional event coordination across West Africa."
+        slides={[
+          { url: "https://images.unsplash.com/photo-1555244162-803834f70033?w=1600&h=800&fit=crop", caption: "TOCEPS Corporate Culinary & Gourmet Banquet Setup" },
+          { url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1600&h=800&fit=crop", caption: "Specialty Wedding & Social Celebration Reception" },
+          { url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&h=800&fit=crop", caption: "ISO-Compliant Institutional Food Safety Kitchen" }
+        ]}
+        stats={[
+          { label: "Events Served", value: "850+" },
+          { label: "Meals Daily", value: "5,000+" },
+          { label: "Client Rating", value: "4.9 / 5.0" }
+        ]}
+      />
 
       <div className="bg-white border-b">
         <div className="container mx-auto px-4">

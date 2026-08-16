@@ -96,23 +96,22 @@ export default function StationeryPage() {
       <Header />
       
       <main className="pt-28 pb-20">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-badge-sky text-xs font-semibold">
-              <FileText className="w-4 h-4 text-sky-500" />
-              <span>TOTAG Subsidiary • B2B Office & Educational Procurement</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-              TOTAG <span className="text-gradient-sky">Stationery Supplies</span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Wholesale corporate office procurement, educational supply bundles for schools & ministries, custom commercial printing, and automated recurring stationery replenishment.
-            </p>
-          </div>
-        </section>
+        {/* Standardized Photo Carousel Hero Section */}
+        <SubsidiaryHeroCarousel
+          badge="TOTAG Subsidiary • B2B Office & Educational Procurement"
+          titleHighlight="Stationery Supplies"
+          subtitle="Wholesale corporate office procurement, educational supply bundles for schools & ministries, custom commercial printing, and automated recurring stationery replenishment."
+          slides={[
+            { url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1600&h=800&fit=crop", caption: "B2B Corporate Stationery & Office Inventory Depot" },
+            { url: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1600&h=800&fit=crop", caption: "Educational & Institutional Paper Supply Warehouse" },
+            { url: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&h=800&fit=crop", caption: "Commercial High-Speed Offset Printing & Binding" }
+          ]}
+          stats={[
+            { label: "Catalog Products", value: "3,200+" },
+            { label: "Corporate Clients", value: "450+" },
+            { label: "Fulfillment", value: "Same-Day" }
+          ]}
+        />
 
         {/* 1. B2B Stationery Bulk Procurement Catalog & Cart */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-16">
