@@ -38,11 +38,18 @@ export class ErrorBoundary extends Component<Props, State> {
             <button
               onClick={() => {
                 localStorage.clear();
-                window.location.reload();
+                sessionStorage.clear();
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.getRegistrations().then(regs => {
+                    for (let reg of regs) reg.unregister();
+                  });
+                }
+                const cleanUrl = window.location.origin + window.location.pathname + '?cb=' + Date.now() + window.location.hash;
+                window.location.href = cleanUrl;
               }}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-3 rounded-xl shadow-lg cursor-pointer"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-3 rounded-xl shadow-lg cursor-pointer transition-all"
             >
-              Clear Storage & Reload Application
+              Clear Storage & Force Fresh Reload
             </button>
           </div>
         </div>
