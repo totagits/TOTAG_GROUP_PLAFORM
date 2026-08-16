@@ -2603,7 +2603,7 @@ export default function SolarPage() {
                           <div className="grid grid-cols-3 gap-2">
                             <div 
                               onClick={() => {
-                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                const item = (DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "COMP-PV-550W") || DETAILED_COMPONENT_CATALOGUE.find(i => i.category === "PV Module"));
                                 if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(0); }
                               }}
                               className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
@@ -2614,7 +2614,7 @@ export default function SolarPage() {
 
                             <div 
                               onClick={() => {
-                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                const item = (DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "COMP-PV-550W") || DETAILED_COMPONENT_CATALOGUE.find(i => i.category === "PV Module"));
                                 if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(1); }
                               }}
                               className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
@@ -2625,7 +2625,7 @@ export default function SolarPage() {
 
                             <div 
                               onClick={() => {
-                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                const item = (DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "COMP-PV-550W") || DETAILED_COMPONENT_CATALOGUE.find(i => i.category === "PV Module"));
                                 if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(2); }
                               }}
                               className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
@@ -2637,7 +2637,7 @@ export default function SolarPage() {
 
                           <Button
                             onClick={() => {
-                              const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                              const item = (DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "COMP-PV-550W") || DETAILED_COMPONENT_CATALOGUE.find(i => i.category === "PV Module"));
                               if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(0); }
                             }}
                             className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg mt-2"
