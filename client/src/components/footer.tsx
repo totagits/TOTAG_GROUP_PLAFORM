@@ -123,12 +123,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/institutional-services" className="hover:text-white transition-colors flex items-center justify-between">
-                  <span>Institutional Services</span>
-                  <ArrowUpRight className="w-3 h-3" />
-                </Link>
-              </li>
-              <li>
                 <Link href="/admin-login" className="hover:text-white transition-colors flex items-center justify-between">
                   <span>Group Admin Console</span>
                   <ArrowUpRight className="w-3 h-3" />

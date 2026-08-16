@@ -106,10 +106,7 @@ const getServiceUrl = (slug?: string, title?: string, id?: string): string => {
   if (key.includes("cargo")) return "/cargo";
   if (key.includes("petroleum")) return "/petroleum";
   if (key.includes("farm") || key.includes("agribusiness")) return "/farm";
-  if (key.includes("institutional")) return "/institutional-services";
-  if (key.includes("real-estate") || key.includes("estate")) return "/real-estate";
-  if (key.includes("consulting")) return "/consulting";
-
+      
   return slug ? `/${slug}` : "/";
 };
 
