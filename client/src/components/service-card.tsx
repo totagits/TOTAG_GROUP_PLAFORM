@@ -93,29 +93,25 @@ const getIconComponent = (iconName: string) => {
   return <IconComponent className="w-6 h-6 sm:w-7 sm:h-7" />;
 };
 
-// Service URLs mapping for all 10 specialized subsidiaries
-const getServiceUrl = (slug: string): string => {
-  const urls: Record<string, string> = {
-    'cargo': '/cargo',
-    'farm': '/farm',
-    'petroleum': '/petroleum',
-    'construction': '/construction',
-    'general-merchandise': '/general-merchandise',
-    'merchandise': '/general-merchandise',
-    'it-services': '/it-services',
-    'it': '/it-services',
-    'catering': '/catering',
-    'stationery': '/stationery',
-    'solar': '/solar',
-    'institutional': '/institutional-services',
-    'institutional-services': '/institutional-services',
-    'real-estate': '/real-estate',
-    'consulting': '/consulting',
-    'saas': '/saas'
-  };
-  return urls[slug] || `/${slug}`;
-};
+// Service URLs mapping for all specialized subsidiaries
+const getServiceUrl = (slug?: string, title?: string, id?: string): string => {
+  const key = (slug || title || id || "").toLowerCase();
+  
+  if (key.includes("solar") || key.includes("smart power")) return "/solar";
+  if (key.includes("stationery")) return "/stationery";
+  if (key.includes("construction")) return "/construction";
+  if (key.includes("merchandise")) return "/general-merchandise";
+  if (key.includes("catering") || key.includes("events")) return "/catering";
+  if (key.includes("it-services") || key.includes("managed it") || key.includes("saas")) return "/it-services";
+  if (key.includes("cargo")) return "/cargo";
+  if (key.includes("petroleum")) return "/petroleum";
+  if (key.includes("farm") || key.includes("agribusiness")) return "/farm";
+  if (key.includes("institutional")) return "/institutional-services";
+  if (key.includes("real-estate") || key.includes("estate")) return "/real-estate";
+  if (key.includes("consulting")) return "/consulting";
 
+  return slug ? `/${slug}` : "/";
+};
 
 export default function ServiceCard({ id, title, description, icon, color, tags, slug }: ServiceCardProps) {
   const colorClass = colorClasses[color as keyof typeof colorClasses] || colorClasses.primary;
@@ -125,13 +121,13 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
     e.preventDefault();
     e.stopPropagation();
     
-    if (slug) {
-      const url = getServiceUrl(slug);
-      if (url.startsWith('/')) {
-        setLocation(url);
-      } else {
-        window.open(url, '_blank', 'noopener,noreferrer');
+    const targetUrl = getServiceUrl(slug, title, id);
+    if (targetUrl) {
+      if (window.location.hash || window.location.host.includes("github.io")) {
+        window.location.hash = targetUrl;
       }
+      setLocation(targetUrl);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -181,4 +177,3 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
     </motion.div>
   );
 }
-
