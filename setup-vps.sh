@@ -7,8 +7,9 @@ echo "========================================================"
 
 # 1. Enable Password Authentication in SSH for future access
 echo "🔑 Enabling SSH Password Authentication..."
-sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config || true
+sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config || true
+mkdir -p /etc/ssh/sshd_config.d
 echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/99-custom.conf
 echo "PermitRootLogin yes" >> /etc/ssh/sshd_config.d/99-custom.conf
 systemctl restart ssh || systemctl restart sshd || true
@@ -64,7 +65,11 @@ DATABASE_URL=postgresql://totaguser:Zwedru4@gedeh@localhost:5432/totaggroup npm 
 # 8. Start Application Server via PM2
 echo "⚡ Launching Express Server via PM2 Process Manager..."
 pm2 delete totag-platform || true
-pm2 start ecosystem.config.js
+if [ -f "ecosystem.config.cjs" ]; then
+  pm2 start ecosystem.config.cjs
+else
+  pm2 start dist/index.js --name totag-platform
+fi
 pm2 save
 pm2 startup || true
 
