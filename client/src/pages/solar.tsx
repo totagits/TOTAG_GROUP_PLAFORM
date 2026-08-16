@@ -60,8 +60,16 @@ import {
   FolderKanban,
   ShieldAlert
 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { EcosystemStateEngine, SolarAuditItem } from "@/lib/ecosystem-state";
+import { 
+  EcosystemStateEngine, 
+  SolarAuditItem, 
+  SolarLeadItem, 
+  SolarBoqItem, 
+  SolarProcurementItem, 
+  SolarSupplierRecord, 
+  SolarSerializedAsset, 
+  SolarProjectItem 
+} from "@/lib/ecosystem-state";
 
 // Approved Component Catalogue Master
 const COMPONENT_CATALOGUE = [
