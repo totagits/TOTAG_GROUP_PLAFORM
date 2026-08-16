@@ -93,7 +93,6 @@ const DETAILED_COMPONENT_CATALOGUE = [
     image: "/images/pv/jinko-550w-tiger-pro.png",
     photos: [
       { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
       { url: "/images/pv/jinko-solar-field-arrays.png", caption: "Jinko Solar Utility & Commercial Field Array Installations" }
     ]
   },
@@ -112,7 +111,6 @@ const DETAILED_COMPONENT_CATALOGUE = [
     image: "/images/pv/jinko-550w-tiger-pro.png",
     photos: [
       { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
       { url: "/images/pv/jinko-solar-field-arrays.png", caption: "Jinko Solar Utility & Commercial Field Array Installations" }
     ]
   },
