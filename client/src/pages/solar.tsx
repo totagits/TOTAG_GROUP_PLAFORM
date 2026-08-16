@@ -2558,6 +2558,94 @@ export default function SolarPage() {
                 )}
 
                 {/* Legacy Catalogue Items for PV Modules, Batteries & BOP */}
+                
+                {/* PV MODULES & SOLAR PANELS DEDICATED HIGH-RES PHOTO & VIDEO SHOWCASE */}
+                {deyeActiveCat === 'pv-modules' && (
+                  <div className="space-y-6">
+                    {/* Factory Tour Video & High-Res Product Banner */}
+                    <div className="bg-slate-950 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-2xl">
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-3">
+                        <div>
+                          <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px] uppercase tracking-wider">
+                            Tier-1 OEM Manufacturing & Quality Assurance
+                          </span>
+                          <h3 className="text-xl font-black text-white mt-1">
+                            Jinko Solar Automated Factory Tour & Automated EL Testing
+                          </h3>
+                          <p className="text-xs text-slate-400">
+                            Watch automated robotic assembly, double EL electroluminescence crack inspection, and flash testing for Jinko Tiger Pro 550-570W modules.
+                          </p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold whitespace-nowrap">
+                          🎬 Official Factory Video Stream
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                        {/* Video Player */}
+                        <div className="lg:col-span-7 bg-black rounded-xl overflow-hidden border border-slate-800 shadow-xl relative group">
+                          <video 
+                            controls 
+                            poster="/images/pv/jinko-550w-tiger-pro.png" 
+                            src="/images/pv/jinko-solar-factory-tour.mp4" 
+                            className="w-full h-64 md:h-80 object-cover" 
+                          />
+                        </div>
+
+                        {/* High-Res Image Thumbnails */}
+                        <div className="lg:col-span-5 space-y-3">
+                          <span className="text-xs font-black text-amber-400 uppercase tracking-widest block">ATTACHED PHOTO GALLERY</span>
+                          
+                          <div className="grid grid-cols-3 gap-2">
+                            <div 
+                              onClick={() => {
+                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(0); }
+                              }}
+                              className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
+                            >
+                              <img src="/images/pv/jinko-550w-tiger-pro.png" alt="Render" className="w-full h-20 object-contain rounded-lg group-hover:scale-105 transition-transform" />
+                              <span className="text-[9px] text-slate-300 font-bold block text-center mt-1 truncate">550-570W Render</span>
+                            </div>
+
+                            <div 
+                              onClick={() => {
+                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(1); }
+                              }}
+                              className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
+                            >
+                              <img src="/images/pv/jinko-factory-label.png" alt="Label" className="w-full h-20 object-cover rounded-lg group-hover:scale-105 transition-transform" />
+                              <span className="text-[9px] text-slate-300 font-bold block text-center mt-1 truncate">Factory Label</span>
+                            </div>
+
+                            <div 
+                              onClick={() => {
+                                const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                                if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(2); }
+                              }}
+                              className="bg-slate-900 border border-slate-700 rounded-xl p-1 cursor-pointer hover:border-amber-500 transition-all group"
+                            >
+                              <img src="/images/pv/jinko-solar-field.png" alt="Field" className="w-full h-20 object-cover rounded-lg group-hover:scale-105 transition-transform" />
+                              <span className="text-[9px] text-slate-300 font-bold block text-center mt-1 truncate">Utility Solar Array</span>
+                            </div>
+                          </div>
+
+                          <Button
+                            onClick={() => {
+                              const item = DETAILED_COMPONENT_CATALOGUE.find(i => i.id === "pv-jinko-550w");
+                              if (item) { setSelectedComponentGallery(item); setActivePhotoIdx(0); }
+                            }}
+                            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg mt-2"
+                          >
+                            Launch Jinko Tiger Pro Photo & Spec Gallery
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {(deyeActiveCat === 'pv-modules' || deyeActiveCat === 'batteries' || deyeActiveCat === 'bop') && (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {DETAILED_COMPONENT_CATALOGUE
