@@ -41,11 +41,19 @@ import {
   ArrowUpRight,
   Plus,
   Trash2,
-  Compass,
   CloudSun,
   FileText,
   Printer,
-  Check
+  Check,
+  Truck,
+  DollarSign,
+  PackageCheck,
+  Barcode,
+  ClipboardList,
+  FileSignature,
+  BadgeCheck,
+  ExternalLink,
+  ChevronRight
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EcosystemStateEngine, SolarAuditItem } from "@/lib/ecosystem-state";
@@ -279,31 +287,31 @@ export default function SolarPage() {
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
               <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Building2 className="h-4 w-4" />
-                1. Solar CRM & Pipeline
+                1. Solar CRM
               </TabsTrigger>
               <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Compass className="h-4 w-4" />
-                2. Site Assessment & Audit
-              </TabsTrigger>
-              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Sun className="h-4 w-4" />
-                3. Customer Solar Portal
+                2. Site Audit
               </TabsTrigger>
               <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Cpu className="h-4 w-4" />
-                4. Tailored Design
-              </TabsTrigger>
-              <TabsTrigger value="noc-monitoring" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Activity className="h-4 w-4" />
-                5. NOC Telemetry
+                3. Design Engine
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
-                6. BOQ & Proposals
+                4. Catalogue
               </TabsTrigger>
-              <TabsTrigger value="commissioning" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Award className="h-4 w-4" />
-                7. QA/QC & Certs
+              <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Calculator className="h-4 w-4" />
+                5. Auto-BOQ & Costing
+              </TabsTrigger>
+              <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Truck className="h-4 w-4" />
+                6. Procurement & OEMs
+              </TabsTrigger>
+              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Sun className="h-4 w-4" />
+                7. Portal & NOC
               </TabsTrigger>
             </TabsList>
 
@@ -1536,7 +1544,441 @@ export default function SolarPage() {
               </div>
             </TabsContent>
 
-            {/* 2. Interactive Energy Audit Engine */}
+            {/* MODULE 5: Automated BOQ & Financial Costing Engine */}
+            <TabsContent value="auto-boq" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Module Header */}
+                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Calculator className="w-3.5 h-3.5 text-amber-400" />
+                        Module 5: Financial BOQ Costing Engine
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        Landed Cost & Margin Analysis
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Automated Bill of Quantities (BOQ) & Tender Costing Engine</h2>
+                    <p className="text-slate-400 text-xs mt-1">Calculates equipment FOB cost, freight, insurance, customs clearing, inland transport, site labor, overhead, contingency, and gross margin.</p>
+                  </div>
+
+                  <Button onClick={() => alert("✅ Tender BOQ Dossier Generated!\n\nExported complete itemized bill of quantities with landed logistics costing for client commercial submission.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
+                    <Printer className="w-4 h-4 mr-2" /> Export Commercial Tender BOQ PDF
+                  </Button>
+                </div>
+
+                {/* Management Financial KPI Cards: Equipment vs Landed vs Installed vs Contract vs Margin */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">1. EQUIPMENT FOB COST</span>
+                    <div className="text-xl font-black text-white">$38,400 USD</div>
+                    <span className="text-[10px] text-slate-500 font-medium">Base Supplier Invoices</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-[10px] font-bold text-sky-400 uppercase">2. LANDED LOGISTICS COST</span>
+                    <div className="text-xl font-black text-sky-400">$44,850 USD</div>
+                    <span className="text-[10px] text-sky-300/80 font-medium">+Freight, Duty & Clearing</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-[10px] font-bold text-purple-400 uppercase">3. TURNKEY INSTALLED COST</span>
+                    <div className="text-xl font-black text-purple-400">$53,100 USD</div>
+                    <span className="text-[10px] text-purple-300/80 font-medium">+Labor, Overhead & Cont.</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-amber-500/50 p-4 rounded-xl space-y-1 bg-amber-500/5">
+                    <span className="text-[10px] font-bold text-amber-400 uppercase">4. CONTRACT SELLING PRICE</span>
+                    <div className="text-xl font-black text-amber-400">$68,500 USD</div>
+                    <span className="text-[10px] text-amber-300/80 font-medium">Final Tender Price</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-emerald-500/50 p-4 rounded-xl space-y-1 bg-emerald-500/5">
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase">5. GROSS PROFIT MARGIN</span>
+                    <div className="text-xl font-black text-emerald-400">$15,400 USD</div>
+                    <span className="text-[10px] text-emerald-400 font-bold">22.5% Gross Margin</span>
+                  </div>
+                </div>
+
+                {/* Detailed BOQ Cost Breakdown Table */}
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 className="text-sm font-black text-white flex items-center gap-2">
+                      <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+                      <span>Itemized BOQ Cost Engineering Breakdown</span>
+                    </h3>
+                    <span className="text-xs text-slate-400 font-semibold">Project Ref: #BOQ-2026-MONROVIA-09</span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                          <th className="py-2.5 px-3">Item Description</th>
+                          <th className="py-2.5 px-2">Category</th>
+                          <th className="py-2.5 px-2">Supplier</th>
+                          <th className="py-2.5 px-2 text-center">Qty / Unit</th>
+                          <th className="py-2.5 px-2 text-right">Base FOB ($)</th>
+                          <th className="py-2.5 px-2 text-right">Freight & Duty ($)</th>
+                          <th className="py-2.5 px-2 text-right">Landed Cost ($)</th>
+                          <th className="py-2.5 px-2 text-right">Installed Cost ($)</th>
+                          <th className="py-2.5 px-3 text-right">Selling Price ($)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-900 font-semibold text-slate-300">
+                        
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">20 × 550W Tier-1 Mono PERC Solar PV Modules</td>
+                          <td className="py-2.5 px-2 text-amber-400">PV Modules</td>
+                          <td className="py-2.5 px-2">Jinko Solar</td>
+                          <td className="py-2.5 px-2 text-center font-bold">20 Pcs</td>
+                          <td className="py-2.5 px-2 text-right">$3,700</td>
+                          <td className="py-2.5 px-2 text-right">$640</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$4,340</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$5,100</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$6,580</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">1 × 10kVA Three-Phase Hybrid Inverter w/ ATS Port</td>
+                          <td className="py-2.5 px-2 text-emerald-400">Inverters</td>
+                          <td className="py-2.5 px-2">Deye Energy</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Unit</td>
+                          <td className="py-2.5 px-2 text-right">$2,450</td>
+                          <td className="py-2.5 px-2 text-right">$320</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$2,770</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$3,300</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$4,250</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">2 × 5.12kWh 48V LiFePO4 Rack Battery Modules (10.24 kWh)</td>
+                          <td className="py-2.5 px-2 text-purple-400">Batteries</td>
+                          <td className="py-2.5 px-2">Pylontech</td>
+                          <td className="py-2.5 px-2 text-center font-bold">2 Units</td>
+                          <td className="py-2.5 px-2 text-right">$2,700</td>
+                          <td className="py-2.5 px-2 text-right">$410</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$3,110</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$3,650</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$4,700</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">1 × 4-String IP65 Outdoor PV DC Combiner Box w/ SPDs</td>
+                          <td className="py-2.5 px-2 text-sky-400">Balance of Plant</td>
+                          <td className="py-2.5 px-2">ABB</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Set</td>
+                          <td className="py-2.5 px-2 text-right">$240</td>
+                          <td className="py-2.5 px-2 text-right">$45</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$285</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$380</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$510</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">1 × 4-Pole 250A Automatic Transfer Switch (ATS)</td>
+                          <td className="py-2.5 px-2 text-sky-400">Balance of Plant</td>
+                          <td className="py-2.5 px-2">Schneider</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Unit</td>
+                          <td className="py-2.5 px-2 text-right">$480</td>
+                          <td className="py-2.5 px-2 text-right">$65</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$545</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$710</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$950</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">100m DC 10mm² UV Solar Cable + 50m AC 35mm² Armored Cable</td>
+                          <td className="py-2.5 px-2 text-slate-300">Cables & Wiring</td>
+                          <td className="py-2.5 px-2">TÜV Approved</td>
+                          <td className="py-2.5 px-2 text-center font-bold">150m</td>
+                          <td className="py-2.5 px-2 text-right">$380</td>
+                          <td className="py-2.5 px-2 text-right">$55</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$435</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$620</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$820</td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-white font-bold">Rooftop Mounting Structure + Copper Earthing Protection</td>
+                          <td className="py-2.5 px-2 text-amber-400">Structure</td>
+                          <td className="py-2.5 px-2">TOTAG Struct</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Lot</td>
+                          <td className="py-2.5 px-2 text-right">$650</td>
+                          <td className="py-2.5 px-2 text-right">$90</td>
+                          <td className="py-2.5 px-2 text-right text-sky-400 font-bold">$740</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$1,050</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$1,400</td>
+                        </tr>
+
+                        <tr className="bg-slate-900/80">
+                          <td className="py-2.5 px-3 text-emerald-400 font-bold">EPC Installation Labor, Mobilization & Civil Works</td>
+                          <td className="py-2.5 px-2 text-emerald-400">Services</td>
+                          <td className="py-2.5 px-2">TOTAG EPC</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Job</td>
+                          <td className="py-2.5 px-2 text-right">$0</td>
+                          <td className="py-2.5 px-2 text-right">$0</td>
+                          <td className="py-2.5 px-2 text-right text-slate-400">$0</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$2,800</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$3,800</td>
+                        </tr>
+
+                        <tr className="bg-slate-900/80">
+                          <td className="py-2.5 px-3 text-emerald-400 font-bold">QA/QC Testing, Digital Commissioning & Staff Training</td>
+                          <td className="py-2.5 px-2 text-emerald-400">Services</td>
+                          <td className="py-2.5 px-2">TOTAG Engineers</td>
+                          <td className="py-2.5 px-2 text-center font-bold">1 Event</td>
+                          <td className="py-2.5 px-2 text-right">$0</td>
+                          <td className="py-2.5 px-2 text-right">$0</td>
+                          <td className="py-2.5 px-2 text-right text-slate-400">$0</td>
+                          <td className="py-2.5 px-2 text-right text-purple-400 font-bold">$1,200</td>
+                          <td className="py-2.5 px-3 text-right text-amber-400 font-black">$1,600</td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </TabsContent>
+
+            {/* MODULE 6: Solar Procurement & OEM Supplier Partnership Registry */}
+            <TabsContent value="procurement" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Module Header */}
+                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Truck className="w-3.5 h-3.5 text-amber-400" />
+                        Module 6: Procurement & OEM Partnerships
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        Automated Requisitions & Serial Intake
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Solar Procurement, Shipping & Manufacturer Partnership Registry</h2>
+                    <p className="text-slate-400 text-xs mt-1">Triggers auto-requisitions for won projects, tracks PO status, captures serial numbers upon warehouse receipt, and manages official OEM dealer authorizations.</p>
+                  </div>
+                </div>
+
+                {/* 8-Stage Procurement Workflow Stepper */}
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                  <h3 className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
+                    <PackageCheck className="w-4 h-4 text-amber-400" />
+                    Automated Won Project Procurement Flow
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-8 gap-2 text-[10px] font-bold text-center">
+                    <div className="bg-amber-500 text-slate-950 p-2 rounded-lg font-black">1. Requisition</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">2. Supplier RFQ</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">3. Quote Matrix</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">4. PO Issued</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">5. In Transit</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">6. Customs Clearance</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">7. Serial Intake</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">8. Warehouse Receipt</div>
+                  </div>
+                </div>
+
+                {/* Active Procurement Orders & Requisitions */}
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h3 className="text-sm font-black text-white flex items-center gap-2">
+                      <Barcode className="w-4 h-4 text-emerald-400" />
+                      <span>Active Project Purchase Requisitions & Serial Intake</span>
+                    </h3>
+                    <Button onClick={() => alert("✅ Serial Number Intake Complete!\n\nCaptured 20x PV Module & 2x Battery Serial Barcodes into TOTAG Asset Ledger.")} size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs">
+                      <Barcode className="w-3.5 h-3.5 mr-1.5" /> Scan Warehouse Barcodes
+                    </Button>
+                  </div>
+
+                  <div className="space-y-3 text-xs font-semibold text-slate-300">
+                    
+                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <Badge className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">PO #PO-DEYE-9921</Badge>
+                          <span className="text-white font-black">Monrovia Hospital 30kVA Solar Hybrid Microgrid</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1">Supplier: Deye Energy • 1x 30kW Hybrid Inverter • Container #MSCU-881920</p>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Tracking: MSCU7719203 | Status: Customs Clearance @ Freeport of Monrovia</div>
+                      </div>
+                      <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 self-start md:self-center">Customs Clearance</Badge>
+                    </div>
+
+                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">PO #PO-JK-8824</Badge>
+                          <span className="text-white font-black">UNICEF Regional Office Solar Backup System</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1">Supplier: Jinko Solar • 60x 550W Mono PERC Modules • Serial Intake Complete</p>
+                        <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Serials: JK-550W-2026-98124 through JK-550W-2026-98184 (Inspected & Verified)</div>
+                      </div>
+                      <Badge className="bg-sky-500 text-slate-950 font-black text-xs px-3 py-1 self-start md:self-center">Warehouse Intake Complete</Badge>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* TOTAG Official OEM Manufacturer & Supplier Partnership Registry */}
+                <div className="space-y-4 pt-2">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 className="text-lg font-black text-white flex items-center gap-2">
+                      <BadgeCheck className="w-5 h-5 text-amber-400" />
+                      <span>Official OEM Manufacturer & Partnership Registry</span>
+                    </h3>
+                    <span className="text-xs text-slate-400 font-bold">Authorized Dealer Credentials</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    {/* OEM 1: Deye */}
+                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <div>
+                          <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">AUTHORIZED DISTRIBUTOR</Badge>
+                          <h4 className="text-base font-black text-white mt-1">Deye Energy Co., Ltd</h4>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-400 font-bold">Valid: Dec 2028</span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-slate-300 font-semibold">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">TOTAG Partner Role:</span>
+                          <span className="text-white font-bold">Authorized Distributor & Service Partner</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Authorization Ref:</span>
+                          <span className="text-amber-400 font-mono">DEYE-AFR-AUTH-2026-991</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Product Scope:</span>
+                          <span className="text-slate-200">Single & Three-Phase Hybrid Inverters (3kW to 50kW)</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Technical Support SLA:</span>
+                          <span className="text-emerald-400 font-bold">Direct Factory Firmware & 5-Yr Replacement</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">OEM Contact Person:</span>
+                          <span className="text-white">Chen Wei (Africa OEM Relations Lead)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OEM 2: Victron Energy */}
+                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <div>
+                          <Badge className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">SYSTEM INTEGRATOR</Badge>
+                          <h4 className="text-base font-black text-white mt-1">Victron Energy B.V.</h4>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-400 font-bold">Valid: Dec 2027</span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-slate-300 font-semibold">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">TOTAG Partner Role:</span>
+                          <span className="text-white font-bold">Certified Dealer & Systems Integrator</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Authorization Ref:</span>
+                          <span className="text-sky-400 font-mono">VIC-WESTAF-2025-081</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Product Scope:</span>
+                          <span className="text-slate-200">Quattro/MultiPlus Inverters, SmartSolar MPPTs, Cerbo GX</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Technical Support SLA:</span>
+                          <span className="text-emerald-400 font-bold">VE.Can Protocol Access & 5-Yr Warranty</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">OEM Contact Person:</span>
+                          <span className="text-white">Jan van der Merwe (Regional Tech Lead)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OEM 3: Jinko Solar */}
+                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <div>
+                          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">DIRECT IMPORTER</Badge>
+                          <h4 className="text-base font-black text-white mt-1">Jinko Solar Co., Ltd</h4>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-400 font-bold">Valid: Dec 2029</span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-slate-300 font-semibold">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">TOTAG Partner Role:</span>
+                          <span className="text-white font-bold">Tier-1 Direct Importer & Distributor</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Authorization Ref:</span>
+                          <span className="text-emerald-400 font-mono">JINKO-LIB-DIST-2026</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Product Scope:</span>
+                          <span className="text-slate-200">Tiger Neo N-Type TOPCon & Mono PERC PV Panels (550W-670W)</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Technical Support SLA:</span>
+                          <span className="text-emerald-400 font-bold">25-Year Linear Performance Guarantee</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">OEM Contact Person:</span>
+                          <span className="text-white">Grace Zhao (Global Sales Director)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* OEM 4: Pylontech */}
+                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <div>
+                          <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">STORAGE PARTNER</Badge>
+                          <h4 className="text-base font-black text-white mt-1">Pylontech Technologies</h4>
+                        </div>
+                        <span className="text-xs font-mono text-emerald-400 font-bold">Valid: Dec 2028</span>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-slate-300 font-semibold">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">TOTAG Partner Role:</span>
+                          <span className="text-white font-bold">Lithium Battery Storage Partner</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Authorization Ref:</span>
+                          <span className="text-purple-400 font-mono">PYLON-AFR-DEALER-449</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Product Scope:</span>
+                          <span className="text-slate-200">US2000C / US3000C / US5000 48V LiFePO4 Rack Storage</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Technical Support SLA:</span>
+                          <span className="text-emerald-400 font-bold">6,000 Cycles @ 90% DoD & Smart BMS Protocol</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">OEM Contact Person:</span>
+                          <span className="text-white">Marcus Thorne (Technical Sales Manager)</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </TabsContent>
+
             <TabsContent value="energy-audit" className="space-y-6">
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
                 <div>

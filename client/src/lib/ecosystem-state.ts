@@ -86,6 +86,59 @@ export interface SolarEngineeringScenario {
   co2MitigatedTons: number;
 }
 
+export interface SolarBoqItem {
+  id: string;
+  itemDescription: string;
+  category: "PV Modules" | "Inverters" | "Batteries" | "Combiner & Switchgear" | "ATS & Protection" | "Cables & Wiring" | "Mounting Structure" | "Earthing & Lightning" | "Services & Labor";
+  supplier: string;
+  qty: number;
+  unit: string;
+  purchasePrice: number;
+  freight: number;
+  insurance: number;
+  customs: number;
+  clearing: number;
+  inlandTransport: number;
+  landedCost: number; // purchase + freight + insurance + customs + clearing + transport
+  laborCost: number;
+  overhead: number;
+  contingency: number;
+  markupPct: number;
+  sellingPrice: number;
+}
+
+export interface SolarProcurementItem {
+  id: string;
+  projectId: string;
+  projectName: string;
+  reqNumber: string;
+  poNumber: string;
+  supplierName: string;
+  itemDescription: string;
+  qty: number;
+  totalPoValueUsd: number;
+  status: "Purchase Requisition" | "RFQ Issued" | "Quotation Received" | "PO Issued" | "In Transit / Shipped" | "Customs Clearance" | "Receiving Inspection" | "Warehouse Receipt";
+  serialNumbers: string[];
+  trackingNumber: string;
+  warrantyDocRef: string;
+  createdAt: string;
+}
+
+export interface SolarSupplierRecord {
+  id: string;
+  brandName: string;
+  manufacturerCompany: string;
+  partnershipRole: "Authorized Dealer" | "Distributor" | "Installer" | "Service Partner" | "Reseller";
+  contactPerson: string;
+  phoneEmail: string;
+  productLines: string;
+  authorizationDocUrl: string;
+  validityDates: string;
+  dealerTier: string;
+  warrantyTerms: string;
+  supportSla: string;
+}
+
 export interface SolarAuditItem {
   id: string;
   clientName: string;
