@@ -235,10 +235,10 @@ const COMPONENT_CATALOGUE = [
 
 // Deye Official OEM Catalogue Data (Single Phase LV, Split Phase, Three Phase)
 const DEYE_CATALOGUE_CATEGORIES = [
-  { id: "sp-lv", name: "Single Phase Low Voltage Hybrid Inverters", count: 10, source: "Attached Deye Catalogue (Attachments 1, 2, 3)" },
-  { id: "split-phase", name: "Split Phase Hybrid Inverters", count: 6, source: "Attached Deye Catalogue (Attachments 4, 5)" },
-  { id: "tp-lv", name: "Three-Phase Low Voltage Hybrid Inverters", count: 0, pending: true },
-  { id: "tp-hv", name: "Three-Phase High Voltage Hybrid Inverters", count: 0, pending: true },
+  { id: "sp-lv", name: "Single Phase Low Voltage Hybrid Inverters", count: 10, source: "Deye Attachments 1, 2, 3" },
+  { id: "split-phase", name: "Split Phase Hybrid Inverters", count: 6, source: "Deye Attachments 4, 5" },
+  { id: "tp-lv", name: "Three-Phase Low Voltage Hybrid Inverters", count: 5, source: "Deye Attachments 6, 7" },
+  { id: "tp-hv", name: "Three-Phase High Voltage Hybrid Inverters", count: 10, source: "Deye Attachments 8, 9, 10" },
   { id: "pv-modules", name: "PV Modules & Solar Panels", count: 2 },
   { id: "batteries", name: "LiFePO4 Energy Storage Banks", count: 2 },
   { id: "bop", name: "Balance of Plant & Switchgear", count: 2 },
@@ -419,6 +419,267 @@ const DEYE_CATALOGUE_ITEMS = [
     description: "Standard EU-certified single-phase hybrid inverter with integrated DC switch.",
     photos: [
       { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Standard EU Grid Compliance Badge" }
+    ]
+  },
+
+
+  // --- THREE-PHASE LOW VOLTAGE HYBRID INVERTERS (5 Series Models) ---
+  {
+    id: "DEYE-TP-LV-01",
+    catId: "tp-lv",
+    seriesCode: "SUN-3/4/5/6/8K-SG06LP3-EU-CM2",
+    powerRange: "3-8kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-lv-1.png",
+    priceUsd: 1980,
+    specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • 100% Unbalanced Output • IP65 Weatherproof",
+    description: "New 2026 compact three-phase low voltage hybrid inverter with 100% unbalanced phase output capability (each phase max output up to 50% rated power).",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Weatherproof Outdoor Housing & Color Touch LCD Interface" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: 3-Phase AC Output Terminals & Dual MPPT Input Glands" }
+    ]
+  },
+  {
+    id: "DEYE-TP-LV-02",
+    catId: "tp-lv",
+    seriesCode: "SUN-3/4/5/6/8K-SG06LP3-EU-BM2",
+    powerRange: "3-8kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-lv-1.png",
+    priceUsd: 2050,
+    specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • Max 10pcs Parallel",
+    description: "Commercial 3-phase hybrid inverter with generator port for integrated automatic diesel generator synchronization.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: Industrial 3-Phase Status LED Display" }
+    ]
+  },
+  {
+    id: "DEYE-TP-LV-03",
+    catId: "tp-lv",
+    seriesCode: "SUN-3/4/5/6/8/10/12K-SG05LP3-EU-SM2",
+    powerRange: "3-12kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-lv-1.png",
+    priceUsd: 2650,
+    specs: "3-12 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit • 6 Time Periods",
+    description: "Versatile 3-12kW three-phase hybrid inverter supporting both AC coupling for existing solar arrays and DC coupling for new battery storage.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Dark Touchscreen LCD Interface" }
+    ]
+  },
+  {
+    id: "DEYE-TP-LV-04",
+    catId: "tp-lv",
+    seriesCode: "SUN-14/15/16/18/20K-SG05LP3-EU-SM2",
+    powerRange: "14-20kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-lv-1.png",
+    priceUsd: 3450,
+    specs: "14-20 kW Output • 48V LV Battery • 2 MPPT • 350A Max Battery Charge/Discharge",
+    description: "High-power 20kW three-phase LV hybrid inverter featuring 350A continuous battery charging for rapid commercial battery recovery.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Heavy Duty Frame: 20kW Commercial Three-Phase Heat Sink" }
+    ]
+  },
+  {
+    id: "DEYE-TP-LV-05",
+    catId: "tp-lv",
+    seriesCode: "SUN-5/6/8/10/12K-SG04LP3-EU-AM2-P",
+    powerRange: "5-12kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-lv-2.png",
+    priceUsd: 2550,
+    specs: "5-12 kW Output • 48V LV Battery • 2 MPPT • IP65 Weatherproof • Modbus RS485",
+    description: "Heavy-duty SG04 series 3-phase hybrid inverter with die-cast IP65 aluminum casing.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Weatherproof Industrial Enclosure" }
+    ]
+  },
+
+  // --- THREE-PHASE HIGH VOLTAGE HYBRID INVERTERS (10 Series Models) ---
+  {
+    id: "DEYE-TP-HV-01",
+    catId: "tp-hv",
+    seriesCode: "SUN-5/6/8/10/12K-SG01HP3-EU-DM2",
+    powerRange: "5-12kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-1.png",
+    priceUsd: 2850,
+    specs: "5-12 kW Output • 160V-800V High Voltage Battery • 2 MPPT • >97.6% Efficiency",
+    description: "High-voltage battery 3-phase hybrid inverter with ultra-high round-trip efficiency and reduced cable losses.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: High Voltage DC Bus Status Touchscreen" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-02",
+    catId: "tp-hv",
+    seriesCode: "SUN-8/10/12/15K-SG01HP3-US-AM2",
+    powerRange: "8-15kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-1.png",
+    priceUsd: 3150,
+    specs: "8-15 kW Output • 160V-800V HV Battery • 2 MPPT • UL1741 & IEEE 1547 Certified",
+    description: "North American & international compliant HV battery 3-phase hybrid inverter with rapid shutdown integration.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: UL Certified Enclosure" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-03",
+    catId: "tp-hv",
+    seriesCode: "SUN-5/6/8/10/12/15/20/25K-SG01HP3-EU-AM2",
+    powerRange: "5-25kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-1.png",
+    priceUsd: 3850,
+    specs: "5-25 kW Output • HV Battery • 2 MPPT • 100% Unbalanced Load • 10 Units Parallel",
+    description: "Commercial 25kW HV hybrid inverter capable of paralleling up to 10 units for 250kW microgrid systems.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "25kW Enclosure: Commercial Parallel Control Terminal" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-04",
+    catId: "tp-hv",
+    seriesCode: "SUN-25/29.9/30K-SG02HP3-EU-AM3",
+    powerRange: "25-30kW",
+    phase: "Three Phase",
+    mppt: "3 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-1.png",
+    priceUsd: 4650,
+    specs: "25-30 kW Output • HV Battery • 3 MPPT • Triple String Tracking • Smart Load Port",
+    description: "Industrial 30kW HV hybrid inverter featuring 3 independent MPPT trackers for complex commercial roofs.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 30kW Triple MPPT Control Panel" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-05",
+    catId: "tp-hv",
+    seriesCode: "SUN-29.9/30/35/40/50K-SG01HP3-EU-BM3/BM4",
+    powerRange: "29.9-50kW",
+    phase: "Three Phase",
+    mppt: "3/4 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-2.png",
+    priceUsd: 5950,
+    specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • 100A Max Battery Charge • IP65",
+    description: "50kW commercial & industrial HV hybrid inverter supporting high-capacity containerized energy storage systems.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "50kW Industrial Housing: Quad MPPT Bus & AC Terminals" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-06",
+    catId: "tp-hv",
+    seriesCode: "SUN-29.9/30/35/40/50K-SG02HP3-EU-BM3/BM4-P",
+    powerRange: "29.9-50kW",
+    phase: "Three Phase",
+    mppt: "3/4 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-hv-2.png",
+    priceUsd: 6250,
+    specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • Next-Gen Power Module • Active Cooling",
+    description: "Flagship 2026 50kW HV hybrid inverter with high current input density for 650W+ TOPCon solar panels.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Next-Gen Touch Display & Active Heat Sink Fans" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-07",
+    catId: "tp-hv",
+    seriesCode: "SUN-60/70/75/80K-SG02HP3-EU-EM6",
+    powerRange: "60-80kW",
+    phase: "Three Phase",
+    mppt: "6 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-tp-hv-2.png",
+    priceUsd: 8950,
+    specs: "60-80 kW Output • HV Battery • 6 MPPT • 6 Independent String Trackers • SCADA Ready",
+    description: "Utility-scale 80kW HV hybrid inverter with 6 MPPTs and Modbus TCP/RTU SCADA integration.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "80kW Utility Enclosure: Hexa-MPPT Input Terminal Block" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-08",
+    catId: "tp-hv",
+    seriesCode: "SUN-100/125K-SG02HP3-EU-GM8/GM10",
+    powerRange: "100-125kW",
+    phase: "Three Phase",
+    mppt: "8/10 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-hv-2.png",
+    priceUsd: 12850,
+    specs: "100-125 kW Mega Power • HV Battery • 8/10 MPPT • 10 Independent String Trackers • Utility Microgrid",
+    description: "Mega-scale 125kW HV hybrid inverter engineered for mini-grids, rural electrification, and mining facilities.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "125kW Mega Inverter: 10-MPPT Terminal Array & Fiber Optic Comm Port" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-09",
+    catId: "tp-hv",
+    seriesCode: "SUN-15/20/25K-SG02HP3-EU-DM3",
+    powerRange: "15-25kW",
+    phase: "Three Phase",
+    mppt: "3 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-hv-3.png",
+    priceUsd: 3950,
+    specs: "15-25 kW Output • HV Battery • 3 MPPT • Compact Commercial Design",
+    description: "Compact 25kW HV hybrid inverter with Deye signature arc fault circuit interrupter (AFCI).",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Compact 25kW Housing with AFCI Protection" }
+    ]
+  },
+  {
+    id: "DEYE-TP-HV-10",
+    catId: "tp-hv",
+    seriesCode: "SUN-5/6/8/10/12K-SG02HP3-EU-DM2",
+    powerRange: "5-12kW",
+    phase: "Three Phase",
+    mppt: "2 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-tp-hv-3.png",
+    priceUsd: 2950,
+    specs: "5-12 kW Output • HV Battery • 2 MPPT • Light Weight High Efficiency",
+    description: "High-efficiency 12kW HV hybrid inverter with smart frequency droop control for mini-grids.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact High Voltage Inverter Enclosure" }
     ]
   },
 
@@ -1924,7 +2185,7 @@ export default function SolarPage() {
                 )}
 
                 {/* DEYE OFFICIAL DESIGN ARCHITECTURE PHOTO DISPLAY CANVAS */}
-                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase') && (
+                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase' || deyeActiveCat === 'tp-lv' || deyeActiveCat === 'tp-hv') && (
                   <div className="bg-[#f5f6f8] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-6 shadow-inner">
                     <div className="flex items-center justify-between border-b border-slate-300 dark:border-slate-800 pb-3">
                       <div>
@@ -3111,7 +3372,7 @@ export default function SolarPage() {
                 )}
 
                 {/* DEYE OFFICIAL DESIGN ARCHITECTURE PHOTO DISPLAY CANVAS */}
-                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase') && (
+                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase' || deyeActiveCat === 'tp-lv' || deyeActiveCat === 'tp-hv') && (
                   <div className="bg-[#f5f6f8] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-6 shadow-inner">
                     <div className="flex items-center justify-between border-b border-slate-300 dark:border-slate-800 pb-3">
                       <div>
