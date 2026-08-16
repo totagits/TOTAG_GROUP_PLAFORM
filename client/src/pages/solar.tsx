@@ -453,12 +453,12 @@ export default function SolarPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800 text-slate-200 font-semibold bg-slate-900">
-                        {leadsList
-                          .filter(l => leadCategoryFilter === "ALL" || l.customerCategory === leadCategoryFilter)
+                        {(leadsList || [])
+                          .filter(l => l && (leadCategoryFilter === "ALL" || l.customerCategory === leadCategoryFilter))
                           .map((lead) => (
-                            <tr key={lead.id} className="hover:bg-slate-800/50">
+                            <tr key={lead.id || Math.random()} className="hover:bg-slate-800/50">
                               <td className="p-3">
-                                <div className="font-black text-white">{lead.customerName}</div>
+                                <div className="font-black text-white">{lead.customerName || "Unnamed Client"}</div>
                                 <div className="text-[11px] text-slate-400">{lead.contactPerson} ({lead.phoneEmail})</div>
                               </td>
                               <td className="p-3">
@@ -475,8 +475,8 @@ export default function SolarPage() {
                               </td>
                               <td className="p-3 text-slate-300">{lead.assignedEngineer}</td>
                               <td className="p-3">
-                                <div className="font-black text-emerald-400">${lead.estimatedValueUsd.toLocaleString()} USD</div>
-                                <div className="text-[10px] text-slate-400">{lead.probabilityPct}% Win Chance</div>
+                                <div className="font-black text-emerald-400">${(lead.estimatedValueUsd || 0).toLocaleString()} USD</div>
+                                <div className="text-[10px] text-slate-400">{lead.probabilityPct || 0}% Win Chance</div>
                               </td>
                               <td className="p-3">
                                 <select
