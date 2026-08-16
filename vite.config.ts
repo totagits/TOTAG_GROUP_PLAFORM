@@ -27,8 +27,14 @@ export default defineConfig({
   root: path.resolve(process.cwd(), "client"),
   build: {
     outDir: path.resolve(process.cwd(), "dist/public"),
-
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}[extname]`
+      }
+    }
   },
   server: {
     fs: {
