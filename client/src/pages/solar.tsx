@@ -255,9 +255,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-1.png",
+    image: "/images/deye/models/SUN-3_6_5_6_7_7_6_8_10K-SG05LP1-EU-AM2-P.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_6_5_6_7_7_6_8_10K-SG05LP1-EU-AM2-P.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3.6/5/6/7/7.6/8/10K-SG05LP1-EU-AM2-P)" }
     ],
     
     
@@ -275,9 +275,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-1.png",
+    image: "/images/deye/models/SUN-3_6_5_6_7_7_6_8_10K-SG05LP1-EU-SM2-P.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_6_5_6_7_7_6_8_10K-SG05LP1-EU-SM2-P.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3.6/5/6/7/7.6/8/10K-SG05LP1-EU-SM2-P)" }
     ],
     
     
@@ -295,9 +295,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-1.png",
+    image: "/images/deye/models/SUN-7_7_6_8_10K-SG05LP1-EU-SM2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-7_7_6_8_10K-SG05LP1-EU-SM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-7/7.6/8/10K-SG05LP1-EU-SM2)" }
     ],
     
     
@@ -315,9 +315,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-single-phase-lv-1.png",
+    image: "/images/deye/models/SUN-7_7_6_8_10_12K-SG06LP1-EU-CM3.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-7_7_6_8_10_12K-SG06LP1-EU-CM3.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-7/7.6/8/10/12K-SG06LP1-EU-CM3)" }
     ],
     
     
@@ -335,9 +335,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2/3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-2.png",
+    image: "/images/deye/models/SUN-7_6_8_10_12K-SG02LP1-EU-AM2_AM3-P.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-7_6_8_10_12K-SG02LP1-EU-AM2_AM3-P.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-7.6/8/10/12K-SG02LP1-EU-AM2/AM3-P)" }
     ],
     
     
@@ -355,9 +355,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-2.png",
+    image: "/images/deye/models/SUN-12_14_16_18K-SG01LP1-EU-AM3-P.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-12_14_16_18K-SG01LP1-EU-AM3-P.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-12/14/16/18K-SG01LP1-EU-AM3-P)" }
     ],
     
     
@@ -375,9 +375,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-single-phase-lv-3.png",
+    image: "/images/deye/models/SUN-3_3_6_4_4_6_5_6K-SG06LP1-EU-BM1_BM2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_3_6_4_4_6_5_6K-SG06LP1-EU-BM1_BM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/3.6/4/4.6/5/6K-SG06LP1-EU-BM1/BM2)" }
     ],
     
     
@@ -395,9 +395,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "1/2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-single-phase-lv-3.png",
+    image: "/images/deye/models/SUN-3_3_6_4_4_6_5_6K-SG06LP1-EU-CM1_CM2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_3_6_4_4_6_5_6K-SG06LP1-EU-CM1_CM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/3.6/4/4.6/5/6K-SG06LP1-EU-CM1/CM2)" }
     ],
     
     
@@ -415,9 +415,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "1/2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-3.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/05/29/6.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/05/29/6.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/3.6/5/6K-SG04LP1-SM1/SM2)" }
     ],
     
     
@@ -435,9 +435,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-single-phase-lv-3.png",
+    image: "/images/deye/models/SUN-3_3_6_5_6K-SG04LP1-EU-SM1_SM2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_3_6_5_6K-SG04LP1-EU-SM1_SM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/3.6/5/6K-SG04LP1-EU)" }
     ],
     
     
@@ -458,9 +458,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-lv-1.png",
+    image: "/images/deye/models/SUN-3_4_5_6_8K-SG06LP3-EU-CM2.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_4_5_6_8K-SG06LP3-EU-CM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/4/5/6/8K-SG06LP3-EU-CM2)" }
     ],
     
     
@@ -478,9 +478,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-lv-1.png",
+    image: "/images/deye/models/SUN-3_4_5_6_8K-SG06LP3-EU-BM2.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_4_5_6_8K-SG06LP3-EU-BM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/4/5/6/8K-SG06LP3-EU-BM2)" }
     ],
     
     
@@ -498,9 +498,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-lv-1.png",
+    image: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-3/4/5/6/8/10/12K-SG05LP3-EU-SM2)" }
     ],
     
     
@@ -518,9 +518,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-lv-1.png",
+    image: "/images/deye/models/SUN-14_15_16_18_20K-SG05LP3-EU-SM2.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-14_15_16_18_20K-SG05LP3-EU-SM2.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-14/15/16/18/20K-SG05LP3-EU-SM2)" }
     ],
     
     
@@ -538,9 +538,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-lv-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/8/10/12K-SG04LP3-EU-AM2-P)" }
     ],
     
     
@@ -560,9 +560,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/8/10/12K-SG01HP3-EU-DM2)" }
     ],
     
     
@@ -580,9 +580,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-8/10/12/15K-SG01HP3-US-AM2)" }
     ],
     
     
@@ -600,9 +600,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/8/10/12/15/20/25K-SG01HP3-EU-AM2)" }
     ],
     
     
@@ -620,9 +620,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-25/29.9/30K-SG02HP3-EU-AM3)" }
     ],
     
     
@@ -640,9 +640,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3/4 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-29.9/30/35/40/50K-SG01HP3-EU-BM3/BM4)" }
     ],
     
     
@@ -660,9 +660,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3/4 MPPT",
     batterySupport: "HV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-hv-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-29.9/30/35/40/50K-SG02HP3-EU-BM3/BM4-P)" }
     ],
     
     
@@ -680,9 +680,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "6 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-tp-hv-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-60/70/75/80K-SG02HP3-EU-EM6)" }
     ],
     
     
@@ -700,9 +700,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "8/10 MPPT",
     batterySupport: "HV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-hv-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-100/125K-SG02HP3-EU-GM8/GM10)" }
     ],
     
     
@@ -720,9 +720,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "3 MPPT",
     batterySupport: "HV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-hv-3.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-15/20/25K-SG02HP3-EU-DM3)" }
     ],
     
     
@@ -740,9 +740,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "HV Battery Supported",
     badge: "NEW",
-    image: "/images/deye/deye-tp-hv-3.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2026/01/29/15.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/8/10/12K-SG02HP3-EU-DM2)" }
     ],
     
     
@@ -762,9 +762,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-1.png",
+    image: "/images/deye/models/SUN-5_6_7_6_8K-SG01LP1-US.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "/images/deye/models/SUN-5_6_7_6_8K-SG01LP1-US.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/7.6/8K-SG01LP1-US)" }
     ],
     
     
@@ -782,9 +782,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-8/10/12/15K-SG01HP2-US-AM2)" }
     ],
     
     
@@ -802,9 +802,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2/3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-7.6/8/10/12K-SG02LP2-US-AM2/AM3-P)" }
     ],
     
     
@@ -822,9 +822,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2/3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-1.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/7.6/8/10/12K-SG02LP2-US-AM2/AM3)" }
     ],
     
     
@@ -842,9 +842,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "2/3 MPPT",
     batterySupport: "LV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-5/6/8/10/12K-SG05LP2-US-SM2/SM3)" }
     ],
     
     
@@ -862,9 +862,9 @@ const DEYE_CATALOGUE_ITEMS = [
     mppt: "4 MPPT",
     batterySupport: "HV Battery Supported",
     badge: null,
-    image: "/images/deye/deye-split-phase-2.png",
+    image: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
+      { url: "https://www.deyeinverter.com/deyeinverter/2025/07/21/101.png", caption: "Official Deye OEM Single Inverter High-Res Render (SUN-4.95/5.5/8K-SG02HP2-JP-FM4)" }
     ],
     
     
