@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -38,9 +38,12 @@ import {
   FileSpreadsheet,
   Award,
   Clock,
-  ArrowUpRight
+  ArrowUpRight,
+  Plus,
+  Trash2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { EcosystemStateEngine, SolarAuditItem } from "@/lib/ecosystem-state";
 
 // Approved Component Catalogue Master
 const COMPONENT_CATALOGUE = [
@@ -51,33 +54,18 @@ const COMPONENT_CATALOGUE = [
   { name: "4-String PV Combiner Box w/ SPD", category: "Balance of Plant", specs: "1000V DC • 15A Fuses • Type II Surge Arrestor", warranty: "2-Yr", brand: "ABB / Schneider" }
 ];
 
-// Active Solar EPC & Operations Projects
-const ACTIVE_SOLAR_PROJECTS = [
-  {
-    id: "SOL-2026-041",
-    client: "CRS / UNFPA Health Facilities Solarization",
-    location: "Zwedru & Harper Sites",
-    capacity: "45.0 kWp PV • 90.0 kWh BESS",
-    status: "Commissioning",
-    dieselAvoidedLitersMonth: 2450,
-    ncrCount: 0
-  },
-  {
-    id: "SOL-2026-088",
-    client: "UNDP Agribusiness Processing Microgrid",
-    location: "Gbarnga, Bong County",
-    capacity: "125.0 kWp PV • 240.0 kWh BESS",
-    status: "Remote Monitoring NOC",
-    dieselAvoidedLitersMonth: 5800,
-    ncrCount: 0
-  }
-];
-
 export default function SolarPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("noc-monitoring");
 
-  // Load Audit State Calculator
+  // Dynamic Persistent Audits State
+  const [auditsList, setAuditsList] = useState<SolarAuditItem[]>([]);
+
+  useEffect(() => {
+    setAuditsList(EcosystemStateEngine.getSolarAudits());
+  }, []);
+
+  // Dynamic Interactive Energy Audit Loads State
   const [auditLoads, setAuditLoads] = useState([
     { name: "Servers & IT Network", qty: 4, watts: 400, hours: 24, factor: 1.0 },
     { name: "Inverter Air Conditioner", qty: 3, watts: 1500, hours: 8, factor: 0.8 },
@@ -85,6 +73,23 @@ export default function SolarPage() {
     { name: "Cold Storage / Refrigeration", qty: 2, watts: 1200, hours: 24, factor: 0.7 }
   ]);
 
+  // Form State for Adding New Load Item
+  const [newLoad, setNewLoad] = useState({ name: "", qty: 1, watts: 100, hours: 8 });
+
+  const handleAddLoad = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLoad.name) return;
+    setAuditLoads([...auditLoads, { ...newLoad, factor: 0.9 }]);
+    setNewLoad({ name: "", qty: 1, watts: 100, hours: 8 });
+    toast({ title: "Equipment Added", description: "Audit load table and system sizing recalculated dynamically." });
+  };
+
+  const handleDeleteLoad = (index: number) => {
+    setAuditLoads(auditLoads.filter((_, i) => i !== index));
+    toast({ title: "Equipment Removed", description: "System sizing recalculated." });
+  };
+
+  // Math Sizing Engine
   const totalConnectedWatts = auditLoads.reduce((sum, item) => sum + (item.qty * item.watts), 0);
   const totalDailyKwh = Math.round(auditLoads.reduce((sum, item) => sum + (item.qty * item.watts * item.hours * item.factor) / 1000, 0) * 10) / 10;
   const peakDemandKw = Math.round((totalConnectedWatts / 1000) * 1.25 * 10) / 10;
@@ -99,18 +104,32 @@ export default function SolarPage() {
     clientName: "",
     agencyType: "UN / NGO Agency",
     contactEmail: "",
-    targetLocation: "",
-    estimatedDailyKwh: totalDailyKwh.toString(),
-    requiredAutonomyHours: "16"
+    targetLocation: "Monrovia"
   });
 
   const handleProposalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Solar EPC Proposal Request Generated",
-      description: "Our Smart Energy Engineering Directorate will finalize the single-line diagram, BOQ, and landed cost matrix."
+    if (!proposalForm.clientName) return;
+
+    const created = EcosystemStateEngine.addSolarAudit({
+      clientName: proposalForm.clientName,
+      location: proposalForm.targetLocation || "Monrovia",
+      propertyType: proposalForm.agencyType,
+      connectedWatts: totalConnectedWatts,
+      dailyKwh: totalDailyKwh,
+      recommendedPvKw: pvArrayKw,
+      recommendedBatteryKwh: batteryKwh,
+      status: "Engineering Design V2"
     });
-    setProposalForm({ clientName: "", agencyType: "UN / NGO Agency", contactEmail: "", targetLocation: "", estimatedDailyKwh: totalDailyKwh.toString(), requiredAutonomyHours: "16" });
+
+    setAuditsList([created, ...auditsList]);
+
+    toast({
+      title: "Solar EPC Proposal Created & Saved Live",
+      description: `Proposal #${created.id} saved. Dynamic notification published to FIMS & Executive Control Tower.`
+    });
+
+    setProposalForm({ clientName: "", agencyType: "UN / NGO Agency", contactEmail: "", targetLocation: "" });
   };
 
   return (
@@ -131,35 +150,18 @@ export default function SolarPage() {
                 TOTAG <span className="text-amber-400">Solar Energy</span> & Smart Power
               </h1>
               <p className="text-sm text-slate-300 font-semibold mt-1 max-w-3xl">
-                Full-lifecycle Solar EPC, Energy Asset Management, IoT Remote Monitoring, and O&M Platform for UN agencies, health facilities, agribusiness microgrids, and commercial enterprises.
+                Interactive full-lifecycle Solar EPC, Energy Asset Management, IoT Remote Monitoring, and O&M Platform for UN agencies, health facilities, agribusiness microgrids, and commercial enterprises.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 text-center justify-center">
-                Solar EPC + NOC Live
+                Solar EPC + NOC Live ({auditsList.length} Active Audits)
               </Badge>
               <div className="text-right p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
                 <span className="text-slate-400 block font-bold">Diesel Saved This Month:</span>
                 <span className="text-xl font-black text-emerald-400">8,250 Liters</span>
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Operating Lifecycle Indicator */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="p-4 rounded-2xl bg-slate-900 border-2 border-slate-800 space-y-2 shadow-xl">
-            <span className="text-xs font-black uppercase text-amber-400 tracking-wider">Enterprise Operating Lifecycle</span>
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-300">
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">1. Lead CRM</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">2. Energy Audit</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">3. System Sizing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">4. BOQ & Costing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">5. Procurement</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">6. Installation QA/QC</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">7. Commissioning</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white shadow-md">8. NOC Remote Monitoring</span>
             </div>
           </div>
         </section>
@@ -182,7 +184,7 @@ export default function SolarPage() {
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
-                4. BOQ & Catalogue
+                4. BOQ & Proposals
               </TabsTrigger>
               <TabsTrigger value="commissioning" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Award className="h-4 w-4" />
@@ -213,7 +215,6 @@ export default function SolarPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
                     <Sun className="w-6 h-6 text-amber-400 mx-auto mb-1 animate-spin-slow" />
                     <span className="text-xs text-slate-400 block font-extrabold uppercase">Live PV Power Output</span>
@@ -241,53 +242,107 @@ export default function SolarPage() {
                     <div className="text-3xl font-black text-purple-400">-77%</div>
                     <span className="text-[10px] text-purple-300 font-bold">From 14h/day down to 3.2h/day</span>
                   </div>
-
                 </div>
 
-                {/* AI Energy Assistant Recommendation Box */}
-                <div className="p-5 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 space-y-2">
-                  <div className="flex items-center space-x-2 text-amber-400 font-black text-xs">
-                    <Sparkles className="w-4 h-4" />
-                    <span>AI ENERGY ASSISTANT OPTIMIZATION ALERTS</span>
+                {/* Dynamic Active Projects / Proposals List */}
+                <div className="space-y-3 pt-4 border-t border-slate-800">
+                  <h3 className="text-sm font-black uppercase text-amber-400 tracking-wider">Active Persistent Solar EPC Projects & Proposals</h3>
+                  <div className="space-y-2">
+                    {auditsList.map((audit) => (
+                      <div key={audit.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+                        <div>
+                          <span className="text-[10px] font-black text-emerald-400 px-2 py-0.5 bg-slate-900 rounded uppercase">
+                            {audit.status}
+                          </span>
+                          <h4 className="text-sm font-black text-white mt-1">{audit.clientName}</h4>
+                          <p className="text-slate-300 text-xs font-semibold">{audit.location} • {audit.propertyType}</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-base font-black text-amber-400">{audit.recommendedPvKw} kWp PV</span>
+                          <span className="text-slate-400 block text-[11px] font-bold">{audit.recommendedBatteryKwh} kWh BESS</span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-xs text-slate-200 font-medium leading-relaxed">
-                    "PV production at Site SOL-2026-088 (Gbarnga Microgrid) is generating 98.4% of expected yield. Diesel generator runtime was automatically suppressed for 18.5 hours yesterday, saving 285 liters of fuel."
-                  </p>
                 </div>
-
               </div>
             </TabsContent>
 
-            {/* 2. Solar Site Assessment & Energy Audit Engine */}
+            {/* 2. Interactive Energy Audit Engine */}
             <TabsContent value="energy-audit" className="space-y-6">
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
                 <div>
                   <h2 className="text-2xl font-black text-white flex items-center gap-2">
                     <Calculator className="w-6 h-6 text-amber-400" />
-                    <span>Itemized Load Audit & Connected Power Engine</span>
+                    <span>Dynamic Interactive Energy Load Audit Engine</span>
                   </h2>
                   <p className="text-xs text-slate-300 font-semibold mt-1">
-                    Enter individual equipment wattage, quantity, and operating hours to calculate daily kWh, maximum demand, and peak surge.
+                    Add or remove equipment items dynamically. The platform recalculates total connected watts, daily kWh energy demand, and peak inverter surge in real time.
                   </p>
                 </div>
 
+                {/* Add Equipment Form */}
+                <form onSubmit={handleAddLoad} className="grid grid-cols-5 gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                  <div className="col-span-2">
+                    <Label className="text-[10px] font-bold text-slate-300">Equipment Name</Label>
+                    <Input 
+                      value={newLoad.name} 
+                      onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} 
+                      placeholder="e.g. Solar Water Pump"
+                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-bold text-slate-300">Quantity</Label>
+                    <Input 
+                      type="number" 
+                      value={newLoad.qty} 
+                      onChange={(e) => setNewLoad({ ...newLoad, qty: Number(e.target.value) })} 
+                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-bold text-slate-300">Watts Each</Label>
+                    <Input 
+                      type="number" 
+                      value={newLoad.watts} 
+                      onChange={(e) => setNewLoad({ ...newLoad, watts: Number(e.target.value) })} 
+                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      required
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs">
+                      <Plus className="w-4 h-4 mr-1" /> Add Item
+                    </Button>
+                  </div>
+                </form>
+
                 {/* Audit Load Items Table */}
                 <div className="space-y-3">
-                  <div className="grid grid-cols-5 text-xs font-black uppercase text-slate-400 px-3 py-1">
+                  <div className="grid grid-cols-6 text-xs font-black uppercase text-slate-400 px-3 py-1">
                     <span className="col-span-2">Equipment Description</span>
                     <span>Qty × Watts</span>
                     <span>Operating Hrs</span>
-                    <span className="text-right">Daily kWh</span>
+                    <span>Daily kWh</span>
+                    <span className="text-right">Action</span>
                   </div>
 
                   {auditLoads.map((item, idx) => (
-                    <div key={idx} className="grid grid-cols-5 items-center p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold">
+                    <div key={idx} className="grid grid-cols-6 items-center p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold">
                       <span className="col-span-2 text-white font-extrabold">{item.name}</span>
                       <span className="text-slate-300">{item.qty} × {item.watts}W</span>
                       <span className="text-slate-300">{item.hours} hrs/day</span>
-                      <span className="text-right text-emerald-400 font-extrabold">
+                      <span className="text-emerald-400 font-extrabold">
                         {Math.round((item.qty * item.watts * item.hours * item.factor) / 1000 * 10) / 10} kWh
                       </span>
+                      <div className="text-right">
+                        <Button onClick={() => handleDeleteLoad(idx)} variant="ghost" size="sm" className="text-red-400 hover:bg-red-500/20 hover:text-red-300 p-1.5 h-auto">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -319,13 +374,11 @@ export default function SolarPage() {
                     <span>Engineering System Sizing & 3 Design Scenarios</span>
                   </h2>
                   <p className="text-xs text-slate-300 font-semibold mt-1">
-                    Multi-tier engineering options comparing essential backup vs. hybrid microgrid vs. full energy independence.
+                    Multi-tier engineering options dynamically calculated from your live energy audit inputs.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  
-                  {/* Option A */}
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 space-y-3">
                     <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
                       Option A • Essential Backup
@@ -340,7 +393,6 @@ export default function SolarPage() {
                     <div className="pt-2 text-xl font-black text-amber-400">${Math.round(pvArrayKw * 700 + batteryKwh * 350).toLocaleString()} USD</div>
                   </div>
 
-                  {/* Option B */}
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-emerald-500/60 space-y-3 shadow-lg">
                     <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950">
                       Option B • Recommended Hybrid (Best ROI)
@@ -355,7 +407,6 @@ export default function SolarPage() {
                     <div className="pt-2 text-xl font-black text-emerald-400">${Math.round(pvArrayKw * 750 + batteryKwh * 380 + inverterKva * 400).toLocaleString()} USD</div>
                   </div>
 
-                  {/* Option C */}
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-purple-500/50 space-y-3">
                     <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">
                       Option C • 100% Energy Independence
@@ -369,40 +420,91 @@ export default function SolarPage() {
                     </div>
                     <div className="pt-2 text-xl font-black text-purple-400">${Math.round(pvArrayKw * 1000 + batteryKwh * 500).toLocaleString()} USD</div>
                   </div>
-
                 </div>
               </div>
             </TabsContent>
 
-            {/* 4. BOQ & Component Catalogue Engine */}
+            {/* 4. BOQ & Proposals Engine */}
             <TabsContent value="catalogue-boq" className="space-y-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                <div>
-                  <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                    <FileSpreadsheet className="w-6 h-6 text-amber-400" />
-                    <span>Approved Component Master & Automated BOQ Engine</span>
-                  </h2>
-                  <p className="text-xs text-slate-300 font-semibold mt-1">
-                    Approved technical catalogue for Tier-1 PV modules, Deye/Victron hybrid inverters, LiFePO4 batteries, and balance-of-plant accessories.
-                  </p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Proposal Submission Form */}
+                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                  <h3 className="text-xl font-black text-white flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-amber-400" />
+                    <span>Create & Save Solar EPC Proposal</span>
+                  </h3>
+                  
+                  <form onSubmit={handleProposalSubmit} className="space-y-4">
+                    <div>
+                      <Label className="text-xs font-bold text-slate-300">Client / Institution Name</Label>
+                      <Input 
+                        required
+                        value={proposalForm.clientName}
+                        onChange={(e) => setProposalForm({ ...proposalForm, clientName: e.target.value })}
+                        placeholder="e.g. World Bank Liberia / Ministry of Health"
+                        className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-xs font-bold text-slate-300">Client Category</Label>
+                        <select 
+                          value={proposalForm.agencyType}
+                          onChange={(e) => setProposalForm({ ...proposalForm, agencyType: e.target.value })}
+                          className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
+                        >
+                          <option value="UN / NGO Agency">UN / NGO Agency</option>
+                          <option value="Government Ministry">Government Ministry</option>
+                          <option value="Health Facility">Health Facility</option>
+                          <option value="Agribusiness Farm">Agribusiness Farm</option>
+                          <option value="Commercial Enterprise">Commercial Enterprise</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <Label className="text-xs font-bold text-slate-300">County / Location</Label>
+                        <Input 
+                          required
+                          value={proposalForm.targetLocation}
+                          onChange={(e) => setProposalForm({ ...proposalForm, targetLocation: e.target.value })}
+                          placeholder="e.g. Nimba County"
+                          className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-5">
+                      Save & Publish Solar Proposal
+                    </Button>
+                  </form>
                 </div>
 
-                <div className="space-y-3">
-                  {COMPONENT_CATALOGUE.map((comp, idx) => (
-                    <div key={idx} className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
-                      <div>
-                        <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
-                          {comp.category} • {comp.brand}
-                        </span>
-                        <h4 className="text-sm font-black text-white mt-1">{comp.name}</h4>
-                        <p className="text-slate-300 text-xs font-medium">{comp.specs}</p>
+                {/* Component Master List */}
+                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                  <h3 className="text-xl font-black text-white flex items-center gap-2">
+                    <FileSpreadsheet className="w-5 h-5 text-amber-400" />
+                    <span>Approved Component Master</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {COMPONENT_CATALOGUE.map((comp, idx) => (
+                      <div key={idx} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+                        <div>
+                          <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
+                            {comp.category} • {comp.brand}
+                          </span>
+                          <h4 className="text-sm font-black text-white mt-1">{comp.name}</h4>
+                          <p className="text-slate-300 text-xs font-medium">{comp.specs}</p>
+                        </div>
+                        <Badge className="bg-slate-800 text-slate-200 border-slate-700 text-xs">
+                          {comp.warranty}
+                        </Badge>
                       </div>
-                      <Badge className="bg-slate-800 text-slate-200 border-slate-700 text-xs">
-                        {comp.warranty}
-                      </Badge>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
+
               </div>
             </TabsContent>
 
@@ -446,7 +548,7 @@ export default function SolarPage() {
                     <span>Cross-Subsidiary Service Workflows</span>
                   </h2>
                   <p className="text-xs text-slate-300 font-semibold mt-1">
-                    How TOTAG Solar Energy integrates with Construction, Petroleum, Farm, Cargo, IT Services, and FIMS.
+                    How TOTAG Solar Energy integrates dynamically with Construction, Petroleum, Farm, Cargo, IT Services, and FIMS.
                   </p>
                 </div>
 
