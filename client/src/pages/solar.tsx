@@ -61,7 +61,9 @@ import {
   ClipboardCheck,
   FolderKanban,
   ShieldAlert,
-  Compass
+  Compass,
+  Camera,
+  Eye
 } from "lucide-react";
 import { 
   EcosystemStateEngine, 
@@ -75,6 +77,153 @@ import {
 } from "@/lib/ecosystem-state";
 
 // Approved Component Catalogue Master
+// Approved Component Catalogue Master with 2-5 HD Photos per Item
+const DETAILED_COMPONENT_CATALOGUE = [
+  {
+    id: "COMP-PV-550W",
+    name: "Jinko / Longi 550W Mono PERC Module",
+    category: "PV Module",
+    brand: "Jinko Solar / Longi",
+    modelNo: "JKM550M-72HL4-V",
+    priceUsd: 185,
+    warranty: "25-Year Linear Performance",
+    certifications: "IEC 61215, IEC 61730, TUV, CE, ISO 9001",
+    specs: "550W • Voc: 49.8V • Vmp: 41.9V • Isc: 13.9A • Imp: 13.1A • 21.3% Efficiency",
+    dimensions: "2278 x 1134 x 35 mm (27.5 kg)",
+    description: "Tier-1 high-efficiency monocrystalline PERC solar panel engineered for harsh tropical climates, PID-resistant cell technology, and heavy anti-reflective glass.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1000&h=600&fit=crop", caption: "Front View: Anti-Reflective Toughened Glass & 144 Half-Cell Matrix" },
+      { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1000&h=600&fit=crop", caption: "Rear View: IP68 Junction Box, Bypass Diodes & 1.2m MC4 Solar Cables" },
+      { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1000&h=600&fit=crop", caption: "Nameplate Badge: Serial Number, TUV Certification & Electrical Specs" },
+      { url: "https://images.unsplash.com/photo-1508873696983-2df515122519?w=1000&h=600&fit=crop", caption: "Field Installation: Commercial Ground Array Mount in West Africa" }
+    ]
+  },
+  {
+    id: "COMP-PV-670W",
+    name: "Trina Solar 670W N-Type TOPCon Bifacial Module",
+    category: "PV Module",
+    brand: "Trina Solar",
+    modelNo: "TSM-DEG21C.20-670W",
+    priceUsd: 235,
+    warranty: "30-Year Bifacial Linear",
+    certifications: "IEC 61215, IEC 61730, UL 61730, TUV, CE",
+    specs: "670W • Voc: 45.4V • Vmp: 38.2V • Isc: 18.6A • Imp: 17.5A • 21.8% Efficiency",
+    dimensions: "2384 x 1303 x 35 mm (33.9 kg)",
+    description: "Ultra-high power N-Type TOPCon dual-glass bifacial panel delivering up to 30% additional energy gain from ground albedo reflection.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1000&h=600&fit=crop", caption: "Dual Glass Structure: N-Type TOPCon Bifacial Architecture" },
+      { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1000&h=600&fit=crop", caption: "Cell Closeup: Multi-Busbar (MBB) Zero-Loss Ribbon Technology" },
+      { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1000&h=600&fit=crop", caption: "Rear Albedo Harvest: 2mm Heat-Strengthened Glass Backsheet" }
+    ]
+  },
+  {
+    id: "COMP-INV-DEYE10K",
+    name: "Deye 10kW Three-Phase Hybrid Inverter",
+    category: "Inverter",
+    brand: "Deye Power",
+    modelNo: "SUN-10K-SG04LP3-EU",
+    priceUsd: 2450,
+    warranty: "5-Year Factory (Extendable 10-Yr)",
+    certifications: "CE, VDE-AR-N 4105, NRS 097-2-1, IEC 62109",
+    specs: "10kVA • 48V Battery • 2 MPPT (1000V DC) • IP65 Outdoor Rating • 200% Surge",
+    dimensions: "422 x 699 x 279 mm (33.6 kg)",
+    description: "Smart 3-phase hybrid inverter featuring 48V low-voltage battery safety, 16-unit parallel capability, microgrid frequency control, and automatic generator start.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: IP65 Weatherproof Housing & Color Touch LCD Interface" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch, MC4 Ports & AC Glands" },
+      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "Internal Engineering: Heat Sink Fins, CANbus & RS485 Comm Ports" },
+      { url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1000&h=600&fit=crop", caption: "Wall Installation: 10kW Hybrid System Mounted in Telemetry Control Room" }
+    ]
+  },
+  {
+    id: "COMP-INV-VIC15K",
+    name: "Victron Quattro 15kVA Inverter/Charger",
+    category: "Inverter",
+    brand: "Victron Energy",
+    modelNo: "QUA48/15000/200-100/100",
+    priceUsd: 3850,
+    warranty: "5-Year Victron Global Warranty",
+    certifications: "EN-IEC 60335-1, EN-IEC 62109-1, CE, ISO 9001",
+    specs: "15kVA • Dual AC Inputs • 48V 200A Charger • PowerAssist Peak Shaving",
+    dimensions: "470 x 350 x 280 mm (34.0 kg)",
+    description: "Heavy-duty industrial inverter/charger with dual AC inputs (Utility + Diesel Generator), seamless 20ms UPS transfer, and PowerAssist peak-load shaving.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Front View: Industrial Powder-Coated Metal Enclosure & Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Terminal Block: Heavy Duty M8 Copper DC Terminals & Dual AC In/Out" },
+      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "System Integration: VE.Bus, VE.Can Protocol & Programmable Relays" }
+    ]
+  },
+  {
+    id: "COMP-BAT-PYLON",
+    name: "Pylontech US5000 4.8kWh LiFePO4 Rack Module",
+    category: "Battery",
+    brand: "Pylontech Technologies",
+    modelNo: "US5000-48V",
+    priceUsd: 1350,
+    warranty: "10-Year Pro-Rated Warranty",
+    certifications: "TÜV, CE, UN38.3, IEC 62619, UL 1973",
+    specs: "48V 100Ah • 4.8 kWh Nominal (3.84 kWh Usable @ 80% DoD) • 6,000 Cycles @ 90% DoD",
+    dimensions: "442 x 420 x 161 mm (38.0 kg)",
+    description: "Tier-1 modular LiFePO4 battery module with integrated smart BMS, active cell balancing, 16-unit rack expansion, and high thermal stability.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=1000&h=600&fit=crop", caption: "Front Panel: 19-inch 3U Rack Unit, Power Switch & Amphenol Plug Ports" },
+      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "BMS Comm Ports: Dual CANbus & RS485 Link Ports for Parallel Chains" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Cabinet Assembly: 12-Module Battery Bank Array Deployed at Health Facility" }
+    ]
+  },
+  {
+    id: "COMP-BAT-HUBBLE",
+    name: "Hubble AM-2 5.5kWh 48V Lithium Battery",
+    category: "Battery",
+    brand: "Hubble Lithium",
+    modelNo: "AM-2-5.5KWH",
+    priceUsd: 1580,
+    warranty: "10-Year Pro-Rated Warranty",
+    certifications: "CE, UN38.3, IEC 62619, ISO 9001",
+    specs: "51.2V 110Ah • 5.63 kWh Nominal • 100A Continuous Discharge • Cloud Gateway Included",
+    dimensions: "375 x 145 x 460 mm (42.0 kg)",
+    description: "High-capacity wall-mount or rack-mount lithium battery featuring internal automatic fire suppression aerosol, Cloud Ripper remote telemetry, and 100A discharge capability.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=1000&h=600&fit=crop", caption: "Enclosure: Heavy Steel Wall-Mount Casing & Digital LCD Status Screen" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Safety Feature: Built-in Aerosol Fire Extinguisher & Cell Isolation" }
+    ]
+  },
+  {
+    id: "COMP-BOP-COMB",
+    name: "4-String IP65 DC Combiner Box w/ SPDs & Fuses",
+    category: "Balance of Plant",
+    brand: "ABB / Schneider",
+    modelNo: "PV-CB-4S-1000V",
+    priceUsd: 240,
+    warranty: "2-Year Factory Warranty",
+    certifications: "IEC 61439-2, CE, IP65",
+    specs: "1000V DC • 4 String In / 1 Out • 15A gPV DC Fuses • Type II DC Surge Arrestor (40kA)",
+    dimensions: "300 x 400 x 180 mm (6.2 kg)",
+    description: "Pre-wired outdoor polycarbonate combiner box equipped with ABB DC rotary isolator, touch-safe fuse holders, and lightning surge protection.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Enclosure: Transparent Hinged Door, IP65 Waterproof Cable Glands" },
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Internal Layout: 1000V DC Fuses, Type II SPD Module & Copper Busbars" }
+    ]
+  },
+  {
+    id: "COMP-BOP-ATS",
+    name: "4-Pole 250A Automatic Transfer Switch (ATS)",
+    category: "Balance of Plant",
+    brand: "Schneider Electric",
+    modelNo: "ATS-4P-250A-230V",
+    priceUsd: 480,
+    warranty: "2-Year Factory Warranty",
+    certifications: "IEC 60947-6-1, CE",
+    specs: "4-Pole 250A • 400V AC • Dual Utility/Genset Motorized Interlock • Auto Start Contacts",
+    dimensions: "450 x 350 x 220 mm (14.5 kg)",
+    description: "Motorized dual-power automatic transfer switch providing fail-safe switching between solar inverter AC output, LEC grid utility, and backup diesel generator.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Switchgear: Motorized Mechanism & Manual Override Handle" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Wiring Terminals: Phase L1/L2/L3/N Busbars & Generator Signal Relay" }
+    ]
+  }
+];
+
 const COMPONENT_CATALOGUE = [
   { name: "Tier-1 Mono PERC 550W Module", category: "PV Module", specs: "550W • 49.8 Voc • 13.1 Imp • 21.3% Efficiency", warranty: "25-Yr Linear", brand: "Jinko / Longi" },
   { name: "Deye 10kW Hybrid Three-Phase Inverter", category: "Inverter", specs: "10kVA • 48V Battery • 2 MPPT • Parallelable • IP65", warranty: "5-Yr Extended", brand: "Deye" },
@@ -84,6 +233,9 @@ const COMPONENT_CATALOGUE = [
 ];
 
 export default function SolarPage() {
+  const [selectedComponentGallery, setSelectedComponentGallery] = useState<any | null>(null);
+  const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
+
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("crm-leads");
   const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
@@ -1421,6 +1573,109 @@ export default function SolarPage() {
                   </div>
                 </div>
 
+                {/* Approved Component Catalogue Grid with 2-5 HD Photos per Item */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
+                    <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <Camera className="w-5 h-5 text-amber-500" />
+                      <span>Approved Solar Component Photo Gallery & Datasheets ({DETAILED_COMPONENT_CATALOGUE.length} Certified Products)</span>
+                    </h3>
+                    <span className="text-xs text-slate-500 font-bold">2–5 HD Photos per Component</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {DETAILED_COMPONENT_CATALOGUE.map((item) => (
+                      <div 
+                        key={item.id}
+                        className="glass-card border-white/60 dark:border-white/10 p-5 rounded-2xl space-y-4 hover:shadow-2xl transition-all border border-slate-200 dark:border-white/10"
+                      >
+                        {/* Component Header & Badges */}
+                        <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold text-[10px] uppercase tracking-wider">
+                                {item.category}
+                              </span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
+                                Model: {item.modelNo}
+                              </span>
+                            </div>
+                            <h4 className="text-lg font-black text-slate-900 dark:text-white leading-tight">
+                              {item.name}
+                            </h4>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">
+                              Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <span className="text-xl font-black text-emerald-500 block">${item.priceUsd.toLocaleString()} USD</span>
+                            <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-bold block mt-1">
+                              {item.warranty}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Photo Thumbnail Strip (2-5 HD Photos) */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                            <span className="flex items-center gap-1.5">
+                              <Camera className="w-3.5 h-3.5 text-amber-500" />
+                              Technical Photos ({item.photos.length} HD Views):
+                            </span>
+                            <span className="text-[10px] text-slate-500">Click photo to expand</span>
+                          </div>
+
+                          <div className="grid grid-cols-4 gap-2">
+                            {item.photos.map((photo, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  setSelectedComponentGallery(item);
+                                  setActivePhotoIdx(idx);
+                                }}
+                                className="relative h-16 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 group focus:outline-none focus:ring-2 focus:ring-amber-500"
+                              >
+                                <img 
+                                  src={photo.url} 
+                                  alt={photo.caption} 
+                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                  <span className="text-[9px] font-black text-white px-1 py-0.5 bg-black/60 rounded backdrop-blur-sm">
+                                    #{idx + 1}
+                                  </span>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Electrical & Physical Specs */}
+                        <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 space-y-1 text-xs">
+                          <div className="text-slate-800 dark:text-slate-200 font-bold">
+                            {item.specs}
+                          </div>
+                          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">
+                            Dimensions: {item.dimensions} | Certs: {item.certifications}
+                          </div>
+                        </div>
+
+                        {/* Action Button: View Lightbox Gallery */}
+                        <Button
+                          onClick={() => {
+                            setSelectedComponentGallery(item);
+                            setActivePhotoIdx(0);
+                          }}
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 py-2.5 rounded-xl shadow-md"
+                        >
+                          <Eye className="w-4 h-4 text-amber-400" />
+                          <span>Inspect Component Photos & Full Data Sheet ({item.photos.length} Photos)</span>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Equipment Records Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   
@@ -2635,6 +2890,120 @@ export default function SolarPage() {
       </main>
 
       <Footer />
+
+      {/* Interactive Component Photo Lightbox & Gallery Viewer Modal */}
+      {selectedComponentGallery && (
+        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+            
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-wider">
+                    {selectedComponentGallery.category}
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono">
+                    Model: {selectedComponentGallery.modelNo}
+                  </span>
+                </div>
+                <h3 className="text-2xl font-black text-white">
+                  {selectedComponentGallery.name}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Manufacturer Brand: <span className="text-amber-400 font-bold">{selectedComponentGallery.brand}</span> | Warranty: <span className="text-emerald-400 font-bold">{selectedComponentGallery.warranty}</span>
+                </p>
+              </div>
+              <button 
+                onClick={() => setSelectedComponentGallery(null)} 
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white font-bold text-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Gallery Lightbox Content Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              
+              {/* Left Column: Primary HD Photo Viewer & Selector */}
+              <div className="md:col-span-7 space-y-3">
+                
+                {/* Main Large Image View */}
+                <div className="relative h-72 sm:h-80 rounded-2xl overflow-hidden border-2 border-slate-800 bg-slate-950">
+                  <img 
+                    src={selectedComponentGallery.photos[activePhotoIdx]?.url} 
+                    alt={selectedComponentGallery.photos[activePhotoIdx]?.caption} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
+                    <span className="text-xs font-black text-amber-400 block">
+                      Photo {activePhotoIdx + 1} of {selectedComponentGallery.photos.length}:
+                    </span>
+                    <p className="text-xs text-slate-200 font-semibold">
+                      {selectedComponentGallery.photos[activePhotoIdx]?.caption}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Thumbnail Selector Strip */}
+                <div className="grid grid-cols-4 gap-2">
+                  {selectedComponentGallery.photos.map((photo: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActivePhotoIdx(idx)}
+                      className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${
+                        idx === activePhotoIdx 
+                          ? 'border-amber-500 ring-2 ring-amber-500/50 scale-[1.03]' 
+                          : 'border-slate-800 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover" />
+                      <span className="absolute top-1 left-1 text-[9px] font-black text-white px-1 bg-black/70 rounded">
+                        #{idx + 1}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right Column: Full Engineering Data Sheet */}
+              <div className="md:col-span-5 space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 uppercase font-bold block">UNIT LIST PRICE</span>
+                  <span className="text-2xl font-black text-emerald-400">${selectedComponentGallery.priceUsd.toLocaleString()} USD</span>
+                </div>
+
+                <div className="space-y-2 border-t border-slate-800 pt-3">
+                  <span className="text-amber-400 font-bold block text-xs">Technical Description & Scope:</span>
+                  <p className="text-slate-300 leading-relaxed">
+                    {selectedComponentGallery.description}
+                  </p>
+                </div>
+
+                <div className="space-y-2 border-t border-slate-800 pt-3">
+                  <span className="text-amber-400 font-bold block text-xs">Electrical & Physical Specifications:</span>
+                  <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 font-semibold space-y-1 text-[11px]">
+                    <div>{selectedComponentGallery.specs}</div>
+                    <div className="text-slate-400 font-mono">Dimensions: {selectedComponentGallery.dimensions}</div>
+                    <div className="text-emerald-400 font-mono">Compliance: {selectedComponentGallery.certifications}</div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => alert(`📄 Downloading Official OEM Datasheet & Certificate for ${selectedComponentGallery.name} (${selectedComponentGallery.modelNo})...`)}
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3 rounded-xl shadow-lg mt-2"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Download Complete OEM Datasheet PDF
+                </Button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
