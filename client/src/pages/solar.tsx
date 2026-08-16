@@ -81,7 +81,6 @@ import {
 const DETAILED_COMPONENT_CATALOGUE = [
   {
     id: "COMP-PV-550W",
-    name: "Jinko / Longi 550W Mono PERC Module",
     category: "PV Module",
     brand: "Jinko Solar / Longi",
     modelNo: "JKM550M-72HL4-V",
@@ -91,11 +90,12 @@ const DETAILED_COMPONENT_CATALOGUE = [
     specs: "550W • Voc: 49.8V • Vmp: 41.9V • Isc: 13.9A • Imp: 13.1A • 21.3% Efficiency",
     dimensions: "2278 x 1134 x 35 mm (27.5 kg)",
     description: "Tier-1 high-efficiency monocrystalline PERC solar panel engineered for harsh tropical climates, PID-resistant cell technology, and heavy anti-reflective glass.",
+    image: "/images/pv/jinko-550w-tiger-pro.png",
     photos: [
-      { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1000&h=600&fit=crop", caption: "Front View: Anti-Reflective Toughened Glass & 144 Half-Cell Matrix" },
-      { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1000&h=600&fit=crop", caption: "Rear View: IP68 Junction Box, Bypass Diodes & 1.2m MC4 Solar Cables" },
-      { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1000&h=600&fit=crop", caption: "Nameplate Badge: Serial Number, TUV Certification & Electrical Specs" },
-      { url: "https://images.unsplash.com/photo-1508873696983-2df515122519?w=1000&h=600&fit=crop", caption: "Field Installation: Commercial Ground Array Mount in West Africa" }
+      { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
+      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
+      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" },
+      { url: "/images/pv/jinko-factory-label.png", caption: "Factory Quality Inspection, Pallet Packaging & Quality Assurance Tag" }
     ]
   },
   {
@@ -110,10 +110,12 @@ const DETAILED_COMPONENT_CATALOGUE = [
     specs: "670W • Voc: 45.4V • Vmp: 38.2V • Isc: 18.6A • Imp: 17.5A • 21.8% Efficiency",
     dimensions: "2384 x 1303 x 35 mm (33.9 kg)",
     description: "Ultra-high power N-Type TOPCon dual-glass bifacial panel delivering up to 30% additional energy gain from ground albedo reflection.",
+    image: "/images/pv/jinko-datasheet-label.png",
     photos: [
-      { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1000&h=600&fit=crop", caption: "Dual Glass Structure: N-Type TOPCon Bifacial Architecture" },
-      { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1000&h=600&fit=crop", caption: "Cell Closeup: Multi-Busbar (MBB) Zero-Loss Ribbon Technology" },
-      { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1000&h=600&fit=crop", caption: "Rear Albedo Harvest: 2mm Heat-Strengthened Glass Backsheet" }
+      { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
+      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
+      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" },
+      { url: "/images/pv/jinko-factory-label.png", caption: "Factory Quality Inspection, Pallet Packaging & Quality Assurance Tag" }
     ]
   },
   {
@@ -129,10 +131,10 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "422 x 699 x 279 mm (33.6 kg)",
     description: "Smart 3-phase hybrid inverter featuring 48V low-voltage battery safety, 16-unit parallel capability, microgrid frequency control, and automatic generator start.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: IP65 Weatherproof Housing & Color Touch LCD Interface" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch, MC4 Ports & AC Glands" },
-      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "Internal Engineering: Heat Sink Fins, CANbus & RS485 Comm Ports" },
-      { url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1000&h=600&fit=crop", caption: "Wall Installation: 10kW Hybrid System Mounted in Telemetry Control Room" }
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Front Casing: IP65 Weatherproof Housing & Color Touch LCD Interface" },
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Bottom Connections: DC Isolator Switch, MC4 Ports & AC Glands" },
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Internal Engineering: Heat Sink Fins, CANbus & RS485 Comm Ports" },
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Wall Installation: 10kW Hybrid System Mounted in Telemetry Control Room" }
     ]
   },
   {
@@ -148,9 +150,9 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "470 x 350 x 280 mm (34.0 kg)",
     description: "Heavy-duty industrial inverter/charger with dual AC inputs (Utility + Diesel Generator), seamless 20ms UPS transfer, and PowerAssist peak-load shaving.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Front View: Industrial Powder-Coated Metal Enclosure & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Terminal Block: Heavy Duty M8 Copper DC Terminals & Dual AC In/Out" },
-      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "System Integration: VE.Bus, VE.Can Protocol & Programmable Relays" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Front View: Industrial Powder-Coated Metal Enclosure & Status LEDs" },
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Terminal Block: Heavy Duty M8 Copper DC Terminals & Dual AC In/Out" },
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "System Integration: VE.Bus, VE.Can Protocol & Programmable Relays" }
     ]
   },
   {
@@ -166,9 +168,9 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "442 x 420 x 161 mm (38.0 kg)",
     description: "Tier-1 modular LiFePO4 battery module with integrated smart BMS, active cell balancing, 16-unit rack expansion, and high thermal stability.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=1000&h=600&fit=crop", caption: "Front Panel: 19-inch 3U Rack Unit, Power Switch & Amphenol Plug Ports" },
-      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "BMS Comm Ports: Dual CANbus & RS485 Link Ports for Parallel Chains" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Cabinet Assembly: 12-Module Battery Bank Array Deployed at Health Facility" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Front Panel: 19-inch 3U Rack Unit, Power Switch & Amphenol Plug Ports" },
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "BMS Comm Ports: Dual CANbus & RS485 Link Ports for Parallel Chains" },
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Cabinet Assembly: 12-Module Battery Bank Array Deployed at Health Facility" }
     ]
   },
   {
@@ -184,8 +186,8 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "375 x 145 x 460 mm (42.0 kg)",
     description: "High-capacity wall-mount or rack-mount lithium battery featuring internal automatic fire suppression aerosol, Cloud Ripper remote telemetry, and 100A discharge capability.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=1000&h=600&fit=crop", caption: "Enclosure: Heavy Steel Wall-Mount Casing & Digital LCD Status Screen" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Safety Feature: Built-in Aerosol Fire Extinguisher & Cell Isolation" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Enclosure: Heavy Steel Wall-Mount Casing & Digital LCD Status Screen" },
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Safety Feature: Built-in Aerosol Fire Extinguisher & Cell Isolation" }
     ]
   },
   {
@@ -201,8 +203,8 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "300 x 400 x 180 mm (6.2 kg)",
     description: "Pre-wired outdoor polycarbonate combiner box equipped with ABB DC rotary isolator, touch-safe fuse holders, and lightning surge protection.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Enclosure: Transparent Hinged Door, IP65 Waterproof Cable Glands" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Internal Layout: 1000V DC Fuses, Type II SPD Module & Copper Busbars" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Enclosure: Transparent Hinged Door, IP65 Waterproof Cable Glands" },
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Internal Layout: 1000V DC Fuses, Type II SPD Module & Copper Busbars" }
     ]
   },
   {
@@ -218,8 +220,8 @@ const DETAILED_COMPONENT_CATALOGUE = [
     dimensions: "450 x 350 x 220 mm (14.5 kg)",
     description: "Motorized dual-power automatic transfer switch providing fail-safe switching between solar inverter AC output, LEC grid utility, and backup diesel generator.",
     photos: [
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Switchgear: Motorized Mechanism & Manual Override Handle" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Wiring Terminals: Phase L1/L2/L3/N Busbars & Generator Signal Relay" }
+      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Front Switchgear: Motorized Mechanism & Manual Override Handle" },
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Wiring Terminals: Phase L1/L2/L3/N Busbars & Generator Signal Relay" }
     ]
   }
 ];
