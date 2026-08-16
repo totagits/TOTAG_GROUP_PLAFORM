@@ -279,8 +279,12 @@ const INITIAL_EVENTS: EnterpriseEventItem[] = [
 
 export class EcosystemStateEngine {
   static getCargoShipments(): CargoShipmentItem[] {
-    const data = localStorage.getItem("totag_cargo_shipments");
-    return data ? JSON.parse(data) : INITIAL_CARGO;
+    try {
+      const data = typeof window !== 'undefined' ? localStorage.getItem("totag_cargo_shipments") : null;
+      return data ? JSON.parse(data) : INITIAL_CARGO;
+    } catch (e) {
+      return INITIAL_CARGO;
+    }
   }
 
   static addCargoShipment(shipment: Omit<CargoShipmentItem, "id" | "createdAt">): CargoShipmentItem {
@@ -291,7 +295,9 @@ export class EcosystemStateEngine {
       createdAt: new Date().toISOString()
     };
     list.unshift(newItem);
-    localStorage.setItem("totag_cargo_shipments", JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem("totag_cargo_shipments", JSON.stringify(list));
+    } catch (e) {}
     
     this.emitEvent({
       eventType: "CargoShipmentBooked",
@@ -304,8 +310,12 @@ export class EcosystemStateEngine {
   }
 
   static getPetroleumOrders(): PetroleumOrderItem[] {
-    const data = localStorage.getItem("totag_petroleum_orders");
-    return data ? JSON.parse(data) : INITIAL_PETROLEUM;
+    try {
+      const data = typeof window !== 'undefined' ? localStorage.getItem("totag_petroleum_orders") : null;
+      return data ? JSON.parse(data) : INITIAL_PETROLEUM;
+    } catch (e) {
+      return INITIAL_PETROLEUM;
+    }
   }
 
   static addPetroleumOrder(order: Omit<PetroleumOrderItem, "id" | "createdAt">): PetroleumOrderItem {
@@ -316,7 +326,9 @@ export class EcosystemStateEngine {
       createdAt: new Date().toISOString()
     };
     list.unshift(newItem);
-    localStorage.setItem("totag_petroleum_orders", JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem("totag_petroleum_orders", JSON.stringify(list));
+    } catch (e) {}
 
     this.emitEvent({
       eventType: "FuelDeliveryCompleted",
@@ -329,8 +341,12 @@ export class EcosystemStateEngine {
   }
 
   static getSolarLeads(): SolarLeadItem[] {
-    const data = localStorage.getItem("totag_solar_leads");
-    return data ? JSON.parse(data) : INITIAL_LEADS;
+    try {
+      const data = typeof window !== 'undefined' ? localStorage.getItem("totag_solar_leads") : null;
+      return data ? JSON.parse(data) : INITIAL_LEADS;
+    } catch (e) {
+      return INITIAL_LEADS;
+    }
   }
 
   static addSolarLead(lead: Omit<SolarLeadItem, "id" | "createdAt">): SolarLeadItem {
@@ -341,7 +357,9 @@ export class EcosystemStateEngine {
       createdAt: new Date().toISOString()
     };
     list.unshift(newItem);
-    localStorage.setItem("totag_solar_leads", JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem("totag_solar_leads", JSON.stringify(list));
+    } catch (e) {}
 
     this.emitEvent({
       eventType: "SolarLeadCreated",
@@ -358,7 +376,9 @@ export class EcosystemStateEngine {
     const target = list.find(item => item.id === id);
     if (target) {
       target.stage = stage;
-      localStorage.setItem("totag_solar_leads", JSON.stringify(list));
+      try {
+        if (typeof window !== 'undefined') localStorage.setItem("totag_solar_leads", JSON.stringify(list));
+      } catch (e) {}
       this.emitEvent({
         eventType: "SolarLeadStageUpdated",
         sourceSubsidiary: "Solar Energy",
@@ -369,9 +389,12 @@ export class EcosystemStateEngine {
   }
 
   static getSolarAudits(): SolarAuditItem[] {
-
-    const data = localStorage.getItem("totag_solar_audits");
-    return data ? JSON.parse(data) : INITIAL_SOLAR;
+    try {
+      const data = typeof window !== 'undefined' ? localStorage.getItem("totag_solar_audits") : null;
+      return data ? JSON.parse(data) : INITIAL_SOLAR;
+    } catch (e) {
+      return INITIAL_SOLAR;
+    }
   }
 
   static addSolarAudit(audit: Omit<SolarAuditItem, "id" | "createdAt">): SolarAuditItem {
@@ -382,7 +405,9 @@ export class EcosystemStateEngine {
       createdAt: new Date().toISOString()
     };
     list.unshift(newItem);
-    localStorage.setItem("totag_solar_audits", JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem("totag_solar_audits", JSON.stringify(list));
+    } catch (e) {}
 
     this.emitEvent({
       eventType: "SolarAuditRequested",
@@ -395,8 +420,12 @@ export class EcosystemStateEngine {
   }
 
   static getEnterpriseEvents(): EnterpriseEventItem[] {
-    const data = localStorage.getItem("totag_enterprise_events");
-    return data ? JSON.parse(data) : INITIAL_EVENTS;
+    try {
+      const data = typeof window !== 'undefined' ? localStorage.getItem("totag_enterprise_events") : null;
+      return data ? JSON.parse(data) : INITIAL_EVENTS;
+    } catch (e) {
+      return INITIAL_EVENTS;
+    }
   }
 
   static emitEvent(event: Omit<EnterpriseEventItem, "id" | "timestamp">): EnterpriseEventItem {
@@ -407,7 +436,9 @@ export class EcosystemStateEngine {
       timestamp: new Date().toLocaleTimeString()
     };
     list.unshift(newItem);
-    localStorage.setItem("totag_enterprise_events", JSON.stringify(list));
+    try {
+      if (typeof window !== 'undefined') localStorage.setItem("totag_enterprise_events", JSON.stringify(list));
+    } catch (e) {}
     return newItem;
   }
 }
