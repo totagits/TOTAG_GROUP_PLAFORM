@@ -232,8 +232,305 @@ const COMPONENT_CATALOGUE = [
   { name: "4-String PV Combiner Box w/ SPD", category: "Balance of Plant", specs: "1000V DC • 15A Fuses • Type II Surge Arrestor", warranty: "2-Yr", brand: "ABB / Schneider" }
 ];
 
+
+// Deye Official OEM Catalogue Data (Single Phase LV, Split Phase, Three Phase)
+const DEYE_CATALOGUE_CATEGORIES = [
+  { id: "sp-lv", name: "Single Phase Low Voltage Hybrid Inverters", count: 10, source: "Attached Deye Catalogue (Attachments 1, 2, 3)" },
+  { id: "split-phase", name: "Split Phase Hybrid Inverters", count: 6, source: "Attached Deye Catalogue (Attachments 4, 5)" },
+  { id: "tp-lv", name: "Three-Phase Low Voltage Hybrid Inverters", count: 0, pending: true },
+  { id: "tp-hv", name: "Three-Phase High Voltage Hybrid Inverters", count: 0, pending: true },
+  { id: "pv-modules", name: "PV Modules & Solar Panels", count: 2 },
+  { id: "batteries", name: "LiFePO4 Energy Storage Banks", count: 2 },
+  { id: "bop", name: "Balance of Plant & Switchgear", count: 2 },
+];
+
+const DEYE_CATALOGUE_ITEMS = [
+  // --- SINGLE PHASE LOW VOLTAGE HYBRID INVERTERS ---
+  {
+    id: "DEYE-SP-01",
+    catId: "sp-lv",
+    seriesCode: "SUN-3.6/5/6/7/7.6/8/10K-SG05LP1-EU-AM2-P",
+    powerRange: "3.6-10kW",
+    phase: "Single Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-1.png",
+    priceUsd: 1450,
+    specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT (500V DC) • 1.3 DC/AC Ratio • IP65 Weatherproof",
+    description: "Single-phase low voltage hybrid inverter with color touchscreen, 6 time periods for battery charging/discharging, and max 16pcs parallel operation.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact White Housing with Color Touch Screen LCD" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch, MC4 Solar Input & AC Cable Glands" },
+      { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1000&h=600&fit=crop", caption: "Comm Board: CANbus, RS485 & Auto Generator Start Relay" }
+    ]
+  },
+  {
+    id: "DEYE-SP-02",
+    catId: "sp-lv",
+    seriesCode: "SUN-3.6/5/6/7/7.6/8/10K-SG05LP1-EU-SM2-P",
+    powerRange: "3.6-10kW",
+    phase: "Single Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-1.png",
+    priceUsd: 1550,
+    specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • 6 Time Periods",
+    description: "Enhanced SG05 Series single-phase LV hybrid inverter optimized for smart load management and diesel generator synchronization.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Dark LCD Panel with Status LEDs" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Internal Terminal Block: Dual AC Port & Heavy Duty DC Terminals" }
+    ]
+  },
+  {
+    id: "DEYE-SP-03",
+    catId: "sp-lv",
+    seriesCode: "SUN-7/7.6/8/10K-SG05LP1-EU-SM2",
+    powerRange: "7-10kW",
+    phase: "Single Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-1.png",
+    priceUsd: 1850,
+    specs: "7-10 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit Capable • Zero Export Control",
+    description: "High-capacity single-phase hybrid inverter designed for large residential and commercial off-grid/hybrid installations.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Weatherproof Outdoor Housing" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Plate: High Voltage DC & AC Wiring Connections" }
+    ]
+  },
+  {
+    id: "DEYE-SP-04",
+    catId: "sp-lv",
+    seriesCode: "SUN-7/7.6/8/10/12K-SG06LP1-EU-CM3",
+    powerRange: "7-12kW",
+    phase: "Single Phase",
+    mppt: "3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-single-phase-lv-1.png",
+    priceUsd: 2150,
+    specs: "7-12 kW Output • 48V LV Battery • 3 MPPT • Triple String Tracking • 200% Overload",
+    description: "Latest 2026 flagship single-phase hybrid inverter with 3 MPPT trackers for multi-orientated rooftop arrays.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Display: Next-Gen Touch Screen Interface" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Triple MPPT Terminals: 3 Independent String Inputs" }
+    ]
+  },
+  {
+    id: "DEYE-SP-05",
+    catId: "sp-lv",
+    seriesCode: "SUN-7.6/8/10/12K-SG02LP1-EU-AM2/AM3-P",
+    powerRange: "7.6-12kW",
+    phase: "Single Phase",
+    mppt: "2/3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-2.png",
+    priceUsd: 2250,
+    specs: "7.6-12 kW Output • 48V Battery • 2/3 MPPT • Microgrid Frequency Control",
+    description: "Heavy-duty SG02 series single phase hybrid inverter with high charge/discharge current capacity.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Industrial Casing: Heavy Die-Cast Aluminum Enclosure" }
+    ]
+  },
+  {
+    id: "DEYE-SP-06",
+    catId: "sp-lv",
+    seriesCode: "SUN-12/14/16/18K-SG01LP1-EU-AM3-P",
+    powerRange: "12-18kW",
+    phase: "Single Phase",
+    mppt: "3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-2.png",
+    priceUsd: 2950,
+    specs: "12-18 kW High Power • 48V Battery • 3 MPPT • 250A Battery Charge/Discharge",
+    description: "Ultra-high power single phase LV hybrid inverter powering up to 18kW continuous load for heavy industrial facilities.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "18kW Master Enclosure: High Power Dual-Zone Heat Sink" }
+    ]
+  },
+  {
+    id: "DEYE-SP-07",
+    catId: "sp-lv",
+    seriesCode: "SUN-3/3.6/4/4.6/5/6K-SG06LP1-EU-BM1/BM2",
+    powerRange: "3-6kW",
+    phase: "Single Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-single-phase-lv-3.png",
+    priceUsd: 1150,
+    specs: "3-6 kW Output • 48V Battery • 2 MPPT • Compact Light Weight Design",
+    description: "Compact 3-6kW residential hybrid inverter with fast UPS response time under 4ms.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: Compact Residential Form Factor" }
+    ]
+  },
+  {
+    id: "DEYE-SP-08",
+    catId: "sp-lv",
+    seriesCode: "SUN-3/3.6/4/4.6/5/6K-SG06LP1-EU-CM1/CM2",
+    powerRange: "3-6kW",
+    phase: "Single Phase",
+    mppt: "1/2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: "NEW",
+    image: "/images/deye/deye-single-phase-lv-3.png",
+    priceUsd: 1250,
+    specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Smart Load & Generator Port",
+    description: "Residential hybrid inverter with dedicated smart load output for high-surge appliances.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Compact Housing: Wall-Mount Ready Frame" }
+    ]
+  },
+  {
+    id: "DEYE-SP-09",
+    catId: "sp-lv",
+    seriesCode: "SUN-3/3.6/5/6K-SG04LP1-SM1/SM2",
+    powerRange: "3-6kW",
+    phase: "Single Phase",
+    mppt: "1/2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-3.png",
+    priceUsd: 1180,
+    specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Low Noise Passive Cooling",
+    description: "Silent operation single-phase hybrid inverter for home office & clinic deployments.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: Silent Passive Heat Sink Design" }
+    ]
+  },
+  {
+    id: "DEYE-SP-10",
+    catId: "sp-lv",
+    seriesCode: "SUN-3/3.6/5/6K-SG04LP1-EU",
+    powerRange: "3-6kW",
+    phase: "Single Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-single-phase-lv-3.png",
+    priceUsd: 1220,
+    specs: "3-6 kW Output • 48V Battery • 2 MPPT • CE & VDE Certified",
+    description: "Standard EU-certified single-phase hybrid inverter with integrated DC switch.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Standard EU Grid Compliance Badge" }
+    ]
+  },
+
+  // --- SPLIT PHASE HYBRID INVERTERS ---
+  {
+    id: "DEYE-SPLIT-01",
+    catId: "split-phase",
+    seriesCode: "SUN-5/6/7.6/8K-SG01LP1-US",
+    powerRange: "5-8kW",
+    phase: "Split Phase",
+    mppt: "2 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-1.png",
+    priceUsd: 1950,
+    specs: "5-8 kW Output • 120/240V Split Phase • 48V Battery • 2 MPPT • UL1741 & IEEE 1547",
+    description: "Split phase hybrid inverter engineered for 120V/240V dual line grid standards with automatic generator start.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 120V/240V Split Phase Control Interface" },
+      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Internal Wiring: Dual Hot Line (L1/L2) & Neutral Terminals" }
+    ]
+  },
+  {
+    id: "DEYE-SPLIT-02",
+    catId: "split-phase",
+    seriesCode: "SUN-8/10/12/15K-SG01HP2-US-AM2",
+    powerRange: "8-15kW",
+    phase: "Split Phase",
+    mppt: "2 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-1.png",
+    priceUsd: 2850,
+    specs: "8-15 kW High Output • 120/240V Split Phase • High Voltage HV Battery (160V-800V) • 2 MPPT",
+    description: "High-voltage battery split-phase hybrid inverter delivering maximum charge/discharge efficiency above 97.6%.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Panel: High Voltage DC Bus Status Screen" }
+    ]
+  },
+  {
+    id: "DEYE-SPLIT-03",
+    catId: "split-phase",
+    seriesCode: "SUN-7.6/8/10/12K-SG02LP2-US-AM2/AM3-P",
+    powerRange: "7.6-12kW",
+    phase: "Split Phase",
+    mppt: "2/3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-1.png",
+    priceUsd: 2450,
+    specs: "7.6-12 kW • 120/240V Split Phase • 48V LV Battery • 2/3 MPPT • 200A Pass Through",
+    description: "Flagship 200A service entrance split phase hybrid inverter with whole-home backup switch.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: 200A Whole Home Backup Controller" }
+    ]
+  },
+  {
+    id: "DEYE-SPLIT-04",
+    catId: "split-phase",
+    seriesCode: "SUN-5/6/7.6/8/10/12K-SG02LP2-US-AM2/AM3",
+    powerRange: "5-12kW",
+    phase: "Split Phase",
+    mppt: "2/3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-1.png",
+    priceUsd: 2350,
+    specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Rapid Shutdown Ready",
+    description: "Rapid shutdown compliant split-phase inverter for North American and regional grid codes.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: SunSpec Rapid Shutdown Transmitter Built-in" }
+    ]
+  },
+  {
+    id: "DEYE-SPLIT-05",
+    catId: "split-phase",
+    seriesCode: "SUN-5/6/8/10/12K-SG05LP2-US-SM2/SM3",
+    powerRange: "5-12kW",
+    phase: "Split Phase",
+    mppt: "2/3 MPPT",
+    batterySupport: "LV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-2.png",
+    priceUsd: 2550,
+    specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Color LCD Touch Screen",
+    description: "Sleek SG05 series split phase inverter with intuitive graphic user interface.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: High Resolution Color Touch Screen Display" }
+    ]
+  },
+  {
+    id: "DEYE-SPLIT-06",
+    catId: "split-phase",
+    seriesCode: "SUN-4.95/5.5/8K-SG02HP2-JP-FM4",
+    powerRange: "4.95-8kW",
+    phase: "Split Phase",
+    mppt: "4 MPPT",
+    batterySupport: "HV Battery Supported",
+    badge: null,
+    image: "/images/deye/deye-split-phase-2.png",
+    priceUsd: 2650,
+    specs: "4.95-8 kW • 4 MPPT • High Voltage HV Battery • Circular Status LED Gauge",
+    description: "Quad-MPPT high voltage battery hybrid inverter featuring Deye signature circular LED status ring.",
+    photos: [
+      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front View: Signature Deye Circular LED Status Gauge Ring" }
+    ]
+  }
+];
+
 export default function SolarPage() {
   const [selectedComponentGallery, setSelectedComponentGallery] = useState<any | null>(null);
+  const [deyeActiveCat, setDeyeActiveCat] = useState<string>('sp-lv');
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
 
   const { toast } = useToast();
@@ -1554,75 +1851,185 @@ export default function SolarPage() {
             </TabsContent>
 
             {/* MODULE 4: Approved Technical Catalogue & Equipment Specification Database */}
+            {/* MODULE 4: Approved Technical Catalogue & Equipment Specification Database (Deye OEM Architecture) */}
             <TabsContent value="catalogue-boq" className="space-y-8">
               <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
+                {/* Header Banner */}
                 <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
-                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                        <FileSpreadsheet className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <FileSpreadsheet className="w-3.5 h-3.5 text-amber-500" />
                         Module 4: Technical Equipment Catalogue
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
-                        UNICEF, UNDP, CRS & UNFPA Compliant
+                      <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
+                        Official Deye OEM Partner Showcase
                       </span>
                     </div>
                     <h2 className="text-2xl font-black text-slate-900 dark:text-white">TOTAG Approved Component & Technical Specification Catalogue</h2>
-                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Pre-approved technical specifications for PV modules, inverters, LiFePO4 batteries, switchgear, ATS, and SPDs — eliminating repetitive spec creation for proposals.</p>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Certified technical specifications, power ranges, MPPT configurations, and high-resolution photo render galleries for Deye hybrid inverters, PV modules, LiFePO4 batteries, and switchgear.</p>
                   </div>
                 </div>
 
-                {/* Approved Component Catalogue Grid with 2-5 HD Photos per Item */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-                      <Camera className="w-5 h-5 text-amber-500" />
-                      <span>Approved Solar Component Photo Gallery & Datasheets ({DETAILED_COMPONENT_CATALOGUE.length} Certified Products)</span>
-                    </h3>
-                    <span className="text-xs text-slate-500 font-bold">2–5 HD Photos per Component</span>
-                  </div>
+                {/* Deye OEM Category Filter Navigation Bar */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+                  {DEYE_CATALOGUE_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setDeyeActiveCat(cat.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 border ${
+                        deyeActiveCat === cat.id
+                          ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-lg scale-[1.02]'
+                          : 'bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <span>{cat.name}</span>
+                      {cat.pending ? (
+                        <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-500 text-[10px] font-black uppercase animate-pulse">
+                          Pending Upload
+                        </span>
+                      ) : (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                          deyeActiveCat === cat.id ? 'bg-slate-950 text-amber-400' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}>
+                          {cat.count}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {DETAILED_COMPONENT_CATALOGUE.map((item) => (
-                      <div 
-                        key={item.id}
-                        className="glass-card border-white/60 dark:border-white/10 p-5 rounded-2xl space-y-4 hover:shadow-2xl transition-all border border-slate-200 dark:border-white/10"
-                      >
-                        {/* Component Header & Badges */}
-                        <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold text-[10px] uppercase tracking-wider">
-                                {item.category}
-                              </span>
-                              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                                Model: {item.modelNo}
-                              </span>
+                {/* Prompt Banner for Three-Phase Inverters Pending Upload */}
+                {(deyeActiveCat === 'tp-lv' || deyeActiveCat === 'tp-hv') && (
+                  <div className="bg-gradient-to-r from-amber-500/10 via-sky-500/10 to-purple-500/10 border-2 border-dashed border-amber-500/50 p-6 rounded-2xl text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto">
+                      <Camera className="w-6 h-6 text-amber-500 animate-bounce" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                        Ready for {deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage' : 'Three-Phase High Voltage'} Deye Hybrid Inverter Photos!
+                      </h3>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xl mx-auto mt-1 font-medium">
+                        The Deye Design Architecture grid is ready to receive your photos for {deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage Hybrid Inverters' : 'Three-Phase High Voltage Hybrid Inverters'}. Please upload your screenshot files when ready!
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => alert(`📷 Ready! You can upload your ${deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage' : 'Three-Phase High Voltage'} Deye photos in the chat anytime.`)}
+                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-lg"
+                    >
+                      Prompt Received — Ready for Photo Upload
+                    </Button>
+                  </div>
+                )}
+
+                {/* DEYE OFFICIAL DESIGN ARCHITECTURE PHOTO DISPLAY CANVAS */}
+                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase') && (
+                  <div className="bg-[#f5f6f8] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-6 shadow-inner">
+                    <div className="flex items-center justify-between border-b border-slate-300 dark:border-slate-800 pb-3">
+                      <div>
+                        <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">DEYE OFFICIAL PRODUCT LINEUP</span>
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                          {deyeActiveCat === 'sp-lv' ? 'Single Phase Low Voltage Hybrid Inverters' : 'Split Phase Hybrid Inverters'}
+                        </h3>
+                      </div>
+                      <span className="text-xs font-bold text-slate-500">
+                        {DEYE_CATALOGUE_ITEMS.filter(item => item.catId === deyeActiveCat).length} Official Series Models
+                      </span>
+                    </div>
+
+                    {/* Deye 4-Column Card Display Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {DEYE_CATALOGUE_ITEMS.filter(item => item.catId === deyeActiveCat).map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => {
+                            setSelectedComponentGallery(item);
+                            setActivePhotoIdx(0);
+                          }}
+                          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:shadow-2xl hover:border-amber-500/60 transition-all cursor-pointer group relative overflow-hidden"
+                        >
+                          {/* NEW Badge if present */}
+                          {item.badge && (
+                            <div className="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm z-10">
+                              {item.badge}
                             </div>
-                            <h4 className="text-lg font-black text-slate-900 dark:text-white leading-tight">
-                              {item.name}
-                            </h4>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold mt-0.5">
-                              Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
-                            </p>
+                          )}
+
+                          {/* Top Section: Side-by-Side Inverter Image + Spec Pill Card */}
+                          <div className="flex items-start gap-3 pt-2">
+                            {/* Product Render Image */}
+                            <div className="w-1/2 h-44 flex items-center justify-center p-1 relative">
+                              <img
+                                src={item.image}
+                                alt={item.seriesCode}
+                                className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+                              />
+                            </div>
+
+                            {/* Deye Official Spec Card Badge */}
+                            <div className="w-1/2 bg-[#f8f9fa] dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 p-2.5 rounded-xl space-y-1 text-center shadow-sm">
+                              <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block">
+                                Hybrid Inverter
+                              </span>
+                              
+                              {/* Blue Power Range Pill */}
+                              <div className="bg-[#2d62c4] text-white font-black text-xs py-1 px-2 rounded-lg shadow-sm">
+                                {item.powerRange}
+                              </div>
+
+                              <div className="text-[10px] text-slate-600 dark:text-slate-300 font-semibold pt-0.5">
+                                {item.phase}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-bold">
+                                {item.mppt}
+                              </div>
+                              <div className="text-[9px] text-slate-500 font-medium">
+                                {item.batterySupport}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-right flex-shrink-0">
-                            <span className="text-xl font-black text-emerald-500 block">${item.priceUsd.toLocaleString()} USD</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-bold block mt-1">
-                              {item.warranty}
-                            </span>
+
+                          {/* Bottom Section: Charcoal Model Code Pill Button */}
+                          <div className="mt-4">
+                            <div className="bg-[#36383a] group-hover:bg-amber-500 group-hover:text-slate-950 text-slate-200 font-mono text-[10px] font-bold py-2 px-3 rounded-full text-center truncate transition-colors shadow-md">
+                              {item.seriesCode}
+                            </div>
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                        {/* Photo Thumbnail Strip (2-5 HD Photos) */}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                            <span className="flex items-center gap-1.5">
-                              <Camera className="w-3.5 h-3.5 text-amber-500" />
-                              Technical Photos ({item.photos.length} HD Views):
-                            </span>
-                            <span className="text-[10px] text-slate-500">Click photo to expand</span>
+                {/* Legacy Catalogue Items for PV Modules, Batteries & BOP */}
+                {(deyeActiveCat === 'pv-modules' || deyeActiveCat === 'batteries' || deyeActiveCat === 'bop') && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {DETAILED_COMPONENT_CATALOGUE
+                      .filter(item => {
+                        if (deyeActiveCat === 'pv-modules') return item.category === 'PV Module';
+                        if (deyeActiveCat === 'batteries') return item.category === 'Battery';
+                        if (deyeActiveCat === 'bop') return item.category === 'Balance of Plant' || item.category === 'Inverter';
+                        return true;
+                      })
+                      .map((item) => (
+                        <div 
+                          key={item.id}
+                          className="glass-card border-white/60 dark:border-white/10 p-5 rounded-2xl space-y-4 hover:shadow-2xl transition-all border border-slate-200 dark:border-white/10"
+                        >
+                          <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
+                            <div>
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold text-[10px] uppercase">
+                                {item.category}
+                              </span>
+                              <h4 className="text-lg font-black text-slate-900 dark:text-white mt-1">
+                                {item.name}
+                              </h4>
+                              <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
+                                Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
+                              </p>
+                            </div>
+                            <span className="text-xl font-black text-emerald-500">${item.priceUsd.toLocaleString()} USD</span>
                           </div>
 
                           <div className="grid grid-cols-4 gap-2">
@@ -1633,183 +2040,27 @@ export default function SolarPage() {
                                   setSelectedComponentGallery(item);
                                   setActivePhotoIdx(idx);
                                 }}
-                                className="relative h-16 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 group focus:outline-none focus:ring-2 focus:ring-amber-500"
+                                className="relative h-16 rounded-xl overflow-hidden border border-slate-200 group"
                               >
-                                <img 
-                                  src={photo.url} 
-                                  alt={photo.caption} 
-                                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                />
-                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                  <span className="text-[9px] font-black text-white px-1 py-0.5 bg-black/60 rounded backdrop-blur-sm">
-                                    #{idx + 1}
-                                  </span>
-                                </div>
+                                <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                               </button>
                             ))}
                           </div>
-                        </div>
 
-                        {/* Electrical & Physical Specs */}
-                        <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 space-y-1 text-xs">
-                          <div className="text-slate-800 dark:text-slate-200 font-bold">
-                            {item.specs}
-                          </div>
-                          <div className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">
-                            Dimensions: {item.dimensions} | Certs: {item.certifications}
-                          </div>
+                          <Button
+                            onClick={() => {
+                              setSelectedComponentGallery(item);
+                              setActivePhotoIdx(0);
+                            }}
+                            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl"
+                          >
+                            <Eye className="w-4 h-4 mr-2 text-amber-400" />
+                            Inspect Specs & Photos
+                          </Button>
                         </div>
-
-                        {/* Action Button: View Lightbox Gallery */}
-                        <Button
-                          onClick={() => {
-                            setSelectedComponentGallery(item);
-                            setActivePhotoIdx(0);
-                          }}
-                          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 py-2.5 rounded-xl shadow-md"
-                        >
-                          <Eye className="w-4 h-4 text-amber-400" />
-                          <span>Inspect Component Photos & Full Data Sheet ({item.photos.length} Photos)</span>
-                        </Button>
-                      </div>
-                    ))}
+                      ))}
                   </div>
-                </div>
-
-                {/* Equipment Records Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  
-                  {/* Category 1: PV Modules */}
-                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                      <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <Sun className="w-4 h-4 text-amber-400" />
-                        PV MODULES (TIER-1 MONO PERC & TOPCON)
-                      </span>
-                      <Badge className="bg-slate-900 text-amber-400 text-[10px]">25-Yr Linear Warranty</Badge>
-                    </div>
-
-                    <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Jinko / Longi 550W Mono PERC Module</span>
-                          <span className="text-amber-400">$185 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">Voc: 49.8V • Vmp: 41.9V • Isc: 13.9A • Imp: 13.1A • 21.3% Efficiency</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">Dimensions: 2278x1134x35mm (27.5kg) | IEC 61215, IEC 61730, TUV, CE Certified</div>
-                      </div>
-
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Trina Solar 670W N-Type TOPCon Module</span>
-                          <span className="text-amber-400 font-bold">$235 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">Voc: 45.4V • Vmp: 38.2V • Isc: 18.6A • Imp: 17.5A • 21.8% Efficiency</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">Dimensions: 2384x1303x35mm (33.9kg) | Dual Glass Bifacial N-Type</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Category 2: Inverters */}
-                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                      <span className="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <Cpu className="w-4 h-4 text-emerald-400" />
-                        INVERTERS (HYBRID THREE-PHASE & SINGLE-PHASE)
-                      </span>
-                      <Badge className="bg-slate-900 text-emerald-400 text-[10px]">5-Yr Factory Warranty</Badge>
-                    </div>
-
-                    <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Deye 10kW Three-Phase Hybrid Inverter</span>
-                          <span className="text-amber-400">$2,450 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">10kVA • 48V Battery • 2 MPPT (1000V DC) • 200% Overload • IP65 Outdoor</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">Modbus RS485 / CANbus | Auto Genset Start | 16x Parallel Capable</div>
-                      </div>
-
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Victron Quattro 15kVA Inverter/Charger</span>
-                          <span className="text-amber-400 font-bold">$3,850 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">15kVA • Dual AC Inputs • 48V 200A Charger • PowerAssist Peak Shaving</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">VE.Bus / VE.Can Protocol | Seamless 20ms UPS Transfer</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Category 3: Batteries */}
-                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                      <span className="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <BatteryCharging className="w-4 h-4 text-purple-400" />
-                        BATTERY STORAGE (LIFEPO4 RACK MODULES)
-                      </span>
-                      <Badge className="bg-slate-900 text-purple-400 text-[10px]">10-Yr Pro-Rated Warranty</Badge>
-                    </div>
-
-                    <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Pylontech US5000 4.8kWh LiFePO4 Rack Module</span>
-                          <span className="text-amber-400">$1,350 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">48V 100Ah • 3.84 kWh Usable (80% DoD) • 6,000 Cycles @ 90% DoD • Smart BMS</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">CANbus & RS485 Protocol | Compatible with Deye, Victron, Growatt</div>
-                      </div>
-
-                      <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                        <div className="flex justify-between font-black text-white">
-                          <span>Hubble AM-2 5.5kWh 48V Lithium Battery</span>
-                          <span className="text-amber-400 font-bold">$1,580 USD</span>
-                        </div>
-                        <p className="text-[11px] text-slate-400">51.2V 110Ah • 4.4 kWh Usable (80% DoD) • Cloud Monitoring Gateway Included</p>
-                        <div className="text-[10px] text-emerald-400 font-mono">100A Continuous Discharge | Built-in Fire Suppression Aerosol</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Category 4: Balance of Plant (BoP), Switchgear, ATS & SPDs */}
-                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                      <span className="text-xs font-black text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <ShieldCheck className="w-4 h-4 text-sky-400" />
-                        BALANCE OF PLANT (SWITCHGEAR, ATS & SPDs)
-                      </span>
-                      <Badge className="bg-slate-900 text-sky-400 text-[10px]">IEC & CE Certified</Badge>
-                    </div>
-
-                    <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white">4-String IP65 DC Combiner Box w/ SPDs & Fuses</div>
-                          <div className="text-[10px] text-slate-400">1000V DC • 15A Fuses • Type II DC Surge Arrestor • ABB Switchgear</div>
-                        </div>
-                        <span className="text-amber-400 font-black">$240 USD</span>
-                      </div>
-
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white">4-Pole 250A Automatic Transfer Switch (ATS)</div>
-                          <div className="text-[10px] text-slate-400">Dual Utility/Genset Transfer • Auto Dry Contacts • Schneider Electric</div>
-                        </div>
-                        <span className="text-amber-400 font-black">$480 USD</span>
-                      </div>
-
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
-                        <div>
-                          <div className="font-bold text-slate-900 dark:text-white">Solar DC Cable 10mm² UV-Resistant (100m Roll)</div>
-                          <div className="text-[10px] text-slate-400">Double Insulated Tinned Copper • 1500V DC Rated • TÜV Approved</div>
-                        </div>
-                        <span className="text-amber-400 font-black">$165 USD</span>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
+                )}
 
               </div>
             </TabsContent>
@@ -2787,28 +3038,217 @@ export default function SolarPage() {
             </TabsContent>
 
             {/* 4. BOQ & Proposals Engine */}
-            <TabsContent value="catalogue-boq" className="space-y-6">
-              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-4 shadow-2xl">
-                <h3 className="text-xl font-black text-white flex items-center gap-2">
-                  <FileSpreadsheet className="w-5 h-5 text-amber-400" />
-                  <span>Approved Component Master</span>
-                </h3>
-                <div className="space-y-3">
-                  {COMPONENT_CATALOGUE.map((comp, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex justify-between items-center text-xs">
-                      <div>
-                        <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
-                          {comp.category} • {comp.brand}
-                        </span>
-                        <h4 className="text-sm font-black text-white mt-1">{comp.name}</h4>
-                        <p className="text-slate-300 text-xs font-medium">{comp.specs}</p>
-                      </div>
-                      <Badge className="bg-slate-800 text-slate-200 border-slate-700 text-xs">
-                        {comp.warranty}
-                      </Badge>
+            {/* MODULE 4: Approved Technical Catalogue & Equipment Specification Database (Deye OEM Architecture) */}
+            <TabsContent value="catalogue-boq" className="space-y-8">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Header Banner */}
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <FileSpreadsheet className="w-3.5 h-3.5 text-amber-500" />
+                        Module 4: Technical Equipment Catalogue
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-black">
+                        Official Deye OEM Partner Showcase
+                      </span>
                     </div>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">TOTAG Approved Component & Technical Specification Catalogue</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Certified technical specifications, power ranges, MPPT configurations, and high-resolution photo render galleries for Deye hybrid inverters, PV modules, LiFePO4 batteries, and switchgear.</p>
+                  </div>
+                </div>
+
+                {/* Deye OEM Category Filter Navigation Bar */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+                  {DEYE_CATALOGUE_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setDeyeActiveCat(cat.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2 border ${
+                        deyeActiveCat === cat.id
+                          ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-lg scale-[1.02]'
+                          : 'bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <span>{cat.name}</span>
+                      {cat.pending ? (
+                        <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-500 text-[10px] font-black uppercase animate-pulse">
+                          Pending Upload
+                        </span>
+                      ) : (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                          deyeActiveCat === cat.id ? 'bg-slate-950 text-amber-400' : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}>
+                          {cat.count}
+                        </span>
+                      )}
+                    </button>
                   ))}
                 </div>
+
+                {/* Prompt Banner for Three-Phase Inverters Pending Upload */}
+                {(deyeActiveCat === 'tp-lv' || deyeActiveCat === 'tp-hv') && (
+                  <div className="bg-gradient-to-r from-amber-500/10 via-sky-500/10 to-purple-500/10 border-2 border-dashed border-amber-500/50 p-6 rounded-2xl text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto">
+                      <Camera className="w-6 h-6 text-amber-500 animate-bounce" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                        Ready for {deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage' : 'Three-Phase High Voltage'} Deye Hybrid Inverter Photos!
+                      </h3>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xl mx-auto mt-1 font-medium">
+                        The Deye Design Architecture grid is ready to receive your photos for {deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage Hybrid Inverters' : 'Three-Phase High Voltage Hybrid Inverters'}. Please upload your screenshot files when ready!
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => alert(`📷 Ready! You can upload your ${deyeActiveCat === 'tp-lv' ? 'Three-Phase Low Voltage' : 'Three-Phase High Voltage'} Deye photos in the chat anytime.`)}
+                      className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-lg"
+                    >
+                      Prompt Received — Ready for Photo Upload
+                    </Button>
+                  </div>
+                )}
+
+                {/* DEYE OFFICIAL DESIGN ARCHITECTURE PHOTO DISPLAY CANVAS */}
+                {(deyeActiveCat === 'sp-lv' || deyeActiveCat === 'split-phase') && (
+                  <div className="bg-[#f5f6f8] dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl space-y-6 shadow-inner">
+                    <div className="flex items-center justify-between border-b border-slate-300 dark:border-slate-800 pb-3">
+                      <div>
+                        <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">DEYE OFFICIAL PRODUCT LINEUP</span>
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                          {deyeActiveCat === 'sp-lv' ? 'Single Phase Low Voltage Hybrid Inverters' : 'Split Phase Hybrid Inverters'}
+                        </h3>
+                      </div>
+                      <span className="text-xs font-bold text-slate-500">
+                        {DEYE_CATALOGUE_ITEMS.filter(item => item.catId === deyeActiveCat).length} Official Series Models
+                      </span>
+                    </div>
+
+                    {/* Deye 4-Column Card Display Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {DEYE_CATALOGUE_ITEMS.filter(item => item.catId === deyeActiveCat).map((item) => (
+                        <div
+                          key={item.id}
+                          onClick={() => {
+                            setSelectedComponentGallery(item);
+                            setActivePhotoIdx(0);
+                          }}
+                          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:shadow-2xl hover:border-amber-500/60 transition-all cursor-pointer group relative overflow-hidden"
+                        >
+                          {/* NEW Badge if present */}
+                          {item.badge && (
+                            <div className="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-wider shadow-sm z-10">
+                              {item.badge}
+                            </div>
+                          )}
+
+                          {/* Top Section: Side-by-Side Inverter Image + Spec Pill Card */}
+                          <div className="flex items-start gap-3 pt-2">
+                            {/* Product Render Image */}
+                            <div className="w-1/2 h-44 flex items-center justify-center p-1 relative">
+                              <img
+                                src={item.image}
+                                alt={item.seriesCode}
+                                className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-md"
+                              />
+                            </div>
+
+                            {/* Deye Official Spec Card Badge */}
+                            <div className="w-1/2 bg-[#f8f9fa] dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 p-2.5 rounded-xl space-y-1 text-center shadow-sm">
+                              <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 block">
+                                Hybrid Inverter
+                              </span>
+                              
+                              {/* Blue Power Range Pill */}
+                              <div className="bg-[#2d62c4] text-white font-black text-xs py-1 px-2 rounded-lg shadow-sm">
+                                {item.powerRange}
+                              </div>
+
+                              <div className="text-[10px] text-slate-600 dark:text-slate-300 font-semibold pt-0.5">
+                                {item.phase}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-bold">
+                                {item.mppt}
+                              </div>
+                              <div className="text-[9px] text-slate-500 font-medium">
+                                {item.batterySupport}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Bottom Section: Charcoal Model Code Pill Button */}
+                          <div className="mt-4">
+                            <div className="bg-[#36383a] group-hover:bg-amber-500 group-hover:text-slate-950 text-slate-200 font-mono text-[10px] font-bold py-2 px-3 rounded-full text-center truncate transition-colors shadow-md">
+                              {item.seriesCode}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Legacy Catalogue Items for PV Modules, Batteries & BOP */}
+                {(deyeActiveCat === 'pv-modules' || deyeActiveCat === 'batteries' || deyeActiveCat === 'bop') && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {DETAILED_COMPONENT_CATALOGUE
+                      .filter(item => {
+                        if (deyeActiveCat === 'pv-modules') return item.category === 'PV Module';
+                        if (deyeActiveCat === 'batteries') return item.category === 'Battery';
+                        if (deyeActiveCat === 'bop') return item.category === 'Balance of Plant' || item.category === 'Inverter';
+                        return true;
+                      })
+                      .map((item) => (
+                        <div 
+                          key={item.id}
+                          className="glass-card border-white/60 dark:border-white/10 p-5 rounded-2xl space-y-4 hover:shadow-2xl transition-all border border-slate-200 dark:border-white/10"
+                        >
+                          <div className="flex items-start justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
+                            <div>
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold text-[10px] uppercase">
+                                {item.category}
+                              </span>
+                              <h4 className="text-lg font-black text-slate-900 dark:text-white mt-1">
+                                {item.name}
+                              </h4>
+                              <p className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
+                                Brand: <span className="text-amber-500 font-bold">{item.brand}</span>
+                              </p>
+                            </div>
+                            <span className="text-xl font-black text-emerald-500">${item.priceUsd.toLocaleString()} USD</span>
+                          </div>
+
+                          <div className="grid grid-cols-4 gap-2">
+                            {item.photos.map((photo, idx) => (
+                              <button
+                                key={idx}
+                                onClick={() => {
+                                  setSelectedComponentGallery(item);
+                                  setActivePhotoIdx(idx);
+                                }}
+                                className="relative h-16 rounded-xl overflow-hidden border border-slate-200 group"
+                              >
+                                <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                              </button>
+                            ))}
+                          </div>
+
+                          <Button
+                            onClick={() => {
+                              setSelectedComponentGallery(item);
+                              setActivePhotoIdx(0);
+                            }}
+                            className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 rounded-xl"
+                          >
+                            <Eye className="w-4 h-4 mr-2 text-amber-400" />
+                            Inspect Specs & Photos
+                          </Button>
+                        </div>
+                      ))}
+                  </div>
+                )}
+
               </div>
             </TabsContent>
 
