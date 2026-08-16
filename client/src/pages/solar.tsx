@@ -876,6 +876,202 @@ const DEYE_CATALOGUE_ITEMS = [
 ];
 
 export default function SolarPage() {
+  // Rich PDF OEM Datasheet & Technical Specification Generator
+  const handleDownloadOemDatasheetPdf = (item: any) => {
+    if (!item) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert("Please allow popups for totag.network to download the PDF datasheet.");
+      return;
+    }
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TOTAG Technical Datasheet - ${item.seriesCode || item.name}</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; margin: 0; padding: 20px; background: #ffffff; line-height: 1.5; }
+    .header { display: flex; align-items: center; justify-content: space-between; border-b: 3px solid #f59e0b; padding-bottom: 15px; margin-bottom: 20px; }
+    .logo-title { font-size: 22px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; }
+    .subtitle { font-size: 11px; color: #64748b; font-weight: 600; }
+    .doc-meta { text-align: right; font-size: 10px; color: #475569; font-family: monospace; }
+    .badge { background: #fef3c7; color: #b45309; padding: 3px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; text-transform: uppercase; border: 1px solid #fde68a; }
+    .hero-banner { display: flex; gap: 20px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; align-items: center; }
+    .hero-img { max-height: 180px; max-width: 220px; object-fit: contain; }
+    .hero-details { flex: 1; }
+    .product-name { font-size: 20px; font-weight: 900; color: #0f172a; margin: 0 0 5px 0; }
+    .model-code { font-family: monospace; font-size: 12px; font-weight: 700; color: #2563eb; background: #eff6ff; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-bottom: 10px; }
+    .specs-pill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+    .spec-pill { background: #ffffff; border: 1px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: 600; text-align: center; }
+    .spec-pill-title { font-size: 9px; color: #64748b; text-transform: uppercase; font-weight: 800; display: block; }
+    .section-title { font-size: 14px; font-weight: 900; color: #0f172a; border-left: 4px solid #f59e0b; padding-left: 8px; margin: 20px 0 10px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px; }
+    th { background: #0f172a; color: #ffffff; text-align: left; padding: 8px 12px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 8px 12px; border-bottom: 1px solid #e2e8f0; font-weight: 500; }
+    tr:nth-child(even) { background: #f8fafc; }
+    .table-key { font-weight: 700; color: #334155; width: 40%; }
+    .table-val { color: #0f172a; font-weight: 600; }
+    .footer { border-t: 2px solid #e2e8f0; padding-top: 15px; margin-top: 30px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #64748b; }
+    .stamp { border: 2px dashed #10b981; color: #047857; padding: 6px 12px; border-radius: 8px; font-weight: 900; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    @media print {
+      body { padding: 0; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print" style="margin-bottom: 15px; text-align: right;">
+    <button onclick="window.print()" style="background: #f59e0b; color: #0f172a; border: none; padding: 10px 20px; font-weight: 900; border-radius: 8px; cursor: pointer; font-size: 12px;">
+      🖨️ Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="header">
+    <div>
+      <div class="logo-title">TOTAG Solar EPC & Smart Power</div>
+      <div class="subtitle">Official OEM Partner Technical Specification Datasheet</div>
+    </div>
+    <div class="doc-meta">
+      <div>REF: TOTAG-DS-2026-${(item.seriesCode || item.id || 'EQUIP').replace(/[^a-zA-Z0-9]/g, '-')}</div>
+      <div>DATE: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+      <div style="margin-top: 4px;"><span class="badge">UNICEF & UNDP COMPLIANT</span></div>
+    </div>
+  </div>
+
+  <div class="hero-banner">
+    <img src="${item.image || item.photos?.[0]?.url || 'https://www.deyeinverter.com/uploads/product/hybrid-inverter-1/single-phase-low-voltage-hybrid-inverter/SUN-3.6-10K-SG05LP1-EU-AM2-P.png'}" alt="${item.name}" class="hero-img" />
+    <div class="hero-details">
+      <h1 class="product-name">${item.name || 'Deye Hybrid Inverter Series'}</h1>
+      <div class="model-code">MODEL: ${item.seriesCode || item.modelNo || item.id}</div>
+      <p style="font-size: 11px; color: #475569; margin: 0;">${item.description || 'Tier-1 commercial grade smart hybrid inverter engineered for off-grid, grid-tied, and diesel generator integration.'}</p>
+      
+      <div class="specs-pill-grid">
+        <div class="spec-pill">
+          <span class="spec-pill-title">Power Range</span>
+          <strong>${item.powerRange || '3.6 - 125 kW'}</strong>
+        </div>
+        <div class="spec-pill">
+          <span class="spec-pill-title">Phase Type</span>
+          <strong>${item.phase || item.category}</strong>
+        </div>
+        <div class="spec-pill">
+          <span class="spec-pill-title">MPPT Tracker</span>
+          <strong>${item.mppt || '2/3 MPPT'}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">1. Technical & Electrical Specifications</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter Category</th>
+        <th>Engineering Parameter & Operational Range</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="table-key">Manufacturer Brand & Origin</td>
+        <td class="table-val">${item.brand || 'Deye Power Technologies'} (Authorized TOTAG Systems Integrator)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Series Model Number</td>
+        <td class="table-val" style="font-family: monospace;">${item.seriesCode || item.modelNo || item.id}</td>
+      </tr>
+      <tr>
+        <td class="table-key">Power Output Capacity</td>
+        <td class="table-val">${item.powerRange || 'Rated Continuous Output'} (200% Surge Capacity for 10s)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Grid / Phase Configuration</td>
+        <td class="table-val">${item.phase || 'Single / Split / Three Phase 50Hz/60Hz'}</td>
+      </tr>
+      <tr>
+        <td class="table-key">MPPT Input Voltage Range</td>
+        <td class="table-val">${item.mppt || 'Dual MPPT'} (150V - 850V DC Operating Range, Max 1000V DC)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Battery Chemistry & Voltage</td>
+        <td class="table-val">${item.batterySupport || '48V LV / High Voltage Lithium Storage'} (Smart CANbus & RS485 BMS)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Max Conversion Efficiency</td>
+        <td class="table-val">97.6% Peak Efficiency (99.9% MPPT Efficiency)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Enclosure & Protection Rating</td>
+        <td class="table-val">IP65 Outdoor Weatherproof Housing (Die-Cast Aluminum)</td>
+      </tr>
+      <tr>
+        <td class="table-key">UPS Transfer Time</td>
+        <td class="table-val">&lt; 4ms (Seamless Critical Load Backup)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Warranty & Service SLA</td>
+        <td class="table-val">${item.warranty || '5-Year Factory Warranty (Extendable 10-Yr with 24/7 O&M)'}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-title">2. Operational Features & Grid Compliance</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>System Scope & Functional Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="table-key">Generator Synchronization</td>
+        <td class="table-val">Auto Genset Dry Contact Start/Stop Signal & Frequency Droop Control</td>
+      </tr>
+      <tr>
+        <td class="table-key">Unbalanced Output</td>
+        <td class="table-val">100% Phase Output Unbalance Capability (Phase Output up to 50% Rated Power)</td>
+      </tr>
+      <tr>
+        <td class="table-key">Parallel Capability</td>
+        <td class="table-val">Up to 16 Units Parallelable for Commercial Microgrid Scaling</td>
+      </tr>
+      <tr>
+        <td class="table-key">Compliance Certifications</td>
+        <td class="table-val">${item.certifications || 'CE, VDE-AR-N 4105, NRS 097-2-1, IEC 62109-1/-2, UL1741, IEEE 1547'}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="footer">
+    <div>
+      <div><strong>TOTAG Group of Companies Ltd — Solar EPC Division</strong></div>
+      <div>Monrovia Plaza, Montserrado, Liberia | Email: sales@totag.network | Web: www.totag.network</div>
+    </div>
+    <div class="stamp">
+      ✔ TOTAG AUTHORIZED DATASHEET
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+      }, 500);
+    };
+  </script>
+</body>
+</html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  };
+
   // RFQ Modal State
   const [showRfqModal, setShowRfqModal] = useState<boolean>(false);
   const [rfqItem, setRfqItem] = useState<any | null>(null);
@@ -3801,11 +3997,11 @@ export default function SolarPage() {
                 </div>
 
                 <Button
-                  onClick={() => alert(`📄 Downloading Official OEM Datasheet & Certificate for ${selectedComponentGallery.name} (${selectedComponentGallery.modelNo})...`)}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3 rounded-xl shadow-lg mt-2"
+                  onClick={() => handleDownloadOemDatasheetPdf(selectedComponentGallery)}
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3 rounded-xl shadow-lg mt-2 flex items-center justify-center gap-2"
                 >
-                  <FileText className="w-4 h-4 mr-2" />
-                  Download Complete OEM Datasheet PDF
+                  <FileText className="w-4 h-4 text-slate-950" />
+                  <span>Download Complete OEM Datasheet PDF</span>
                 </Button>
               </div>
 
