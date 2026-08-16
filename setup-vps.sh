@@ -9,6 +9,8 @@ echo "========================================================"
 echo "🔑 Enabling SSH Password Authentication..."
 sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/^#*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+echo "PasswordAuthentication yes" > /etc/ssh/sshd_config.d/99-custom.conf
+echo "PermitRootLogin yes" >> /etc/ssh/sshd_config.d/99-custom.conf
 systemctl restart ssh || systemctl restart sshd || true
 
 # 2. Update Ubuntu system packages & install Node.js 18 + PostgreSQL + Nginx
