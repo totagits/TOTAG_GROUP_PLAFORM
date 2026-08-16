@@ -58,8 +58,9 @@ async function initStripe() {
   }
 }
 
-// Initialize Stripe before setting up routes
-await initStripe();
+// Initialize Stripe in background (non-blocking)
+initStripe().catch((err: any) => console.error("⚠️ Stripe init background error:", err));
+
 
 // Register Stripe webhook BEFORE express.json() middleware
 app.post(
