@@ -174,17 +174,17 @@ export default function Header() {
               Services
             </button>
 
-            {/* 9 Subsidiaries Dropdown */}
+            {/* Subsidiaries Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer text-amber-400">
-                  <span>9 Subsidiaries</span>
+                  <span>Subsidiaries</span>
                   <ChevronDown className="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-72 bg-slate-900/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 rounded-2xl text-white">
                 <DropdownMenuLabel className="text-xs font-black uppercase tracking-wider text-amber-400 px-3 py-1.5">
-                  Official 9 Specialized Divisions
+                  Official Specialized Divisions
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-white/10" />
                 <div className="max-h-80 overflow-y-auto space-y-1">
@@ -258,7 +258,7 @@ export default function Header() {
             <button onClick={() => handleNavClick("#services")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">Services</button>
             <button onClick={() => handleNavClick("#contact")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">Contact</button>
             <div className="pt-2 border-t border-white/10">
-              <span className="text-xs font-black text-amber-400 uppercase tracking-wider block mb-2 px-4">Official 9 Subsidiaries</span>
+              <span className="text-xs font-black text-amber-400 uppercase tracking-wider block mb-2 px-4">Official Subsidiaries</span>
               <div className="grid grid-cols-1 gap-1.5">
                 {official9Subsidiaries.map((sub) => (
                   <button key={sub.href} onClick={() => handleNavClick(sub.href)} className="text-left px-3 py-2 rounded-lg text-xs font-bold bg-white/5 hover:bg-emerald-500/20 text-emerald-400 flex items-center space-x-2">
