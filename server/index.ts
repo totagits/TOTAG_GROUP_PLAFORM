@@ -158,12 +158,19 @@ app.use((req, res, next) => {
   const { seedCateringStaff } = await import("./catering-seed");
   const { seedFarmUsers } = await import("./farm-seed");
   
-  // Seed merchant users on startup
-  await seedMerchantUsers();
-  await seedCateringStaff();
-  await seedFarmUsers();
-  
+  // Seed merchant users and demo accounts in background (non-blocking)
+  (async () => {
+    try {
+      await seedMerchantUsers();
+      await seedCateringStaff();
+      await seedFarmUsers();
+    } catch (err) {
+      console.warn('⚠️ Startup seeding background note:', err);
+    }
+  })();
+
   const server = await registerRoutes(app);
+
 
   if (process.env.NODE_ENV === "development" || app.get("env") === "development") {
     await setupVite(app, server);
