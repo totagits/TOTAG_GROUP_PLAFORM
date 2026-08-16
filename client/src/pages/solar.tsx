@@ -60,11 +60,22 @@ const COMPONENT_CATALOGUE = [
 ];
 
 export default function SolarPage() {
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("system-sizing");
+  const [activeTab, setActiveTab] = useState("customer-portal");
+  const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
+  const [systemMode, setSystemMode] = useState("self-consumption");
+  const [ticketSent, setTicketSent] = useState(false);
+  const [custSurveyForm, setCustSurveyForm] = useState({
+    name: "Monrovia Commercial Plaza",
+    contact: "+231 770 123 456",
+    peakLoad: "25",
+    nightLoad: "10",
+    autonomyHours: "12",
+    roofType: "Corrugated Metal Sheet (South-West 15° Pitch)"
+  });
 
   // Dynamic Persistent Audits State
   const [auditsList, setAuditsList] = useState<SolarAuditItem[]>([]);
+
 
   useEffect(() => {
     setAuditsList(EcosystemStateEngine.getSolarAudits());
@@ -207,35 +218,345 @@ export default function SolarPage() {
         {/* Main Application Module Tabs */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-6 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
+              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Sun className="h-4 w-4" />
+                1. Customer Solar Portal
+              </TabsTrigger>
               <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Cpu className="h-4 w-4" />
-                1. Tailored Design & Shading
+                2. Tailored Design & Shading
               </TabsTrigger>
               <TabsTrigger value="energy-audit" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Calculator className="h-4 w-4" />
-                2. Load Analysis Audit
+                3. Load Audit
               </TabsTrigger>
               <TabsTrigger value="noc-monitoring" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Activity className="h-4 w-4" />
-                3. NOC Telemetry
+                4. NOC Telemetry
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
-                4. BOQ & Proposals
+                5. BOQ & Proposals
               </TabsTrigger>
               <TabsTrigger value="commissioning" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Award className="h-4 w-4" />
-                5. QA/QC Certificate
+                6. QA/QC Certs
               </TabsTrigger>
               <TabsTrigger value="interoperability" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Layers className="h-4 w-4" />
-                6. Ecosystem Sync
+                7. Ecosystem Sync
               </TabsTrigger>
             </TabsList>
 
-            {/* 1. Tailored Engineering System Sizing, Site Survey & Shading Study Engine */}
+            {/* 1. Customer Solar Asset & Telemetry Portal */}
+            <TabsContent value="customer-portal" className="space-y-8">
+              
+              {/* Account Selector & Live Status Header */}
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Zap className="w-3.5 h-3.5 animate-pulse text-amber-400" />
+                        Live Customer Solar Asset Portal
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        ● NOC TELEMETRY ONLINE
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Client Asset Monitoring & Solar Control Center</h2>
+                    <p className="text-slate-400 text-xs mt-1">Real-time solar PV generation, LiFePO4 battery SoC, diesel cost savings, and on-demand site survey request engine.</p>
+                  </div>
+
+                  {/* Customer Account Switcher */}
+                  <div className="flex items-center space-x-3 bg-slate-950 p-2 rounded-xl border border-slate-800 w-full md:w-auto">
+                    <Label className="text-xs font-bold text-slate-300 whitespace-nowrap px-2">Client Site:</Label>
+                    <select 
+                      value={customerAccount} 
+                      onChange={(e) => setCustomerAccount(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 text-white text-xs rounded-lg p-2 font-semibold focus:outline-none focus:border-amber-500"
+                    >
+                      <option value="monrovia-plaza">Monrovia Commercial Plaza (ID: SLR-9042)</option>
+                      <option value="zwedru-un">Zwedru UN Field Ops Base (ID: SLR-8812)</option>
+                      <option value="sinkor-residence">Sinkor Luxury Residential Villa (ID: SLR-7731)</option>
+                      <option value="totag-farm-site">TOTAG Agribusiness Cold-Room (ID: SLR-6620)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* 4 Telemetry Metrics Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                    <div className="flex items-center justify-between text-xs text-amber-400 font-bold">
+                      <span>SOLAR PV GENERATION</span>
+                      <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" />
+                    </div>
+                    <div className="text-3xl font-black text-white">24.8 kW</div>
+                    <div className="text-xs text-slate-400 font-medium">Yield Today: <span className="text-amber-400 font-bold">98.2 kWh</span> (8x 550W PERC)</div>
+                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+                      <div className="bg-amber-400 h-full w-[85%]" />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                    <div className="flex items-center justify-between text-xs text-emerald-400 font-bold">
+                      <span>BATTERY STORAGE (SoC)</span>
+                      <BatteryCharging className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div className="text-3xl font-black text-white">94%</div>
+                    <div className="text-xs text-slate-400 font-medium">Energy Stored: <span className="text-emerald-400 font-bold">48.1 kWh</span> / 51.2 kWh</div>
+                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+                      <div className="bg-emerald-400 h-full w-[94%]" />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                    <div className="flex items-center justify-between text-xs text-sky-400 font-bold">
+                      <span>FACILITY LOAD DEMAND</span>
+                      <Cpu className="w-4 h-4 text-sky-400" />
+                    </div>
+                    <div className="text-3xl font-black text-white">16.4 kW</div>
+                    <div className="text-xs text-slate-400 font-medium">Coverage: <span className="text-emerald-400 font-bold">100% Solar Driven</span></div>
+                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+                      <div className="bg-sky-400 h-full w-[65%]" />
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                    <div className="flex items-center justify-between text-xs text-rose-400 font-bold">
+                      <span>DIESEL GENSET / GRID</span>
+                      <Fuel className="w-4 h-4 text-rose-400" />
+                    </div>
+                    <div className="text-3xl font-black text-white">0.0 kW</div>
+                    <div className="text-xs text-slate-400 font-medium">Status: <span className="text-emerald-400 font-bold">Standby (Offset: $2,450/mo)</span></div>
+                    <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+                      <div className="bg-rose-500 h-full w-[0%]" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Operating Mode Switcher */}
+                <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <Sliders className="w-4 h-4 text-amber-400" />
+                      <span>Select Power System Operating Strategy:</span>
+                    </h3>
+                    <p className="text-xs text-slate-400">Control how your hybrid inverter prioritizes solar generation, LiFePO4 battery storage, and grid/generator backup.</p>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Button 
+                      variant={systemMode === 'self-consumption' ? 'default' : 'outline'}
+                      onClick={() => setSystemMode('self-consumption')}
+                      className={`text-xs font-bold ${systemMode === 'self-consumption' ? 'bg-amber-500 text-slate-950 hover:bg-amber-400' : 'bg-slate-900 text-slate-300 border-slate-700'}`}
+                    >
+                      <Zap className="w-3.5 h-3.5 mr-1" />
+                      Self-Consumption Priority
+                    </Button>
+                    <Button 
+                      variant={systemMode === 'backup-priority' ? 'default' : 'outline'}
+                      onClick={() => setSystemMode('backup-priority')}
+                      className={`text-xs font-bold ${systemMode === 'backup-priority' ? 'bg-emerald-500 text-slate-950 hover:bg-emerald-400' : 'bg-slate-900 text-slate-300 border-slate-700'}`}
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 mr-1" />
+                      UPS Backup Priority
+                    </Button>
+                    <Button 
+                      variant={systemMode === 'hybrid-generator' ? 'default' : 'outline'}
+                      onClick={() => setSystemMode('hybrid-generator')}
+                      className={`text-xs font-bold ${systemMode === 'hybrid-generator' ? 'bg-sky-500 text-slate-950 hover:bg-sky-400' : 'bg-slate-900 text-slate-300 border-slate-700'}`}
+                    >
+                      <Fuel className="w-3.5 h-3.5 mr-1" />
+                      Genset Auto-Start (20% DoD)
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Comprehensive Site Survey & Tailored Sizing Request Engine for Customers */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Form to Request Tailored Site Survey */}
+                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
+                  <div className="border-b border-slate-800 pb-4">
+                    <h3 className="text-xl font-black text-white flex items-center gap-2">
+                      <Calculator className="w-5 h-5 text-amber-400" />
+                      <span>Request Comprehensive Site Survey & Engineering Quote</span>
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-1">Submit your facility energy profile. TOTAG Solar Engineers perform shading analysis and deliver tailored system sizing.</p>
+                  </div>
+
+                  <div className="space-y-4 text-xs font-semibold text-slate-300">
+                    <div>
+                      <Label className="text-slate-300 text-xs font-bold">Facility / Project Name:</Label>
+                      <Input 
+                        value={custSurveyForm.name}
+                        onChange={(e) => setCustSurveyForm({ ...custSurveyForm, name: e.target.value })}
+                        className="bg-slate-950 border-slate-800 text-white mt-1" 
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-slate-300 text-xs font-bold">Peak Daytime Load (kW):</Label>
+                        <Input 
+                          type="number"
+                          value={custSurveyForm.peakLoad}
+                          onChange={(e) => setCustSurveyForm({ ...custSurveyForm, peakLoad: e.target.value })}
+                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-slate-300 text-xs font-bold">Night Load Demand (kW):</Label>
+                        <Input 
+                          type="number"
+                          value={custSurveyForm.nightLoad}
+                          onChange={(e) => setCustSurveyForm({ ...custSurveyForm, nightLoad: e.target.value })}
+                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-slate-300 text-xs font-bold">Night Battery Autonomy (Hours):</Label>
+                        <Input 
+                          type="number"
+                          value={custSurveyForm.autonomyHours}
+                          onChange={(e) => setCustSurveyForm({ ...custSurveyForm, autonomyHours: e.target.value })}
+                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-slate-300 text-xs font-bold">Direct Phone / WhatsApp:</Label>
+                        <Input 
+                          value={custSurveyForm.contact}
+                          onChange={(e) => setCustSurveyForm({ ...custSurveyForm, contact: e.target.value })}
+                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-slate-300 text-xs font-bold">Roof Structure & Pitch Orientation:</Label>
+                      <Input 
+                        value={custSurveyForm.roofType}
+                        onChange={(e) => setCustSurveyForm({ ...custSurveyForm, roofType: e.target.value })}
+                        className="bg-slate-950 border-slate-800 text-white mt-1" 
+                      />
+                    </div>
+
+                    <Button 
+                      onClick={() => {
+                        const kwp = (parseFloat(custSurveyForm.peakLoad || '10') * 1.25).toFixed(1);
+                        const kwh = (parseFloat(custSurveyForm.nightLoad || '5') * parseFloat(custSurveyForm.autonomyHours || '10') / 0.8).toFixed(1);
+                        EcosystemStateEngine.addSolarAudit({
+                          clientName: custSurveyForm.name,
+                          location: "Monrovia / Grand Gedeh",
+                          pvSizeKwp: parseFloat(kwp),
+                          batteryStorageKwh: parseFloat(kwh),
+                          annualKwh: parseFloat(kwp) * 4.6 * 365,
+                          estimatedCostUsd: parseFloat(kwp) * 1150 + parseFloat(kwh) * 380,
+                          roiPaybackYears: 3.2
+                        });
+                        setAuditsList(EcosystemStateEngine.getSolarAudits());
+                        alert(`✅ Site Survey & Sizing Request Submitted!\n\nEngineered PV Array: ${kwp} kWp\nBattery Storage Sized: ${kwh} kWh LiFePO4\n\nTOTAG Solar EPC engineers have been notified for immediate shading study dispatch.`);
+                      }}
+                      className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl shadow-lg"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Submit Detailed Site Survey & Load Sizing Request
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Instant Engineered Sizing Preview & Financial Impact */}
+                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl flex flex-col justify-between">
+                  <div>
+                    <div className="border-b border-slate-800 pb-4">
+                      <h3 className="text-xl font-black text-white flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-emerald-400" />
+                        <span>Instant Sizing Preview & Financial ROI</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">Real-timeLiberian solar radiance model (4.6 PSH/day) calculated for your requested energy profile.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <div className="text-xs text-slate-400 font-bold">RECOMMENDED PV ARRAY</div>
+                        <div className="text-2xl font-black text-amber-400 mt-1">
+                          {(parseFloat(custSurveyForm.peakLoad || '10') * 1.25).toFixed(1)} kWp
+                        </div>
+                        <div className="text-xs text-slate-500 font-medium mt-1">
+                          Requires {Math.ceil((parseFloat(custSurveyForm.peakLoad || '10') * 1.25 * 1000) / 550)}x Tier-1 550W Panels
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <div className="text-xs text-slate-400 font-bold">LiFePO4 BATTERY STORAGE</div>
+                        <div className="text-2xl font-black text-emerald-400 mt-1">
+                          {(parseFloat(custSurveyForm.nightLoad || '5') * parseFloat(custSurveyForm.autonomyHours || '10') / 0.8).toFixed(1)} kWh
+                        </div>
+                        <div className="text-xs text-slate-500 font-medium mt-1">
+                          48V 100Ah Rack Modules (80% DoD)
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <div className="text-xs text-slate-400 font-bold">MONTHLY DIESEL SAVED</div>
+                        <div className="text-2xl font-black text-sky-400 mt-1">
+                          ${(parseFloat(custSurveyForm.peakLoad || '10') * 95).toFixed(0)} USD
+                        </div>
+                        <div className="text-xs text-slate-500 font-medium mt-1">
+                          ~{Math.round(parseFloat(custSurveyForm.peakLoad || '10') * 58)} Liters fuel offset/month
+                        </div>
+                      </div>
+
+                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                        <div className="text-xs text-slate-400 font-bold">ESTIMATED PAYBACK PERIOD</div>
+                        <div className="text-2xl font-black text-purple-400 mt-1">
+                          3.2 Years
+                        </div>
+                        <div className="text-xs text-slate-500 font-medium mt-1">
+                          25-Year Panel Warranty Included
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Maintenance SLA & Quick Ticket */}
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-300">
+                      <span className="flex items-center gap-1.5 text-amber-400">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        TOTAG 24/7 O&M Service SLA Active
+                      </span>
+                      <span className="text-slate-400">Next Service: Aug 28, 2026</span>
+                    </div>
+
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setTicketSent(true);
+                        alert("✅ Emergency NOC Helpdesk Ticket Opened!\n\nDispatching TOTAG Certified Solar Technicians to your site for inspection.");
+                      }}
+                      className="w-full bg-slate-900 hover:bg-slate-800 text-slate-200 border-slate-700 text-xs font-bold py-2 rounded-lg"
+                    >
+                      <Activity className="w-3.5 h-3.5 mr-2 text-amber-400" />
+                      {ticketSent ? "✅ Dispatch Ticket Active (#TKT-9912)" : "Request Technician Site Visit / Panel Wash"}
+                    </Button>
+                  </div>
+                </div>
+
+              </div>
+
+            </TabsContent>
+
+            {/* 2. Tailored Engineering System Sizing, Site Survey & Shading Study Engine */}
             <TabsContent value="system-sizing" className="space-y-8">
+
               
               {/* Site Survey Input Parameters Panel */}
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
