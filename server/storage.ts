@@ -35,9 +35,21 @@ import {
   petroleumOrders,
   equipmentRentals,
   stationeryOrders,
+  solarAudits,
+
   institutionalContracts,
   partyMaster,
   enterpriseEvents,
+  type CargoShipment,
+  type InsertCargoShipment,
+  type PetroleumOrder,
+  type InsertPetroleumOrder,
+  type EquipmentRental,
+  type InsertEquipmentRental,
+  type StationeryOrder,
+  type InsertStationeryOrder,
+  type SolarAudit,
+  type InsertSolarAudit,
   type InstitutionalContract,
   type InsertInstitutionalContract,
   type PartyMaster,
@@ -45,6 +57,7 @@ import {
   type EnterpriseEvent,
   type InsertEnterpriseEvent,
   type User, 
+
 
 
   type InsertUser,
