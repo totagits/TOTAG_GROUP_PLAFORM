@@ -94,8 +94,7 @@ const DETAILED_COMPONENT_CATALOGUE = [
     photos: [
       { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
       { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" },
-      { url: "/images/pv/jinko-factory-label.png", caption: "Factory Quality Inspection, Pallet Packaging & Quality Assurance Tag" }
+      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" }
     ]
   },
   {
@@ -114,8 +113,7 @@ const DETAILED_COMPONENT_CATALOGUE = [
     photos: [
       { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
       { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" },
-      { url: "/images/pv/jinko-factory-label.png", caption: "Factory Quality Inspection, Pallet Packaging & Quality Assurance Tag" }
+      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" }
     ]
   },
   {
