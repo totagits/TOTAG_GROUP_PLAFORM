@@ -89,8 +89,11 @@ export function serveStatic(app: Express) {
     }
   }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
+  // fall through to index.html for SPA routes, but return 404 for missing static assets
+  app.use("*", (req, res) => {
+    if (req.originalUrl.includes("/assets/") || req.originalUrl.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|json|woff2?|ttf|eot)$/)) {
+      return res.status(404).send("Asset not found");
+    }
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     res.setHeader("Pragma", "no-cache");
     res.setHeader("Expires", "0");

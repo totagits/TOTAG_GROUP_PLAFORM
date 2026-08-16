@@ -139,6 +139,48 @@ export interface SolarSupplierRecord {
   supportSla: string;
 }
 
+export interface SolarSerializedAsset {
+  id: string;
+  itemCategory: "Inverter" | "Battery" | "Monitoring Gateway" | "Smart Meter" | "Generator Controller" | "PV Module";
+  manufacturer: string;
+  model: string;
+  serialNumber: string;
+  supplier: string;
+  poNumber: string;
+  dateReceived: string;
+  warehouseLocation: string;
+  projectAllocation: string;
+  installationSite: string;
+  installationDate: string;
+  warrantyStart: string;
+  warrantyExpiry: string;
+  currentStatus: "In Warehouse Stock" | "Allocated to Project" | "In Transit to Site" | "Installed & Active" | "Warranty Service / RMA" | "Retired";
+}
+
+export interface SolarProjectItem {
+  id: string;
+  projectName: string;
+  customer: string;
+  contractValueUsd: number;
+  county: string;
+  facilitySiteName: string;
+  systemCapacityKwp: number;
+  inverterCapacityKva: number;
+  batteryCapacityKwh: number;
+  mobilizationDate: string;
+  targetCompletionDate: string;
+  projectManager: string;
+  leadEngineer: string;
+  assignedTechnicians: string[];
+  procurementStatus: string;
+  installationProgressPct: number;
+  budgetUsd: number;
+  actualCostUsd: number;
+  riskStatus: "Low Risk" | "Medium Risk" | "High Risk / Action Required";
+  currentWorkflowStageIndex: number;
+  workflowStageEvidence: { stageName: string; completed: boolean; verifiedBy: string; timestamp: string; evidenceNote: string }[];
+}
+
 export interface SolarAuditItem {
   id: string;
   clientName: string;

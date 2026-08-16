@@ -53,7 +53,12 @@ import {
   FileSignature,
   BadgeCheck,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Warehouse,
+  Workflow,
+  ClipboardCheck,
+  FolderKanban,
+  ShieldAlert
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EcosystemStateEngine, SolarAuditItem } from "@/lib/ecosystem-state";
@@ -284,18 +289,18 @@ export default function SolarPage() {
         {/* Main Application Module Tabs */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
               <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Building2 className="h-4 w-4" />
-                1. Solar CRM
+                1. CRM
               </TabsTrigger>
               <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Compass className="h-4 w-4" />
-                2. Site Audit
+                2. Audit
               </TabsTrigger>
               <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Cpu className="h-4 w-4" />
-                3. Design Engine
+                3. Design
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
@@ -303,15 +308,23 @@ export default function SolarPage() {
               </TabsTrigger>
               <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Calculator className="h-4 w-4" />
-                5. Auto-BOQ & Costing
+                5. Auto-BOQ
               </TabsTrigger>
               <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Truck className="h-4 w-4" />
-                6. Procurement & OEMs
+                6. Procurement
+              </TabsTrigger>
+              <TabsTrigger value="serialized-inventory" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Warehouse className="h-4 w-4" />
+                7. Inventory
+              </TabsTrigger>
+              <TabsTrigger value="project-management" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <FolderKanban className="h-4 w-4" />
+                8. Projects
               </TabsTrigger>
               <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Sun className="h-4 w-4" />
-                7. Portal & NOC
+                9. NOC Portal
               </TabsTrigger>
             </TabsList>
 
@@ -1971,6 +1984,397 @@ export default function SolarPage() {
                           <span className="text-white">Marcus Thorne (Technical Sales Manager)</span>
                         </div>
                       </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </TabsContent>
+
+            {/* MODULE 7: Solar Warehouse & Serialized Inventory Management */}
+            <TabsContent value="serialized-inventory" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Module Header */}
+                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Warehouse className="w-3.5 h-3.5 text-amber-400" />
+                        Module 7: Serialized Inventory Ledger
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        100% Component Traceability
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Solar Warehouse & Serialized Asset Lifecycle Management</h2>
+                    <p className="text-slate-400 text-xs mt-1">Tracks serial numbers, supplier POs, warehouse locations, project site allocations, installation dates, and manufacturer warranties for inverters, batteries, smart meters, and gateways.</p>
+                  </div>
+
+                  <Button onClick={() => alert("✅ Serialized Asset Recorded!\n\nCaptured new serial barcode into TOTAG Master Asset Registry.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
+                    <Barcode className="w-4 h-4 mr-2" /> Register Serialized Equipment
+                  </Button>
+                </div>
+
+                {/* Warehouse Serial Summary KPI Bar */}
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs font-semibold">
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">TOTAL SERIALIZED ASSETS</span>
+                    <div className="text-2xl font-black text-white">148 Units</div>
+                    <span className="text-slate-500 block text-[10px]">Inverters, Batteries, Gateways</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">MONROVIA CENTRAL STOCK</span>
+                    <div className="text-2xl font-black text-amber-400">62 Units</div>
+                    <span className="text-slate-500 block text-[10px]">Bushrod Island Warehouse</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">PROJECT ALLOCATED</span>
+                    <div className="text-2xl font-black text-sky-400">34 Units</div>
+                    <span className="text-slate-500 block text-[10px]">Staged for Site Dispatch</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">INSTALLED ON-SITE</span>
+                    <div className="text-2xl font-black text-emerald-400">48 Units</div>
+                    <span className="text-slate-500 block text-[10px]">Active Customer Assets</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">WARRANTY COVERAGE</span>
+                    <div className="text-2xl font-black text-purple-400">100% Active</div>
+                    <span className="text-slate-500 block text-[10px]">Manufacturer Backed</span>
+                  </div>
+                </div>
+
+                {/* Serialized Equipment Ledger Table */}
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <h3 className="text-sm font-black text-white flex items-center gap-2">
+                      <Barcode className="w-4 h-4 text-emerald-400" />
+                      <span>Serialized Equipment Master Ledger & Audit Trail</span>
+                    </h3>
+                    <Input 
+                      placeholder="Search Serial Number, Model, PO#, or Site..." 
+                      className="bg-slate-900 border-slate-800 text-xs text-white max-w-xs"
+                    />
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                          <th className="py-2.5 px-3">Equipment Category</th>
+                          <th className="py-2.5 px-2">Manufacturer & Model</th>
+                          <th className="py-2.5 px-2">Serial Number (S/N)</th>
+                          <th className="py-2.5 px-2">Supplier & PO#</th>
+                          <th className="py-2.5 px-2">Location / Site Allocation</th>
+                          <th className="py-2.5 px-2">Installation Date</th>
+                          <th className="py-2.5 px-2">Warranty Expiry</th>
+                          <th className="py-2.5 px-3 text-right">Current Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-900 font-semibold text-slate-300">
+                        
+                        <tr>
+                          <td className="py-2.5 px-3 text-emerald-400 font-bold flex items-center gap-1.5">
+                            <Cpu className="w-3.5 h-3.5" /> Hybrid Inverter
+                          </td>
+                          <td className="py-2.5 px-2 text-white font-bold">Deye SUN-30K-SG01HP3</td>
+                          <td className="py-2.5 px-2 text-amber-400 font-mono font-bold">SN-DEYE-30K-991823</td>
+                          <td className="py-2.5 px-2">Deye Factory (PO #PO-DEYE-9921)</td>
+                          <td className="py-2.5 px-2 text-slate-200">Redemption Hospital Rooftop</td>
+                          <td className="py-2.5 px-2">Aug 12, 2026</td>
+                          <td className="py-2.5 px-2 text-emerald-400 font-mono">Aug 12, 2031 (5 Yrs)</td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Badge className="bg-emerald-500 text-slate-950 text-[10px] font-black">Installed & Active</Badge>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-purple-400 font-bold flex items-center gap-1.5">
+                            <BatteryCharging className="w-3.5 h-3.5" /> LiFePO4 Battery
+                          </td>
+                          <td className="py-2.5 px-2 text-white font-bold">Pylontech US5000 4.8kWh</td>
+                          <td className="py-2.5 px-2 text-amber-400 font-mono font-bold">SN-PYLON-5K-881920</td>
+                          <td className="py-2.5 px-2">Pylontech (PO #PO-PYL-4412)</td>
+                          <td className="py-2.5 px-2 text-slate-200">Redemption Hospital Battery Room</td>
+                          <td className="py-2.5 px-2">Aug 12, 2026</td>
+                          <td className="py-2.5 px-2 text-emerald-400 font-mono">Aug 12, 2036 (10 Yrs)</td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Badge className="bg-emerald-500 text-slate-950 text-[10px] font-black">Installed & Active</Badge>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-purple-400 font-bold flex items-center gap-1.5">
+                            <BatteryCharging className="w-3.5 h-3.5" /> LiFePO4 Battery
+                          </td>
+                          <td className="py-2.5 px-2 text-white font-bold">Hubble AM-2 5.5kWh 48V</td>
+                          <td className="py-2.5 px-2 text-amber-400 font-mono font-bold">SN-HUBBLE-AM2-77123</td>
+                          <td className="py-2.5 px-2">Hubble Energy (PO #PO-HUB-2201)</td>
+                          <td className="py-2.5 px-2 text-slate-200">Monrovia Central Warehouse</td>
+                          <td className="py-2.5 px-2 text-slate-500">Uninstalled</td>
+                          <td className="py-2.5 px-2 text-emerald-400 font-mono">Jul 15, 2036 (10 Yrs)</td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Badge className="bg-slate-800 text-amber-400 border-amber-500/30 text-[10px]">In Warehouse Stock</Badge>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-sky-400 font-bold flex items-center gap-1.5">
+                            <Activity className="w-3.5 h-3.5" /> Monitoring Gateway
+                          </td>
+                          <td className="py-2.5 px-2 text-white font-bold">Victron Cerbo GX Gateway</td>
+                          <td className="py-2.5 px-2 text-amber-400 font-mono font-bold">SN-VIC-CERBO-55102</td>
+                          <td className="py-2.5 px-2">Victron B.V. (PO #PO-VIC-1182)</td>
+                          <td className="py-2.5 px-2 text-slate-200">UNICEF Nimba Regional Office</td>
+                          <td className="py-2.5 px-2">Aug 02, 2026</td>
+                          <td className="py-2.5 px-2 text-emerald-400 font-mono">Aug 02, 2031 (5 Yrs)</td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Badge className="bg-sky-500 text-slate-950 text-[10px] font-black">Installed & Active</Badge>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td className="py-2.5 px-3 text-amber-400 font-bold flex items-center gap-1.5">
+                            <Gauge className="w-3.5 h-3.5" /> Smart Meter
+                          </td>
+                          <td className="py-2.5 px-2 text-white font-bold">Eastron SDM630 Three-Phase Meter</td>
+                          <td className="py-2.5 px-2 text-amber-400 font-mono font-bold">SN-EASTRON-630-4491</td>
+                          <td className="py-2.5 px-2">Eastron (PO #PO-EAS-009)</td>
+                          <td className="py-2.5 px-2 text-slate-200">Gbarnga Field Depot Yard</td>
+                          <td className="py-2.5 px-2 text-slate-500">Uninstalled</td>
+                          <td className="py-2.5 px-2 text-emerald-400 font-mono">Jun 10, 2028 (2 Yrs)</td>
+                          <td className="py-2.5 px-3 text-right">
+                            <Badge className="bg-slate-800 text-sky-400 border-sky-500/30 text-[10px]">Allocated to Project</Badge>
+                          </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </TabsContent>
+
+            {/* MODULE 8: Project & 15-Stage Verified Installation Workflow Management */}
+            <TabsContent value="project-management" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Module Header */}
+                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <FolderKanban className="w-3.5 h-3.5 text-amber-400" />
+                        Module 8: Turnkey Project & Workflow Management
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        15-Stage Verified Installation Pipeline
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Solar Project Execution & 15-Stage Evidence Installation Workflow</h2>
+                    <p className="text-slate-400 text-xs mt-1">Monitors turnkey project budgets, actual costs, team assignments, risk status, and enforces evidence verification for each installation stage from Mobilization to Commissioning.</p>
+                  </div>
+
+                  <Button onClick={() => alert("✅ New Solar EPC Project Created!\n\nInitialized 15-Stage Installation Workflow Tracker for project team.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
+                    <Plus className="w-4 h-4 mr-2" /> Initialize Won Contract Project
+                  </Button>
+                </div>
+
+                {/* Project Executive Overview Dashboard Cards */}
+                <div className="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div>
+                      <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase">ACTIVE EPC CONTRACT #PRJ-2026-001</span>
+                      <h3 className="text-lg font-black text-white mt-0.5">Monrovia Regional Hospital 30kW Solar Hybrid Microgrid</h3>
+                      <p className="text-xs text-slate-400">Client: Ministry of Health / USAID • Location: Bushrod Island, Montserrado County</p>
+                    </div>
+                    <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1">75% Installation Progress</Badge>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs font-semibold">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">CONTRACT VALUE</span>
+                      <span className="text-amber-400 font-black text-sm">$68,500 USD</span>
+                    </div>
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">SYSTEM CAPACITY</span>
+                      <span className="text-white font-black text-sm">33 kWp / 76.8 kWh</span>
+                    </div>
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">PROJECT MANAGER</span>
+                      <span className="text-slate-200 font-bold text-xs">Eng. Tarkpor Toe</span>
+                    </div>
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">BUDGET vs ACTUAL</span>
+                      <span className="text-emerald-400 font-black text-sm">$53.1k / $41.2k</span>
+                    </div>
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">TARGET COMPLETION</span>
+                      <span className="text-sky-400 font-black text-xs">Aug 30, 2026</span>
+                    </div>
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold">RISK STATUS</span>
+                      <span className="text-emerald-400 font-black text-xs flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Low Risk
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 15-Stage Verified Installation Workflow Tracker */}
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                    <div>
+                      <h3 className="text-sm font-black text-white flex items-center gap-2">
+                        <Workflow className="w-4 h-4 text-amber-400" />
+                        <span>Mandatory 15-Stage Installation Workflow (Evidence Verification Required)</span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 mt-0.5">Each stage requires technician evidence sign-off before advancing to subsequent milestone.</p>
+                    </div>
+                    <span className="text-xs text-emerald-400 font-black">11 of 15 Stages Verified & Signed</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-semibold">
+                    
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>1. Mobilization</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Site team & vehicles dispatched to Bushrod Island site.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Eng. Toe • Aug 01, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>2. Site Verification</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Structural roof load test & azimuth verified.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Tech Saye • Aug 02, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>3. Material Dispatch</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Containers delivered & unboxed at site yard.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Logis. Kollie • Aug 03, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>4. Mounting Structure</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Rooftop aluminum rails secured & ballasted.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Tech Saye • Aug 05, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>5. PV Module Array</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">60x 550W modules mounted & string-wired.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Eng. Flomo • Aug 07, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>6. Battery Installation</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">15x LiFePO4 rack modules wired & BMS linked.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Eng. Flomo • Aug 09, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>7. Inverter Mounting</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">30kW Deye Hybrid mounted on wall brackets.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Tech Saye • Aug 10, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>8. DC Electrical Wiring</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">10mm² solar cables routed in heavy conduit.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Tech Saye • Aug 11, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>9. AC Electrical Wiring</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">35mm² armored copper cable connected to MDB.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Eng. Toe • Aug 12, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>10. Generator / ATS Sync</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">4-Pole 250A ATS connected to standby diesel genset.</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: Eng. Toe • Aug 13, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-900 p-3 rounded-lg border-2 border-emerald-500/40 space-y-1">
+                      <div className="flex justify-between items-center text-emerald-400 font-black">
+                        <span>11. Earthing Ground Test</span>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Grounding resistance measured at 3.1 Ω (PASSED).</p>
+                      <span className="text-[10px] text-slate-500 block font-mono">Signed by: QA Inspector • Aug 14, 2026</span>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-lg border-2 border-amber-500 space-y-1">
+                      <div className="flex justify-between items-center text-amber-400 font-black">
+                        <span>12. Monitoring Gateway</span>
+                        <Badge className="bg-amber-500 text-slate-950 text-[10px] font-black">IN PROGRESS</Badge>
+                      </div>
+                      <p className="text-slate-300 text-[11px]">Cerbo GX gateway SIM & Cloud NOC telemetry config.</p>
+                      <Button onClick={() => alert("✅ Stage 12 Verified!\n\nCerbo GX IoT Telemetry Gateway verified live.")} size="sm" className="w-full mt-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[10px]">
+                        Submit Stage 12 Evidence
+                      </Button>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                      <div className="flex justify-between items-center text-slate-400 font-black">
+                        <span>13. Site QA Inspection</span>
+                        <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
+                      </div>
+                      <p className="text-slate-400 text-[11px]">Comprehensive 50-point electrical safety audit.</p>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                      <div className="flex justify-between items-center text-slate-400 font-black">
+                        <span>14. Pre-Commission Test</span>
+                        <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
+                      </div>
+                      <p className="text-slate-400 text-[11px]">24-Hour full-load endurance simulation.</p>
+                    </div>
+
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                      <div className="flex justify-between items-center text-slate-400 font-black">
+                        <span>15. Handover & Certs</span>
+                        <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
+                      </div>
+                      <p className="text-slate-400 text-[11px]">Official client certificate issue & staff handover.</p>
                     </div>
 
                   </div>
