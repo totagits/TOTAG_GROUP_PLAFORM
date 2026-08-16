@@ -117,18 +117,19 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
   const colorClass = colorClasses[color as keyof typeof colorClasses] || colorClasses.primary;
   const [, setLocation] = useLocation();
 
+  const targetUrl = getServiceUrl(slug, title, id);
+
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const targetUrl = getServiceUrl(slug, title, id);
-    if (targetUrl) {
-      if (window.location.hash || window.location.host.includes("github.io")) {
-        window.location.hash = targetUrl;
-      }
-      setLocation(targetUrl);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.location.hash || window.location.host.includes("github.io")) {
+      window.location.hash = targetUrl;
+    } else {
+      window.location.pathname = targetUrl;
     }
+    setLocation(targetUrl);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -138,42 +139,47 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
       transition={{ duration: 0.25 }}
       className="h-full"
     >
-      <Card 
-        id={id} 
+      <a 
+        href={`#${targetUrl}`} 
         onClick={handleCardClick}
-        className="h-full glass-card-interactive backdrop-blur-xl border border-white/60 dark:border-white/10 group cursor-pointer p-6 flex flex-col justify-between relative overflow-hidden"
+        className="block h-full no-underline"
       >
-        {/* Subtle Background Glow Mesh */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500/10 to-sky-500/10 blur-2xl group-hover:scale-150 transition-transform duration-500" />
-        
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <div className={`w-14 h-14 rounded-2xl border ${colorClass.iconBg} flex items-center justify-center transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-110`}>
-              {getIconComponent(icon)}
+        <Card 
+          id={id} 
+          className="h-full glass-card-interactive backdrop-blur-xl border border-white/60 dark:border-white/10 group cursor-pointer p-6 flex flex-col justify-between relative overflow-hidden"
+        >
+          {/* Subtle Background Glow Mesh */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-gradient-to-br from-emerald-500/10 to-sky-500/10 blur-2xl group-hover:scale-150 transition-transform duration-500" />
+          
+          <div>
+            <div className="flex items-center justify-between mb-5">
+              <div className={`w-14 h-14 rounded-2xl border ${colorClass.iconBg} flex items-center justify-center transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-110`}>
+                {getIconComponent(icon)}
+              </div>
+              <span className={`text-xs px-3 py-1 rounded-full font-medium ${colorClass.badge}`}>
+                Subsidiary
+              </span>
             </div>
-            <span className={`text-xs px-3 py-1 rounded-full font-medium ${colorClass.badge}`}>
-              Subsidiary
+
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200">
+              {title}
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">
+              {description}
+            </p>
+          </div>
+
+          <div className="pt-4 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between mt-auto">
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[70%]">
+              {tags}
             </span>
+            <div className="flex items-center space-x-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-200">
+              <span>Explore</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
           </div>
-
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200">
-            {title}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed mb-6 line-clamp-3">
-            {description}
-          </p>
-        </div>
-
-        <div className="pt-4 border-t border-gray-200/60 dark:border-white/10 flex items-center justify-between mt-auto">
-          <span className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate max-w-[70%]">
-            {tags}
-          </span>
-          <div className="flex items-center space-x-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform duration-200">
-            <span>Explore</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </a>
     </motion.div>
   );
 }
