@@ -467,73 +467,22 @@ export default function GeneralMerchandisePage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      {/* Full Header with Product Background Carousel */}
-      <header className="relative h-40 overflow-hidden sticky top-0 z-50 shadow-lg">
-        {/* Background Image Carousel */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentCarouselIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0"
-          >
-            {/* Product Background Image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${carouselSlides[currentCarouselIndex]?.imageUrl || 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=400&fit=crop&crop=center'})`,
-              }}
-            >
-              {/* Dark overlay for text readability */}
-              <div className="absolute inset-0 bg-black/50"></div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Clean Header Content */}
-        <div className="relative z-10 h-full">
-          {/* Back Button - Extreme Upper Left */}
-          <div className="absolute top-2 left-2 z-50">
-            <Button 
-              variant="secondary" 
-              size="sm" 
-              className="bg-white/90 text-gray-900 hover:bg-white shadow-lg"
-              onClick={() => setLocation("/")}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
-            </Button>
-          </div>
-
-          {/* Logo and Title - Centered */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <img 
-                src="/images/totag-logo.png" 
-                alt="TGM Logo" 
-                className="h-[100px] w-[100px] mx-auto mb-3 object-contain"
-              />
-              <h1 className="text-2xl lg:text-3xl font-bold text-white mb-1">TOTAG General Merchandise</h1>
-              <p className="text-base text-gray-200">Quality Products-Timely Delivery</p>
-            </div>
-          </div>
-
-          {/* Carousel Indicators */}
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {carouselSlides.map((_: any, index: number) => (
-              <button
-                key={index}
-                onClick={() => setCurrentCarouselIndex(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentCarouselIndex ? 'bg-white' : 'bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </header>
+      {/* Standardized Photo Carousel Hero Section */}
+      <SubsidiaryHeroCarousel
+        badge="TOTAG Subsidiary • Wholesale & Retail Distribution"
+        titleHighlight="General Merchandise"
+        subtitle="Leading wholesale and retail distributor across West Africa, providing FMCG goods, industrial supplies, multi-outlet management, and nationwide supply chain logistics."
+        slides={[
+          { url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&h=800&fit=crop", caption: "TOTAG Wholesale Central Distribution Depot" },
+          { url: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=1600&h=800&fit=crop", caption: "Multi-Outlet Retail Merchandise Distribution" },
+          { url: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600&h=800&fit=crop", caption: "Bulk Consumer & Industrial Goods Inventory" }
+        ]}
+        stats={[
+          { label: "Active SKUs", value: "14,500+" },
+          { label: "Retail Outlets", value: "24 Locations" },
+          { label: "Monthly Deliveries", value: "3,800+" }
+        ]}
+      />
       {/* Hero Section with Product Gallery */}
       <section className="bg-gradient-to-br from-purple-50 to-blue-50 py-16">
         <div className="container mx-auto px-4">

@@ -91,22 +91,23 @@ export default function ConstructionPage() {
       <Header />
       
       <main className="pt-28 pb-20">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-badge-amber text-xs font-semibold">
-              <HardHat className="w-4 h-4 text-amber-500" />
-              <span>TOTAG Subsidiary • General Construction & Infrastructure</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-              TOTAG <span className="text-gradient-gold">Construction</span> & Infrastructure
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Licensed civil engineering, road & bridge infrastructure development, commercial building construction, heavy equipment fleet rental, and project management.
-            </p>
-          </div>
+        {/* Standardized Photo Carousel Hero Section */}
+        <section className="mb-12">
+          <SubsidiaryHeroCarousel
+            badge="TOTAG Subsidiary • General Construction & Infrastructure"
+            titleHighlight="Construction & Infrastructure"
+            subtitle="Licensed civil engineering, road & bridge infrastructure development, commercial building construction, heavy equipment fleet rental, and project management."
+            slides={[
+              { url: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?w=1600&h=800&fit=crop", caption: "Heavy Civil Works & Road Infrastructure Project" },
+              { url: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&h=800&fit=crop", caption: "Structural Steel Commercial Complex" },
+              { url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1600&h=800&fit=crop", caption: "Heavy Equipment Fleet & Excavation Site" }
+            ]}
+            stats={[
+              { label: "Completed Works", value: "120+ Projects" },
+              { label: "Machinery Fleet", value: "35 Heavy Units" },
+              { label: "Engineering Crew", value: "250+ Pros" }
+            ]}
+          />
         </section>
 
         {/* 1. Heavy Equipment Fleet Rental Booking Portal */}

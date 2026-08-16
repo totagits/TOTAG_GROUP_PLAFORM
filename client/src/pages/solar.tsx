@@ -236,32 +236,23 @@ export default function SolarPage() {
       
       <main className="pt-28 pb-20">
         
-        {/* Banner Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 rounded-2xl bg-gradient-to-r from-amber-950 via-slate-900 to-yellow-950 border-2 border-slate-800 text-white shadow-2xl">
-            <div>
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500 text-slate-950 text-xs font-black mb-3">
-                <Sun className="w-4 h-4" />
-                <span>10th Standalone Subsidiary • TOTAG Smart Energy Platform</span>
-              </div>
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight">
-                TOTAG <span className="text-amber-400">Smart Energy Platform</span>
-              </h1>
-              <p className="text-sm text-slate-300 font-semibold mt-1 max-w-3xl">
-                Solar EPC, Energy Management, Remote Monitoring & Lifecycle Services for UN Organizations, Health Facilities, Agribusiness Microgrids, Commercial Enterprises, and Residential Estates.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 text-center justify-center">
-                Full EPC Lifecycle + NOC Live
-              </Badge>
-              <div className="text-right p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <span className="text-slate-400 block font-bold">Monthly Diesel Avoided:</span>
-                <span className="text-xl font-black text-emerald-400">${monthlyDieselSavedUsd.toLocaleString()} USD ({monthlyDieselSavedLiters.toLocaleString()} L)</span>
-              </div>
-            </div>
-          </div>
+        {/* Standardized Photo Carousel Hero Section */}
+        <section className="mb-10">
+          <SubsidiaryHeroCarousel
+            badge="TOTAG Subsidiary • Solar EPC, Remote NOC & 18-Stage Lifecycle"
+            titleHighlight="Solar Energy & Smart Power"
+            subtitle="Turnkey solar PV EPC, lithium storage microgrids, automated BOQ costing, serialized inventory ledger, and 24/7 NOC remote monitoring telemetry."
+            slides={[
+              { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1600&h=800&fit=crop", caption: "Utility & Commercial Ground-Mounted Solar Array" },
+              { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1600&h=800&fit=crop", caption: "Lithium Energy Storage Bank & Hybrid Inverters" },
+              { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1600&h=800&fit=crop", caption: "TOTAG Smart Energy NOC Telemetry Control Center" }
+            ]}
+            stats={[
+              { label: "Installed Capacity", value: "18.5 MWp" },
+              { label: "Storage Deployed", value: "42 MWh" },
+              { label: "CO₂ Avoided", value: "14,200 Tons" }
+            ]}
+          />
         </section>
 
         {/* Full Operating Lifecycle Sequence Indicator */}

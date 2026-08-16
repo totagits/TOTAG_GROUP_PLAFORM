@@ -297,149 +297,26 @@ export default function ITServicesPortal() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-lg fixed w-full z-50">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link 
-                href="/" 
-                className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5" />
-                <span className="text-sm font-medium">Back to TOTAG Group</span>
-              </Link>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <div className="text-2xl font-bold text-blue-600">
-                TOTAG IT Services
-              </div>
-            </div>
-            
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <div className="relative group">
-                <button className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 font-medium">
-                  <span>Services</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-                <div className="absolute left-0 mt-2 w-80 bg-white shadow-xl rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                  <div className="p-4 space-y-2">
-                    {services.map((service) => (
-                      <button
-                        key={service.id}
-                        onClick={() => handleServiceClick(service)}
-                        className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <service.icon className={`h-5 w-5 ${service.colorClass.iconText}`} />
-                          <span className="text-sm font-medium text-gray-900">{service.title}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
-              <Button 
-                onClick={() => setShowContactDialog(true)}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                Get Quote
-              </Button>
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2"
-            >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-t border-gray-200"
-            >
-              <div className="px-4 py-4 space-y-3">
-                {services.map((service) => (
-                  <button
-                    key={service.id}
-                    onClick={() => {
-                      handleServiceClick(service);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <service.icon className={`h-5 w-5 ${service.colorClass.iconText}`} />
-                      <span className="text-sm font-medium text-gray-900">{service.title}</span>
-                    </div>
-                  </button>
-                ))}
-                <div className="pt-3 border-t border-gray-200">
-                  <Button 
-                    onClick={() => {
-                      setShowContactDialog(true);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full bg-blue-600 hover:bg-blue-700"
-                  >
-                    Get Quote
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
+      <Header />
 
       {/* Main Content */}
-      <main className="pt-16">
-        {/* Hero Section */}
-        <section 
-          className="relative text-white py-20 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `linear-gradient(rgba(13, 31, 99, 0.4), rgba(67, 56, 202, 0.4)), url(${techBgImage})`
-          }}
-        >
-          <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                TOTAG IT Services
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-                Empowering digital transformation with tailored IT solutions that drive innovation and growth
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={() => setShowContactDialog(true)}
-                  size="lg" 
-                  className="bg-white text-blue-600 hover:bg-gray-100"
-                >
-                  Get Started
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="border-white text-white hover:bg-white hover:text-blue-600"
-                >
-                  <a href="#services">Explore Services</a>
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+      <main className="pt-24 pb-20">
+        {/* Standardized Photo Carousel Hero Section */}
+        <SubsidiaryHeroCarousel
+          badge="TOTAG Subsidiary • Managed IT Services & 14 FIMS/HRMIS SaaS Modules"
+          titleHighlight="IT Services & SaaS Platform"
+          subtitle="Empowering digital transformation with 14 modular enterprise SaaS solutions ($35-$75/mo), custom software engineering, cybersecurity, and cloud infrastructure."
+          slides={[
+            { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&h=800&fit=crop", caption: "TOTAG Enterprise Data Center & Server Infrastructure" },
+            { url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1600&h=800&fit=crop", caption: "Custom Software Engineering & FIMS/HRMIS SaaS Development" },
+            { url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1600&h=800&fit=crop", caption: "24/7 Cybersecurity Operations & Telemetry Monitoring" }
+          ]}
+          stats={[
+            { label: "SaaS Modules", value: "14 Suite" },
+            { label: "Platform Uptime", value: "99.99%" },
+            { label: "Users Managed", value: "25,000+" }
+          ]}
+        />
 
         {/* Services Section */}
         <section id="services" className="py-20">

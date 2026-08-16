@@ -21,27 +21,32 @@ import {
   Activity,
   Calculator,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Ship,
+  TrendingUp,
+  Calendar,
+  DollarSign
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Live terminal depot tank telemetry data
+// Depot Storage Tank Records
 const DEPOT_TANKS = [
-  { id: "TANK-01", fuel: "AGO (Automotive Gas Oil / Diesel)", capacity: 500000, current: 412000, temp: "28.4°C", apiGravity: "34.2°", status: "Optimal", color: "from-amber-500 to-yellow-600" },
-  { id: "TANK-02", fuel: "PMS (Premium Motor Spirit / Gasoline)", capacity: 450000, current: 378000, temp: "27.1°C", apiGravity: "58.1°", status: "Optimal", color: "from-sky-500 to-blue-600" },
-  { id: "TANK-03", fuel: "Jet A-1 Aviation Fuel", capacity: 250000, current: 195000, temp: "25.8°C", apiGravity: "42.5°", status: "Optimal", color: "from-emerald-500 to-teal-600" },
-  { id: "TANK-04", fuel: "Marine Heavy Fuel Oil (Bunkering)", capacity: 600000, current: 490000, temp: "38.2°C", apiGravity: "18.4°", status: "Heating Active", color: "from-purple-500 to-indigo-600" },
+  { id: "TANK-01", fuel: "AGO (Automative Gas Oil / Diesel)", current: 412000, capacity: 500000, temp: "28.4°C", apiGravity: "34.2°", status: "Optimal", color: "from-amber-500 to-yellow-600" },
+  { id: "TANK-02", fuel: "PMS (Premium Motor Spirit / Gasoline)", current: 378000, capacity: 450000, temp: "27.1°C", apiGravity: "58.1°", status: "Optimal", color: "from-sky-500 to-blue-600" },
+  { id: "TANK-03", fuel: "Jet A-1 Aviation Fuel", current: 195000, capacity: 250000, temp: "25.8°C", apiGravity: "42.5°", status: "Optimal", color: "from-emerald-500 to-teal-600" },
+  { id: "TANK-04", fuel: "Marine Heavy Fuel Oil (Bunkering)", current: 490000, capacity: 600000, temp: "38.2°C", apiGravity: "18.4°", status: "Heating Active", color: "from-purple-500 to-indigo-600" }
 ];
 
 export default function PetroleumPage() {
   const { toast } = useToast();
 
-  // Bulk Fuel Order Form State
+  // Price Estimator State
   const [fuelType, setFuelType] = useState("AGO");
   const [quantityLiters, setQuantityLiters] = useState(10000);
+  const [deliveryType, setDeliveryType] = useState("tanker_dispatch");
   const [deliveryLocation, setDeliveryLocation] = useState("Monrovia Industrial Zone");
-  const [calculatedQuote, setCalculatedQuote] = useState<number | null>(12400);
 
+  // Bulk Order Form
   const [orderForm, setOrderForm] = useState({
     companyName: "",
     email: "",
@@ -50,13 +55,19 @@ export default function PetroleumPage() {
     notes: ""
   });
 
-  // Calculate instant fuel cost estimate
-  const handleCalculateFuelCost = (e: React.FormEvent) => {
-    e.preventDefault();
-    const ratePerLiter = fuelType === "AGO" ? 1.24 : fuelType === "PMS" ? 1.28 : fuelType === "JetA1" ? 1.42 : 1.15;
-    const total = quantityLiters * ratePerLiter;
-    setCalculatedQuote(total);
-    toast({ title: "Bulk Fuel Quote Calculated", description: `Estimated total: $${total.toLocaleString()} USD` });
+  const getPricePerLiter = () => {
+    switch (fuelType) {
+      case "PMS": return 1.28;
+      case "JetA1": return 1.42;
+      case "Bunkering": return 1.15;
+      default: return 1.24; // AGO
+    }
+  };
+
+  const calculateEstimate = () => {
+    const base = quantityLiters * getPricePerLiter();
+    const logisticsFee = deliveryType === "tanker_dispatch" ? 350 : deliveryType === "bunkering" ? 850 : 0;
+    return base + logisticsFee;
   };
 
   const handleOrderSubmit = (e: React.FormEvent) => {
@@ -73,22 +84,23 @@ export default function PetroleumPage() {
       <Header />
       
       <main className="pt-28 pb-20">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-badge-amber text-xs font-semibold">
-              <Fuel className="w-4 h-4 text-amber-500" />
-              <span>TOTAG Subsidiary • Bulk Fuel Distribution & Marine Bunkering</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-              TOTAG <span className="text-gradient-gold">Petroleum Services</span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Industrial bulk fuel distribution, high-capacity terminal tank depot storage, GPS-tracked tanker logistics, and offshore marine vessel bunkering across Liberia.
-            </p>
-          </div>
+        {/* Standardized Photo Carousel Hero Section */}
+        <section className="mb-12">
+          <SubsidiaryHeroCarousel
+            badge="TOTAG Subsidiary • Bulk Fuel Distribution & Marine Bunkering"
+            titleHighlight="Petroleum Services"
+            subtitle="Industrial bulk fuel distribution, high-capacity terminal tank depot storage, GPS-tracked tanker logistics, and offshore marine vessel bunkering across Liberia."
+            slides={[
+              { url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&h=800&fit=crop", caption: "TOTAG Central Fuel Terminal & Storage Tanks" },
+              { url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&h=800&fit=crop", caption: "Heavy AGO & PMS Bulk Tanker Delivery" },
+              { url: "https://images.unsplash.com/photo-1508873696983-2df515122519?w=1600&h=800&fit=crop", caption: "Offshore Bunkering & Marine Fuel Transshipment" }
+            ]}
+            stats={[
+              { label: "Depot Capacity", value: "15M Liters" },
+              { label: "Tanker Fleet", value: "45 Units" },
+              { label: "Delivery Reliability", value: "99.8%" }
+            ]}
+          />
         </section>
 
         {/* 1. Terminal Storage Depot Tank Level Telemetry Portal */}
