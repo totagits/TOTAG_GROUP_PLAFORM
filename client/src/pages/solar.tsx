@@ -257,10 +257,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1450,
     specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT (500V DC) • 1.3 DC/AC Ratio • IP65 Weatherproof",
@@ -278,10 +277,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1550,
     specs: "3.6-10 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • 6 Time Periods",
@@ -299,10 +297,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1850,
     specs: "7-10 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit Capable • Zero Export Control",
@@ -320,10 +317,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2150,
     specs: "7-12 kW Output • 48V LV Battery • 3 MPPT • Triple String Tracking • 200% Overload",
@@ -341,10 +337,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2250,
     specs: "7.6-12 kW Output • 48V Battery • 2/3 MPPT • Microgrid Frequency Control",
@@ -362,10 +357,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-2.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2950,
     specs: "12-18 kW High Power • 48V Battery • 3 MPPT • 250A Battery Charge/Discharge",
@@ -383,10 +377,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-3.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1150,
     specs: "3-6 kW Output • 48V Battery • 2 MPPT • Compact Light Weight Design",
@@ -404,10 +397,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-single-phase-lv-3.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1250,
     specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Smart Load & Generator Port",
@@ -425,10 +417,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-3.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1180,
     specs: "3-6 kW Output • 48V Battery • 1/2 MPPT • Low Noise Passive Cooling",
@@ -446,10 +437,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-single-phase-lv-3.png",
     photos: [
-      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-single-phase-lv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1220,
     specs: "3-6 kW Output • 48V Battery • 2 MPPT • CE & VDE Certified",
@@ -470,10 +460,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1980,
     specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • 100% Unbalanced Output • IP65 Weatherproof",
@@ -491,10 +480,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2050,
     specs: "3-8 kW Output • 48V LV Battery • 2 MPPT • Frequency Droop Control • Max 10pcs Parallel",
@@ -512,10 +500,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2650,
     specs: "3-12 kW Output • 48V LV Battery • 2 MPPT • AC Couple Retrofit • 6 Time Periods",
@@ -533,10 +520,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-lv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-lv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 3450,
     specs: "14-20 kW Output • 48V LV Battery • 2 MPPT • 350A Max Battery Charge/Discharge",
@@ -554,10 +540,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-lv-2.png",
     photos: [
-      { url: "/images/deye/deye-tp-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-lv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2550,
     specs: "5-12 kW Output • 48V LV Battery • 2 MPPT • IP65 Weatherproof • Modbus RS485",
@@ -577,10 +562,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2850,
     specs: "5-12 kW Output • 160V-800V High Voltage Battery • 2 MPPT • >97.6% Efficiency",
@@ -598,10 +582,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 3150,
     specs: "8-15 kW Output • 160V-800V HV Battery • 2 MPPT • UL1741 & IEEE 1547 Certified",
@@ -619,10 +602,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 3850,
     specs: "5-25 kW Output • HV Battery • 2 MPPT • 100% Unbalanced Load • 10 Units Parallel",
@@ -640,10 +622,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-1.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 4650,
     specs: "25-30 kW Output • HV Battery • 3 MPPT • Triple String Tracking • Smart Load Port",
@@ -661,10 +642,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-2.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 5950,
     specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • 100A Max Battery Charge • IP65",
@@ -682,10 +662,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-2.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 6250,
     specs: "29.9-50 kW Output • HV Battery • 3/4 MPPT • Next-Gen Power Module • Active Cooling",
@@ -703,10 +682,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-tp-hv-2.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 8950,
     specs: "60-80 kW Output • HV Battery • 6 MPPT • 6 Independent String Trackers • SCADA Ready",
@@ -724,10 +702,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-2.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 12850,
     specs: "100-125 kW Mega Power • HV Battery • 8/10 MPPT • 10 Independent String Trackers • Utility Microgrid",
@@ -745,10 +722,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-3.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 3950,
     specs: "15-25 kW Output • HV Battery • 3 MPPT • Compact Commercial Design",
@@ -766,10 +742,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: "NEW",
     image: "/images/deye/deye-tp-hv-3.png",
     photos: [
-      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-tp-hv-3.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2950,
     specs: "5-12 kW Output • HV Battery • 2 MPPT • Light Weight High Efficiency",
@@ -789,10 +764,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 1950,
     specs: "5-8 kW Output • 120/240V Split Phase • 48V Battery • 2 MPPT • UL1741 & IEEE 1547",
@@ -810,10 +784,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2850,
     specs: "8-15 kW High Output • 120/240V Split Phase • High Voltage HV Battery (160V-800V) • 2 MPPT",
@@ -831,10 +804,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2450,
     specs: "7.6-12 kW • 120/240V Split Phase • 48V LV Battery • 2/3 MPPT • 200A Pass Through",
@@ -852,10 +824,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-1.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-1.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2350,
     specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Rapid Shutdown Ready",
@@ -873,10 +844,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-2.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2550,
     specs: "5-12 kW • 120/240V Split Phase • 48V Battery • 2/3 MPPT • Color LCD Touch Screen",
@@ -894,10 +864,9 @@ const DEYE_CATALOGUE_ITEMS = [
     badge: null,
     image: "/images/deye/deye-split-phase-2.png",
     photos: [
-      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" },
-      { url: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1000&h=600&fit=crop", caption: "Front Casing: LCD Touch Screen Interface & Status LEDs" },
-      { url: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?w=1000&h=600&fit=crop", caption: "Bottom Connections: DC Isolator Switch & AC Wiring Glands" }
+      { url: "/images/deye/deye-split-phase-2.png", caption: "Deye OEM Product Lineup & Specification Render" }
     ],
+    
     
     priceUsd: 2650,
     specs: "4.95-8 kW • 4 MPPT • High Voltage HV Battery • Circular Status LED Gauge",
