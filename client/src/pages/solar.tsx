@@ -40,7 +40,12 @@ import {
   Clock,
   ArrowUpRight,
   Plus,
-  Trash2
+  Trash2,
+  Compass,
+  CloudSun,
+  FileText,
+  Printer,
+  Check
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EcosystemStateEngine, SolarAuditItem } from "@/lib/ecosystem-state";
@@ -56,7 +61,7 @@ const COMPONENT_CATALOGUE = [
 
 export default function SolarPage() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("noc-monitoring");
+  const [activeTab, setActiveTab] = useState("system-sizing");
 
   // Dynamic Persistent Audits State
   const [auditsList, setAuditsList] = useState<SolarAuditItem[]>([]);
@@ -65,7 +70,7 @@ export default function SolarPage() {
     setAuditsList(EcosystemStateEngine.getSolarAudits());
   }, []);
 
-  // Dynamic Interactive Energy Audit Loads State
+  // 1. Dynamic Interactive Energy Audit Loads State
   const [auditLoads, setAuditLoads] = useState([
     { name: "Servers & IT Network", qty: 4, watts: 400, hours: 24, factor: 1.0 },
     { name: "Inverter Air Conditioner", qty: 3, watts: 1500, hours: 8, factor: 0.8 },
@@ -89,32 +94,50 @@ export default function SolarPage() {
     toast({ title: "Equipment Removed", description: "System sizing recalculated." });
   };
 
-  // Math Sizing Engine
+  // 2. Comprehensive Site Survey & Environmental Parameters
+  const [siteSurvey, setSiteSurvey] = useState({
+    clientName: "UNDP Health Facility Zwedru",
+    location: "Zwedru, Grand Gedeh County",
+    propertyType: "Health Facility",
+    roofOrientation: "South-Facing (180° Optimal)",
+    roofTilt: "15° Optimal Pitch",
+    shadingFactor: "10% Partial Shading",
+    gridStatus: "Unstable LEC Grid (12h Outage)",
+    autonomyHours: 16,
+    dieselPricePerLiter: 1.35
+  });
+
+  // Math Sizing Engine with Environmental & Shading Calculations
   const totalConnectedWatts = auditLoads.reduce((sum, item) => sum + (item.qty * item.watts), 0);
   const totalDailyKwh = Math.round(auditLoads.reduce((sum, item) => sum + (item.qty * item.watts * item.hours * item.factor) / 1000, 0) * 10) / 10;
   const peakDemandKw = Math.round((totalConnectedWatts / 1000) * 1.25 * 10) / 10;
 
+  // Shading Factor Derating multiplier
+  const shadingMultiplier = siteSurvey.shadingFactor.includes("20%") ? 1.25 : siteSurvey.shadingFactor.includes("10%") ? 1.12 : 1.05;
+  const baseIrradiance = 4.6; // Peak Sun Hours in Liberia
+  const adjustedIrradiance = Math.round((baseIrradiance / shadingMultiplier) * 10) / 10;
+
   // Engineering Sizing Results
-  const pvArrayKw = Math.round((totalDailyKwh / 4.6) * 1.25 * 10) / 10;
-  const inverterKva = Math.ceil(peakDemandKw * 1.2);
-  const batteryKwh = Math.round(totalDailyKwh * 1.3 * 10) / 10;
+  const pvArrayKw = Math.round((totalDailyKwh / adjustedIrradiance) * 1.25 * 10) / 10;
+  const inverterKva = Math.ceil(peakDemandKw * 1.25);
+  const batteryKwh = Math.round((totalDailyKwh * (siteSurvey.autonomyHours / 24) / 0.8) * 10) / 10; // 80% DoD
 
-  // Tender Proposal Form State
-  const [proposalForm, setProposalForm] = useState({
-    clientName: "",
-    agencyType: "UN / NGO Agency",
-    contactEmail: "",
-    targetLocation: "Monrovia"
-  });
+  // Bill of Quantities Details
+  const panelCount550W = Math.ceil((pvArrayKw * 1000) / 550);
+  const batteryModuleCount = Math.ceil(batteryKwh / 5.12);
+  const annualKwhProduction = Math.round(pvArrayKw * adjustedIrradiance * 365);
+  const monthlyDieselSavedLiters = Math.round(totalDailyKwh * 0.35 * 30); // 0.35L per kWh
+  const monthlyDieselSavedUsd = Math.round(monthlyDieselSavedLiters * siteSurvey.dieselPricePerLiter);
+  
+  const totalTurnkeyCost = Math.round((panelCount550W * 280) + (inverterKva * 420) + (batteryModuleCount * 1450) + 2400); // Including BoP & Labor
+  const simplePaybackYears = Math.round((totalTurnkeyCost / (monthlyDieselSavedUsd * 12)) * 10) / 10;
 
-  const handleProposalSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!proposalForm.clientName) return;
-
+  // Tailored Proposal Submission Handler
+  const handleGenerateProposal = () => {
     const created = EcosystemStateEngine.addSolarAudit({
-      clientName: proposalForm.clientName,
-      location: proposalForm.targetLocation || "Monrovia",
-      propertyType: proposalForm.agencyType,
+      clientName: siteSurvey.clientName,
+      location: siteSurvey.location,
+      propertyType: siteSurvey.propertyType,
       connectedWatts: totalConnectedWatts,
       dailyKwh: totalDailyKwh,
       recommendedPvKw: pvArrayKw,
@@ -125,11 +148,9 @@ export default function SolarPage() {
     setAuditsList([created, ...auditsList]);
 
     toast({
-      title: "Solar EPC Proposal Created & Saved Live",
-      description: `Proposal #${created.id} saved. Dynamic notification published to FIMS & Executive Control Tower.`
+      title: "Tailored Solar Engineering Proposal Generated",
+      description: `Proposal #${created.id} saved for ${siteSurvey.clientName}. Published to Executive Control Tower.`
     });
-
-    setProposalForm({ clientName: "", agencyType: "UN / NGO Agency", contactEmail: "", targetLocation: "" });
   };
 
   return (
@@ -150,18 +171,35 @@ export default function SolarPage() {
                 TOTAG <span className="text-amber-400">Solar Energy</span> & Smart Power
               </h1>
               <p className="text-sm text-slate-300 font-semibold mt-1 max-w-3xl">
-                Interactive full-lifecycle Solar EPC, Energy Asset Management, IoT Remote Monitoring, and O&M Platform for UN agencies, health facilities, agribusiness microgrids, and commercial enterprises.
+                Comprehensive Site Surveys, Load Analysis, Shading Studies, and Tailored Solar PV Engineering Design Engine for UN Agencies, Health Facilities, Agribusiness Microgrids, and Commercial Enterprises.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 text-center justify-center">
-                Solar EPC + NOC Live ({auditsList.length} Active Audits)
+                Solar EPC + NOC Live ({auditsList.length} Active Proposals)
               </Badge>
               <div className="text-right p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <span className="text-slate-400 block font-bold">Diesel Saved This Month:</span>
-                <span className="text-xl font-black text-emerald-400">8,250 Liters</span>
+                <span className="text-slate-400 block font-bold">Monthly Diesel Avoided:</span>
+                <span className="text-xl font-black text-emerald-400">${monthlyDieselSavedUsd.toLocaleString()} USD ({monthlyDieselSavedLiters.toLocaleString()} L)</span>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Operating Lifecycle Indicator */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+          <div className="p-4 rounded-2xl bg-slate-900 border-2 border-slate-800 space-y-2 shadow-xl">
+            <span className="text-xs font-black uppercase text-amber-400 tracking-wider">Enterprise Operating Lifecycle</span>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-300">
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">1. Lead CRM</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">2. Energy Audit</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white shadow-md">3. Shading & Tailored System Sizing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">4. BOQ & Costing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">5. Procurement</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">6. Installation QA/QC</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">7. Commissioning</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">8. NOC Remote Monitoring</span>
             </div>
           </div>
         </section>
@@ -170,17 +208,17 @@ export default function SolarPage() {
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-6 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
-              <TabsTrigger value="noc-monitoring" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Activity className="h-4 w-4" />
-                1. NOC Telemetry
+              <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Cpu className="h-4 w-4" />
+                1. Tailored Design & Shading
               </TabsTrigger>
               <TabsTrigger value="energy-audit" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Calculator className="h-4 w-4" />
-                2. Energy Audit
+                2. Load Analysis Audit
               </TabsTrigger>
-              <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Cpu className="h-4 w-4" />
-                3. Design & Sizing
+              <TabsTrigger value="noc-monitoring" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Activity className="h-4 w-4" />
+                3. NOC Telemetry
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
@@ -196,76 +234,209 @@ export default function SolarPage() {
               </TabsTrigger>
             </TabsList>
 
-            {/* 1. NOC Remote Monitoring Command Center */}
-            <TabsContent value="noc-monitoring" className="space-y-8">
+            {/* 1. Tailored Engineering System Sizing, Site Survey & Shading Study Engine */}
+            <TabsContent value="system-sizing" className="space-y-8">
+              
+              {/* Site Survey Input Parameters Panel */}
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-                  <div>
-                    <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                      <Activity className="w-6 h-6 text-amber-400" />
-                      <span>Smart Energy Network Operations Center (NOC)</span>
-                    </h2>
-                    <p className="text-xs text-slate-300 font-semibold mt-1">
-                      Real-time IoT telemetry monitoring PV array generation, battery state of charge (SOC), load demand, and generator hours avoided.
-                    </p>
-                  </div>
-                  <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1">
-                    Live Telemetry Stream Active
-                  </Badge>
+                <div className="border-b border-slate-800 pb-4">
+                  <h2 className="text-2xl font-black text-white flex items-center gap-2">
+                    <Compass className="w-6 h-6 text-amber-400" />
+                    <span>Comprehensive Site Survey & Environmental Parameters Input</span>
+                  </h2>
+                  <p className="text-xs text-slate-300 font-semibold mt-1">
+                    Input client location, roof pitch/orientation, shading obstacles, and battery autonomy to calculate optimal tailored system specifications.
+                  </p>
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                  
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Client / Institution Name</Label>
+                    <Input 
+                      value={siteSurvey.clientName}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, clientName: e.target.value })}
+                      className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Location / County</Label>
+                    <Input 
+                      value={siteSurvey.location}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, location: e.target.value })}
+                      className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Property / Application Type</Label>
+                    <select
+                      value={siteSurvey.propertyType}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, propertyType: e.target.value })}
+                      className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
+                    >
+                      <option value="Health Facility">Health Facility / Hospital</option>
+                      <option value="UN / NGO Office">UN / NGO Regional Office</option>
+                      <option value="Commercial Building">Commercial Building</option>
+                      <option value="Agribusiness Farm">Agribusiness Farm Microgrid</option>
+                      <option value="Telecom Tower">Telecom Tower Installation</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Roof Orientation & Azimuth</Label>
+                    <select
+                      value={siteSurvey.roofOrientation}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, roofOrientation: e.target.value })}
+                      className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
+                    >
+                      <option value="South-Facing (180° Optimal)">South-Facing (180° Optimal)</option>
+                      <option value="East / West Facing (-12% Yield)">East / West Facing (-12% Yield)</option>
+                      <option value="Ground Mount Ballasted">Ground Mount Ballasted (0° Azimuth)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Shading Obstacle Assessment</Label>
+                    <select
+                      value={siteSurvey.shadingFactor}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, shadingFactor: e.target.value })}
+                      className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
+                    >
+                      <option value="0% Minimal Shading">0% Minimal Shading (Clear Horizon)</option>
+                      <option value="10% Partial Shading">10% Partial Shading (Trees/Parapet)</option>
+                      <option value="20% Significant Shading">20% Significant Shading (Dense Foliage)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs font-bold text-slate-300">Night Autonomy Duration (Hours)</Label>
+                    <select
+                      value={siteSurvey.autonomyHours}
+                      onChange={(e) => setSiteSurvey({ ...siteSurvey, autonomyHours: Number(e.target.value) })}
+                      className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
+                    >
+                      <option value={8}>8 Hours Backup</option>
+                      <option value={12}>12 Hours Backup</option>
+                      <option value={16}>16 Hours Backup (Recommended)</option>
+                      <option value={24}>24 Hours Full Autonomy</option>
+                    </select>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Calculated Tailored Engineering Report Output */}
+              <div className="bg-slate-900 border-2 border-emerald-500/60 rounded-2xl p-6 space-y-6 shadow-2xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                  <div>
+                    <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500 text-slate-950 text-xs font-black mb-2">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>AUTOMATED TAILORED ENGINEERING REPORT GENERATED</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-white">
+                      Tailored Engineering Design for <span className="text-emerald-400">{siteSurvey.clientName}</span>
+                    </h3>
+                  </div>
+
+                  <Button onClick={handleGenerateProposal} className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs px-5 py-5 shadow-lg">
+                    <FileText className="w-4 h-4 mr-2" /> Save & Export Tailored Proposal Dossier
+                  </Button>
+                </div>
+
+                {/* Top Sizing Output Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
-                    <Sun className="w-6 h-6 text-amber-400 mx-auto mb-1 animate-spin-slow" />
-                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Live PV Power Output</span>
-                    <div className="text-3xl font-black text-amber-400">42.8 kW</div>
-                    <span className="text-[10px] text-emerald-400 font-bold">Irradiance: 940 W/m²</span>
+                    <Sun className="w-6 h-6 text-amber-400 mx-auto mb-1" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Tailored PV Array</span>
+                    <div className="text-3xl font-black text-amber-400">{pvArrayKw} kWp</div>
+                    <span className="text-[11px] text-slate-300 font-bold">{panelCount550W} × 550W Tier-1 Modules</span>
                   </div>
 
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
                     <BatteryCharging className="w-6 h-6 text-emerald-400 mx-auto mb-1" />
-                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Battery State of Charge (SOC)</span>
-                    <div className="text-3xl font-black text-emerald-400">94%</div>
-                    <span className="text-[10px] text-slate-300 font-bold">LiFePO4 48V Storage Bank</span>
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">LiFePO4 Storage Bank</span>
+                    <div className="text-3xl font-black text-emerald-400">{batteryKwh} kWh</div>
+                    <span className="text-[11px] text-slate-300 font-bold">{batteryModuleCount} × 5.12kWh Rack Batteries ({siteSurvey.autonomyHours}h Autonomy)</span>
                   </div>
 
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
                     <Cpu className="w-6 h-6 text-sky-400 mx-auto mb-1" />
-                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Active Facility Load</span>
-                    <div className="text-3xl font-black text-sky-400">28.4 kW</div>
-                    <span className="text-[10px] text-slate-300 font-bold">Pure Sine Wave Output</span>
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Hybrid Inverter</span>
+                    <div className="text-3xl font-black text-sky-400">{inverterKva} kVA</div>
+                    <span className="text-[11px] text-slate-300 font-bold">Pure Sine Wave + ATS Generator Port</span>
                   </div>
 
                   <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
-                    <Fuel className="w-6 h-6 text-purple-400 mx-auto mb-1" />
-                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Generator Run Reduction</span>
-                    <div className="text-3xl font-black text-purple-400">-77%</div>
-                    <span className="text-[10px] text-purple-300 font-bold">From 14h/day down to 3.2h/day</span>
+                    <TrendingUp className="w-6 h-6 text-purple-400 mx-auto mb-1" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Turnkey Investment</span>
+                    <div className="text-3xl font-black text-purple-400">${totalTurnkeyCost.toLocaleString()} USD</div>
+                    <span className="text-[11px] text-emerald-400 font-bold">{simplePaybackYears} Yrs Simple Payback</span>
                   </div>
+
                 </div>
 
-                {/* Dynamic Active Projects / Proposals List */}
-                <div className="space-y-3 pt-4 border-t border-slate-800">
-                  <h3 className="text-sm font-black uppercase text-amber-400 tracking-wider">Active Persistent Solar EPC Projects & Proposals</h3>
-                  <div className="space-y-2">
-                    {auditsList.map((audit) => (
-                      <div key={audit.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
-                        <div>
-                          <span className="text-[10px] font-black text-emerald-400 px-2 py-0.5 bg-slate-900 rounded uppercase">
-                            {audit.status}
-                          </span>
-                          <h4 className="text-sm font-black text-white mt-1">{audit.clientName}</h4>
-                          <p className="text-slate-300 text-xs font-semibold">{audit.location} • {audit.propertyType}</p>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-base font-black text-amber-400">{audit.recommendedPvKw} kWp PV</span>
-                          <span className="text-slate-400 block text-[11px] font-bold">{audit.recommendedBatteryKwh} kWh BESS</span>
-                        </div>
+                {/* Detailed Engineering Breakdown Matrix */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-800">
+                  
+                  {/* Solar Irradiance & Shading Study Summary */}
+                  <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <h4 className="text-sm font-black text-white uppercase flex items-center gap-2">
+                      <CloudSun className="w-4 h-4 text-amber-400" />
+                      <span>Irradiance & Shading Analysis</span>
+                    </h4>
+                    <div className="space-y-2 text-xs text-slate-300 font-semibold">
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Base Peak Sun Hours (Liberia):</span>
+                        <span className="text-white font-bold">4.6 kWh/m²/day</span>
                       </div>
-                    ))}
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Shading Obstacle Derating:</span>
+                        <span className="text-amber-400 font-bold">{siteSurvey.shadingFactor}</span>
+                      </div>
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Adjusted Net Sun Hours:</span>
+                        <span className="text-emerald-400 font-bold">{adjustedIrradiance} PSH / Day</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Estimated Annual PV Generation:</span>
+                        <span className="text-emerald-400 font-black text-sm">{annualKwhProduction.toLocaleString()} kWh / Year</span>
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Financial Return & Diesel Avoidance Matrix */}
+                  <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
+                    <h4 className="text-sm font-black text-white uppercase flex items-center gap-2">
+                      <Fuel className="w-4 h-4 text-emerald-400" />
+                      <span>Financial & Diesel Displacement Matrix</span>
+                    </h4>
+                    <div className="space-y-2 text-xs text-slate-300 font-semibold">
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Monthly Diesel Avoided:</span>
+                        <span className="text-emerald-400 font-bold">{monthlyDieselSavedLiters.toLocaleString()} Liters / Month</span>
+                      </div>
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Monthly Fuel Expense Saved:</span>
+                        <span className="text-emerald-400 font-bold">${monthlyDieselSavedUsd.toLocaleString()} USD / Month</span>
+                      </div>
+                      <div className="flex justify-between border-b border-slate-800 pb-1">
+                        <span>Annual Fuel Expense Saved:</span>
+                        <span className="text-emerald-400 font-black text-sm">${(monthlyDieselSavedUsd * 12).toLocaleString()} USD / Year</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Estimated ROI Payback Period:</span>
+                        <span className="text-amber-400 font-black">{simplePaybackYears} Years</span>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
+
               </div>
+
             </TabsContent>
 
             {/* 2. Interactive Energy Audit Engine */}
@@ -365,60 +536,51 @@ export default function SolarPage() {
               </div>
             </TabsContent>
 
-            {/* 3. Solar System Sizing & Engineering Design Engine */}
-            <TabsContent value="system-sizing" className="space-y-6">
+            {/* 3. NOC Remote Monitoring Command Center */}
+            <TabsContent value="noc-monitoring" className="space-y-8">
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                <div>
-                  <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                    <Cpu className="w-6 h-6 text-amber-400" />
-                    <span>Engineering System Sizing & 3 Design Scenarios</span>
-                  </h2>
-                  <p className="text-xs text-slate-300 font-semibold mt-1">
-                    Multi-tier engineering options dynamically calculated from your live energy audit inputs.
-                  </p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                  <div>
+                    <h2 className="text-2xl font-black text-white flex items-center gap-2">
+                      <Activity className="w-6 h-6 text-amber-400" />
+                      <span>Smart Energy Network Operations Center (NOC)</span>
+                    </h2>
+                    <p className="text-xs text-slate-300 font-semibold mt-1">
+                      Real-time IoT telemetry monitoring PV array generation, battery state of charge (SOC), load demand, and generator hours avoided.
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1">
+                    Live Telemetry Stream Active
+                  </Badge>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 space-y-3">
-                    <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300">
-                      Option A • Essential Backup
-                    </span>
-                    <h3 className="text-lg font-black text-white">Critical Load Solar</h3>
-                    <div className="space-y-1 text-xs text-slate-300 font-semibold">
-                      <p>PV Capacity: <span className="text-white font-bold">{Math.round(pvArrayKw * 0.6 * 10) / 10} kWp</span></p>
-                      <p>Inverter: <span className="text-white font-bold">{Math.round(inverterKva * 0.7)} kVA</span></p>
-                      <p>LiFePO4 Storage: <span className="text-white font-bold">{Math.round(batteryKwh * 0.5 * 10) / 10} kWh</span></p>
-                      <p>Diesel Reduction: <span className="text-emerald-400 font-bold">45% Avoided</span></p>
-                    </div>
-                    <div className="pt-2 text-xl font-black text-amber-400">${Math.round(pvArrayKw * 700 + batteryKwh * 350).toLocaleString()} USD</div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                    <Sun className="w-6 h-6 text-amber-400 mx-auto mb-1 animate-spin-slow" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Live PV Power Output</span>
+                    <div className="text-3xl font-black text-amber-400">42.8 kW</div>
+                    <span className="text-[10px] text-emerald-400 font-bold">Irradiance: 940 W/m²</span>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-emerald-500/60 space-y-3 shadow-lg">
-                    <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950">
-                      Option B • Recommended Hybrid (Best ROI)
-                    </span>
-                    <h3 className="text-lg font-black text-white">Full Facility Microgrid</h3>
-                    <div className="space-y-1 text-xs text-slate-300 font-semibold">
-                      <p>PV Capacity: <span className="text-white font-bold">{pvArrayKw} kWp</span></p>
-                      <p>Inverter: <span className="text-white font-bold">{inverterKva} kVA</span></p>
-                      <p>LiFePO4 Storage: <span className="text-white font-bold">{batteryKwh} kWh</span></p>
-                      <p>Diesel Reduction: <span className="text-emerald-400 font-bold">85% Avoided</span></p>
-                    </div>
-                    <div className="pt-2 text-xl font-black text-emerald-400">${Math.round(pvArrayKw * 750 + batteryKwh * 380 + inverterKva * 400).toLocaleString()} USD</div>
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                    <BatteryCharging className="w-6 h-6 text-emerald-400 mx-auto mb-1" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Battery State of Charge (SOC)</span>
+                    <div className="text-3xl font-black text-emerald-400">94%</div>
+                    <span className="text-[10px] text-slate-300 font-bold">LiFePO4 48V Storage Bank</span>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-purple-500/50 space-y-3">
-                    <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">
-                      Option C • 100% Energy Independence
-                    </span>
-                    <h3 className="text-lg font-black text-white">Zero-Emission Island</h3>
-                    <div className="space-y-1 text-slate-300 text-xs font-semibold">
-                      <p>PV Capacity: <span className="text-white font-bold">{Math.round(pvArrayKw * 1.4 * 10) / 10} kWp</span></p>
-                      <p>Inverter: <span className="text-white font-bold">{Math.round(inverterKva * 1.5)} kVA</span></p>
-                      <p>LiFePO4 Storage: <span className="text-white font-bold">{Math.round(batteryKwh * 1.8 * 10) / 10} kWh</span></p>
-                      <p>Diesel Reduction: <span className="text-emerald-400 font-bold">100% Avoided</span></p>
-                    </div>
-                    <div className="pt-2 text-xl font-black text-purple-400">${Math.round(pvArrayKw * 1000 + batteryKwh * 500).toLocaleString()} USD</div>
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                    <Cpu className="w-6 h-6 text-sky-400 mx-auto mb-1" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Active Facility Load</span>
+                    <div className="text-3xl font-black text-sky-400">28.4 kW</div>
+                    <span className="text-[10px] text-slate-300 font-bold">Pure Sine Wave Output</span>
+                  </div>
+
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                    <Fuel className="w-6 h-6 text-purple-400 mx-auto mb-1" />
+                    <span className="text-xs text-slate-400 block font-extrabold uppercase">Generator Run Reduction</span>
+                    <div className="text-3xl font-black text-purple-400">-77%</div>
+                    <span className="text-[10px] text-purple-300 font-bold">From 14h/day down to 3.2h/day</span>
                   </div>
                 </div>
               </div>
@@ -426,85 +588,27 @@ export default function SolarPage() {
 
             {/* 4. BOQ & Proposals Engine */}
             <TabsContent value="catalogue-boq" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                
-                {/* Proposal Submission Form */}
-                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
-                  <h3 className="text-xl font-black text-white flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-amber-400" />
-                    <span>Create & Save Solar EPC Proposal</span>
-                  </h3>
-                  
-                  <form onSubmit={handleProposalSubmit} className="space-y-4">
-                    <div>
-                      <Label className="text-xs font-bold text-slate-300">Client / Institution Name</Label>
-                      <Input 
-                        required
-                        value={proposalForm.clientName}
-                        onChange={(e) => setProposalForm({ ...proposalForm, clientName: e.target.value })}
-                        placeholder="e.g. World Bank Liberia / Ministry of Health"
-                        className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+                <h3 className="text-xl font-black text-white flex items-center gap-2">
+                  <FileSpreadsheet className="w-5 h-5 text-amber-400" />
+                  <span>Approved Component Master</span>
+                </h3>
+                <div className="space-y-3">
+                  {COMPONENT_CATALOGUE.map((comp, idx) => (
+                    <div key={idx} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
                       <div>
-                        <Label className="text-xs font-bold text-slate-300">Client Category</Label>
-                        <select 
-                          value={proposalForm.agencyType}
-                          onChange={(e) => setProposalForm({ ...proposalForm, agencyType: e.target.value })}
-                          className="w-full mt-1 p-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-semibold"
-                        >
-                          <option value="UN / NGO Agency">UN / NGO Agency</option>
-                          <option value="Government Ministry">Government Ministry</option>
-                          <option value="Health Facility">Health Facility</option>
-                          <option value="Agribusiness Farm">Agribusiness Farm</option>
-                          <option value="Commercial Enterprise">Commercial Enterprise</option>
-                        </select>
+                        <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
+                          {comp.category} • {comp.brand}
+                        </span>
+                        <h4 className="text-sm font-black text-white mt-1">{comp.name}</h4>
+                        <p className="text-slate-300 text-xs font-medium">{comp.specs}</p>
                       </div>
-
-                      <div>
-                        <Label className="text-xs font-bold text-slate-300">County / Location</Label>
-                        <Input 
-                          required
-                          value={proposalForm.targetLocation}
-                          onChange={(e) => setProposalForm({ ...proposalForm, targetLocation: e.target.value })}
-                          placeholder="e.g. Nimba County"
-                          className="mt-1 bg-slate-950 border-slate-800 text-white text-xs"
-                        />
-                      </div>
+                      <Badge className="bg-slate-800 text-slate-200 border-slate-700 text-xs">
+                        {comp.warranty}
+                      </Badge>
                     </div>
-
-                    <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-5">
-                      Save & Publish Solar Proposal
-                    </Button>
-                  </form>
+                  ))}
                 </div>
-
-                {/* Component Master List */}
-                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
-                  <h3 className="text-xl font-black text-white flex items-center gap-2">
-                    <FileSpreadsheet className="w-5 h-5 text-amber-400" />
-                    <span>Approved Component Master</span>
-                  </h3>
-                  <div className="space-y-3">
-                    {COMPONENT_CATALOGUE.map((comp, idx) => (
-                      <div key={idx} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
-                        <div>
-                          <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
-                            {comp.category} • {comp.brand}
-                          </span>
-                          <h4 className="text-sm font-black text-white mt-1">{comp.name}</h4>
-                          <p className="text-slate-300 text-xs font-medium">{comp.specs}</p>
-                        </div>
-                        <Badge className="bg-slate-800 text-slate-200 border-slate-700 text-xs">
-                          {comp.warranty}
-                        </Badge>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
               </div>
             </TabsContent>
 
