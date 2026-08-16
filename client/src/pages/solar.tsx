@@ -346,8 +346,8 @@ export default function SolarPage() {
                         {leadsList.length} Active Leads & RFQs
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Solar CRM, Leads & Opportunity Pipeline</h2>
-                    <p className="text-slate-400 text-xs mt-1">This is where every opportunity begins — Managing residential, commercial, government, UN, NGO, and RFQ tenders.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar CRM, Leads & Opportunity Pipeline</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">This is where every opportunity begins — Managing residential, commercial, government, UN, NGO, and RFQ tenders.</p>
                   </div>
 
                   <Button 
@@ -452,7 +452,7 @@ export default function SolarPage() {
                           .map((lead) => (
                             <tr key={lead.id || Math.random()} className="hover:bg-slate-800/50">
                               <td className="p-3">
-                                <div className="font-black text-white">{lead.customerName || "Unnamed Client"}</div>
+                                <div className="font-black text-slate-900 dark:text-white">{lead.customerName || "Unnamed Client"}</div>
                                 <div className="text-[11px] text-slate-400">{lead.contactPerson} ({lead.phoneEmail})</div>
                               </td>
                               <td className="p-3">
@@ -480,7 +480,7 @@ export default function SolarPage() {
                                     setLeadsList(EcosystemStateEngine.getSolarLeads());
                                     toast({ title: "Stage Updated", description: `${lead.customerName} moved to ${e.target.value}` });
                                   }}
-                                  className="bg-slate-950 border border-slate-700 text-amber-400 rounded p-1 text-[11px] font-bold"
+                                  className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-amber-400 font-medium rounded p-1 text-[11px] font-bold"
                                 >
                                   <option value="New Lead">New Lead</option>
                                   <option value="Qualified">Qualified</option>
@@ -502,10 +502,10 @@ export default function SolarPage() {
                 {/* Interactive New Solar Lead Capture Form Modal */}
                 {showNewLeadModal && (
                   <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+                    <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
                       <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                         <div>
-                          <h3 className="text-xl font-black text-white">Create New Solar EPC Lead / Opportunity</h3>
+                          <h3 className="text-xl font-black text-slate-900 dark:text-white">Create New Solar EPC Lead / Opportunity</h3>
                           <p className="text-xs text-slate-400">Capture comprehensive customer profile, GIS coordinates, electrical baseline, and budget.</p>
                         </div>
                         <button onClick={() => setShowNewLeadModal(false)} className="text-slate-400 hover:text-white font-bold">✕</button>
@@ -513,11 +513,11 @@ export default function SolarPage() {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
                         <div>
-                          <Label className="text-slate-300">Customer / Institution Name *</Label>
-                          <Input value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. UNDP Liberia / Monrovia Plaza" />
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Customer / Institution Name *</Label>
+                          <Input value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" placeholder="e.g. UNDP Liberia / Monrovia Plaza" />
                         </div>
                         <div>
-                          <Label className="text-slate-300">Customer Category *</Label>
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Customer Category *</Label>
                           <select value={newLead.customerCategory} onChange={(e) => setNewLead({ ...newLead, customerCategory: e.target.value as SolarLeadItem["customerCategory"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="Individual Residential">Individual Residential</option>
                             <option value="Commercial Client">Commercial Client</option>
@@ -536,29 +536,29 @@ export default function SolarPage() {
                         </div>
 
                         <div>
-                          <Label className="text-slate-300">Contact Person Name</Label>
-                          <Input value={newLead.contactPerson} onChange={(e) => setNewLead({ ...newLead, contactPerson: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. Mr. Joseph Sirleaf" />
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Contact Person Name</Label>
+                          <Input value={newLead.contactPerson} onChange={(e) => setNewLead({ ...newLead, contactPerson: e.target.value })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" placeholder="e.g. Mr. Joseph Sirleaf" />
                         </div>
                         <div>
-                          <Label className="text-slate-300">Phone / Email Contact</Label>
-                          <Input value={newLead.phoneEmail} onChange={(e) => setNewLead({ ...newLead, phoneEmail: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="+231 770 000 000 / email@domain.com" />
-                        </div>
-
-                        <div>
-                          <Label className="text-slate-300">County & District</Label>
-                          <Input value={`${newLead.county}, ${newLead.district}`} onChange={(e) => setNewLead({ ...newLead, county: e.target.value.split(',')[0] || 'Montserrado' })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. Montserrado, Monrovia" />
-                        </div>
-                        <div>
-                          <Label className="text-slate-300">GPS Coordinates</Label>
-                          <Input value={newLead.gpsCoords} onChange={(e) => setNewLead({ ...newLead, gpsCoords: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="6.3150° N, 10.8072° W" />
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Phone / Email Contact</Label>
+                          <Input value={newLead.phoneEmail} onChange={(e) => setNewLead({ ...newLead, phoneEmail: e.target.value })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" placeholder="+231 770 000 000 / email@domain.com" />
                         </div>
 
                         <div>
-                          <Label className="text-slate-300">Estimated Peak Load (kW)</Label>
-                          <Input type="number" value={newLead.estimatedLoadKw} onChange={(e) => setNewLead({ ...newLead, estimatedLoadKw: parseFloat(e.target.value) || 10 })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" />
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">County & District</Label>
+                          <Input value={`${newLead.county}, ${newLead.district}`} onChange={(e) => setNewLead({ ...newLead, county: e.target.value.split(',')[0] || 'Montserrado' })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" placeholder="e.g. Montserrado, Monrovia" />
                         </div>
                         <div>
-                          <Label className="text-slate-300">Existing Electricity Source</Label>
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">GPS Coordinates</Label>
+                          <Input value={newLead.gpsCoords} onChange={(e) => setNewLead({ ...newLead, gpsCoords: e.target.value })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" placeholder="6.3150° N, 10.8072° W" />
+                        </div>
+
+                        <div>
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Estimated Peak Load (kW)</Label>
+                          <Input type="number" value={newLead.estimatedLoadKw} onChange={(e) => setNewLead({ ...newLead, estimatedLoadKw: parseFloat(e.target.value) || 10 })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" />
+                        </div>
+                        <div>
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Existing Electricity Source</Label>
                           <select value={newLead.electricitySource} onChange={(e) => setNewLead({ ...newLead, electricitySource: e.target.value as SolarLeadItem["electricitySource"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="LEC Grid Only">LEC Grid Only</option>
                             <option value="Diesel Generator Only">Diesel Generator Only</option>
@@ -568,7 +568,7 @@ export default function SolarPage() {
                         </div>
 
                         <div>
-                          <Label className="text-slate-300">Procurement Method</Label>
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Procurement Method</Label>
                           <select value={newLead.procurementMethod} onChange={(e) => setNewLead({ ...newLead, procurementMethod: e.target.value as SolarLeadItem["procurementMethod"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="Direct Purchase">Direct Purchase</option>
                             <option value="Tender / RFQ">Tender / RFQ</option>
@@ -577,8 +577,8 @@ export default function SolarPage() {
                           </select>
                         </div>
                         <div>
-                          <Label className="text-slate-300">Estimated Project Value ($ USD)</Label>
-                          <Input type="number" value={newLead.estimatedValueUsd} onChange={(e) => setNewLead({ ...newLead, estimatedValueUsd: parseFloat(e.target.value) || 10000 })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" />
+                          <Label className="text-slate-700 dark:text-slate-300 font-semibold">Estimated Project Value ($ USD)</Label>
+                          <Input type="number" value={newLead.estimatedValueUsd} onChange={(e) => setNewLead({ ...newLead, estimatedValueUsd: parseFloat(e.target.value) || 10000 })} className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" />
                         </div>
                       </div>
 
@@ -624,8 +624,8 @@ export default function SolarPage() {
                       Mobile & Tablet Optimized
                     </span>
                   </div>
-                  <h2 className="text-2xl font-black text-white">Solar Site Assessment & Granular Energy Audit</h2>
-                  <p className="text-slate-400 text-xs mt-1">Technicians perform on-site audits to inspect structural capacity, shading horizon, electrical MDB, earthing, and itemized load consumption.</p>
+                  <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar Site Assessment & Granular Energy Audit</h2>
+                  <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Technicians perform on-site audits to inspect structural capacity, shading horizon, electrical MDB, earthing, and itemized load consumption.</p>
                 </div>
 
                 {/* 12 Field Inspection Tools Grid */}
@@ -693,7 +693,7 @@ export default function SolarPage() {
                         <Calculator className="w-5 h-5 text-amber-400" />
                         <span>Granular Itemized Load Audit Engine</span>
                       </h3>
-                      <p className="text-slate-400 text-xs mt-0.5">Every equipment item is entered separately to compute actual Peak Demand (kW), Daily kWh, and Autonomy Battery Storage.</p>
+                      <p className="text-slate-600 dark:text-slate-300 text-xs mt-0.5">Every equipment item is entered separately to compute actual Peak Demand (kW), Daily kWh, and Autonomy Battery Storage.</p>
                     </div>
 
                     <div className="flex items-center space-x-2 text-xs font-bold text-slate-300">
@@ -709,19 +709,19 @@ export default function SolarPage() {
                   {/* Add Equipment Form */}
                   <form onSubmit={handleAddLoad} className="bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-white/10 grid grid-cols-1 sm:grid-cols-5 gap-3 items-end text-xs font-semibold">
                     <div>
-                      <Label className="text-slate-300">Equipment Name</Label>
+                      <Label className="text-slate-700 dark:text-slate-300 font-semibold">Equipment Name</Label>
                       <Input value={newLoad.name} onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} placeholder="e.g. Cold Storage Freezer" className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
-                      <Label className="text-slate-300">Quantity</Label>
+                      <Label className="text-slate-700 dark:text-slate-300 font-semibold">Quantity</Label>
                       <Input type="number" min="1" value={newLoad.qty} onChange={(e) => setNewLoad({ ...newLead, qty: parseInt(e.target.value) || 1 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
-                      <Label className="text-slate-300">Rated Watts (W)</Label>
+                      <Label className="text-slate-700 dark:text-slate-300 font-semibold">Rated Watts (W)</Label>
                       <Input type="number" min="1" value={newLoad.watts} onChange={(e) => setNewLoad({ ...newLoad, watts: parseInt(e.target.value) || 100 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
-                      <Label className="text-slate-300">Operating Hours/Day</Label>
+                      <Label className="text-slate-700 dark:text-slate-300 font-semibold">Operating Hours/Day</Label>
                       <Input type="number" min="1" max="24" value={newLoad.hours} onChange={(e) => setNewLoad({ ...newLoad, hours: parseInt(e.target.value) || 8 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <Button type="submit" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black">
@@ -819,8 +819,8 @@ export default function SolarPage() {
                         ● NOC TELEMETRY ONLINE
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Client Asset Monitoring & Solar Control Center</h2>
-                    <p className="text-slate-400 text-xs mt-1">Real-time solar PV generation, LiFePO4 battery SoC, diesel cost savings, and on-demand site survey request engine.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Client Asset Monitoring & Solar Control Center</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Real-time solar PV generation, LiFePO4 battery SoC, diesel cost savings, and on-demand site survey request engine.</p>
                   </div>
 
                   {/* Customer Account Switcher */}
@@ -939,7 +939,7 @@ export default function SolarPage() {
                       <Calculator className="w-5 h-5 text-amber-400" />
                       <span>Request Comprehensive Site Survey & Engineering Quote</span>
                     </h3>
-                    <p className="text-xs text-slate-400 mt-1">Submit your facility energy profile. TOTAG Solar Engineers perform shading analysis and deliver tailored system sizing.</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">Submit your facility energy profile. TOTAG Solar Engineers perform shading analysis and deliver tailored system sizing.</p>
                   </div>
 
                   <div className="space-y-4 text-xs font-semibold text-slate-300">
@@ -948,7 +948,7 @@ export default function SolarPage() {
                       <Input 
                         value={custSurveyForm.name}
                         onChange={(e) => setCustSurveyForm({ ...custSurveyForm, name: e.target.value })}
-                        className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                        className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                       />
                     </div>
 
@@ -959,7 +959,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.peakLoad}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, peakLoad: e.target.value })}
-                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                          className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                         />
                       </div>
                       <div>
@@ -968,7 +968,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.nightLoad}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, nightLoad: e.target.value })}
-                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                          className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                         />
                       </div>
                     </div>
@@ -980,7 +980,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.autonomyHours}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, autonomyHours: e.target.value })}
-                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                          className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                         />
                       </div>
                       <div>
@@ -988,7 +988,7 @@ export default function SolarPage() {
                         <Input 
                           value={custSurveyForm.contact}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, contact: e.target.value })}
-                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                          className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                         />
                       </div>
                     </div>
@@ -998,7 +998,7 @@ export default function SolarPage() {
                       <Input 
                         value={custSurveyForm.roofType}
                         onChange={(e) => setCustSurveyForm({ ...custSurveyForm, roofType: e.target.value })}
-                        className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
+                        className="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white mt-1 font-medium" 
                       />
                     </div>
 
@@ -1034,7 +1034,7 @@ export default function SolarPage() {
                         <TrendingUp className="w-5 h-5 text-emerald-400" />
                         <span>Instant Sizing Preview & Financial ROI</span>
                       </h3>
-                      <p className="text-xs text-slate-400 mt-1">Real-timeLiberian solar radiance model (4.6 PSH/day) calculated for your requested energy profile.</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">Real-timeLiberian solar radiance model (4.6 PSH/day) calculated for your requested energy profile.</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-6">
@@ -1124,8 +1124,8 @@ export default function SolarPage() {
                         Multi-Scenario Consultative Generator
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Solar System Sizing & Multi-Scenario Engineering Design</h2>
-                    <p className="text-slate-400 text-xs mt-1">Determines optimal PV array, hybrid inverter, LiFePO4 battery storage, DC/AC protection, cables, earthing, and ATS generator integration.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar System Sizing & Multi-Scenario Engineering Design</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Determines optimal PV array, hybrid inverter, LiFePO4 battery storage, DC/AC protection, cables, earthing, and ATS generator integration.</p>
                   </div>
                 </div>
 
@@ -1256,7 +1256,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <p className="text-xs text-slate-300">Optimal balance of solar PV generation, 16-hour LiFePO4 battery autonomy, and auto-genset start integration.</p>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Optimal balance of solar PV generation, 16-hour LiFePO4 battery autonomy, and auto-genset start integration.</p>
 
                       <div className="space-y-2 text-xs font-semibold text-slate-300">
                         <div className="flex justify-between border-b border-slate-900 pb-1">
@@ -1383,17 +1383,17 @@ export default function SolarPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
                     <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-amber-400 font-bold block">1. PV Array & String Config</span>
-                      <p className="text-slate-300">60x Tier-1 Mono PERC 550W Panels. 4 Strings of 15 Modules (Voc: 747V DC, Vmp: 628V DC). Compliant with MPPT 1000V DC input ceiling.</p>
+                      <p className="text-slate-700 dark:text-slate-300 font-semibold">60x Tier-1 Mono PERC 550W Panels. 4 Strings of 15 Modules (Voc: 747V DC, Vmp: 628V DC). Compliant with MPPT 1000V DC input ceiling.</p>
                     </div>
 
                     <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-emerald-400 font-bold block">2. Inverter & Protection</span>
-                      <p className="text-slate-300">30 kVA Deye Three-Phase Hybrid Inverter (IP65 Outdoor). DC 1000V 32A Rotary Isolator, DC 15A Fuses, Type II DC & AC SPDs, 4-Pole 250A ATS.</p>
+                      <p className="text-slate-700 dark:text-slate-300 font-semibold">30 kVA Deye Three-Phase Hybrid Inverter (IP65 Outdoor). DC 1000V 32A Rotary Isolator, DC 15A Fuses, Type II DC & AC SPDs, 4-Pole 250A ATS.</p>
                     </div>
 
                     <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-purple-400 font-bold block">3. Battery Bank & Cabling</span>
-                      <p className="text-slate-300">15x LiFePO4 5.12kWh 48V Rack Modules (76.8 kWh total, Smart CANbus BMS). DC Cable: 10mm² UV-Resistant. AC Cable: 4-Core 35mm² XLPE Armored Copper. Earthing: &lt;3.2 Ω rod.</p>
+                      <p className="text-slate-700 dark:text-slate-300 font-semibold">15x LiFePO4 5.12kWh 48V Rack Modules (76.8 kWh total, Smart CANbus BMS). DC Cable: 10mm² UV-Resistant. AC Cable: 4-Core 35mm² XLPE Armored Copper. Earthing: &lt;3.2 Ω rod.</p>
                     </div>
                   </div>
                 </div>
@@ -1416,8 +1416,8 @@ export default function SolarPage() {
                         UNICEF, UNDP, CRS & UNFPA Compliant
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">TOTAG Approved Component & Technical Specification Catalogue</h2>
-                    <p className="text-slate-400 text-xs mt-1">Pre-approved technical specifications for PV modules, inverters, LiFePO4 batteries, switchgear, ATS, and SPDs — eliminating repetitive spec creation for proposals.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">TOTAG Approved Component & Technical Specification Catalogue</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Pre-approved technical specifications for PV modules, inverters, LiFePO4 batteries, switchgear, ATS, and SPDs — eliminating repetitive spec creation for proposals.</p>
                   </div>
                 </div>
 
@@ -1530,7 +1530,7 @@ export default function SolarPage() {
                     <div className="space-y-2 text-xs font-semibold text-slate-300">
                       <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
-                          <div className="font-bold text-white">4-String IP65 DC Combiner Box w/ SPDs & Fuses</div>
+                          <div className="font-bold text-slate-900 dark:text-white">4-String IP65 DC Combiner Box w/ SPDs & Fuses</div>
                           <div className="text-[10px] text-slate-400">1000V DC • 15A Fuses • Type II DC Surge Arrestor • ABB Switchgear</div>
                         </div>
                         <span className="text-amber-400 font-black">$240 USD</span>
@@ -1538,7 +1538,7 @@ export default function SolarPage() {
 
                       <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
-                          <div className="font-bold text-white">4-Pole 250A Automatic Transfer Switch (ATS)</div>
+                          <div className="font-bold text-slate-900 dark:text-white">4-Pole 250A Automatic Transfer Switch (ATS)</div>
                           <div className="text-[10px] text-slate-400">Dual Utility/Genset Transfer • Auto Dry Contacts • Schneider Electric</div>
                         </div>
                         <span className="text-amber-400 font-black">$480 USD</span>
@@ -1546,7 +1546,7 @@ export default function SolarPage() {
 
                       <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
-                          <div className="font-bold text-white">Solar DC Cable 10mm² UV-Resistant (100m Roll)</div>
+                          <div className="font-bold text-slate-900 dark:text-white">Solar DC Cable 10mm² UV-Resistant (100m Roll)</div>
                           <div className="text-[10px] text-slate-400">Double Insulated Tinned Copper • 1500V DC Rated • TÜV Approved</div>
                         </div>
                         <span className="text-amber-400 font-black">$165 USD</span>
@@ -1575,8 +1575,8 @@ export default function SolarPage() {
                         Landed Cost & Margin Analysis
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Automated Bill of Quantities (BOQ) & Tender Costing Engine</h2>
-                    <p className="text-slate-400 text-xs mt-1">Calculates equipment FOB cost, freight, insurance, customs clearing, inland transport, site labor, overhead, contingency, and gross margin.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Automated Bill of Quantities (BOQ) & Tender Costing Engine</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Calculates equipment FOB cost, freight, insurance, customs clearing, inland transport, site labor, overhead, contingency, and gross margin.</p>
                   </div>
 
                   <Button onClick={() => alert("✅ Tender BOQ Dossier Generated!\n\nExported complete itemized bill of quantities with landed logistics costing for client commercial submission.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
@@ -1588,7 +1588,7 @@ export default function SolarPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                   <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">1. EQUIPMENT FOB COST</span>
-                    <div className="text-xl font-black text-white">$38,400 USD</div>
+                    <div className="text-xl font-black text-slate-900 dark:text-white">$38,400 USD</div>
                     <span className="text-[10px] text-slate-500 font-medium">Base Supplier Invoices</span>
                   </div>
 
@@ -1776,8 +1776,8 @@ export default function SolarPage() {
                         Automated Requisitions & Serial Intake
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Solar Procurement, Shipping & Manufacturer Partnership Registry</h2>
-                    <p className="text-slate-400 text-xs mt-1">Triggers auto-requisitions for won projects, tracks PO status, captures serial numbers upon warehouse receipt, and manages official OEM dealer authorizations.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar Procurement, Shipping & Manufacturer Partnership Registry</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Triggers auto-requisitions for won projects, tracks PO status, captures serial numbers upon warehouse receipt, and manages official OEM dealer authorizations.</p>
                   </div>
                 </div>
 
@@ -1819,7 +1819,7 @@ export default function SolarPage() {
                           <Badge className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">PO #PO-DEYE-9921</Badge>
                           <span className="text-white font-black">Monrovia Hospital 30kVA Solar Hybrid Microgrid</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-1">Supplier: Deye Energy • 1x 30kW Hybrid Inverter • Container #MSCU-881920</p>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Supplier: Deye Energy • 1x 30kW Hybrid Inverter • Container #MSCU-881920</p>
                         <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Tracking: MSCU7719203 | Status: Customs Clearance @ Freeport of Monrovia</div>
                       </div>
                       <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 self-start md:self-center">Customs Clearance</Badge>
@@ -1831,7 +1831,7 @@ export default function SolarPage() {
                           <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">PO #PO-JK-8824</Badge>
                           <span className="text-white font-black">UNICEF Regional Office Solar Backup System</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-1">Supplier: Jinko Solar • 60x 550W Mono PERC Modules • Serial Intake Complete</p>
+                        <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1">Supplier: Jinko Solar • 60x 550W Mono PERC Modules • Serial Intake Complete</p>
                         <div className="text-[10px] text-emerald-400 font-mono mt-0.5">Serials: JK-550W-2026-98124 through JK-550W-2026-98184 (Inspected & Verified)</div>
                       </div>
                       <Badge className="bg-sky-500 text-slate-950 font-black text-xs px-3 py-1 self-start md:self-center">Warehouse Intake Complete</Badge>
@@ -2010,8 +2010,8 @@ export default function SolarPage() {
                         100% Component Traceability
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Solar Warehouse & Serialized Asset Lifecycle Management</h2>
-                    <p className="text-slate-400 text-xs mt-1">Tracks serial numbers, supplier POs, warehouse locations, project site allocations, installation dates, and manufacturer warranties for inverters, batteries, smart meters, and gateways.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar Warehouse & Serialized Asset Lifecycle Management</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Tracks serial numbers, supplier POs, warehouse locations, project site allocations, installation dates, and manufacturer warranties for inverters, batteries, smart meters, and gateways.</p>
                   </div>
 
                   <Button onClick={() => alert("✅ Serialized Asset Recorded!\n\nCaptured new serial barcode into TOTAG Master Asset Registry.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
@@ -2023,7 +2023,7 @@ export default function SolarPage() {
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs font-semibold">
                   <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">TOTAL SERIALIZED ASSETS</span>
-                    <div className="text-2xl font-black text-white">148 Units</div>
+                    <div className="text-2xl font-black text-slate-900 dark:text-white">148 Units</div>
                     <span className="text-slate-500 block text-[10px]">Inverters, Batteries, Gateways</span>
                   </div>
 
@@ -2180,8 +2180,8 @@ export default function SolarPage() {
                         15-Stage Verified Installation Pipeline
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-white">Solar Project Execution & 15-Stage Evidence Installation Workflow</h2>
-                    <p className="text-slate-400 text-xs mt-1">Monitors turnkey project budgets, actual costs, team assignments, risk status, and enforces evidence verification for each installation stage from Mobilization to Commissioning.</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar Project Execution & 15-Stage Evidence Installation Workflow</h2>
+                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Monitors turnkey project budgets, actual costs, team assignments, risk status, and enforces evidence verification for each installation stage from Mobilization to Commissioning.</p>
                   </div>
 
                   <Button onClick={() => alert("✅ New Solar EPC Project Created!\n\nInitialized 15-Stage Installation Workflow Tracker for project team.")} className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-5 py-5 shadow-lg">
@@ -2360,7 +2360,7 @@ export default function SolarPage() {
                         <span>13. Site QA Inspection</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
                       </div>
-                      <p className="text-slate-400 text-[11px]">Comprehensive 50-point electrical safety audit.</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px]">Comprehensive 50-point electrical safety audit.</p>
                     </div>
 
                     <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1 opacity-70">
@@ -2368,7 +2368,7 @@ export default function SolarPage() {
                         <span>14. Pre-Commission Test</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
                       </div>
-                      <p className="text-slate-400 text-[11px]">24-Hour full-load endurance simulation.</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px]">24-Hour full-load endurance simulation.</p>
                     </div>
 
                     <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1 opacity-70">
@@ -2376,7 +2376,7 @@ export default function SolarPage() {
                         <span>15. Handover & Certs</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
                       </div>
-                      <p className="text-slate-400 text-[11px]">Official client certificate issue & staff handover.</p>
+                      <p className="text-slate-600 dark:text-slate-400 text-[11px]">Official client certificate issue & staff handover.</p>
                     </div>
 
                   </div>
@@ -2449,8 +2449,8 @@ export default function SolarPage() {
                   {auditLoads.map((item, idx) => (
                     <div key={idx} className="grid grid-cols-6 items-center p-3 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold">
                       <span className="col-span-2 text-white font-extrabold">{item.name}</span>
-                      <span className="text-slate-300">{item.qty} × {item.watts}W</span>
-                      <span className="text-slate-300">{item.hours} hrs/day</span>
+                      <span className="text-slate-700 dark:text-slate-300 font-semibold">{item.qty} × {item.watts}W</span>
+                      <span className="text-slate-700 dark:text-slate-300 font-semibold">{item.hours} hrs/day</span>
                       <span className="text-emerald-400 font-extrabold">
                         {Math.round((item.qty * item.watts * item.hours * item.factor) / 1000 * 10) / 10} kWh
                       </span>
@@ -2467,7 +2467,7 @@ export default function SolarPage() {
                 <div className="grid grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center">
                   <div>
                     <span className="text-xs font-extrabold text-slate-400 uppercase block">Total Connected Load</span>
-                    <span className="text-2xl font-black text-white">{totalConnectedWatts.toLocaleString()} W</span>
+                    <span className="text-2xl font-black text-slate-900 dark:text-white">{totalConnectedWatts.toLocaleString()} W</span>
                   </div>
                   <div>
                     <span className="text-xs font-extrabold text-slate-400 uppercase block">Daily kWh Energy Demand</span>
@@ -2578,11 +2578,11 @@ export default function SolarPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
                   <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-2">
                     <span className="text-amber-400 font-extrabold uppercase">1. PV Array Insulation & String Test</span>
-                    <p className="text-slate-300">String 1 Voc: 482.4 V | Isc: 12.8 A | Insulation Resistance: &gt;200 MΩ (PASSED)</p>
+                    <p className="text-slate-700 dark:text-slate-300 font-semibold">String 1 Voc: 482.4 V | Isc: 12.8 A | Insulation Resistance: &gt;200 MΩ (PASSED)</p>
                   </div>
                   <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-2">
                     <span className="text-emerald-400 font-extrabold uppercase">2. LiFePO4 Battery BMS Integration</span>
-                    <p className="text-slate-300">Pack Voltage: 51.2V | CAN Bus Comms: Active | Cell Delta: 0.012V (PASSED)</p>
+                    <p className="text-slate-700 dark:text-slate-300 font-semibold">Pack Voltage: 51.2V | CAN Bus Comms: Active | Cell Delta: 0.012V (PASSED)</p>
                   </div>
                 </div>
               </div>
@@ -2607,7 +2607,7 @@ export default function SolarPage() {
                       <Fuel className="w-4 h-4" />
                       <span>Solar ↔ Petroleum</span>
                     </div>
-                    <p className="text-slate-300">Diesel generator fuel telemetry triggers automatic Solar CRM leads to convert high-fuel sites into solar/hybrid microgrids.</p>
+                    <p className="text-slate-700 dark:text-slate-300 font-semibold">Diesel generator fuel telemetry triggers automatic Solar CRM leads to convert high-fuel sites into solar/hybrid microgrids.</p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
@@ -2615,7 +2615,7 @@ export default function SolarPage() {
                       <Zap className="w-4 h-4" />
                       <span>Solar ↔ TOTAG FARM</span>
                     </div>
-                    <p className="text-slate-300">Power design for solar irrigation pumps, cold-room refrigeration, and crop drying infrastructure.</p>
+                    <p className="text-slate-700 dark:text-slate-300 font-semibold">Power design for solar irrigation pumps, cold-room refrigeration, and crop drying infrastructure.</p>
                   </div>
 
                   <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
@@ -2623,7 +2623,7 @@ export default function SolarPage() {
                       <Ship className="w-4 h-4" />
                       <span>Solar ↔ Cargo Handling</span>
                     </div>
-                    <p className="text-slate-300">Auto-triggers port clearance, stevedoring, and freight dispatch for containerized solar panels & LiFePO4 batteries.</p>
+                    <p className="text-slate-700 dark:text-slate-300 font-semibold">Auto-triggers port clearance, stevedoring, and freight dispatch for containerized solar panels & LiFePO4 batteries.</p>
                   </div>
                 </div>
               </div>
