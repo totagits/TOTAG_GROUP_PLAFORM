@@ -45,6 +45,7 @@ import {
   Trash2,
   CloudSun,
   FileText,
+  Video,
   Printer,
   Check,
   Truck,
@@ -153,20 +154,32 @@ const DETAILED_COMPONENT_CATALOGUE = [
   },
   {
     id: "COMP-BAT-PYLON",
-    name: "Pylontech US5000 4.8kWh LiFePO4 Rack Module",
+    name: "Pylontech US5000-B 48V 100Ah 4.8kWh LiFePO4 Rack Module",
     category: "Battery",
     brand: "Pylontech Technologies",
-    modelNo: "US5000-48V",
+    modelNo: "US5000-B",
     priceUsd: 1350,
-    warranty: "10-Year Pro-Rated Warranty",
-    certifications: "TÜV, CE, UN38.3, IEC 62619, UL 1973",
-    specs: "48V 100Ah • 4.8 kWh Nominal (3.84 kWh Usable @ 80% DoD) • 6,000 Cycles @ 90% DoD",
-    dimensions: "442 x 420 x 161 mm (38.0 kg)",
-    description: "Tier-1 modular LiFePO4 battery module with integrated smart BMS, active cell balancing, 16-unit rack expansion, and high thermal stability.",
+    warranty: "10-Year Warranty (15+ Year Design Life)",
+    certifications: "CE, UL1973, UKCA, UN38.3, IEC62619, IEC63056",
+    specs: "48V 100Ah (4800Wh) • 4.56kWh Usable @ 95% DoD • 100A Max Continuous Discharge • >6000 Cycles @ 25°C",
+    dimensions: "442 x 420 x 161 mm (4RU 19″ Rack Mount) • Weight: 39.0 kg (39,000g)",
+    youtubeVideoUrl: "https://www.youtube.com/embed/TjMIbb7-u6Y?list=TLGGloi8bw1e1rExNjA4MjAyNg",
+    description: "US5000-B is the latest and highest capacity version HESS battery system designed by Pylontech. Featuring long life characteristics (>6000 cycles @ 95% DoD), highest energy density, compact 4RU 19″ rack design, backward compatibility, pre-charge surge protection, and scalable parallel expansion up to 480 units (1.704MWh).",
+    features: [
+      "4RU Compact Size (161mm tall) fitting standard 19-inch brackets, racks or cabinets",
+      "Cycle Life: >6000 cycles @ 25°C with 95% DoD for daily cyclic applications",
+      "Usable Capacity of 4.56kWh @ 48 VDC (4.8kWh Nominal / 100Ah)",
+      "High Discharge Current: 100A Maximum Continuous Discharge Current",
+      "Pre-Charge Function to protect ESS from high inrush surge currents",
+      "Communication Protocols: CAN, RS485, RS232 with integrated Smart BMS",
+      "Modular Parallel Scaling: Up to 96 batteries per string/LV-Hub, up to 480 batteries in total parallel (1.704MWh)",
+      "Backwards Compatible with existing Pylontech US series products (US2000 / US3000)",
+      "Safety Certifications: CE, UL1973, UKCA, UN38.3, IEC62619, IEC63056",
+      "Interlinking Kit: Each battery includes a 210mm long interlinking cable kit for parallel connection"
+    ],
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Front Panel: 19-inch 3U Rack Unit, Power Switch & Amphenol Plug Ports" },
-      { url: "/images/deye/deye-tp-hv-1.png", caption: "BMS Comm Ports: Dual CANbus & RS485 Link Ports for Parallel Chains" },
-      { url: "/images/deye/models/SUN-3_4_5_6_8_10_12K-SG05LP3-EU-SM2_.png", caption: "Cabinet Assembly: 12-Module Battery Bank Array Deployed at Health Facility" }
+      { url: "/images/pv/pylontech-us5000-front.png", caption: "Pylontech US5000-B 48V 100Ah LiFePO4 4RU Rack Mounted Module" },
+      { url: "/images/pv/pylontech-us5000-racks.png", caption: "Mounting & Rack Options: 3-Module Stack Brackets & Outdoor ESS Cabinet Integration" }
     ]
   },
   {
@@ -3874,6 +3887,35 @@ export default function SolarPage() {
                     <div className="text-emerald-400 font-mono">Compliance: {selectedComponentGallery.certifications}</div>
                   </div>
                 </div>
+
+                {selectedComponentGallery.features && (
+                  <div className="space-y-2 border-t border-slate-800 pt-3">
+                    <span className="text-amber-400 font-bold block text-xs">Key Product Features & Capabilities:</span>
+                    <ul className="space-y-1 text-slate-300 text-[11px] list-disc pl-4 max-h-40 overflow-y-auto">
+                      {selectedComponentGallery.features.map((feat: string, idx: number) => (
+                        <li key={idx} className="leading-relaxed">{feat}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedComponentGallery.youtubeVideoUrl && (
+                  <div className="space-y-2 border-t border-slate-800 pt-3">
+                    <span className="text-amber-400 font-bold block text-xs flex items-center gap-1.5">
+                      <Video className="w-3.5 h-3.5 text-amber-400" />
+                      Official Product Walkthrough Video:
+                    </span>
+                    <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-700 shadow-xl bg-black">
+                      <iframe 
+                        src={selectedComponentGallery.youtubeVideoUrl} 
+                        title={selectedComponentGallery.name}
+                        className="w-full h-full border-0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <Button
                   onClick={() => handleDownloadOemDatasheetPdf(selectedComponentGallery)}
