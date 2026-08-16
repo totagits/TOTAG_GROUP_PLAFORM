@@ -1,3 +1,4 @@
+import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -463,6 +464,8 @@ export default function GeneralMerchandisePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
+
       {/* Full Header with Product Background Carousel */}
       <header className="relative h-40 overflow-hidden sticky top-0 z-50 shadow-lg">
         {/* Background Image Carousel */}
@@ -507,7 +510,7 @@ export default function GeneralMerchandisePage() {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center">
               <img 
-                src={TGMLogo} 
+                src="/images/totag-logo.png" 
                 alt="TGM Logo" 
                 className="h-[100px] w-[100px] mx-auto mb-3 object-contain"
               />

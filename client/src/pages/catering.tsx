@@ -1,3 +1,4 @@
+import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { EVENT_TYPES, PARTICIPANT_RANGES, URGENCY_LEVELS } from "@/lib/cateringConfig";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -356,6 +357,8 @@ export default function CateringPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
+
       <header className="relative shadow-sm border-b overflow-hidden">
         <div className="slider absolute inset-0">
           {headerImages.map((image, index) => (

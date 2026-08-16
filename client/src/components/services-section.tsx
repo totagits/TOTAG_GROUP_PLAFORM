@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import ServiceCard from "./service-card";
 import type { Service } from "@shared/schema";
-import { Sparkles, Building2, Grid } from "lucide-react";
+import { Sparkles, Building2 } from "lucide-react";
 
-// Default static list of all 9 TOTAG Group specialized subsidiaries to guarantee fast initial render
+// Official 9 TOTAG Group Specialized Subsidiaries Master List
 const defaultSubsidiaries: Service[] = [
   {
     id: 1,
@@ -82,7 +82,7 @@ const defaultSubsidiaries: Service[] = [
     description: "Comprehensive office and educational stationery supply services for businesses, institutions, and individuals.",
     icon: "FileText",
     color: "blue",
-    tags: "stationery, office supplies, printing",
+    tags: "Stationery • Office Supplies • B2B Procurement",
     slug: "stationery",
     isActive: true
   },
@@ -95,56 +95,27 @@ const defaultSubsidiaries: Service[] = [
     tags: "Solar EPC • NOC Telemetry • Off-Grid Microgrids",
     slug: "solar",
     isActive: true
-  },
-  {
-    id: 10,
-    name: "TOTAG Institutional Services",
-    description: "Specialized UN, donor agency, diplomatic mission, and NGO work package execution, procurement, logistics, and field operations management across West Africa.",
-    icon: "Building2",
-    color: "purple",
-    tags: "UN & Donor Contracts • NGO Logistics • Procurement",
-    slug: "institutional-services",
-    isActive: true
   }
 ];
 
-
 export default function ServicesSection() {
-  const [services, setServices] = useState<Service[]>(defaultSubsidiaries);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        const response = await fetch("/api/services");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.services && data.services.length > 0) {
-            setServices(data.services);
-          }
-        }
-      } catch (err) {
-        console.log("Using default 10 subsidiaries list");
-      }
-    }
-
-    fetchServices();
-  }, []);
+  const [services] = useState<Service[]>(defaultSubsidiaries);
 
   return (
     <section id="services" className="py-24 bg-mesh-glass relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-16 max-w-3xl mx-auto">
+        <div className="text-center mb-16 max-w-3xl mx-auto space-y-4">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full glass-badge-sky mb-4 text-xs font-semibold uppercase tracking-wider"
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass-badge-emerald text-xs font-extrabold"
           >
-            <Grid className="w-3.5 h-3.5 text-sky-500" />
-            <span>Corporate Ecosystem</span>
+            <Sparkles className="w-4 h-4 text-emerald-400" />
+            <span>Official Subsidiaries Roster</span>
           </motion.div>
 
           <motion.h2
@@ -152,9 +123,9 @@ export default function ServicesSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight"
+            className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight"
           >
-            Our <span className="text-gradient-emerald">Ten Specialized Subsidiaries</span>
+            Our <span className="text-gradient-emerald">Nine Specialized Subsidiaries</span>
           </motion.h2>
 
           <motion.p
@@ -162,12 +133,11 @@ export default function ServicesSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed"
+            className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-medium"
           >
-            Ten distinct business divisions operating synergistically to deliver end-to-end commercial solutions across key industries in Liberia and internationally.
+            Nine distinct business divisions operating synergistically to deliver end-to-end enterprise solutions across key industries in Liberia and internationally.
           </motion.p>
         </div>
-
 
         {/* 9 Subsidiaries Glass Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

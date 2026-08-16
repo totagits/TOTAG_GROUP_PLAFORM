@@ -1,6 +1,5 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import totagFarmLogoPath from "@assets/TOTAG FARM  Logo_1752502100780.png";
 import { 
   Home, 
   Info, 
@@ -10,12 +9,13 @@ import {
   Phone, 
   LogIn,
   Menu,
-  X
+  X,
+  ArrowLeft
 } from "lucide-react";
 import { useState } from "react";
 
 export default function FarmNavbar() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
@@ -27,6 +27,15 @@ export default function FarmNavbar() {
     { name: "Contact Us", href: "/farm/contact", icon: Phone },
   ];
 
+  const handleGoHome = () => {
+    if (typeof window !== "undefined") {
+      window.location.hash = "/";
+      window.history.pushState(null, "", "/");
+    }
+    setLocation("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const isActive = (href: string) => {
     if (href === "/farm") {
       return location === "/farm" || location === "/farm/";
@@ -35,31 +44,47 @@ export default function FarmNavbar() {
   };
 
   return (
-    <nav className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-slate-950 text-white border-b border-white/10 sticky top-0 z-50 shadow-2xl backdrop-blur-xl">
       <div className="container mx-auto px-4">
-        <div className="flex items-center h-20">
-          {/* Logo - Pushed to extreme left */}
-          <Link href="/farm" className="flex items-center space-x-2 mr-8 flex-shrink-0">
-            <img 
-              src={totagFarmLogoPath} 
-              alt="TOTAG FARM Logo" 
-              className="w-16 h-16 object-contain"
-            />
-            <span className="text-xl font-bold text-gray-900 whitespace-nowrap">TOTAG FARM</span>
-          </Link>
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Official TOTAG Corporate Logo + Back Button */}
+          <div className="flex items-center space-x-4">
+            <div onClick={handleGoHome} className="flex items-center space-x-3 cursor-pointer">
+              <img 
+                src="/images/totag-logo.png" 
+                alt="TOTAG Group Logo" 
+                className="w-14 h-14 object-contain bg-white/90 p-1 rounded-xl shadow-md"
+              />
+              <div>
+                <span className="text-base font-black text-white block">TOTAG <span className="text-emerald-400">FARM</span></span>
+                <span className="text-[10px] text-slate-300 font-semibold">Subsidiary of TOTAG Group Ltd</span>
+              </div>
+            </div>
 
-          {/* Desktop Navigation - Flex-grow to fill space */}
-          <div className="hidden md:flex items-center space-x-1 flex-grow justify-center">
+            <Button
+              onClick={handleGoHome}
+              size="sm"
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-1.5 rounded-xl shadow-lg flex items-center space-x-1.5"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Back to Ecosystem Landing</span>
+              <span className="sm:hidden">Back</span>
+            </Button>
+          </div>
+
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.name} href={item.href}>
                   <Button
                     variant={isActive(item.href) ? "default" : "ghost"}
-                    className={`flex items-center space-x-2 ${
+                    className={`flex items-center space-x-2 text-xs font-bold ${
                       isActive(item.href) 
-                        ? "bg-green-600 text-white hover:bg-green-700" 
-                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                        ? "bg-emerald-600 text-white hover:bg-emerald-700" 
+                        : "text-slate-200 hover:text-emerald-400 hover:bg-white/10"
                     }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -70,65 +95,58 @@ export default function FarmNavbar() {
             })}
           </div>
 
-          {/* Staff Login - Desktop - Pushed to right */}
-          <div className="hidden md:flex items-center space-x-4 flex-shrink-0">
+          {/* Staff Login */}
+          <div className="hidden md:flex items-center space-x-3">
             <Link href="/farm/login">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2">
+              <Button className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center space-x-2 rounded-xl">
                 <LogIn className="h-4 w-4" />
                 <span>Staff Login</span>
               </Button>
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Button */}
           <div className="md:hidden">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white"
             >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
-            <div className="space-y-2">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link key={item.name} href={item.href}>
-                    <Button
-                      variant={isActive(item.href) ? "default" : "ghost"}
-                      className={`w-full justify-start flex items-center space-x-2 ${
-                        isActive(item.href) 
-                          ? "bg-green-600 text-white hover:bg-green-700" 
-                          : "text-gray-700 hover:text-green-600 hover:bg-green-50"
-                      }`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{item.name}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-              <Link href="/farm/login">
-                <Button 
-                  className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2 mt-4"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Staff Login</span>
-                </Button>
-              </Link>
-            </div>
+          <div className="md:hidden py-4 border-t border-white/10 space-y-2">
+            <Button 
+              onClick={handleGoHome}
+              className="w-full bg-amber-500 text-slate-950 font-black text-xs py-2.5 rounded-xl flex items-center justify-center space-x-2 mb-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Ecosystem Landing</span>
+            </Button>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.name} href={item.href}>
+                  <Button
+                    variant={isActive(item.href) ? "default" : "ghost"}
+                    className={`w-full justify-start flex items-center space-x-2 text-xs font-bold ${
+                      isActive(item.href) 
+                        ? "bg-emerald-600 text-white" 
+                        : "text-slate-200 hover:bg-white/10"
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Button>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

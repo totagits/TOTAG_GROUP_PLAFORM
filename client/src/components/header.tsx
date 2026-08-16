@@ -4,8 +4,7 @@ import {
   Menu, 
   X, 
   ChevronDown, 
-  Shield, 
-  Globe, 
+  ArrowLeft,
   Truck, 
   Wheat, 
   Briefcase, 
@@ -13,10 +12,9 @@ import {
   ShoppingBag, 
   Laptop, 
   ChefHat, 
-  Building, 
-  TrendingUp,
-  Sparkles,
-  Lock
+  FileText, 
+  Zap,
+  Sparkles
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -28,25 +26,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const subsidiariesList = [
-  { name: "TOTAG Cargo & Logistics", href: "/cargo", icon: Truck, tag: "Maritime & Freight" },
-  { name: "TOTAG Farm & Agribusiness", href: "/farm", icon: Wheat, tag: "Agri-Tech & Produce" },
-  { name: "TOTAG Petroleum & Energy", href: "/petroleum", icon: Briefcase, tag: "Fuel & Energy" },
-  { name: "TOTAG Construction & Infra", href: "/construction", icon: HardHat, tag: "Civil Works" },
-  { name: "TOTAG General Merchandise", href: "/general-merchandise", icon: ShoppingBag, tag: "Retail & Wholesale" },
-  { name: "TOTAG IT Services & SaaS", href: "/it-services", icon: Laptop, tag: "Software & Cloud" },
-  { name: "TOTAG Catering Services", href: "/catering", icon: ChefHat, tag: "Institutional & Events" },
-  { name: "TOTAG Real Estate", href: "/real-estate", icon: Building, tag: "Property & Facilities" },
-  { name: "TOTAG Consulting", href: "/consulting", icon: TrendingUp, tag: "Advisory & Strategy" },
-  { name: "TOTAG Stationery Supplies", href: "/stationery", icon: Briefcase, tag: "Office & School Supplies" },
-  { name: "TOTAG Solar Energy", href: "/solar", icon: Sparkles, tag: "Solar EPC & Telemetry" },
-  { name: "TOTAG Institutional Services", href: "/institutional-services", icon: Building, tag: "UN & Donor Contracts" }
+export const official9Subsidiaries = [
+  { name: "TOTAG Cargo Handling & Logistics", href: "/cargo", icon: Truck, tag: "Maritime & Freight" },
+  { name: "TOTAG FARM & Agribusiness", href: "/farm", icon: Wheat, tag: "Crop & Livestock Tech" },
+  { name: "TOTAG Petroleum Services", href: "/petroleum", icon: Briefcase, tag: "Fuel Storage & Depots" },
+  { name: "TOTAG General Construction", href: "/construction", icon: HardHat, tag: "Civil Infrastructure" },
+  { name: "TOTAG General Merchandise", href: "/general-merchandise", icon: ShoppingBag, tag: "Wholesale & Retail" },
+  { name: "TOTAG Catering & Events Services", href: "/catering", icon: ChefHat, tag: "Institutional & Event Hospitality" },
+  { name: "TOTAG IT Services - Managed IT & SaaS", href: "/it-services", icon: Laptop, tag: "14 FIMS/HRMIS SaaS Modules" },
+  { name: "TOTAG Stationery Supplies", href: "/stationery", icon: FileText, tag: "B2B Bulk Office Procurement" },
+  { name: "TOTAG Solar Energy & Smart Power", href: "/solar", icon: Zap, tag: "Solar EPC & Telemetry NOC" }
 ];
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [location, setLocation] = useLocation();
+
+  const isSubPage = location !== "/" && location !== "/home" && location !== "";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,14 +54,24 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleGoHome = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    setIsMenuOpen(false);
+    if (typeof window !== "undefined") {
+      window.location.hash = "/";
+      window.history.pushState(null, "", "/");
+    }
+    setLocation("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleNavClick = (href: string) => {
     setIsMenuOpen(false);
     if (href.startsWith("#")) {
-      if (location !== "/" && location !== "/home") {
-        if (window.location.hash || window.location.host.includes("github.io")) {
+      if (isSubPage) {
+        if (typeof window !== "undefined") {
           window.location.hash = "/";
-        } else {
-          window.location.pathname = "/";
+          window.history.pushState(null, "", "/");
         }
         setLocation("/");
         setTimeout(() => {
@@ -74,7 +81,7 @@ export default function Header() {
           } else {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }
-        }, 150);
+        }, 200);
       } else {
         const element = document.querySelector(href);
         if (element) {
@@ -84,10 +91,12 @@ export default function Header() {
         }
       }
     } else {
-      if (window.location.hash || window.location.host.includes("github.io")) {
-        window.location.hash = href;
-      } else {
-        window.location.pathname = href;
+      if (typeof window !== "undefined") {
+        if (window.location.hash || window.location.host.includes("github.io")) {
+          window.location.hash = href;
+        } else {
+          window.location.pathname = href;
+        }
       }
       setLocation(href);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -98,73 +107,88 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-md border-b border-gray-200/50 dark:border-white/10 py-2.5"
-          : "bg-white/70 dark:bg-slate-950/70 backdrop-blur-lg border-b border-gray-100/30 dark:border-white/5 py-4"
+          ? "bg-slate-950/90 backdrop-blur-xl shadow-2xl border-b border-white/10 py-2.5 text-white"
+          : "bg-slate-950/75 backdrop-blur-lg border-b border-white/10 py-3 text-white"
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
-          {/* Brand Logo */}
-          <div 
-            onClick={() => handleNavClick("#home")}
-            className="flex items-center space-x-3.5 group cursor-pointer py-1"
-          >
-            <img 
-              src="/images/totag-logo.png" 
-              alt="TOTAG Group Logo" 
-              className="h-14 sm:h-18 w-auto object-contain hover:scale-105 transition-transform duration-200" 
-            />
-            <div className="flex flex-col justify-center">
-              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-none">
-                <span className="text-emerald-600 dark:text-emerald-400">TOTAG</span>{" "}
-                <span className="text-sky-600 dark:text-sky-400">Group</span>{" "}
-                <span className="text-xs sm:text-sm font-semibold text-amber-600 dark:text-amber-400 block sm:inline">of Companies Ltd</span>
-              </span>
-              <span className="text-[10px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300 tracking-wide mt-0.5">
-                Innovating Tomorrow, Empowering Today
-              </span>
+          {/* Brand Logo & Back Button */}
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <div 
+              onClick={handleGoHome}
+              className="flex items-center space-x-3 group cursor-pointer py-1"
+            >
+              <img 
+                src="/images/totag-logo.png" 
+                alt="TOTAG Group Logo" 
+                className="h-12 sm:h-14 w-auto object-contain hover:scale-105 transition-transform duration-200 bg-white/90 p-1 rounded-xl shadow-md" 
+              />
+              <div className="flex flex-col justify-center">
+                <span className="text-base sm:text-lg font-black tracking-tight text-white leading-none">
+                  <span className="text-emerald-400">TOTAG</span>{" "}
+                  <span className="text-sky-400">Group</span>{" "}
+                  <span className="text-xs font-bold text-amber-400 block sm:inline">of Companies Ltd</span>
+                </span>
+                <span className="text-[10px] font-semibold text-slate-300 tracking-wide mt-0.5 hidden sm:block">
+                  Innovating Tomorrow, Empowering Today
+                </span>
+              </div>
             </div>
+
+            {/* Prominent Back Button on Subsidiary Pages */}
+            {isSubPage && (
+              <Button
+                onClick={handleGoHome}
+                size="sm"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-1.5 rounded-xl shadow-lg flex items-center space-x-1.5 transition-all cursor-pointer border border-amber-400"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Back to Ecosystem Landing</span>
+                <span className="sm:hidden">Back</span>
+              </Button>
+            )}
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center space-x-2 font-semibold text-sm text-slate-700 dark:text-slate-200">
+          <nav className="hidden lg:flex items-center space-x-1.5 font-bold text-xs text-slate-200">
             <button
               onClick={() => handleNavClick("#home")}
-              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+              className="px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer"
             >
               Home
             </button>
 
             <button
               onClick={() => handleNavClick("#about")}
-              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+              className="px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer"
             >
               About Us
             </button>
 
             <button
               onClick={() => handleNavClick("#services")}
-              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+              className="px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer"
             >
               Services
             </button>
 
-            {/* Subsidiaries Dropdown */}
+            {/* 9 Subsidiaries Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center space-x-1 px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer">
-                  <span>Subsidiaries</span>
+                <button className="flex items-center space-x-1 px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer text-amber-400">
+                  <span>9 Subsidiaries</span>
                   <ChevronDown className="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-2xl p-2 rounded-2xl">
-                <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-slate-400 px-3 py-1.5">
-                  10 Specialized Divisions
+              <DropdownMenuContent align="end" className="w-72 bg-slate-900/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 rounded-2xl text-white">
+                <DropdownMenuLabel className="text-xs font-black uppercase tracking-wider text-amber-400 px-3 py-1.5">
+                  Official 9 Specialized Divisions
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuSeparator className="bg-white/10" />
                 <div className="max-h-80 overflow-y-auto space-y-1">
-                  {subsidiariesList.map((sub) => (
+                  {official9Subsidiaries.map((sub) => (
                     <DropdownMenuItem 
                       key={sub.href}
                       onSelect={(e) => {
@@ -175,12 +199,12 @@ export default function Header() {
                         e.preventDefault();
                         handleNavClick(sub.href);
                       }}
-                      className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer"
+                      className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 cursor-pointer"
                     >
                       <a href={`#${sub.href}`} className="flex items-center space-x-3 w-full h-full no-underline text-inherit">
-                        <sub.icon className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                        <sub.icon className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                         <div>
-                          <span className="text-xs font-bold block text-slate-900 dark:text-white">{sub.name}</span>
+                          <span className="text-xs font-bold block text-white">{sub.name}</span>
                           <span className="text-[10px] text-slate-400">{sub.tag}</span>
                         </div>
                       </a>
@@ -192,7 +216,7 @@ export default function Header() {
 
             <button
               onClick={() => handleNavClick("#contact")}
-              className="px-3.5 py-2 rounded-lg hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+              className="px-3 py-2 rounded-lg hover:text-emerald-400 hover:bg-white/10 transition-all cursor-pointer"
             >
               Contact
             </button>
@@ -202,7 +226,7 @@ export default function Header() {
           <div className="hidden lg:flex items-center space-x-3">
             <button 
               onClick={() => handleNavClick("/admin-login")}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg px-5 py-2.5 shadow-md cursor-pointer transition-all"
+              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all"
             >
               Admin Login
             </button>
@@ -212,7 +236,7 @@ export default function Header() {
           <div className="lg:hidden flex items-center space-x-2">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5"
+              className="p-2 rounded-lg text-slate-200 hover:bg-white/10"
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -223,23 +247,28 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white/95 dark:bg-slate-950/95 backdrop-blur-2xl border-b border-gray-200 dark:border-white/10 px-4 py-6 space-y-4 shadow-2xl">
-          <div className="flex flex-col space-y-2 font-semibold text-slate-700 dark:text-slate-200">
-            <button onClick={() => handleNavClick("#home")} className="text-left px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5">Home</button>
-            <button onClick={() => handleNavClick("#about")} className="text-left px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5">About Us</button>
-            <button onClick={() => handleNavClick("#services")} className="text-left px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5">Services</button>
-            <button onClick={() => handleNavClick("#contact")} className="text-left px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-white/5">Contact</button>
-            <div className="pt-2 border-t border-slate-200 dark:border-white/10">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2 px-4">Subsidiary Platforms</span>
-              <div className="grid grid-cols-2 gap-2">
-                {subsidiariesList.map((sub) => (
-                  <button key={sub.href} onClick={() => handleNavClick(sub.href)} className="text-left px-3 py-2 rounded-lg text-xs font-bold bg-slate-100 dark:bg-white/5 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-                    {sub.name}
+        <div className="lg:hidden bg-slate-950/95 backdrop-blur-2xl border-b border-white/10 px-4 py-6 space-y-4 shadow-2xl text-white">
+          <div className="flex flex-col space-y-2 font-bold text-sm">
+            <button onClick={handleGoHome} className="text-left px-4 py-2.5 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center space-x-2">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Ecosystem Main Landing</span>
+            </button>
+            <button onClick={() => handleNavClick("#home")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">Home</button>
+            <button onClick={() => handleNavClick("#about")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">About Us</button>
+            <button onClick={() => handleNavClick("#services")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">Services</button>
+            <button onClick={() => handleNavClick("#contact")} className="text-left px-4 py-2 rounded-lg hover:bg-white/10">Contact</button>
+            <div className="pt-2 border-t border-white/10">
+              <span className="text-xs font-black text-amber-400 uppercase tracking-wider block mb-2 px-4">Official 9 Subsidiaries</span>
+              <div className="grid grid-cols-1 gap-1.5">
+                {official9Subsidiaries.map((sub) => (
+                  <button key={sub.href} onClick={() => handleNavClick(sub.href)} className="text-left px-3 py-2 rounded-lg text-xs font-bold bg-white/5 hover:bg-emerald-500/20 text-emerald-400 flex items-center space-x-2">
+                    <sub.icon className="w-3.5 h-3.5" />
+                    <span>{sub.name}</span>
                   </button>
                 ))}
               </div>
             </div>
-            <button onClick={() => handleNavClick("/admin-login")} className="w-full mt-4 bg-blue-600 text-white font-bold text-xs py-3 rounded-xl">
+            <button onClick={() => handleNavClick("/admin-login")} className="w-full mt-4 bg-emerald-500 text-slate-950 font-black text-xs py-3 rounded-xl">
               Admin Login
             </button>
           </div>

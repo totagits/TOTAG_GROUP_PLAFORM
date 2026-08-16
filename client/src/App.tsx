@@ -48,11 +48,8 @@ import DomainVerificationGuide from "@/pages/domain-verification-guide";
 import CargoPage from "@/pages/cargo";
 import PetroleumPage from "@/pages/petroleum";
 import ConstructionPage from "@/pages/construction";
-import RealEstatePage from "@/pages/real-estate";
-import ConsultingPage from "@/pages/consulting";
 import StationeryPage from "@/pages/stationery";
 import SolarPage from "@/pages/solar";
-import InstitutionalServicesPage from "@/pages/institutional-services";
 import ExecutiveDashboardPage from "@/pages/executive-dashboard";
 import SaaSLanding from "@/pages/saas/landing";
 
@@ -167,10 +164,7 @@ function Router() {
         <Route path="/cargo" component={CargoPage} />
         <Route path="/petroleum" component={PetroleumPage} />
         <Route path="/construction" component={ConstructionPage} />
-        <Route path="/real-estate" component={RealEstatePage} />
-        <Route path="/consulting" component={ConsultingPage} />
-        <Route path="/institutional-services" component={InstitutionalServicesPage} />
-        <Route path="/executive-dashboard" component={ExecutiveDashboardPage} />
+                                <Route path="/executive-dashboard" component={ExecutiveDashboardPage} />
         <Route path="/stationery" component={StationeryPage} />
 
         <Route path="/solar" component={SolarPage} />
