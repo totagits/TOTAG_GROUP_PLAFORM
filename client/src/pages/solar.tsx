@@ -876,6 +876,12 @@ const DEYE_CATALOGUE_ITEMS = [
 ];
 
 export default function SolarPage() {
+  // Fullscreen Expandable Datasheet Zoom Modal State
+  const [showExpandDatasheetModal, setShowExpandDatasheetModal] = useState<boolean>(false);
+  const [expandDatasheetImg, setExpandDatasheetImg] = useState<string>("");
+  const [expandDatasheetTitle, setExpandDatasheetTitle] = useState<string>("");
+  const [zoomScale, setZoomScale] = useState<number>(1);
+
   // Rich PDF OEM Datasheet & Technical Specification Generator
   const handleDownloadOemDatasheetPdf = (item: any) => {
     if (!item) return;
@@ -3995,6 +4001,78 @@ export default function SolarPage() {
             </form>
 
           </div>
+        </div>
+      )}
+
+
+      {/* Interactive Fullscreen Expandable Technical Datasheet Lightbox Zoom Modal */}
+      {showExpandDatasheetModal && (
+        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex flex-col items-center justify-between p-4 md:p-6 animate-fadeIn">
+          
+          {/* Top Control Bar */}
+          <div className="w-full max-w-6xl flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-black text-[10px] uppercase tracking-wider">
+                High-Resolution Technical Datasheet Inspection
+              </span>
+              <h3 className="text-lg font-black text-white mt-0.5 truncate max-w-xl">
+                {expandDatasheetTitle}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setZoomScale(prev => Math.min(prev + 0.3, 3))}
+                size="sm"
+                variant="outline"
+                className="bg-slate-900 border-slate-700 text-slate-200 text-xs font-bold"
+              >
+                + Zoom In
+              </Button>
+              <Button
+                onClick={() => setZoomScale(prev => Math.max(prev - 0.3, 0.7))}
+                size="sm"
+                variant="outline"
+                className="bg-slate-900 border-slate-700 text-slate-200 text-xs font-bold"
+              >
+                - Zoom Out
+              </Button>
+              <Button
+                onClick={() => setZoomScale(1)}
+                size="sm"
+                variant="outline"
+                className="bg-slate-900 border-slate-700 text-slate-200 text-xs font-bold"
+              >
+                Reset Zoom
+              </Button>
+
+              <button 
+                onClick={() => setShowExpandDatasheetModal(false)}
+                className="w-10 h-10 rounded-full bg-slate-900 border border-slate-700 text-slate-400 hover:text-white font-bold text-lg flex items-center justify-center hover:bg-slate-800 transition-all"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+
+          {/* Main Expanded Image Viewport */}
+          <div className="flex-1 w-full max-w-6xl flex items-center justify-center overflow-auto p-4 my-2 scrollbar-thin">
+            <img 
+              src={expandDatasheetImg} 
+              alt="Expanded Datasheet" 
+              style={{ transform: `scale(${zoomScale})`, transition: 'transform 0.2s ease-out' }}
+              className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl border border-slate-800" 
+            />
+          </div>
+
+          {/* Bottom Guidance Footer */}
+          <div className="w-full max-w-6xl flex items-center justify-between border-t border-slate-800 pt-3 text-xs text-slate-400">
+            <span className="flex items-center gap-2 text-emerald-400 font-bold">
+              ✔ Original High-Definition Factory Specification Label (2008 × 1002 × 40 mm, 1500 VDC)
+            </span>
+            <span className="font-mono text-slate-500">Zoom Level: {Math.round(zoomScale * 100)}%</span>
+          </div>
+
         </div>
       )}
 
