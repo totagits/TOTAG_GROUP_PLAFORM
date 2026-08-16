@@ -1,3 +1,4 @@
+import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

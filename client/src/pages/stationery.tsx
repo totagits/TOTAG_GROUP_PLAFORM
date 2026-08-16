@@ -1,3 +1,4 @@
+import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/header";

@@ -1,3 +1,4 @@
+import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { EVENT_TYPES, PARTICIPANT_RANGES, URGENCY_LEVELS } from "@/lib/cateringConfig";

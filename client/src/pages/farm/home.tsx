@@ -1,3 +1,4 @@
+import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,24 @@ export default function FarmHome() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <FarmNavbar />
+            <FarmNavbar />
+
+      {/* Standardized Photo Carousel Hero Section */}
+      <SubsidiaryHeroCarousel
+        badge="TOTAG Subsidiary • Precision Agribusiness & Livestock"
+        titleHighlight="FARM & Agribusiness"
+        subtitle="Commercial crop cultivation, livestock management, greenhouse farming technology, and sustainable agro-processing from seed to regional market."
+        slides={[
+          { url: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&h=800&fit=crop", caption: "Mechanized Grain & Crop Harvest Operations" },
+          { url: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=1600&h=800&fit=crop", caption: "Controlled Climate Greenhouse Agribusiness" },
+          { url: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=1600&h=800&fit=crop", caption: "Integrated Livestock & Poultry Farming" }
+        ]}
+        stats={[
+          { label: "Cultivated Acres", value: "2,500+" },
+          { label: "Livestock Head", value: "450+" },
+          { label: "Annual Yield", value: "1,200 Tons" }
+        ]}
+      />
       
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16 mt-0">
