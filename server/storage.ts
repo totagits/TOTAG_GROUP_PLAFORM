@@ -35,18 +35,17 @@ import {
   petroleumOrders,
   equipmentRentals,
   stationeryOrders,
-  solarAudits,
-  type CargoShipment,
-  type InsertCargoShipment,
-  type PetroleumOrder,
-  type InsertPetroleumOrder,
-  type EquipmentRental,
-  type InsertEquipmentRental,
-  type StationeryOrder,
-  type InsertStationeryOrder,
-  type SolarAudit,
-  type InsertSolarAudit,
+  institutionalContracts,
+  partyMaster,
+  enterpriseEvents,
+  type InstitutionalContract,
+  type InsertInstitutionalContract,
+  type PartyMaster,
+  type InsertPartyMaster,
+  type EnterpriseEvent,
+  type InsertEnterpriseEvent,
   type User, 
+
 
   type InsertUser,
   type ContactInquiry,
@@ -300,7 +299,20 @@ export interface IStorage {
   // Solar Audit Operations
   getSolarAudits(): Promise<SolarAudit[]>;
   createSolarAudit(audit: InsertSolarAudit): Promise<SolarAudit>;
+
+  // Institutional Services & Contracts
+  getInstitutionalContracts(): Promise<InstitutionalContract[]>;
+  createInstitutionalContract(contract: InsertInstitutionalContract): Promise<InstitutionalContract>;
+
+  // Group CRM Party Master
+  getParties(): Promise<PartyMaster[]>;
+  createParty(party: InsertPartyMaster): Promise<PartyMaster>;
+
+  // Enterprise Event Bus
+  getEnterpriseEvents(): Promise<EnterpriseEvent[]>;
+  publishEnterpriseEvent(event: InsertEnterpriseEvent): Promise<EnterpriseEvent>;
 }
+
 
 
 export class DatabaseStorage implements IStorage {
@@ -1434,7 +1446,38 @@ export class DatabaseStorage implements IStorage {
     const [created] = await db.insert(solarAudits).values(audit).returning();
     return created;
   }
+
+  // Institutional Contracts Operations
+  async getInstitutionalContracts(): Promise<InstitutionalContract[]> {
+    return await db.select().from(institutionalContracts).orderBy(desc(institutionalContracts.createdAt));
+  }
+
+  async createInstitutionalContract(contract: InsertInstitutionalContract): Promise<InstitutionalContract> {
+    const [created] = await db.insert(institutionalContracts).values(contract).returning();
+    return created;
+  }
+
+  // Group CRM Party Master Operations
+  async getParties(): Promise<PartyMaster[]> {
+    return await db.select().from(partyMaster).orderBy(desc(partyMaster.createdAt));
+  }
+
+  async createParty(party: InsertPartyMaster): Promise<PartyMaster> {
+    const [created] = await db.insert(partyMaster).values(party).returning();
+    return created;
+  }
+
+  // Enterprise Event Bus Operations
+  async getEnterpriseEvents(): Promise<EnterpriseEvent[]> {
+    return await db.select().from(enterpriseEvents).orderBy(desc(enterpriseEvents.createdAt));
+  }
+
+  async publishEnterpriseEvent(event: InsertEnterpriseEvent): Promise<EnterpriseEvent> {
+    const [published] = await db.insert(enterpriseEvents).values(event).returning();
+    return published;
+  }
 }
 
 export const storage = new DatabaseStorage();
+
 

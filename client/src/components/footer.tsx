@@ -117,6 +117,18 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
+                <Link href="/executive-dashboard" className="text-emerald-400 font-bold hover:text-white transition-colors flex items-center justify-between">
+                  <span>Executive Command Center</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/institutional-services" className="hover:text-white transition-colors flex items-center justify-between">
+                  <span>Institutional Services</span>
+                  <ArrowUpRight className="w-3 h-3" />
+                </Link>
+              </li>
+              <li>
                 <Link href="/admin-login" className="hover:text-white transition-colors flex items-center justify-between">
                   <span>Group Admin Console</span>
                   <ArrowUpRight className="w-3 h-3" />
@@ -128,6 +140,7 @@ export default function Footer() {
                   <ArrowUpRight className="w-3 h-3" />
                 </Link>
               </li>
+
               <li>
                 <Link href="/catering/ops/login" className="hover:text-white transition-colors flex items-center justify-between">
                   <span>TOCEPS Catering Ops</span>

@@ -51,7 +51,10 @@ import RealEstatePage from "@/pages/real-estate";
 import ConsultingPage from "@/pages/consulting";
 import StationeryPage from "@/pages/stationery";
 import SolarPage from "@/pages/solar";
+import InstitutionalServicesPage from "@/pages/institutional-services";
+import ExecutiveDashboardPage from "@/pages/executive-dashboard";
 import SaaSLanding from "@/pages/saas/landing";
+
 
 import SaaSRegister from "@/pages/saas/register";
 import SaaSLogin from "@/pages/saas/login";
@@ -130,9 +133,13 @@ function Router() {
       <Route path="/construction" component={ConstructionPage} />
       <Route path="/real-estate" component={RealEstatePage} />
       <Route path="/consulting" component={ConsultingPage} />
+      <Route path="/institutional-services" component={InstitutionalServicesPage} />
+      <Route path="/executive-dashboard" component={ExecutiveDashboardPage} />
       <Route path="/stationery" component={StationeryPage} />
+
       <Route path="/solar" component={SolarPage} />
       <Route path="/order-tracking" component={OrderTrackingPage} />
+
 
 
       <Route path="/merchant-login" component={MerchantLogin} />

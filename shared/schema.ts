@@ -2094,7 +2094,64 @@ export const insertStationeryOrderSchema = createInsertSchema(stationeryOrders).
 export type StationeryOrder = typeof stationeryOrders.$inferSelect;
 export type InsertStationeryOrder = z.infer<typeof insertStationeryOrderSchema>;
 
+// Institutional Services & Operations Tables
+export const institutionalContracts = pgTable("institutional_contracts", {
+  id: serial("id").primaryKey(),
+  contractNumber: text("contract_number").notNull().unique(),
+  clientName: text("client_name").notNull(),
+  agencyName: text("agency_name").notNull(), // e.g. UNDP, WFP, Ministry of Public Works
+  title: text("title").notNull(),
+  scopeOfWork: text("scope_of_work").notNull(),
+  totalValueUsd: numeric("total_value_usd", { precision: 12, scale: 2 }).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  status: text("status").notNull().default("active"), // active, milestone_review, completed
+  workPackages: jsonb("work_packages"), // Work packages, milestones, deliverables
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Group CRM Master Party Table
+export const partyMaster = pgTable("party_master", {
+  id: serial("id").primaryKey(),
+  partyNumber: text("party_number").notNull().unique(),
+  name: text("name").notNull(),
+  type: text("type").notNull().default("organization"), // organization, individual, government, ngo
+  email: text("email"),
+  phone: text("phone"),
+  address: text("address"),
+  taxId: text("tax_id"),
+  creditLimitUsd: numeric("credit_limit_usd", { precision: 10, scale: 2 }).default("10000"),
+  subsidiaryRelations: jsonb("subsidiary_relations"), // Array of subsidiaries transacting with this party
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Enterprise Event Bus Log Table
+export const enterpriseEvents = pgTable("enterprise_events", {
+  id: serial("id").primaryKey(),
+  correlationId: text("correlation_id").notNull(),
+  eventType: text("event_type").notNull(), // SalesOrderConfirmed, CargoShipmentBooked, FuelDeliveryCompleted, ConstructionMaterialRequested, InvoiceIssued, PaymentReceived
+  sourceSubsidiary: text("source_subsidiary").notNull(),
+  targetSubsidiary: text("target_subsidiary"),
+  payload: jsonb("payload").notNull(),
+  status: text("status").notNull().default("published"), // published, processed, failed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Zod schemas & types for ecosystem core
+export const insertInstitutionalContractSchema = createInsertSchema(institutionalContracts).omit({ id: true, createdAt: true });
+export type InstitutionalContract = typeof institutionalContracts.$inferSelect;
+export type InsertInstitutionalContract = z.infer<typeof insertInstitutionalContractSchema>;
+
+export const insertPartyMasterSchema = createInsertSchema(partyMaster).omit({ id: true, createdAt: true });
+export type PartyMaster = typeof partyMaster.$inferSelect;
+export type InsertPartyMaster = z.infer<typeof insertPartyMasterSchema>;
+
+export const insertEnterpriseEventSchema = createInsertSchema(enterpriseEvents).omit({ id: true, createdAt: true });
+export type EnterpriseEvent = typeof enterpriseEvents.$inferSelect;
+export type InsertEnterpriseEvent = z.infer<typeof insertEnterpriseEventSchema>;
+
 export const insertSolarAuditSchema = createInsertSchema(solarAudits).omit({ id: true, createdAt: true });
 export type SolarAudit = typeof solarAudits.$inferSelect;
 export type InsertSolarAudit = z.infer<typeof insertSolarAuditSchema>;
+
 

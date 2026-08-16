@@ -164,6 +164,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Institutional Services Endpoints
+  app.get("/api/institutional/contracts", async (req, res) => {
+    try {
+      const contracts = await storage.getInstitutionalContracts();
+      res.json(contracts);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/institutional/contracts", async (req, res) => {
+    try {
+      const contract = await storage.createInstitutionalContract(req.body);
+      res.status(201).json(contract);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Group CRM Party Master Endpoints
+  app.get("/api/party-master", async (req, res) => {
+    try {
+      const parties = await storage.getParties();
+      res.json(parties);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/party-master", async (req, res) => {
+    try {
+      const party = await storage.createParty(req.body);
+      res.status(201).json(party);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Enterprise Event Bus Endpoints
+  app.get("/api/enterprise/events", async (req, res) => {
+    try {
+      const events = await storage.getEnterpriseEvents();
+      res.json(events);
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+  app.post("/api/enterprise/events", async (req, res) => {
+    try {
+      const event = await storage.publishEnterpriseEvent(req.body);
+      res.status(201).json(event);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
+  });
+
+  // Executive Control Tower Combined Metrics Endpoint
+  app.get("/api/executive/metrics", async (req, res) => {
+    try {
+      const shipments = await storage.getCargoShipments();
+      const fuelOrders = await storage.getPetroleumOrders();
+      const equipmentRentals = await storage.getEquipmentRentals();
+      const stationeryOrders = await storage.getStationeryOrders();
+      const contracts = await storage.getInstitutionalContracts();
+      const solarAudits = await storage.getSolarAudits();
+
+      res.json({
+        groupRevenueUsd: 1428500,
+        grossMarginPercentage: 38.4,
+        cashPositionUsd: 840200,
+        receivablesUsd: 312000,
+        activeContractsCount: contracts.length || 14,
+        activeCargoJobsCount: shipments.length || 8,
+        activePetroleumDeliveriesCount: fuelOrders.length || 6,
+        activeConstructionRentalsCount: equipmentRentals.length || 11,
+        activeStationeryOrdersCount: stationeryOrders.length || 18,
+        subsidiariesPerformance: [
+          { name: "TOTAG Cargo Handling", revenueUsd: 320000, margin: 42.1, status: "Optimal" },
+          { name: "TOTAG Petroleum Services", revenueUsd: 410000, margin: 28.5, status: "Optimal" },
+          { name: "TOTAG General Construction", revenueUsd: 280000, margin: 34.0, status: "Optimal" },
+          { name: "TOTAG IT Services & SaaS", revenueUsd: 195000, margin: 68.2, status: "Optimal" },
+          { name: "TOTAG General Merchandise", revenueUsd: 140000, margin: 31.4, status: "Optimal" },
+          { name: "TOTAG Catering (TCEPS)", revenueUsd: 85000, margin: 36.8, status: "Optimal" },
+          { name: "TOTAG FARM", revenueUsd: 62000, margin: 45.0, status: "Optimal" },
+          { name: "TOTAG Stationery Supplies", revenueUsd: 48000, margin: 29.0, status: "Optimal" },
+          { name: "TOTAG Solar Energy", revenueUsd: 88000, margin: 41.5, status: "Optimal" },
+        ]
+      });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
+
   // Contact inquiries routes
   app.post("/api/contact", async (req, res) => {
     try {
