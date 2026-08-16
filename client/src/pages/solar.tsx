@@ -60,7 +60,8 @@ const COMPONENT_CATALOGUE = [
 ];
 
 export default function SolarPage() {
-  const [activeTab, setActiveTab] = useState("customer-portal");
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("crm-leads");
   const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
   const [systemMode, setSystemMode] = useState("self-consumption");
   const [ticketSent, setTicketSent] = useState(false);
@@ -73,12 +74,54 @@ export default function SolarPage() {
     roofType: "Corrugated Metal Sheet (South-West 15° Pitch)"
   });
 
-  // Dynamic Persistent Audits State
+  // Dynamic Persistent State
   const [auditsList, setAuditsList] = useState<SolarAuditItem[]>([]);
+  const [leadsList, setLeadsList] = useState<SolarLeadItem[]>([]);
+  const [leadCategoryFilter, setLeadCategoryFilter] = useState<string>("ALL");
+  const [showNewLeadModal, setShowNewLeadModal] = useState(false);
+  const [newLead, setNewLead] = useState({
+    customerName: "",
+    contactPerson: "",
+    phoneEmail: "",
+    customerCategory: "Commercial Client" as SolarLeadItem["customerCategory"],
+    county: "Montserrado",
+    district: "Monrovia",
+    siteAddress: "",
+    gpsCoords: "6.3150° N, 10.8072° W",
+    proposedApplication: "Hybrid Solar & Battery Storage",
+    estimatedLoadKw: 25,
+    electricitySource: "LEC Grid Only" as SolarLeadItem["electricitySource"],
+    generatorKva: "100 kVA Genset",
+    lecHoursPerDay: 10,
+    requestedAutonomyHours: 12,
+    budgetUsd: 55000,
+    procurementMethod: "Direct Purchase" as SolarLeadItem["procurementMethod"],
+    tenderNumber: "",
+    submissionDeadline: "",
+    leadSource: "Direct Web Inbound",
+    assignedEngineer: "Eng. Tarkpor Williams",
+    probabilityPct: 75,
+    estimatedValueUsd: 50000
+  });
 
+  // Module 2 Field Assessment Tools State
+  const [fieldAssessment, setFieldAssessment] = useState({
+    gpsCaptured: "6.0719° N, 8.1281° W (Grand Gedeh)",
+    roofStructure: "Corrugated Zinc (15° Pitch, South-Facing)",
+    groundMountArea: "450 sq. meters available",
+    shadingHorizon: "Clear 08:00 to 17:30 (5.1 Peak Sun Hours)",
+    mdbPhaseRating: "Three-Phase 400V / 200A Main Breaker",
+    generatorRating: "150 kVA Perkins Diesel (ATS Working)",
+    gridStability: "LEC Grid Available ~6 hrs/day (Voltage fluctuations 180V-250V)",
+    earthingOhms: "3.2 Ω Ground Rod (Compliant < 5Ω)",
+    cableDistanceMeters: "35 meters to Main Distribution Board",
+    batteryRoomEnv: "AC Conditioned 22°C (Ventilation Installed)",
+    structuralRisk: "Low Risk - Heavy Steel Rafters Approved"
+  });
 
   useEffect(() => {
     setAuditsList(EcosystemStateEngine.getSolarAudits());
+    setLeadsList(EcosystemStateEngine.getSolarLeads());
   }, []);
 
   // 1. Dynamic Interactive Energy Audit Loads State
@@ -176,19 +219,19 @@ export default function SolarPage() {
             <div>
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-amber-500 text-slate-950 text-xs font-black mb-3">
                 <Sun className="w-4 h-4" />
-                <span>10th Standalone Service Vertical • TOTAG Smart Energy Platform</span>
+                <span>10th Standalone Subsidiary • TOTAG Smart Energy Platform</span>
               </div>
               <h1 className="text-3xl sm:text-5xl font-black tracking-tight">
-                TOTAG <span className="text-amber-400">Solar Energy</span> & Smart Power
+                TOTAG <span className="text-amber-400">Smart Energy Platform</span>
               </h1>
               <p className="text-sm text-slate-300 font-semibold mt-1 max-w-3xl">
-                Comprehensive Site Surveys, Load Analysis, Shading Studies, and Tailored Solar PV Engineering Design Engine for UN Agencies, Health Facilities, Agribusiness Microgrids, and Commercial Enterprises.
+                Solar EPC, Energy Management, Remote Monitoring & Lifecycle Services for UN Organizations, Health Facilities, Agribusiness Microgrids, Commercial Enterprises, and Residential Estates.
               </p>
             </div>
 
             <div className="flex flex-col gap-2">
               <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 text-center justify-center">
-                Solar EPC + NOC Live ({auditsList.length} Active Proposals)
+                Full EPC Lifecycle + NOC Live
               </Badge>
               <div className="text-right p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs">
                 <span className="text-slate-400 block font-bold">Monthly Diesel Avoided:</span>
@@ -198,19 +241,34 @@ export default function SolarPage() {
           </div>
         </section>
 
-        {/* Operating Lifecycle Indicator */}
+        {/* Full Operating Lifecycle Sequence Indicator */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="p-4 rounded-2xl bg-slate-900 border-2 border-slate-800 space-y-2 shadow-xl">
-            <span className="text-xs font-black uppercase text-amber-400 tracking-wider">Enterprise Operating Lifecycle</span>
-            <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-slate-300">
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">1. Lead CRM</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">2. Energy Audit</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-600 text-white shadow-md">3. Shading & Tailored System Sizing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">4. BOQ & Costing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">5. Procurement</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">6. Installation QA/QC</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">7. Commissioning</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">8. NOC Remote Monitoring</span>
+          <div className="p-4 rounded-2xl bg-slate-900 border-2 border-slate-800 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
+                <Activity className="w-4 h-4 text-amber-400" />
+                End-to-End Enterprise Solar Operating Lifecycle
+              </span>
+              <span className="text-xs text-slate-400 font-bold">18 Integrated Stages</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-slate-300">
+              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Lead</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Site Assessment</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Energy Audit</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">System Design</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">BOQ/Costing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Proposal</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Contract</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Procurement</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Installation</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">QA/QC</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Testing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Commissioning</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Handover</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Remote Monitoring</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Preventive Maintenance</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Warranty/Service</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Asset Replacement/Expansion</span>
             </div>
           </div>
         </section>
@@ -219,38 +277,511 @@ export default function SolarPage() {
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
+              <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Building2 className="h-4 w-4" />
+                1. Solar CRM & Pipeline
+              </TabsTrigger>
+              <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+                <Compass className="h-4 w-4" />
+                2. Site Assessment & Audit
+              </TabsTrigger>
               <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Sun className="h-4 w-4" />
-                1. Customer Solar Portal
+                3. Customer Solar Portal
               </TabsTrigger>
               <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Cpu className="h-4 w-4" />
-                2. Tailored Design & Shading
-              </TabsTrigger>
-              <TabsTrigger value="energy-audit" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Calculator className="h-4 w-4" />
-                3. Load Audit
+                4. Tailored Design
               </TabsTrigger>
               <TabsTrigger value="noc-monitoring" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Activity className="h-4 w-4" />
-                4. NOC Telemetry
+                5. NOC Telemetry
               </TabsTrigger>
               <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <FileSpreadsheet className="h-4 w-4" />
-                5. BOQ & Proposals
+                6. BOQ & Proposals
               </TabsTrigger>
               <TabsTrigger value="commissioning" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
                 <Award className="h-4 w-4" />
-                6. QA/QC Certs
-              </TabsTrigger>
-              <TabsTrigger value="interoperability" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
-                <Layers className="h-4 w-4" />
-                7. Ecosystem Sync
+                7. QA/QC & Certs
               </TabsTrigger>
             </TabsList>
 
-            {/* 1. Customer Solar Asset & Telemetry Portal */}
+            {/* MODULE 1: Solar CRM, Leads & Opportunity Management */}
+            <TabsContent value="crm-leads" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                {/* Header & Pipeline KPI Cards */}
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                        Module 1: Solar Opportunity CRM
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
+                        {leadsList.length} Active Leads & RFQs
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white">Solar CRM, Leads & Opportunity Pipeline</h2>
+                    <p className="text-slate-400 text-xs mt-1">This is where every opportunity begins — Managing residential, commercial, government, UN, NGO, and RFQ tenders.</p>
+                  </div>
+
+                  <Button 
+                    onClick={() => setShowNewLeadModal(true)}
+                    className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-lg"
+                  >
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    New Solar Lead / Tender Opportunity
+                  </Button>
+                </div>
+
+                {/* KPI Metrics Summary */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-xs font-bold text-slate-400">TOTAL PIPELINE VALUE</span>
+                    <div className="text-2xl font-black text-amber-400">
+                      ${leadsList.reduce((acc, l) => acc + (l.estimatedValueUsd || 0), 0).toLocaleString()} USD
+                    </div>
+                    <span className="text-[11px] text-slate-500">Unweighted Opportunity Sum</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-xs font-bold text-slate-400">WEIGHTED PIPELINE FORECAST</span>
+                    <div className="text-2xl font-black text-emerald-400">
+                      ${leadsList.reduce((acc, l) => acc + (l.estimatedValueUsd * (l.probabilityPct / 100)), 0).toLocaleString(undefined, { maximumFractionDigits: 0 })} USD
+                    </div>
+                    <span className="text-[11px] text-slate-500">Probability-Weighted Revenue</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-xs font-bold text-slate-400">UN & GOVT TENDERS / RFQs</span>
+                    <div className="text-2xl font-black text-sky-400">
+                      {leadsList.filter(l => l.customerCategory === 'UN Organization' || l.customerCategory === 'Government Agency' || l.customerCategory === 'Tender/RFQ/RFP').length}
+                    </div>
+                    <span className="text-[11px] text-slate-500">High-Value Institutional RFQs</span>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                    <span className="text-xs font-bold text-slate-400">WIN CONVERSION PROBABILITY</span>
+                    <div className="text-2xl font-black text-purple-400">
+                      {Math.round(leadsList.reduce((acc, l) => acc + l.probabilityPct, 0) / (leadsList.length || 1))}%
+                    </div>
+                    <span className="text-[11px] text-slate-500">Average Weighted Win Probability</span>
+                  </div>
+                </div>
+
+                {/* Interactive Opportunity Pipeline Stages Board */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-black text-white flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-amber-400" />
+                    <span>Visual Solar Opportunity Pipeline Stages</span>
+                  </h3>
+                  
+                  <div className="grid grid-cols-2 md:grid-cols-7 gap-2">
+                    {["New Lead", "Qualified", "Site Assessment Required", "Technical Design", "Commercial Proposal", "Negotiation", "Won / Lost"].map((stage, idx) => {
+                      const count = leadsList.filter(l => l.stage === stage || (stage === "Won / Lost" && (l.stage === "Won" || l.stage === "Lost"))).length;
+                      return (
+                        <div key={idx} className="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-1 text-center">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{idx + 1}. {stage}</span>
+                          <span className="text-lg font-black text-amber-400 block">{count} Leads</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Solar CRM Opportunities Table */}
+                <div className="space-y-3">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+                    <h3 className="text-sm font-black text-white">Active Solar EPC Opportunities Registry</h3>
+                    
+                    {/* Category Filter Chips */}
+                    <div className="flex flex-wrap gap-1.5 text-xs">
+                      {["ALL", "Commercial Client", "UN Organization", "Government Agency", "NGO", "Health Facility", "Farm", "Individual Residential"].map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setLeadCategoryFilter(cat)}
+                          className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border ${leadCategoryFilter === cat ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-800'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-xl border border-slate-800">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                        <tr>
+                          <th className="p-3">Customer / Institution</th>
+                          <th className="p-3">Category & Location</th>
+                          <th className="p-3">Load (kW) & Source</th>
+                          <th className="p-3">Procurement Method</th>
+                          <th className="p-3">Assigned Engineer</th>
+                          <th className="p-3">Est. Value ($)</th>
+                          <th className="p-3">Pipeline Stage</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 text-slate-200 font-semibold bg-slate-900">
+                        {leadsList
+                          .filter(l => leadCategoryFilter === "ALL" || l.customerCategory === leadCategoryFilter)
+                          .map((lead) => (
+                            <tr key={lead.id} className="hover:bg-slate-800/50">
+                              <td className="p-3">
+                                <div className="font-black text-white">{lead.customerName}</div>
+                                <div className="text-[11px] text-slate-400">{lead.contactPerson} ({lead.phoneEmail})</div>
+                              </td>
+                              <td className="p-3">
+                                <span className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 font-bold text-[11px]">{lead.customerCategory}</span>
+                                <div className="text-[11px] text-slate-400 mt-0.5">{lead.county}, {lead.district}</div>
+                              </td>
+                              <td className="p-3">
+                                <div className="font-bold text-amber-400">{lead.estimatedLoadKw} kW Peak</div>
+                                <div className="text-[11px] text-slate-400">{lead.electricitySource}</div>
+                              </td>
+                              <td className="p-3">
+                                <div>{lead.procurementMethod}</div>
+                                {lead.tenderNumber && <div className="text-[10px] text-sky-400 font-mono">{lead.tenderNumber}</div>}
+                              </td>
+                              <td className="p-3 text-slate-300">{lead.assignedEngineer}</td>
+                              <td className="p-3">
+                                <div className="font-black text-emerald-400">${lead.estimatedValueUsd.toLocaleString()} USD</div>
+                                <div className="text-[10px] text-slate-400">{lead.probabilityPct}% Win Chance</div>
+                              </td>
+                              <td className="p-3">
+                                <select
+                                  value={lead.stage}
+                                  onChange={(e) => {
+                                    EcosystemStateEngine.updateSolarLeadStage(lead.id, e.target.value as SolarLeadItem["stage"]);
+                                    setLeadsList(EcosystemStateEngine.getSolarLeads());
+                                    toast({ title: "Stage Updated", description: `${lead.customerName} moved to ${e.target.value}` });
+                                  }}
+                                  className="bg-slate-950 border border-slate-700 text-amber-400 rounded p-1 text-[11px] font-bold"
+                                >
+                                  <option value="New Lead">New Lead</option>
+                                  <option value="Qualified">Qualified</option>
+                                  <option value="Site Assessment Required">Site Assessment Required</option>
+                                  <option value="Technical Design">Technical Design</option>
+                                  <option value="Commercial Proposal">Commercial Proposal</option>
+                                  <option value="Negotiation">Negotiation</option>
+                                  <option value="Won">Won</option>
+                                  <option value="Lost">Lost</option>
+                                </select>
+                              </td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Interactive New Solar Lead Capture Form Modal */}
+                {showNewLeadModal && (
+                  <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                        <div>
+                          <h3 className="text-xl font-black text-white">Create New Solar EPC Lead / Opportunity</h3>
+                          <p className="text-xs text-slate-400">Capture comprehensive customer profile, GIS coordinates, electrical baseline, and budget.</p>
+                        </div>
+                        <button onClick={() => setShowNewLeadModal(false)} className="text-slate-400 hover:text-white font-bold">✕</button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
+                        <div>
+                          <Label className="text-slate-300">Customer / Institution Name *</Label>
+                          <Input value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. UNDP Liberia / Monrovia Plaza" />
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">Customer Category *</Label>
+                          <select value={newLead.customerCategory} onChange={(e) => setNewLead({ ...newLead, customerCategory: e.target.value as SolarLeadItem["customerCategory"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                            <option value="Individual Residential">Individual Residential</option>
+                            <option value="Commercial Client">Commercial Client</option>
+                            <option value="Government Agency">Government Agency</option>
+                            <option value="NGO">NGO</option>
+                            <option value="UN Organization">UN Organization</option>
+                            <option value="Health Facility">Health Facility</option>
+                            <option value="School">School</option>
+                            <option value="Farm">Farm / Agricultural Site</option>
+                            <option value="Telecom Installation">Telecom Tower Installation</option>
+                            <option value="Industrial Client">Industrial / Factory</option>
+                            <option value="Tender/RFQ/RFP">Tender / RFQ / RFP</option>
+                            <option value="Reseller Opportunity">Dealer / Reseller Opportunity</option>
+                            <option value="Existing Customer Expansion">Existing Customer Expansion</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label className="text-slate-300">Contact Person Name</Label>
+                          <Input value={newLead.contactPerson} onChange={(e) => setNewLead({ ...newLead, contactPerson: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. Mr. Joseph Sirleaf" />
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">Phone / Email Contact</Label>
+                          <Input value={newLead.phoneEmail} onChange={(e) => setNewLead({ ...newLead, phoneEmail: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="+231 770 000 000 / email@domain.com" />
+                        </div>
+
+                        <div>
+                          <Label className="text-slate-300">County & District</Label>
+                          <Input value={`${newLead.county}, ${newLead.district}`} onChange={(e) => setNewLead({ ...newLead, county: e.target.value.split(',')[0] || 'Montserrado' })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. Montserrado, Monrovia" />
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">GPS Coordinates</Label>
+                          <Input value={newLead.gpsCoords} onChange={(e) => setNewLead({ ...newLead, gpsCoords: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="6.3150° N, 10.8072° W" />
+                        </div>
+
+                        <div>
+                          <Label className="text-slate-300">Estimated Peak Load (kW)</Label>
+                          <Input type="number" value={newLead.estimatedLoadKw} onChange={(e) => setNewLead({ ...newLead, estimatedLoadKw: parseFloat(e.target.value) || 10 })} className="bg-slate-950 border-slate-800 text-white mt-1" />
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">Existing Electricity Source</Label>
+                          <select value={newLead.electricitySource} onChange={(e) => setNewLead({ ...newLead, electricitySource: e.target.value as SolarLeadItem["electricitySource"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                            <option value="LEC Grid Only">LEC Grid Only</option>
+                            <option value="Diesel Generator Only">Diesel Generator Only</option>
+                            <option value="Off-Grid / None">Off-Grid / None</option>
+                            <option value="Legacy Solar System">Legacy Solar System</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label className="text-slate-300">Procurement Method</Label>
+                          <select value={newLead.procurementMethod} onChange={(e) => setNewLead({ ...newLead, procurementMethod: e.target.value as SolarLeadItem["procurementMethod"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                            <option value="Direct Purchase">Direct Purchase</option>
+                            <option value="Tender / RFQ">Tender / RFQ</option>
+                            <option value="Solar Lease">Solar Lease</option>
+                            <option value="Power Purchase Agreement (PPA)">Power Purchase Agreement (PPA)</option>
+                          </select>
+                        </div>
+                        <div>
+                          <Label className="text-slate-300">Estimated Project Value ($ USD)</Label>
+                          <Input type="number" value={newLead.estimatedValueUsd} onChange={(e) => setNewLead({ ...newLead, estimatedValueUsd: parseFloat(e.target.value) || 10000 })} className="bg-slate-950 border-slate-800 text-white mt-1" />
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-3 border-t border-slate-800 pt-4">
+                        <Button variant="outline" onClick={() => setShowNewLeadModal(false)} className="bg-slate-950 border-slate-800 text-slate-300">Cancel</Button>
+                        <Button 
+                          onClick={() => {
+                            if (!newLead.customerName) {
+                              alert("Please enter customer name");
+                              return;
+                            }
+                            EcosystemStateEngine.addSolarLead({
+                              ...newLead,
+                              stage: "New Lead"
+                            });
+                            setLeadsList(EcosystemStateEngine.getSolarLeads());
+                            setShowNewLeadModal(false);
+                            toast({ title: "Solar Lead Added", description: `Opportunity for ${newLead.customerName} saved to pipeline.` });
+                          }}
+                          className="bg-amber-500 text-slate-950 font-black"
+                        >
+                          Save Lead to CRM Pipeline
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </TabsContent>
+
+            {/* MODULE 2: Solar Site Assessment & Energy Audit */}
+            <TabsContent value="site-assessment" className="space-y-8">
+              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+                
+                <div className="border-b border-slate-800 pb-4">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                      <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                      Module 2: Field Engineering Assessment Suite
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-bold">
+                      Mobile & Tablet Optimized
+                    </span>
+                  </div>
+                  <h2 className="text-2xl font-black text-white">Solar Site Assessment & Granular Energy Audit</h2>
+                  <p className="text-slate-400 text-xs mt-1">Technicians perform on-site audits to inspect structural capacity, shading horizon, electrical MDB, earthing, and itemized load consumption.</p>
+                </div>
+
+                {/* 12 Field Inspection Tools Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>1. GPS CAPTURE & SITE COORDS</span>
+                      <MapPin className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.gpsCaptured} onChange={(e) => setFieldAssessment({ ...fieldAssessment, gpsCaptured: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Auto-geofenced coordinates for Liberian solar irradiance mapping (4.6 kWh/m²/day).</p>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>2. ROOF STRUCTURE ASSESSMENT</span>
+                      <Building2 className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.roofStructure} onChange={(e) => setFieldAssessment({ ...fieldAssessment, roofStructure: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Corrugated zinc, concrete slab, tilt angle, structural rafter integrity.</p>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>3. GROUND-MOUNT FOOTPRINT</span>
+                      <Compass className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.groundMountArea} onChange={(e) => setFieldAssessment({ ...fieldAssessment, groundMountArea: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Available land footprint, soil compaction, and drainage clearance.</p>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>4. SHADING & SUN PATH HORIZON</span>
+                      <Sun className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.shadingHorizon} onChange={(e) => setFieldAssessment({ ...fieldAssessment, shadingHorizon: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Tree obstruction, adjacent building shadow analysis from 08:00 to 17:30.</p>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>5. MAIN DISTRIBUTION BOARD (MDB)</span>
+                      <Cpu className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.mdbPhaseRating} onChange={(e) => setFieldAssessment({ ...fieldAssessment, mdbPhaseRating: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Single-phase 230V or Three-phase 400V breaker ratings & busbar capacity.</p>
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between text-xs font-bold text-amber-400">
+                      <span>6. EARTHING & SURGE RESISTANCE</span>
+                      <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    </div>
+                    <Input value={fieldAssessment.earthingOhms} onChange={(e) => setFieldAssessment({ ...fieldAssessment, earthingOhms: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <p className="text-[11px] text-slate-400">Grounding rod resistance measured in Ohms (Must be &lt; 5.0 Ω for inverter safety).</p>
+                  </div>
+                </div>
+
+                {/* Granular Equipment Load Audit Table */}
+                <div className="space-y-4 pt-4 border-t border-slate-800">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+                    <div>
+                      <h3 className="text-lg font-black text-white flex items-center gap-2">
+                        <Calculator className="w-5 h-5 text-amber-400" />
+                        <span>Granular Itemized Load Audit Engine</span>
+                      </h3>
+                      <p className="text-slate-400 text-xs mt-0.5">Every equipment item is entered separately to compute actual Peak Demand (kW), Daily kWh, and Autonomy Battery Storage.</p>
+                    </div>
+
+                    <div className="flex items-center space-x-2 text-xs font-bold text-slate-300">
+                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-amber-400">
+                        Connected: {(auditLoads.reduce((a, b) => a + (b.qty * b.watts), 0) / 1000).toFixed(2)} kW
+                      </span>
+                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-emerald-400">
+                        Daily Energy: {auditLoads.reduce((a, b) => a + (b.qty * b.watts * b.hours * b.factor / 1000), 0).toFixed(1)} kWh/day
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Add Equipment Form */}
+                  <form onSubmit={handleAddLoad} className="bg-slate-950 p-4 rounded-xl border border-slate-800 grid grid-cols-1 sm:grid-cols-5 gap-3 items-end text-xs font-semibold">
+                    <div>
+                      <Label className="text-slate-300">Equipment Name</Label>
+                      <Input value={newLoad.name} onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} placeholder="e.g. Cold Storage Freezer" className="bg-slate-900 border-slate-800 text-white mt-1" />
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Quantity</Label>
+                      <Input type="number" min="1" value={newLoad.qty} onChange={(e) => setNewLoad({ ...newLead, qty: parseInt(e.target.value) || 1 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Rated Watts (W)</Label>
+                      <Input type="number" min="1" value={newLoad.watts} onChange={(e) => setNewLoad({ ...newLoad, watts: parseInt(e.target.value) || 100 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                    </div>
+                    <div>
+                      <Label className="text-slate-300">Operating Hours/Day</Label>
+                      <Input type="number" min="1" max="24" value={newLoad.hours} onChange={(e) => setNewLoad({ ...newLoad, hours: parseInt(e.target.value) || 8 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                    </div>
+                    <Button type="submit" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black">
+                      + Add Equipment
+                    </Button>
+                  </form>
+
+                  {/* Audit Loads Table */}
+                  <div className="overflow-x-auto rounded-xl border border-slate-800">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                        <tr>
+                          <th className="p-3">Equipment Item</th>
+                          <th className="p-3">Qty</th>
+                          <th className="p-3">Rated Watts</th>
+                          <th className="p-3">Hours / Day</th>
+                          <th className="p-3">Diversity (Simultaneous %)</th>
+                          <th className="p-3">Peak Load (kW)</th>
+                          <th className="p-3">Daily Energy (kWh)</th>
+                          <th className="p-3">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800 text-slate-200 font-semibold bg-slate-900">
+                        {auditLoads.map((item, idx) => {
+                          const peakKw = ((item.qty * item.watts * item.factor) / 1000).toFixed(2);
+                          const kwh = ((item.qty * item.watts * item.hours * item.factor) / 1000).toFixed(1);
+                          return (
+                            <tr key={idx} className="hover:bg-slate-800/50">
+                              <td className="p-3 font-bold text-white">{item.name}</td>
+                              <td className="p-3">{item.qty}</td>
+                              <td className="p-3 text-amber-400 font-mono">{item.watts} W</td>
+                              <td className="p-3">{item.hours} hrs</td>
+                              <td className="p-3">
+                                <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-emerald-400 font-bold">{Math.round(item.factor * 100)}%</span>
+                              </td>
+                              <td className="p-3 font-black text-amber-400">{peakKw} kW</td>
+                              <td className="p-3 font-black text-emerald-400">{kwh} kWh</td>
+                              <td className="p-3">
+                                <button onClick={() => handleDeleteLoad(idx)} className="text-rose-400 hover:text-rose-300 font-bold">Remove</button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Calculated Platform Sizing Summary */}
+                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase">CONNECTED LOAD</span>
+                      <div className="text-xl font-black text-amber-400">
+                        {(auditLoads.reduce((a, b) => a + (b.qty * b.watts), 0) / 1000).toFixed(2)} kW
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase">PEAK DEMAND (DIVERSITY)</span>
+                      <div className="text-xl font-black text-emerald-400">
+                        {(auditLoads.reduce((a, b) => a + (b.qty * b.watts * b.factor), 0) / 1000).toFixed(2)} kW
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase">REQUIRED INVERTER SURGE</span>
+                      <div className="text-xl font-black text-sky-400">
+                        {((auditLoads.reduce((a, b) => a + (b.qty * b.watts * b.factor), 0) / 1000) * 1.5).toFixed(1)} kVA
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase">RECOMMENDED BATTERY (14H)</span>
+                      <div className="text-xl font-black text-purple-400">
+                        {((auditLoads.reduce((a, b) => a + (b.qty * b.watts * b.hours * b.factor / 1000), 0) * 0.6) / 0.8).toFixed(1)} kWh
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </TabsContent>
+
+            {/* 3. Customer Solar Asset & Telemetry Portal */}
             <TabsContent value="customer-portal" className="space-y-8">
+
               
               {/* Account Selector & Live Status Header */}
               <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
