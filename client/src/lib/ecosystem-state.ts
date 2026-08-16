@@ -55,6 +55,37 @@ export interface SolarLeadItem {
   createdAt: string;
 }
 
+export interface SolarCatalogueItem {
+  id: string;
+  name: string;
+  category: "PV Module" | "Inverter" | "Battery" | "Mounting System" | "DC/AC Cables & Protection" | "Combiner Box & ATS" | "Monitoring & Metering";
+  manufacturer: string;
+  model: string;
+  specs: string;
+  warranty: string;
+  priceUsd: number;
+  certifications: string;
+  unit: string;
+}
+
+export interface SolarEngineeringScenario {
+  id: string;
+  name: string;
+  description: string;
+  inverterKva: number;
+  pvCapacityKwp: number;
+  moduleCount: number;
+  batteryCapacityKwh: number;
+  usableKwh: number;
+  annualYieldKwh: number;
+  autonomyHours: number;
+  capitalCostUsd: number;
+  annualSavingsUsd: number;
+  generatorFuelSavedLiters: number;
+  paybackYears: number;
+  co2MitigatedTons: number;
+}
+
 export interface SolarAuditItem {
   id: string;
   clientName: string;
