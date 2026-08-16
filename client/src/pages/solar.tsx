@@ -184,19 +184,32 @@ const DETAILED_COMPONENT_CATALOGUE = [
   },
   {
     id: "COMP-BAT-HUBBLE",
-    name: "Hubble AM-2 5.5kWh 48V Lithium Battery",
+    name: "Hubble AM2+ 5.5kWh 48V 117Ah Lithium Battery Module",
     category: "Battery",
-    brand: "Hubble Lithium",
-    modelNo: "AM-2-5.5KWH",
+    brand: "Hubble Energy",
+    modelNo: "Hubble AM2+",
     priceUsd: 1580,
-    warranty: "10-Year Pro-Rated Warranty",
-    certifications: "CE, UN38.3, IEC 62619, ISO 9001",
-    specs: "51.2V 110Ah • 5.63 kWh Nominal • 100A Continuous Discharge • Cloud Gateway Included",
-    dimensions: "375 x 145 x 460 mm (42.0 kg)",
-    description: "High-capacity wall-mount or rack-mount lithium battery featuring internal automatic fire suppression aerosol, Cloud Ripper remote telemetry, and 100A discharge capability.",
+    warranty: "10-Year Warranty (+/- 15 Years Design Life)",
+    certifications: "CE, UN38.3, GBT31484-2015, GBT31485-2015, GBT31486-2015",
+    specs: "48V 117Ah (5.5kWh Design Capacity) • 1.0C Rating (105A Max Charging/Discharging) • 100% DOD • +/- 1500 Cycles @ 100% DOD",
+    dimensions: "375 x 145 x 467 mm (WxDxH) • Weight: Approx. 42.0 kg",
+    description: "Hubble AM2+ is a high-performance 48V 117Ah 5.5kWh Li-ion Prismatic cell energy storage system featuring 1.0C continuous charging and discharging (105A), integrated 24/7 remote monitoring with Hubble Cloudlink, white bake lacquer steel case, and parallel expansion up to 15 packs with full communications.",
+    features: [
+      "Integrated 24/7 Remote Telemetry & Monitoring with Hubble Cloudlink",
+      "1.0C High-Performance Lithium Battery with New Li-ion Prismatic Cells",
+      "Advanced Smart BMS with Electronic Circuit Breaker, Voltage Protection & Current Limiting",
+      "Max Continuous Charging & Discharging Current: 105A",
+      "100% Depth of Discharge (DoD) capability (+/- 1500 Cycles @ 100% DOD)",
+      "Easy Wall Mount or Shelf Rack Installation with Heavy Duty Side Handles",
+      "Parallel Scalability: Connect up to 15 battery packs in parallel with full CAN-bus communication",
+      "Outer Package Material: White bake lacquer heavy-duty steel protective enclosure",
+      "Operating Temperature Range: Charging 0 to +55°C, Discharging -20 to +55°C",
+      "Universal Compatibility: Fully integrates and communicates via CAN-bus with leading hybrid inverter brands"
+    ],
     photos: [
-      { url: "/images/deye/deye-tp-hv-2.png", caption: "Enclosure: Heavy Steel Wall-Mount Casing & Digital LCD Status Screen" },
-      { url: "/images/deye/deye-tp-lv-1.png", caption: "Safety Feature: Built-in Aerosol Fire Extinguisher & Cell Isolation" }
+      { url: "/images/pv/hubble-am2-battery.png", caption: "Hubble AM2+ 48V 117Ah 5.5kWh White Bake Lacquer Wall-Mount Enclosure & Cloudlink Antenna" },
+      { url: "/images/pv/hubble-am2-datasheet-p1.png", caption: "Official Product Datasheet Page 1: Features, Nominal Voltage (48V), Capacity (5.5kWh), Rated Capacity (117Ah)" },
+      { url: "/images/pv/hubble-am2-datasheet-p2.png", caption: "Official Product Datasheet Page 2: Technical Specifications Table, Electrical Characteristics & Dimensions" }
     ]
   },
   {
