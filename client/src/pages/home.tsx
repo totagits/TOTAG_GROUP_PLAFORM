@@ -1,5 +1,4 @@
 import Header from "@/components/header";
-import CinematicOpeningHero from "@/components/cinematic-opening-hero";
 import HeroSection from "@/components/hero-section";
 import AboutSection from "@/components/about-section";
 import ServicesSection from "@/components/services-section";
@@ -11,7 +10,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Header />
       <main className="pt-16">
-        <CinematicOpeningHero />
+        <HeroSection />
         <AboutSection />
         <ServicesSection />
         <ContactForm />
@@ -20,5 +19,3 @@ export default function Home() {
     </div>
   );
 }
-
-
