@@ -232,7 +232,7 @@ export default function SolarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-mesh-glass text-slate-900 dark:text-white">
       <Header />
       
       <main className="pt-28 pb-20">
@@ -258,7 +258,7 @@ export default function SolarPage() {
 
         {/* Full Operating Lifecycle Sequence Indicator */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="p-4 rounded-2xl bg-slate-900 border-2 border-slate-800 space-y-3 shadow-xl">
+          <div className="p-4 rounded-2xl glass-card border-white/60 dark:border-white/10 space-y-3 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
                 <Activity className="w-4 h-4 text-amber-400" />
@@ -270,20 +270,20 @@ export default function SolarPage() {
               <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Lead</span> →
               <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Site Assessment</span> →
               <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Energy Audit</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">System Design</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">BOQ/Costing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Proposal</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Contract</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Procurement</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Installation</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">QA/QC</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Testing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Commissioning</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Handover</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">System Design</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">BOQ/Costing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Proposal</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Contract</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Procurement</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Installation</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">QA/QC</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Testing</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Commissioning</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Handover</span> →
               <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Remote Monitoring</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Preventive Maintenance</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Warranty/Service</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-950 border border-slate-800">Asset Replacement/Expansion</span>
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Preventive Maintenance</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Warranty/Service</span> →
+              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Asset Replacement/Expansion</span>
             </div>
           </div>
         </section>
@@ -291,40 +291,40 @@ export default function SolarPage() {
         {/* Main Application Module Tabs */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
-              <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
+              <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Building2 className="h-4 w-4" />
                 1. CRM
               </TabsTrigger>
-              <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Compass className="h-4 w-4" />
                 2. Audit
               </TabsTrigger>
-              <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Cpu className="h-4 w-4" />
                 3. Design
               </TabsTrigger>
-              <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <FileSpreadsheet className="h-4 w-4" />
                 4. Catalogue
               </TabsTrigger>
-              <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Calculator className="h-4 w-4" />
                 5. Auto-BOQ
               </TabsTrigger>
-              <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Truck className="h-4 w-4" />
                 6. Procurement
               </TabsTrigger>
-              <TabsTrigger value="serialized-inventory" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="serialized-inventory" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Warehouse className="h-4 w-4" />
                 7. Inventory
               </TabsTrigger>
-              <TabsTrigger value="project-management" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="project-management" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <FolderKanban className="h-4 w-4" />
                 8. Projects
               </TabsTrigger>
-              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950">
+              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                 <Sun className="h-4 w-4" />
                 9. NOC Portal
               </TabsTrigger>
@@ -332,10 +332,10 @@ export default function SolarPage() {
 
             {/* MODULE 1: Solar CRM, Leads & Opportunity Management */}
             <TabsContent value="crm-leads" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
                 {/* Header & Pipeline KPI Cards */}
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -361,7 +361,7 @@ export default function SolarPage() {
 
                 {/* KPI Metrics Summary */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-xs font-bold text-slate-400">TOTAL PIPELINE VALUE</span>
                     <div className="text-2xl font-black text-amber-400">
                       ${leadsList.reduce((acc, l) => acc + (l.estimatedValueUsd || 0), 0).toLocaleString()} USD
@@ -369,7 +369,7 @@ export default function SolarPage() {
                     <span className="text-[11px] text-slate-500">Unweighted Opportunity Sum</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-xs font-bold text-slate-400">WEIGHTED PIPELINE FORECAST</span>
                     <div className="text-2xl font-black text-emerald-400">
                       ${leadsList.reduce((acc, l) => acc + (l.estimatedValueUsd * (l.probabilityPct / 100)), 0).toLocaleString(undefined, { maximumFractionDigits: 0 })} USD
@@ -377,7 +377,7 @@ export default function SolarPage() {
                     <span className="text-[11px] text-slate-500">Probability-Weighted Revenue</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-xs font-bold text-slate-400">UN & GOVT TENDERS / RFQs</span>
                     <div className="text-2xl font-black text-sky-400">
                       {leadsList.filter(l => l.customerCategory === 'UN Organization' || l.customerCategory === 'Government Agency' || l.customerCategory === 'Tender/RFQ/RFP').length}
@@ -385,7 +385,7 @@ export default function SolarPage() {
                     <span className="text-[11px] text-slate-500">High-Value Institutional RFQs</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-xs font-bold text-slate-400">WIN CONVERSION PROBABILITY</span>
                     <div className="text-2xl font-black text-purple-400">
                       {Math.round(leadsList.reduce((acc, l) => acc + l.probabilityPct, 0) / (leadsList.length || 1))}%
@@ -405,7 +405,7 @@ export default function SolarPage() {
                     {["New Lead", "Qualified", "Site Assessment Required", "Technical Design", "Commercial Proposal", "Negotiation", "Won / Lost"].map((stage, idx) => {
                       const count = leadsList.filter(l => l.stage === stage || (stage === "Won / Lost" && (l.stage === "Won" || l.stage === "Lost"))).length;
                       return (
-                        <div key={idx} className="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-1 text-center">
+                        <div key={idx} className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-3 rounded-xl space-y-1 text-center">
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{idx + 1}. {stage}</span>
                           <span className="text-lg font-black text-amber-400 block">{count} Leads</span>
                         </div>
@@ -425,7 +425,7 @@ export default function SolarPage() {
                         <button
                           key={cat}
                           onClick={() => setLeadCategoryFilter(cat)}
-                          className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border ${leadCategoryFilter === cat ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-800'}`}
+                          className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border ${leadCategoryFilter === cat ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-200 dark:border-white/10'}`}
                         >
                           {cat}
                         </button>
@@ -433,9 +433,9 @@ export default function SolarPage() {
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto rounded-xl border border-slate-800">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-200 dark:border-white/10">
                         <tr>
                           <th className="p-3">Customer / Institution</th>
                           <th className="p-3">Category & Location</th>
@@ -502,8 +502,8 @@ export default function SolarPage() {
                 {/* Interactive New Solar Lead Capture Form Modal */}
                 {showNewLeadModal && (
                   <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                    <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                         <div>
                           <h3 className="text-xl font-black text-white">Create New Solar EPC Lead / Opportunity</h3>
                           <p className="text-xs text-slate-400">Capture comprehensive customer profile, GIS coordinates, electrical baseline, and budget.</p>
@@ -514,11 +514,11 @@ export default function SolarPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
                         <div>
                           <Label className="text-slate-300">Customer / Institution Name *</Label>
-                          <Input value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. UNDP Liberia / Monrovia Plaza" />
+                          <Input value={newLead.customerName} onChange={(e) => setNewLead({ ...newLead, customerName: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. UNDP Liberia / Monrovia Plaza" />
                         </div>
                         <div>
                           <Label className="text-slate-300">Customer Category *</Label>
-                          <select value={newLead.customerCategory} onChange={(e) => setNewLead({ ...newLead, customerCategory: e.target.value as SolarLeadItem["customerCategory"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                          <select value={newLead.customerCategory} onChange={(e) => setNewLead({ ...newLead, customerCategory: e.target.value as SolarLeadItem["customerCategory"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="Individual Residential">Individual Residential</option>
                             <option value="Commercial Client">Commercial Client</option>
                             <option value="Government Agency">Government Agency</option>
@@ -537,29 +537,29 @@ export default function SolarPage() {
 
                         <div>
                           <Label className="text-slate-300">Contact Person Name</Label>
-                          <Input value={newLead.contactPerson} onChange={(e) => setNewLead({ ...newLead, contactPerson: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. Mr. Joseph Sirleaf" />
+                          <Input value={newLead.contactPerson} onChange={(e) => setNewLead({ ...newLead, contactPerson: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. Mr. Joseph Sirleaf" />
                         </div>
                         <div>
                           <Label className="text-slate-300">Phone / Email Contact</Label>
-                          <Input value={newLead.phoneEmail} onChange={(e) => setNewLead({ ...newLead, phoneEmail: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="+231 770 000 000 / email@domain.com" />
+                          <Input value={newLead.phoneEmail} onChange={(e) => setNewLead({ ...newLead, phoneEmail: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="+231 770 000 000 / email@domain.com" />
                         </div>
 
                         <div>
                           <Label className="text-slate-300">County & District</Label>
-                          <Input value={`${newLead.county}, ${newLead.district}`} onChange={(e) => setNewLead({ ...newLead, county: e.target.value.split(',')[0] || 'Montserrado' })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="e.g. Montserrado, Monrovia" />
+                          <Input value={`${newLead.county}, ${newLead.district}`} onChange={(e) => setNewLead({ ...newLead, county: e.target.value.split(',')[0] || 'Montserrado' })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="e.g. Montserrado, Monrovia" />
                         </div>
                         <div>
                           <Label className="text-slate-300">GPS Coordinates</Label>
-                          <Input value={newLead.gpsCoords} onChange={(e) => setNewLead({ ...newLead, gpsCoords: e.target.value })} className="bg-slate-950 border-slate-800 text-white mt-1" placeholder="6.3150° N, 10.8072° W" />
+                          <Input value={newLead.gpsCoords} onChange={(e) => setNewLead({ ...newLead, gpsCoords: e.target.value })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" placeholder="6.3150° N, 10.8072° W" />
                         </div>
 
                         <div>
                           <Label className="text-slate-300">Estimated Peak Load (kW)</Label>
-                          <Input type="number" value={newLead.estimatedLoadKw} onChange={(e) => setNewLead({ ...newLead, estimatedLoadKw: parseFloat(e.target.value) || 10 })} className="bg-slate-950 border-slate-800 text-white mt-1" />
+                          <Input type="number" value={newLead.estimatedLoadKw} onChange={(e) => setNewLead({ ...newLead, estimatedLoadKw: parseFloat(e.target.value) || 10 })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" />
                         </div>
                         <div>
                           <Label className="text-slate-300">Existing Electricity Source</Label>
-                          <select value={newLead.electricitySource} onChange={(e) => setNewLead({ ...newLead, electricitySource: e.target.value as SolarLeadItem["electricitySource"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                          <select value={newLead.electricitySource} onChange={(e) => setNewLead({ ...newLead, electricitySource: e.target.value as SolarLeadItem["electricitySource"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="LEC Grid Only">LEC Grid Only</option>
                             <option value="Diesel Generator Only">Diesel Generator Only</option>
                             <option value="Off-Grid / None">Off-Grid / None</option>
@@ -569,7 +569,7 @@ export default function SolarPage() {
 
                         <div>
                           <Label className="text-slate-300">Procurement Method</Label>
-                          <select value={newLead.procurementMethod} onChange={(e) => setNewLead({ ...newLead, procurementMethod: e.target.value as SolarLeadItem["procurementMethod"] })} className="w-full bg-slate-950 border border-slate-800 text-white rounded-lg p-2.5 mt-1 font-semibold">
+                          <select value={newLead.procurementMethod} onChange={(e) => setNewLead({ ...newLead, procurementMethod: e.target.value as SolarLeadItem["procurementMethod"] })} className="w-full bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-white rounded-lg p-2.5 mt-1 font-semibold">
                             <option value="Direct Purchase">Direct Purchase</option>
                             <option value="Tender / RFQ">Tender / RFQ</option>
                             <option value="Solar Lease">Solar Lease</option>
@@ -578,12 +578,12 @@ export default function SolarPage() {
                         </div>
                         <div>
                           <Label className="text-slate-300">Estimated Project Value ($ USD)</Label>
-                          <Input type="number" value={newLead.estimatedValueUsd} onChange={(e) => setNewLead({ ...newLead, estimatedValueUsd: parseFloat(e.target.value) || 10000 })} className="bg-slate-950 border-slate-800 text-white mt-1" />
+                          <Input type="number" value={newLead.estimatedValueUsd} onChange={(e) => setNewLead({ ...newLead, estimatedValueUsd: parseFloat(e.target.value) || 10000 })} className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" />
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-3 border-t border-slate-800 pt-4">
-                        <Button variant="outline" onClick={() => setShowNewLeadModal(false)} className="bg-slate-950 border-slate-800 text-slate-300">Cancel</Button>
+                      <div className="flex justify-end gap-3 border-t border-slate-200 dark:border-white/10 pt-4">
+                        <Button variant="outline" onClick={() => setShowNewLeadModal(false)} className="bg-slate-950 border-slate-200 dark:border-white/10 text-slate-300">Cancel</Button>
                         <Button 
                           onClick={() => {
                             if (!newLead.customerName) {
@@ -612,9 +612,9 @@ export default function SolarPage() {
 
             {/* MODULE 2: Solar Site Assessment & Energy Audit */}
             <TabsContent value="site-assessment" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
-                <div className="border-b border-slate-800 pb-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4">
                   <div className="flex items-center space-x-2 mb-1">
                     <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
                       <Compass className="w-3.5 h-3.5 text-emerald-400" />
@@ -630,63 +630,63 @@ export default function SolarPage() {
 
                 {/* 12 Field Inspection Tools Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>1. GPS CAPTURE & SITE COORDS</span>
                       <MapPin className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.gpsCaptured} onChange={(e) => setFieldAssessment({ ...fieldAssessment, gpsCaptured: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.gpsCaptured} onChange={(e) => setFieldAssessment({ ...fieldAssessment, gpsCaptured: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Auto-geofenced coordinates for Liberian solar irradiance mapping (4.6 kWh/m²/day).</p>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>2. ROOF STRUCTURE ASSESSMENT</span>
                       <Building2 className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.roofStructure} onChange={(e) => setFieldAssessment({ ...fieldAssessment, roofStructure: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.roofStructure} onChange={(e) => setFieldAssessment({ ...fieldAssessment, roofStructure: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Corrugated zinc, concrete slab, tilt angle, structural rafter integrity.</p>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>3. GROUND-MOUNT FOOTPRINT</span>
                       <Compass className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.groundMountArea} onChange={(e) => setFieldAssessment({ ...fieldAssessment, groundMountArea: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.groundMountArea} onChange={(e) => setFieldAssessment({ ...fieldAssessment, groundMountArea: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Available land footprint, soil compaction, and drainage clearance.</p>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>4. SHADING & SUN PATH HORIZON</span>
                       <Sun className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.shadingHorizon} onChange={(e) => setFieldAssessment({ ...fieldAssessment, shadingHorizon: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.shadingHorizon} onChange={(e) => setFieldAssessment({ ...fieldAssessment, shadingHorizon: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Tree obstruction, adjacent building shadow analysis from 08:00 to 17:30.</p>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>5. MAIN DISTRIBUTION BOARD (MDB)</span>
                       <Cpu className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.mdbPhaseRating} onChange={(e) => setFieldAssessment({ ...fieldAssessment, mdbPhaseRating: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.mdbPhaseRating} onChange={(e) => setFieldAssessment({ ...fieldAssessment, mdbPhaseRating: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Single-phase 230V or Three-phase 400V breaker ratings & busbar capacity.</p>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2">
                     <div className="flex items-center justify-between text-xs font-bold text-amber-400">
                       <span>6. EARTHING & SURGE RESISTANCE</span>
                       <ShieldCheck className="w-4 h-4 text-amber-400" />
                     </div>
-                    <Input value={fieldAssessment.earthingOhms} onChange={(e) => setFieldAssessment({ ...fieldAssessment, earthingOhms: e.target.value })} className="bg-slate-900 border-slate-800 text-xs text-white" />
+                    <Input value={fieldAssessment.earthingOhms} onChange={(e) => setFieldAssessment({ ...fieldAssessment, earthingOhms: e.target.value })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white" />
                     <p className="text-[11px] text-slate-400">Grounding rod resistance measured in Ohms (Must be &lt; 5.0 Ω for inverter safety).</p>
                   </div>
                 </div>
 
                 {/* Granular Equipment Load Audit Table */}
-                <div className="space-y-4 pt-4 border-t border-slate-800">
+                <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-white/10">
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
                     <div>
                       <h3 className="text-lg font-black text-white flex items-center gap-2">
@@ -697,32 +697,32 @@ export default function SolarPage() {
                     </div>
 
                     <div className="flex items-center space-x-2 text-xs font-bold text-slate-300">
-                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-amber-400">
+                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-white/10 text-amber-400">
                         Connected: {(auditLoads.reduce((a, b) => a + (b.qty * b.watts), 0) / 1000).toFixed(2)} kW
                       </span>
-                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-800 text-emerald-400">
+                      <span className="bg-slate-950 p-2 rounded-lg border border-slate-200 dark:border-white/10 text-emerald-400">
                         Daily Energy: {auditLoads.reduce((a, b) => a + (b.qty * b.watts * b.hours * b.factor / 1000), 0).toFixed(1)} kWh/day
                       </span>
                     </div>
                   </div>
 
                   {/* Add Equipment Form */}
-                  <form onSubmit={handleAddLoad} className="bg-slate-950 p-4 rounded-xl border border-slate-800 grid grid-cols-1 sm:grid-cols-5 gap-3 items-end text-xs font-semibold">
+                  <form onSubmit={handleAddLoad} className="bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-white/10 grid grid-cols-1 sm:grid-cols-5 gap-3 items-end text-xs font-semibold">
                     <div>
                       <Label className="text-slate-300">Equipment Name</Label>
-                      <Input value={newLoad.name} onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} placeholder="e.g. Cold Storage Freezer" className="bg-slate-900 border-slate-800 text-white mt-1" />
+                      <Input value={newLoad.name} onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} placeholder="e.g. Cold Storage Freezer" className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
                       <Label className="text-slate-300">Quantity</Label>
-                      <Input type="number" min="1" value={newLoad.qty} onChange={(e) => setNewLoad({ ...newLead, qty: parseInt(e.target.value) || 1 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                      <Input type="number" min="1" value={newLoad.qty} onChange={(e) => setNewLoad({ ...newLead, qty: parseInt(e.target.value) || 1 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
                       <Label className="text-slate-300">Rated Watts (W)</Label>
-                      <Input type="number" min="1" value={newLoad.watts} onChange={(e) => setNewLoad({ ...newLoad, watts: parseInt(e.target.value) || 100 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                      <Input type="number" min="1" value={newLoad.watts} onChange={(e) => setNewLoad({ ...newLoad, watts: parseInt(e.target.value) || 100 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <div>
                       <Label className="text-slate-300">Operating Hours/Day</Label>
-                      <Input type="number" min="1" max="24" value={newLoad.hours} onChange={(e) => setNewLoad({ ...newLoad, hours: parseInt(e.target.value) || 8 })} className="bg-slate-900 border-slate-800 text-white mt-1" />
+                      <Input type="number" min="1" max="24" value={newLoad.hours} onChange={(e) => setNewLoad({ ...newLoad, hours: parseInt(e.target.value) || 8 })} className="bg-slate-900 border-slate-200 dark:border-white/10 text-white mt-1" />
                     </div>
                     <Button type="submit" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black">
                       + Add Equipment
@@ -730,9 +730,9 @@ export default function SolarPage() {
                   </form>
 
                   {/* Audit Loads Table */}
-                  <div className="overflow-x-auto rounded-xl border border-slate-800">
+                  <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                      <thead className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-200 dark:border-white/10">
                         <tr>
                           <th className="p-3">Equipment Item</th>
                           <th className="p-3">Qty</th>
@@ -755,7 +755,7 @@ export default function SolarPage() {
                               <td className="p-3 text-amber-400 font-mono">{item.watts} W</td>
                               <td className="p-3">{item.hours} hrs</td>
                               <td className="p-3">
-                                <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-emerald-400 font-bold">{Math.round(item.factor * 100)}%</span>
+                                <span className="px-2 py-0.5 rounded bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-emerald-400 font-bold">{Math.round(item.factor * 100)}%</span>
                               </td>
                               <td className="p-3 font-black text-amber-400">{peakKw} kW</td>
                               <td className="p-3 font-black text-emerald-400">{kwh} kWh</td>
@@ -770,7 +770,7 @@ export default function SolarPage() {
                   </div>
 
                   {/* Calculated Platform Sizing Summary */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <span className="text-[11px] font-bold text-slate-400 uppercase">CONNECTED LOAD</span>
                       <div className="text-xl font-black text-amber-400">
@@ -807,8 +807,8 @@ export default function SolarPage() {
 
               
               {/* Account Selector & Live Status Header */}
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -824,7 +824,7 @@ export default function SolarPage() {
                   </div>
 
                   {/* Customer Account Switcher */}
-                  <div className="flex items-center space-x-3 bg-slate-950 p-2 rounded-xl border border-slate-800 w-full md:w-auto">
+                  <div className="flex items-center space-x-3 bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-white/10 w-full md:w-auto">
                     <Label className="text-xs font-bold text-slate-300 whitespace-nowrap px-2">Client Site:</Label>
                     <select 
                       value={customerAccount} 
@@ -841,7 +841,7 @@ export default function SolarPage() {
 
                 {/* 4 Telemetry Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2 relative overflow-hidden">
                     <div className="flex items-center justify-between text-xs text-amber-400 font-bold">
                       <span>SOLAR PV GENERATION</span>
                       <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" />
@@ -853,7 +853,7 @@ export default function SolarPage() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2 relative overflow-hidden">
                     <div className="flex items-center justify-between text-xs text-emerald-400 font-bold">
                       <span>BATTERY STORAGE (SoC)</span>
                       <BatteryCharging className="w-4 h-4 text-emerald-400" />
@@ -865,7 +865,7 @@ export default function SolarPage() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2 relative overflow-hidden">
                     <div className="flex items-center justify-between text-xs text-sky-400 font-bold">
                       <span>FACILITY LOAD DEMAND</span>
                       <Cpu className="w-4 h-4 text-sky-400" />
@@ -877,7 +877,7 @@ export default function SolarPage() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2 relative overflow-hidden">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-2 relative overflow-hidden">
                     <div className="flex items-center justify-between text-xs text-rose-400 font-bold">
                       <span>DIESEL GENSET / GRID</span>
                       <Fuel className="w-4 h-4 text-rose-400" />
@@ -891,7 +891,7 @@ export default function SolarPage() {
                 </div>
 
                 {/* Operating Mode Switcher */}
-                <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
                   <div>
                     <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-amber-400" />
@@ -933,8 +933,8 @@ export default function SolarPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
                 {/* Form to Request Tailored Site Survey */}
-                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                  <div className="border-b border-slate-800 pb-4">
+                <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
+                  <div className="border-b border-slate-200 dark:border-white/10 pb-4">
                     <h3 className="text-xl font-black text-white flex items-center gap-2">
                       <Calculator className="w-5 h-5 text-amber-400" />
                       <span>Request Comprehensive Site Survey & Engineering Quote</span>
@@ -948,7 +948,7 @@ export default function SolarPage() {
                       <Input 
                         value={custSurveyForm.name}
                         onChange={(e) => setCustSurveyForm({ ...custSurveyForm, name: e.target.value })}
-                        className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                       />
                     </div>
 
@@ -959,7 +959,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.peakLoad}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, peakLoad: e.target.value })}
-                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                         />
                       </div>
                       <div>
@@ -968,7 +968,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.nightLoad}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, nightLoad: e.target.value })}
-                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                         />
                       </div>
                     </div>
@@ -980,7 +980,7 @@ export default function SolarPage() {
                           type="number"
                           value={custSurveyForm.autonomyHours}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, autonomyHours: e.target.value })}
-                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                         />
                       </div>
                       <div>
@@ -988,7 +988,7 @@ export default function SolarPage() {
                         <Input 
                           value={custSurveyForm.contact}
                           onChange={(e) => setCustSurveyForm({ ...custSurveyForm, contact: e.target.value })}
-                          className="bg-slate-950 border-slate-800 text-white mt-1" 
+                          className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                         />
                       </div>
                     </div>
@@ -998,7 +998,7 @@ export default function SolarPage() {
                       <Input 
                         value={custSurveyForm.roofType}
                         onChange={(e) => setCustSurveyForm({ ...custSurveyForm, roofType: e.target.value })}
-                        className="bg-slate-950 border-slate-800 text-white mt-1" 
+                        className="bg-slate-950 border-slate-200 dark:border-white/10 text-white mt-1" 
                       />
                     </div>
 
@@ -1027,9 +1027,9 @@ export default function SolarPage() {
                 </div>
 
                 {/* Instant Engineered Sizing Preview & Financial Impact */}
-                <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl flex flex-col justify-between">
+                <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl flex flex-col justify-between">
                   <div>
-                    <div className="border-b border-slate-800 pb-4">
+                    <div className="border-b border-slate-200 dark:border-white/10 pb-4">
                       <h3 className="text-xl font-black text-white flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-emerald-400" />
                         <span>Instant Sizing Preview & Financial ROI</span>
@@ -1038,7 +1038,7 @@ export default function SolarPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-6">
-                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                      <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl">
                         <div className="text-xs text-slate-400 font-bold">RECOMMENDED PV ARRAY</div>
                         <div className="text-2xl font-black text-amber-400 mt-1">
                           {(parseFloat(custSurveyForm.peakLoad || '10') * 1.25).toFixed(1)} kWp
@@ -1048,7 +1048,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                      <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl">
                         <div className="text-xs text-slate-400 font-bold">LiFePO4 BATTERY STORAGE</div>
                         <div className="text-2xl font-black text-emerald-400 mt-1">
                           {(parseFloat(custSurveyForm.nightLoad || '5') * parseFloat(custSurveyForm.autonomyHours || '10') / 0.8).toFixed(1)} kWh
@@ -1058,7 +1058,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                      <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl">
                         <div className="text-xs text-slate-400 font-bold">MONTHLY DIESEL SAVED</div>
                         <div className="text-2xl font-black text-sky-400 mt-1">
                           ${(parseFloat(custSurveyForm.peakLoad || '10') * 95).toFixed(0)} USD
@@ -1068,7 +1068,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                      <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl">
                         <div className="text-xs text-slate-400 font-bold">ESTIMATED PAYBACK PERIOD</div>
                         <div className="text-2xl font-black text-purple-400 mt-1">
                           3.2 Years
@@ -1081,7 +1081,7 @@ export default function SolarPage() {
                   </div>
 
                   {/* Maintenance SLA & Quick Ticket */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-300">
                       <span className="flex items-center gap-1.5 text-amber-400">
                         <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -1112,8 +1112,8 @@ export default function SolarPage() {
             <TabsContent value="system-sizing" className="space-y-8">
               
               {/* Module Header */}
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -1130,38 +1130,38 @@ export default function SolarPage() {
                 </div>
 
                 {/* Sizing Parameters Engine Bar */}
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-white/10 space-y-3">
                   <h3 className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
                     <Sliders className="w-4 h-4 text-amber-400" />
                     Engineering Design Parameters & Environmental Coefficients
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs font-semibold">
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">SOLAR IRRADIANCE</span>
                       <span className="text-white font-black text-sm">4.6 PSH / Day</span>
                       <span className="text-slate-500 block text-[10px]">Liberian Radiance</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">BATTERY USABLE DOD</span>
                       <span className="text-emerald-400 font-black text-sm">80% DoD</span>
                       <span className="text-slate-500 block text-[10px]">LiFePO4 Cycle Safe</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">INVERTER EFFICIENCY</span>
                       <span className="text-sky-400 font-black text-sm">96.5% Max</span>
                       <span className="text-slate-500 block text-[10px]">Dual MPPT Loss</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">SYSTEM LOSSFACTOR</span>
                       <span className="text-rose-400 font-black text-sm">14.0% Total</span>
                       <span className="text-slate-500 block text-[10px]">Dirt, Temp & Cable</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">TEMP DERATING</span>
                       <span className="text-amber-400 font-black text-sm">-0.35% / °C</span>
                       <span className="text-slate-500 block text-[10px]">Above 25°C Ambient</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">RESERVE MARGIN</span>
                       <span className="text-purple-400 font-black text-sm">+20% Reserve</span>
                       <span className="text-slate-500 block text-[10px]">Future Expansion</span>
@@ -1171,7 +1171,7 @@ export default function SolarPage() {
 
                 {/* Consultative Sales Multi-Scenario Comparison Engine (Options A, B, C) */}
                 <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                     <h3 className="text-lg font-black text-white flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-amber-400" />
                       <span>Consultative Sales Engineering Scenario Comparison</span>
@@ -1182,8 +1182,8 @@ export default function SolarPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     
                     {/* OPTION A: Essential Backup */}
-                    <div className="bg-slate-950 border-2 border-slate-800 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div className="bg-slate-950 border-2 border-slate-200 dark:border-white/10 rounded-xl p-5 space-y-4 relative overflow-hidden">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                         <div>
                           <span className="px-2.5 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-black uppercase">OPTION A</span>
                           <h4 className="text-lg font-black text-white mt-1">Essential Backup</h4>
@@ -1232,7 +1232,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                           <span className="text-[10px] text-slate-500 block">CAPITAL INVESTMENT</span>
                           <span className="text-xl font-black text-sky-400">$24,500 USD</span>
@@ -1249,7 +1249,7 @@ export default function SolarPage() {
                         RECOMMENDED SOLUTON
                       </div>
                       
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                         <div>
                           <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase">OPTION B</span>
                           <h4 className="text-lg font-black text-white mt-1">Recommended Hybrid</h4>
@@ -1297,7 +1297,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                           <span className="text-[10px] text-amber-400 block font-bold">CAPITAL INVESTMENT</span>
                           <span className="text-2xl font-black text-amber-400">$62,000 USD</span>
@@ -1309,8 +1309,8 @@ export default function SolarPage() {
                     </div>
 
                     {/* OPTION C: Full Energy Independence */}
-                    <div className="bg-slate-950 border-2 border-slate-800 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div className="bg-slate-950 border-2 border-slate-200 dark:border-white/10 rounded-xl p-5 space-y-4 relative overflow-hidden">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                         <div>
                           <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase">OPTION C</span>
                           <h4 className="text-lg font-black text-white mt-1">Full Independence</h4>
@@ -1359,7 +1359,7 @@ export default function SolarPage() {
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
                         <div>
                           <span className="text-[10px] text-slate-500 block">CAPITAL INVESTMENT</span>
                           <span className="text-xl font-black text-emerald-400">$112,000 USD</span>
@@ -1374,24 +1374,24 @@ export default function SolarPage() {
                 </div>
 
                 {/* Sized Components Engineering Specification Breakdown */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
                   <h3 className="text-sm font-black text-white flex items-center gap-2">
                     <FileCheck className="w-4 h-4 text-emerald-400" />
                     <span>Sized Engineering Component Specifications (Option B Baseline)</span>
                   </h3>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-amber-400 font-bold block">1. PV Array & String Config</span>
                       <p className="text-slate-300">60x Tier-1 Mono PERC 550W Panels. 4 Strings of 15 Modules (Voc: 747V DC, Vmp: 628V DC). Compliant with MPPT 1000V DC input ceiling.</p>
                     </div>
 
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-emerald-400 font-bold block">2. Inverter & Protection</span>
                       <p className="text-slate-300">30 kVA Deye Three-Phase Hybrid Inverter (IP65 Outdoor). DC 1000V 32A Rotary Isolator, DC 15A Fuses, Type II DC & AC SPDs, 4-Pole 250A ATS.</p>
                     </div>
 
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-purple-400 font-bold block">3. Battery Bank & Cabling</span>
                       <p className="text-slate-300">15x LiFePO4 5.12kWh 48V Rack Modules (76.8 kWh total, Smart CANbus BMS). DC Cable: 10mm² UV-Resistant. AC Cable: 4-Core 35mm² XLPE Armored Copper. Earthing: &lt;3.2 Ω rod.</p>
                     </div>
@@ -1403,9 +1403,9 @@ export default function SolarPage() {
 
             {/* MODULE 4: Approved Technical Catalogue & Equipment Specification Database */}
             <TabsContent value="catalogue-boq" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -1425,8 +1425,8 @@ export default function SolarPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   
                   {/* Category 1: PV Modules */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                       <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
                         <Sun className="w-4 h-4 text-amber-400" />
                         PV MODULES (TIER-1 MONO PERC & TOPCON)
@@ -1435,7 +1435,7 @@ export default function SolarPage() {
                     </div>
 
                     <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Jinko / Longi 550W Mono PERC Module</span>
                           <span className="text-amber-400">$185 USD</span>
@@ -1444,7 +1444,7 @@ export default function SolarPage() {
                         <div className="text-[10px] text-emerald-400 font-mono">Dimensions: 2278x1134x35mm (27.5kg) | IEC 61215, IEC 61730, TUV, CE Certified</div>
                       </div>
 
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Trina Solar 670W N-Type TOPCon Module</span>
                           <span className="text-amber-400 font-bold">$235 USD</span>
@@ -1456,8 +1456,8 @@ export default function SolarPage() {
                   </div>
 
                   {/* Category 2: Inverters */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                       <span className="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                         <Cpu className="w-4 h-4 text-emerald-400" />
                         INVERTERS (HYBRID THREE-PHASE & SINGLE-PHASE)
@@ -1466,7 +1466,7 @@ export default function SolarPage() {
                     </div>
 
                     <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Deye 10kW Three-Phase Hybrid Inverter</span>
                           <span className="text-amber-400">$2,450 USD</span>
@@ -1475,7 +1475,7 @@ export default function SolarPage() {
                         <div className="text-[10px] text-emerald-400 font-mono">Modbus RS485 / CANbus | Auto Genset Start | 16x Parallel Capable</div>
                       </div>
 
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Victron Quattro 15kVA Inverter/Charger</span>
                           <span className="text-amber-400 font-bold">$3,850 USD</span>
@@ -1487,8 +1487,8 @@ export default function SolarPage() {
                   </div>
 
                   {/* Category 3: Batteries */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                       <span className="text-xs font-black text-purple-400 uppercase tracking-wider flex items-center gap-1.5">
                         <BatteryCharging className="w-4 h-4 text-purple-400" />
                         BATTERY STORAGE (LIFEPO4 RACK MODULES)
@@ -1497,7 +1497,7 @@ export default function SolarPage() {
                     </div>
 
                     <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Pylontech US5000 4.8kWh LiFePO4 Rack Module</span>
                           <span className="text-amber-400">$1,350 USD</span>
@@ -1506,7 +1506,7 @@ export default function SolarPage() {
                         <div className="text-[10px] text-emerald-400 font-mono">CANbus & RS485 Protocol | Compatible with Deye, Victron, Growatt</div>
                       </div>
 
-                      <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+                      <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
                         <div className="flex justify-between font-black text-white">
                           <span>Hubble AM-2 5.5kWh 48V Lithium Battery</span>
                           <span className="text-amber-400 font-bold">$1,580 USD</span>
@@ -1518,8 +1518,8 @@ export default function SolarPage() {
                   </div>
 
                   {/* Category 4: Balance of Plant (BoP), Switchgear, ATS & SPDs */}
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                       <span className="text-xs font-black text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-sky-400" />
                         BALANCE OF PLANT (SWITCHGEAR, ATS & SPDs)
@@ -1528,7 +1528,7 @@ export default function SolarPage() {
                     </div>
 
                     <div className="space-y-2 text-xs font-semibold text-slate-300">
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center">
+                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
                           <div className="font-bold text-white">4-String IP65 DC Combiner Box w/ SPDs & Fuses</div>
                           <div className="text-[10px] text-slate-400">1000V DC • 15A Fuses • Type II DC Surge Arrestor • ABB Switchgear</div>
@@ -1536,7 +1536,7 @@ export default function SolarPage() {
                         <span className="text-amber-400 font-black">$240 USD</span>
                       </div>
 
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center">
+                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
                           <div className="font-bold text-white">4-Pole 250A Automatic Transfer Switch (ATS)</div>
                           <div className="text-[10px] text-slate-400">Dual Utility/Genset Transfer • Auto Dry Contacts • Schneider Electric</div>
@@ -1544,7 +1544,7 @@ export default function SolarPage() {
                         <span className="text-amber-400 font-black">$480 USD</span>
                       </div>
 
-                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800 flex justify-between items-center">
+                      <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10 flex justify-between items-center">
                         <div>
                           <div className="font-bold text-white">Solar DC Cable 10mm² UV-Resistant (100m Roll)</div>
                           <div className="text-[10px] text-slate-400">Double Insulated Tinned Copper • 1500V DC Rated • TÜV Approved</div>
@@ -1561,10 +1561,10 @@ export default function SolarPage() {
 
             {/* MODULE 5: Automated BOQ & Financial Costing Engine */}
             <TabsContent value="auto-boq" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
                 {/* Module Header */}
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -1586,19 +1586,19 @@ export default function SolarPage() {
 
                 {/* Management Financial KPI Cards: Equipment vs Landed vs Installed vs Contract vs Margin */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-[10px] font-bold text-slate-400 uppercase">1. EQUIPMENT FOB COST</span>
                     <div className="text-xl font-black text-white">$38,400 USD</div>
                     <span className="text-[10px] text-slate-500 font-medium">Base Supplier Invoices</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-[10px] font-bold text-sky-400 uppercase">2. LANDED LOGISTICS COST</span>
                     <div className="text-xl font-black text-sky-400">$44,850 USD</div>
                     <span className="text-[10px] text-sky-300/80 font-medium">+Freight, Duty & Clearing</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-[10px] font-bold text-purple-400 uppercase">3. TURNKEY INSTALLED COST</span>
                     <div className="text-xl font-black text-purple-400">$53,100 USD</div>
                     <span className="text-[10px] text-purple-300/80 font-medium">+Labor, Overhead & Cont.</span>
@@ -1618,8 +1618,8 @@ export default function SolarPage() {
                 </div>
 
                 {/* Detailed BOQ Cost Breakdown Table */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                     <h3 className="text-sm font-black text-white flex items-center gap-2">
                       <FileSpreadsheet className="w-4 h-4 text-amber-400" />
                       <span>Itemized BOQ Cost Engineering Breakdown</span>
@@ -1630,7 +1630,7 @@ export default function SolarPage() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                        <tr className="border-b border-slate-200 dark:border-white/10 text-slate-400 font-bold uppercase text-[10px]">
                           <th className="py-2.5 px-3">Item Description</th>
                           <th className="py-2.5 px-2">Category</th>
                           <th className="py-2.5 px-2">Supplier</th>
@@ -1762,10 +1762,10 @@ export default function SolarPage() {
 
             {/* MODULE 6: Solar Procurement & OEM Supplier Partnership Registry */}
             <TabsContent value="procurement" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
                 {/* Module Header */}
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -1782,26 +1782,26 @@ export default function SolarPage() {
                 </div>
 
                 {/* 8-Stage Procurement Workflow Stepper */}
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-white/10 space-y-3">
                   <h3 className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
                     <PackageCheck className="w-4 h-4 text-amber-400" />
                     Automated Won Project Procurement Flow
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-8 gap-2 text-[10px] font-bold text-center">
                     <div className="bg-amber-500 text-slate-950 p-2 rounded-lg font-black">1. Requisition</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">2. Supplier RFQ</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">3. Quote Matrix</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">4. PO Issued</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">5. In Transit</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">6. Customs Clearance</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">7. Serial Intake</div>
-                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-800">8. Warehouse Receipt</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">2. Supplier RFQ</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">3. Quote Matrix</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">4. PO Issued</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">5. In Transit</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">6. Customs Clearance</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">7. Serial Intake</div>
+                    <div className="bg-slate-900 text-slate-300 p-2 rounded-lg border border-slate-200 dark:border-white/10">8. Warehouse Receipt</div>
                   </div>
                 </div>
 
                 {/* Active Procurement Orders & Requisitions */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                     <h3 className="text-sm font-black text-white flex items-center gap-2">
                       <Barcode className="w-4 h-4 text-emerald-400" />
                       <span>Active Project Purchase Requisitions & Serial Intake</span>
@@ -1813,7 +1813,7 @@ export default function SolarPage() {
 
                   <div className="space-y-3 text-xs font-semibold text-slate-300">
                     
-                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
                       <div>
                         <div className="flex items-center space-x-2">
                           <Badge className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">PO #PO-DEYE-9921</Badge>
@@ -1825,7 +1825,7 @@ export default function SolarPage() {
                       <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-3 py-1 self-start md:self-center">Customs Clearance</Badge>
                     </div>
 
-                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-200 dark:border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
                       <div>
                         <div className="flex items-center space-x-2">
                           <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">PO #PO-JK-8824</Badge>
@@ -1842,7 +1842,7 @@ export default function SolarPage() {
 
                 {/* TOTAG Official OEM Manufacturer & Supplier Partnership Registry */}
                 <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
                     <h3 className="text-lg font-black text-white flex items-center gap-2">
                       <BadgeCheck className="w-5 h-5 text-amber-400" />
                       <span>Official OEM Manufacturer & Partnership Registry</span>
@@ -1853,8 +1853,8 @@ export default function SolarPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     {/* OEM 1: Deye */}
-                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-200 dark:border-white/10 pb-2">
                         <div>
                           <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px]">AUTHORIZED DISTRIBUTOR</Badge>
                           <h4 className="text-base font-black text-white mt-1">Deye Energy Co., Ltd</h4>
@@ -1887,8 +1887,8 @@ export default function SolarPage() {
                     </div>
 
                     {/* OEM 2: Victron Energy */}
-                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-200 dark:border-white/10 pb-2">
                         <div>
                           <Badge className="bg-sky-500/20 text-sky-400 border-sky-500/30 text-[10px]">SYSTEM INTEGRATOR</Badge>
                           <h4 className="text-base font-black text-white mt-1">Victron Energy B.V.</h4>
@@ -1921,8 +1921,8 @@ export default function SolarPage() {
                     </div>
 
                     {/* OEM 3: Jinko Solar */}
-                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-200 dark:border-white/10 pb-2">
                         <div>
                           <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">DIRECT IMPORTER</Badge>
                           <h4 className="text-base font-black text-white mt-1">Jinko Solar Co., Ltd</h4>
@@ -1955,8 +1955,8 @@ export default function SolarPage() {
                     </div>
 
                     {/* OEM 4: Pylontech */}
-                    <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-                      <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                    <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-3">
+                      <div className="flex justify-between items-center border-b border-slate-200 dark:border-white/10 pb-2">
                         <div>
                           <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-[10px]">STORAGE PARTNER</Badge>
                           <h4 className="text-base font-black text-white mt-1">Pylontech Technologies</h4>
@@ -1996,10 +1996,10 @@ export default function SolarPage() {
 
             {/* MODULE 7: Solar Warehouse & Serialized Inventory Management */}
             <TabsContent value="serialized-inventory" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
                 {/* Module Header */}
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -2021,31 +2021,31 @@ export default function SolarPage() {
 
                 {/* Warehouse Serial Summary KPI Bar */}
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-xs font-semibold">
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">TOTAL SERIALIZED ASSETS</span>
                     <div className="text-2xl font-black text-white">148 Units</div>
                     <span className="text-slate-500 block text-[10px]">Inverters, Batteries, Gateways</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">MONROVIA CENTRAL STOCK</span>
                     <div className="text-2xl font-black text-amber-400">62 Units</div>
                     <span className="text-slate-500 block text-[10px]">Bushrod Island Warehouse</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">PROJECT ALLOCATED</span>
                     <div className="text-2xl font-black text-sky-400">34 Units</div>
                     <span className="text-slate-500 block text-[10px]">Staged for Site Dispatch</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">INSTALLED ON-SITE</span>
                     <div className="text-2xl font-black text-emerald-400">48 Units</div>
                     <span className="text-slate-500 block text-[10px]">Active Customer Assets</span>
                   </div>
 
-                  <div className="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1">
+                  <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-4 rounded-xl space-y-1">
                     <span className="text-slate-400 block text-[10px] uppercase font-bold">WARRANTY COVERAGE</span>
                     <div className="text-2xl font-black text-purple-400">100% Active</div>
                     <span className="text-slate-500 block text-[10px]">Manufacturer Backed</span>
@@ -2053,22 +2053,22 @@ export default function SolarPage() {
                 </div>
 
                 {/* Serialized Equipment Ledger Table */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
                     <h3 className="text-sm font-black text-white flex items-center gap-2">
                       <Barcode className="w-4 h-4 text-emerald-400" />
                       <span>Serialized Equipment Master Ledger & Audit Trail</span>
                     </h3>
                     <Input 
                       placeholder="Search Serial Number, Model, PO#, or Site..." 
-                      className="bg-slate-900 border-slate-800 text-xs text-white max-w-xs"
+                      className="bg-slate-900 border-slate-200 dark:border-white/10 text-xs text-white max-w-xs"
                     />
                   </div>
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead>
-                        <tr className="border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                        <tr className="border-b border-slate-200 dark:border-white/10 text-slate-400 font-bold uppercase text-[10px]">
                           <th className="py-2.5 px-3">Equipment Category</th>
                           <th className="py-2.5 px-2">Manufacturer & Model</th>
                           <th className="py-2.5 px-2">Serial Number (S/N)</th>
@@ -2166,10 +2166,10 @@ export default function SolarPage() {
 
             {/* MODULE 8: Project & 15-Stage Verified Installation Workflow Management */}
             <TabsContent value="project-management" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
                 
                 {/* Module Header */}
-                <div className="border-b border-slate-800 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
                     <div className="flex items-center space-x-2 mb-1">
                       <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -2190,8 +2190,8 @@ export default function SolarPage() {
                 </div>
 
                 {/* Project Executive Overview Dashboard Cards */}
-                <div className="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 p-5 rounded-xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
                     <div>
                       <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase">ACTIVE EPC CONTRACT #PRJ-2026-001</span>
                       <h3 className="text-lg font-black text-white mt-0.5">Monrovia Regional Hospital 30kW Solar Hybrid Microgrid</h3>
@@ -2201,27 +2201,27 @@ export default function SolarPage() {
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs font-semibold">
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">CONTRACT VALUE</span>
                       <span className="text-amber-400 font-black text-sm">$68,500 USD</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">SYSTEM CAPACITY</span>
                       <span className="text-white font-black text-sm">33 kWp / 76.8 kWh</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">PROJECT MANAGER</span>
                       <span className="text-slate-200 font-bold text-xs">Eng. Tarkpor Toe</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">BUDGET vs ACTUAL</span>
                       <span className="text-emerald-400 font-black text-sm">$53.1k / $41.2k</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">TARGET COMPLETION</span>
                       <span className="text-sky-400 font-black text-xs">Aug 30, 2026</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
                       <span className="text-slate-400 block text-[10px] uppercase font-bold">RISK STATUS</span>
                       <span className="text-emerald-400 font-black text-xs flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Low Risk
@@ -2231,8 +2231,8 @@ export default function SolarPage() {
                 </div>
 
                 {/* 15-Stage Verified Installation Workflow Tracker */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-4">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
                     <div>
                       <h3 className="text-sm font-black text-white flex items-center gap-2">
                         <Workflow className="w-4 h-4 text-amber-400" />
@@ -2355,7 +2355,7 @@ export default function SolarPage() {
                       </Button>
                     </div>
 
-                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1 opacity-70">
                       <div className="flex justify-between items-center text-slate-400 font-black">
                         <span>13. Site QA Inspection</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
@@ -2363,7 +2363,7 @@ export default function SolarPage() {
                       <p className="text-slate-400 text-[11px]">Comprehensive 50-point electrical safety audit.</p>
                     </div>
 
-                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1 opacity-70">
                       <div className="flex justify-between items-center text-slate-400 font-black">
                         <span>14. Pre-Commission Test</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
@@ -2371,7 +2371,7 @@ export default function SolarPage() {
                       <p className="text-slate-400 text-[11px]">24-Hour full-load endurance simulation.</p>
                     </div>
 
-                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1 opacity-70">
+                    <div className="bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1 opacity-70">
                       <div className="flex justify-between items-center text-slate-400 font-black">
                         <span>15. Handover & Certs</span>
                         <Badge className="bg-slate-900 text-slate-400 text-[10px]">PENDING</Badge>
@@ -2386,7 +2386,7 @@ export default function SolarPage() {
             </TabsContent>
 
             <TabsContent value="energy-audit" className="space-y-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
                 <div>
                   <h2 className="text-2xl font-black text-white flex items-center gap-2">
                     <Calculator className="w-6 h-6 text-amber-400" />
@@ -2398,14 +2398,14 @@ export default function SolarPage() {
                 </div>
 
                 {/* Add Equipment Form */}
-                <form onSubmit={handleAddLoad} className="grid grid-cols-5 gap-3 p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
+                <form onSubmit={handleAddLoad} className="grid grid-cols-5 gap-3 p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs">
                   <div className="col-span-2">
                     <Label className="text-[10px] font-bold text-slate-300">Equipment Name</Label>
                     <Input 
                       value={newLoad.name} 
                       onChange={(e) => setNewLoad({ ...newLoad, name: e.target.value })} 
                       placeholder="e.g. Solar Water Pump"
-                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      className="mt-1 bg-slate-900 border-slate-200 dark:border-white/10 text-white text-xs"
                       required
                     />
                   </div>
@@ -2415,7 +2415,7 @@ export default function SolarPage() {
                       type="number" 
                       value={newLoad.qty} 
                       onChange={(e) => setNewLoad({ ...newLoad, qty: Number(e.target.value) })} 
-                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      className="mt-1 bg-slate-900 border-slate-200 dark:border-white/10 text-white text-xs"
                       required
                     />
                   </div>
@@ -2425,7 +2425,7 @@ export default function SolarPage() {
                       type="number" 
                       value={newLoad.watts} 
                       onChange={(e) => setNewLoad({ ...newLoad, watts: Number(e.target.value) })} 
-                      className="mt-1 bg-slate-900 border-slate-800 text-white text-xs"
+                      className="mt-1 bg-slate-900 border-slate-200 dark:border-white/10 text-white text-xs"
                       required
                     />
                   </div>
@@ -2447,7 +2447,7 @@ export default function SolarPage() {
                   </div>
 
                   {auditLoads.map((item, idx) => (
-                    <div key={idx} className="grid grid-cols-6 items-center p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs font-semibold">
+                    <div key={idx} className="grid grid-cols-6 items-center p-3 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold">
                       <span className="col-span-2 text-white font-extrabold">{item.name}</span>
                       <span className="text-slate-300">{item.qty} × {item.watts}W</span>
                       <span className="text-slate-300">{item.hours} hrs/day</span>
@@ -2464,7 +2464,7 @@ export default function SolarPage() {
                 </div>
 
                 {/* Calculated Energy Audit Metrics */}
-                <div className="grid grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center">
+                <div className="grid grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center">
                   <div>
                     <span className="text-xs font-extrabold text-slate-400 uppercase block">Total Connected Load</span>
                     <span className="text-2xl font-black text-white">{totalConnectedWatts.toLocaleString()} W</span>
@@ -2483,8 +2483,8 @@ export default function SolarPage() {
 
             {/* 3. NOC Remote Monitoring Command Center */}
             <TabsContent value="noc-monitoring" className="space-y-8">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <h2 className="text-2xl font-black text-white flex items-center gap-2">
                       <Activity className="w-6 h-6 text-amber-400" />
@@ -2500,28 +2500,28 @@ export default function SolarPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center space-y-1">
                     <Sun className="w-6 h-6 text-amber-400 mx-auto mb-1 animate-spin-slow" />
                     <span className="text-xs text-slate-400 block font-extrabold uppercase">Live PV Power Output</span>
                     <div className="text-3xl font-black text-amber-400">42.8 kW</div>
                     <span className="text-[10px] text-emerald-400 font-bold">Irradiance: 940 W/m²</span>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center space-y-1">
                     <BatteryCharging className="w-6 h-6 text-emerald-400 mx-auto mb-1" />
                     <span className="text-xs text-slate-400 block font-extrabold uppercase">Battery State of Charge (SOC)</span>
                     <div className="text-3xl font-black text-emerald-400">94%</div>
                     <span className="text-[10px] text-slate-300 font-bold">LiFePO4 48V Storage Bank</span>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center space-y-1">
                     <Cpu className="w-6 h-6 text-sky-400 mx-auto mb-1" />
                     <span className="text-xs text-slate-400 block font-extrabold uppercase">Active Facility Load</span>
                     <div className="text-3xl font-black text-sky-400">28.4 kW</div>
                     <span className="text-[10px] text-slate-300 font-bold">Pure Sine Wave Output</span>
                   </div>
 
-                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 text-center space-y-1">
+                  <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-200 dark:border-white/10 text-center space-y-1">
                     <Fuel className="w-6 h-6 text-purple-400 mx-auto mb-1" />
                     <span className="text-xs text-slate-400 block font-extrabold uppercase">Generator Run Reduction</span>
                     <div className="text-3xl font-black text-purple-400">-77%</div>
@@ -2533,14 +2533,14 @@ export default function SolarPage() {
 
             {/* 4. BOQ & Proposals Engine */}
             <TabsContent value="catalogue-boq" className="space-y-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-4 shadow-2xl">
                 <h3 className="text-xl font-black text-white flex items-center gap-2">
                   <FileSpreadsheet className="w-5 h-5 text-amber-400" />
                   <span>Approved Component Master</span>
                 </h3>
                 <div className="space-y-3">
                   {COMPONENT_CATALOGUE.map((comp, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center text-xs">
+                    <div key={idx} className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex justify-between items-center text-xs">
                       <div>
                         <span className="text-[10px] font-black text-amber-400 uppercase px-2 py-0.5 bg-slate-900 rounded">
                           {comp.category} • {comp.brand}
@@ -2559,8 +2559,8 @@ export default function SolarPage() {
 
             {/* 5. QA/QC & Commissioning Certificate Generator */}
             <TabsContent value="commissioning" className="space-y-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-                <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
+                <div className="flex justify-between items-center border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <h2 className="text-2xl font-black text-white flex items-center gap-2">
                       <Award className="w-6 h-6 text-emerald-400" />
@@ -2576,11 +2576,11 @@ export default function SolarPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-semibold">
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-2">
                     <span className="text-amber-400 font-extrabold uppercase">1. PV Array Insulation & String Test</span>
                     <p className="text-slate-300">String 1 Voc: 482.4 V | Isc: 12.8 A | Insulation Resistance: &gt;200 MΩ (PASSED)</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                  <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-2">
                     <span className="text-emerald-400 font-extrabold uppercase">2. LiFePO4 Battery BMS Integration</span>
                     <p className="text-slate-300">Pack Voltage: 51.2V | CAN Bus Comms: Active | Cell Delta: 0.012V (PASSED)</p>
                   </div>
@@ -2590,7 +2590,7 @@ export default function SolarPage() {
 
             {/* 6. Interoperability & Ecosystem Sync */}
             <TabsContent value="interoperability" className="space-y-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 space-y-6 shadow-2xl">
                 <div>
                   <h2 className="text-2xl font-black text-white flex items-center gap-2">
                     <Layers className="w-6 h-6 text-sky-400" />
@@ -2602,7 +2602,7 @@ export default function SolarPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                  <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
                     <div className="flex items-center space-x-2 text-amber-400 font-black">
                       <Fuel className="w-4 h-4" />
                       <span>Solar ↔ Petroleum</span>
@@ -2610,7 +2610,7 @@ export default function SolarPage() {
                     <p className="text-slate-300">Diesel generator fuel telemetry triggers automatic Solar CRM leads to convert high-fuel sites into solar/hybrid microgrids.</p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                  <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
                     <div className="flex items-center space-x-2 text-emerald-400 font-black">
                       <Zap className="w-4 h-4" />
                       <span>Solar ↔ TOTAG FARM</span>
@@ -2618,7 +2618,7 @@ export default function SolarPage() {
                     <p className="text-slate-300">Power design for solar irrigation pumps, cold-room refrigeration, and crop drying infrastructure.</p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                  <div className="p-4 rounded-xl bg-slate-100/70 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
                     <div className="flex items-center space-x-2 text-sky-400 font-black">
                       <Ship className="w-4 h-4" />
                       <span>Solar ↔ Cargo Handling</span>
