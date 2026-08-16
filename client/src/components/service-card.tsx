@@ -70,7 +70,7 @@ const colorClasses = {
   }
 };
 
-// Icon mapping for all 9 TOTAG subsidiaries
+// Icon mapping for all TOTAG subsidiaries
 const getIconComponent = (iconName: string) => {
   const icons: Record<string, any> = {
     'ShoppingBag': ShoppingBag,
@@ -81,15 +81,19 @@ const getIconComponent = (iconName: string) => {
     'HardHat': HardHat,
     'Briefcase': Briefcase,
     'Building': Building,
+    'Building2': Building,
     'TrendingUp': TrendingUp,
     'Fuel': Fuel,
-    'Ship': Ship
+    'Ship': Ship,
+    'FileText': Briefcase,
+    'Zap': Sparkles,
+    'Sun': Sparkles
   };
   const IconComponent = icons[iconName] || Briefcase;
   return <IconComponent className="w-6 h-6 sm:w-7 sm:h-7" />;
 };
 
-// Service URLs mapping for all 9 specialized subsidiaries
+// Service URLs mapping for all 10 specialized subsidiaries
 const getServiceUrl = (slug: string): string => {
   const urls: Record<string, string> = {
     'cargo': '/cargo',
@@ -101,12 +105,17 @@ const getServiceUrl = (slug: string): string => {
     'it-services': '/it-services',
     'it': '/it-services',
     'catering': '/catering',
+    'stationery': '/stationery',
+    'solar': '/solar',
+    'institutional': '/institutional-services',
+    'institutional-services': '/institutional-services',
     'real-estate': '/real-estate',
     'consulting': '/consulting',
     'saas': '/saas'
   };
-  return urls[slug] || '#';
+  return urls[slug] || `/${slug}`;
 };
+
 
 export default function ServiceCard({ id, title, description, icon, color, tags, slug }: ServiceCardProps) {
   const colorClass = colorClasses[color as keyof typeof colorClasses] || colorClasses.primary;

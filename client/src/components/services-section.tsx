@@ -92,8 +92,18 @@ const defaultSubsidiaries: Service[] = [
     description: "Supply, installation, commissioning, monitoring, and maintenance of solar photovoltaic and energy-storage systems for residential, commercial, institutional, industrial, and public-sector clients.",
     icon: "Zap",
     color: "amber",
-    tags: "solar, renewable energy, power solutions",
+    tags: "Solar EPC • NOC Telemetry • Off-Grid Microgrids",
     slug: "solar",
+    isActive: true
+  },
+  {
+    id: 10,
+    name: "TOTAG Institutional Services",
+    description: "Specialized UN, donor agency, diplomatic mission, and NGO work package execution, procurement, logistics, and field operations management across West Africa.",
+    icon: "Building2",
+    color: "purple",
+    tags: "UN & Donor Contracts • NGO Logistics • Procurement",
+    slug: "institutional-services",
     isActive: true
   }
 ];
@@ -114,7 +124,7 @@ export default function ServicesSection() {
           }
         }
       } catch (err) {
-        console.log("Using default 9 subsidiaries list");
+        console.log("Using default 10 subsidiaries list");
       }
     }
 
@@ -144,7 +154,7 @@ export default function ServicesSection() {
             viewport={{ once: true }}
             className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight"
           >
-            Our <span className="text-gradient-emerald">Nine Specialized Subsidiaries</span>
+            Our <span className="text-gradient-emerald">Ten Specialized Subsidiaries</span>
           </motion.h2>
 
           <motion.p
@@ -154,9 +164,10 @@ export default function ServicesSection() {
             viewport={{ once: true }}
             className="text-lg text-slate-600 dark:text-slate-300 leading-relaxed"
           >
-            Nine distinct business divisions operating synergistically to deliver end-to-end commercial solutions across key industries in Liberia and internationally.
+            Ten distinct business divisions operating synergistically to deliver end-to-end commercial solutions across key industries in Liberia and internationally.
           </motion.p>
         </div>
+
 
         {/* 9 Subsidiaries Glass Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">

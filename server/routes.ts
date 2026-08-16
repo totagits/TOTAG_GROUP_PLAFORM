@@ -363,72 +363,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Fallback to TOTAG Group services when database is unavailable
       const totagServices = [
         {
-          id: 'totag-general-merchandise',
-          title: 'TOTAG General Merchandise',
-          description: 'Comprehensive retail solutions offering quality products across multiple categories with nationwide distribution.',
-          icon: 'ShoppingBag',
+          id: 'totag-cargo',
+          title: 'TOTAG Cargo Handling',
+          description: 'Port management, logistics, demurrage calculator, and waybill tracking.',
+          icon: 'Truck',
           color: 'blue',
-          tags: ['Retail', 'Distribution', 'E-commerce'],
-          slug: 'general-merchandise'
-        },
-        {
-          id: 'totag-it-services',
-          title: 'TOTAG IT Services - Managed IT Services',
-          description: 'Enterprise SaaS solutions including FIMS and HRMIS modules for Liberian businesses.',
-          icon: 'Laptop',
-          color: 'green',
-          tags: ['IT Services', 'SaaS', 'Enterprise'],
-          slug: 'it-services'
-        },
-        {
-          id: 'totag-catering',
-          title: 'TOTAG Catering Services',
-          description: 'Professional catering and event management services for corporate and social events.',
-          icon: 'ChefHat',
-          color: 'orange',
-          tags: ['Catering', 'Events', 'Food Service'],
-          slug: 'catering'
+          tags: ['Port Management', 'Logistics', 'Demurrage Calculator'],
+          slug: 'cargo'
         },
         {
           id: 'totag-farm',
-          title: 'TOTAG Farm',
-          description: 'Sustainable agricultural operations focused on local food production and supply chain innovation.',
+          title: 'TOTAG FARM',
+          description: 'AgriTech ERP, batch traceability, and produce marketplace.',
           icon: 'Wheat',
           color: 'green',
-          tags: ['Agriculture', 'Sustainability', 'Food Production'],
+          tags: ['Agriculture', 'AgriTech ERP', 'Traceability'],
           slug: 'farm'
         },
         {
-          id: 'totag-logistics',
-          title: 'TOTAG Logistics',
-          description: 'Efficient transportation and logistics solutions across Liberia and the West African region.',
-          icon: 'Truck',
-          color: 'blue',
-          tags: ['Logistics', 'Transportation', 'Supply Chain'],
-          slug: 'logistics'
+          id: 'totag-petroleum',
+          title: 'TOTAG Petroleum Services',
+          description: 'Fuel distribution, storage tank telemetry, and tanker dispatch.',
+          icon: 'Fuel',
+          color: 'orange',
+          tags: ['Fuel Distribution', 'Telemetry', 'Tanker Dispatch'],
+          slug: 'petroleum'
         },
         {
           id: 'totag-construction',
-          title: 'TOTAG Construction',
-          description: 'Quality construction and infrastructure development services for residential and commercial projects.',
+          title: 'TOTAG General Construction',
+          description: 'Heavy fleet leasing, BOQ estimator, and project WBS controls.',
           icon: 'HardHat',
           color: 'yellow',
-          tags: ['Construction', 'Infrastructure', 'Development'],
+          tags: ['Heavy Fleet', 'BOQ Estimator', 'WBS Controls'],
           slug: 'construction'
         },
         {
-          id: 'totag-consulting',
-          title: 'TOTAG Business Consulting',
-          description: 'Strategic business consulting and advisory services to help organizations achieve their goals.',
-          icon: 'Briefcase',
+          id: 'totag-general-merchandise',
+          title: 'TOTAG General Merchandise',
+          description: 'Wholesale, retail POS, multi-warehouse inventory, and B2B credit.',
+          icon: 'ShoppingBag',
           color: 'purple',
-          tags: ['Consulting', 'Strategy', 'Advisory'],
-          slug: 'consulting'
+          tags: ['Wholesale', 'Retail POS', 'Inventory'],
+          slug: 'general-merchandise'
+        },
+        {
+          id: 'totag-catering',
+          title: 'TOTAG Catering & Events (TCEPS)',
+          description: 'Menu recipe BOM, HACCP safety logs, and event quotes.',
+          icon: 'ChefHat',
+          color: 'red',
+          tags: ['Recipe BOM', 'HACCP Safety', 'Event Quotes'],
+          slug: 'catering'
+        },
+        {
+          id: 'totag-it-services',
+          title: 'TOTAG IT Services & SaaS',
+          description: 'Managed IT helpdesk and FIMS / HRMIS SaaS multitenant core.',
+          icon: 'Laptop',
+          color: 'cyan',
+          tags: ['IT Helpdesk', 'FIMS SaaS', 'HRMIS Core'],
+          slug: 'it-services'
+        },
+        {
+          id: 'totag-stationery',
+          title: 'TOTAG Stationery Supplies',
+          description: 'Office bundles, custom printing approvals, and replenishment.',
+          icon: 'FileText',
+          color: 'blue',
+          tags: ['Office Supplies', 'Printing Approvals', 'Replenishment'],
+          slug: 'stationery'
+        },
+        {
+          id: 'totag-solar',
+          title: 'TOTAG Solar Energy & Smart Power',
+          description: 'Solar EPC, energy audit, NOC remote monitoring, and tailored design engine.',
+          icon: 'Zap',
+          color: 'amber',
+          tags: ['Solar EPC', 'Energy Audit', 'NOC Telemetry'],
+          slug: 'solar'
+        },
+        {
+          id: 'totag-institutional',
+          title: 'TOTAG Institutional Services',
+          description: 'UN and donor agency work package and contract operations platform.',
+          icon: 'Building2',
+          color: 'purple',
+          tags: ['UN Contracts', 'Donor Operations', 'NGO Logistics'],
+          slug: 'institutional-services'
         }
       ];
       res.json({ success: true, services: totagServices });
     }
   });
+
 
   app.get("/api/services/:slug", async (req, res) => {
     try {
