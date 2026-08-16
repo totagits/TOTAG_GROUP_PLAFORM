@@ -90,11 +90,11 @@ const DETAILED_COMPONENT_CATALOGUE = [
     specs: "550W • Voc: 49.8V • Vmp: 41.9V • Isc: 13.9A • Imp: 13.1A • 21.3% Efficiency",
     dimensions: "2278 x 1134 x 35 mm (27.5 kg)",
     description: "Tier-1 high-efficiency monocrystalline PERC solar panel engineered for harsh tropical climates, PID-resistant cell technology, and heavy anti-reflective glass.",
-    image: "/images/pv/jinko-550w-tiger-pro.png",
+    image: "/images/pv/jinko-solar-field-arrays.png",
     photos: [
+      { url: "/images/pv/jinko-solar-field-arrays.png", caption: "Jinko Solar Utility & Commercial Field Array Installations" },
       { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
-      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" }
+      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" }
     ]
   },
   {
@@ -109,11 +109,11 @@ const DETAILED_COMPONENT_CATALOGUE = [
     specs: "670W • Voc: 45.4V • Vmp: 38.2V • Isc: 18.6A • Imp: 17.5A • 21.8% Efficiency",
     dimensions: "2384 x 1303 x 35 mm (33.9 kg)",
     description: "Ultra-high power N-Type TOPCon dual-glass bifacial panel delivering up to 30% additional energy gain from ground albedo reflection.",
-    image: "/images/pv/jinko-datasheet-label.png",
+    image: "/images/pv/jinko-solar-field-arrays.png",
     photos: [
+      { url: "/images/pv/jinko-solar-field-arrays.png", caption: "Jinko Solar Utility & Commercial Field Array Installations" },
       { url: "/images/pv/jinko-datasheet-label.png", caption: "Photovoltaic Module Technical Specifications Nameplate Data Label (Click to Expand)" },
-      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" },
-      { url: "/images/pv/jinko-solar-field.png", caption: "Utility-Scale Ground-Mounted & Commercial Solar Array Field Installations" }
+      { url: "/images/pv/jinko-550w-tiger-pro.png", caption: "Jinko Tiger Pro 550-570W 72HL4-(V) Front & Back Specification Render" }
     ]
   },
   {
