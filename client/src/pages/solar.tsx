@@ -60,7 +60,8 @@ import {
   Workflow,
   ClipboardCheck,
   FolderKanban,
-  ShieldAlert
+  ShieldAlert,
+  Compass
 } from "lucide-react";
 import { 
   EcosystemStateEngine, 

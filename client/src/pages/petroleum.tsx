@@ -70,6 +70,15 @@ export default function PetroleumPage() {
     return base + logisticsFee;
   };
 
+  const handleCalculateFuelCost = (e: React.FormEvent) => {
+    e.preventDefault();
+    const total = calculateEstimate();
+    toast({
+      title: "Bulk Fuel Quote Calculated",
+      description: `Estimated total fuel cost: $${total.toLocaleString()} USD for ${quantityLiters.toLocaleString()} Liters of ${fuelType}.`
+    });
+  };
+
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
