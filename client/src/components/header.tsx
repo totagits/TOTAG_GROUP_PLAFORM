@@ -191,23 +191,18 @@ export default function Header() {
                   {official9Subsidiaries.map((sub) => (
                     <DropdownMenuItem 
                       key={sub.href}
-                      onSelect={(e) => {
-                        e.preventDefault();
+                      onSelect={() => {
                         handleNavClick(sub.href);
                       }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNavClick(sub.href);
-                      }}
-                      className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 cursor-pointer"
+                      className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-emerald-500/20 hover:text-emerald-400 cursor-pointer w-full"
                     >
-                      <a href={`#${sub.href}`} className="flex items-center space-x-3 w-full h-full no-underline text-inherit">
+                      <div className="flex items-center space-x-3 w-full">
                         <sub.icon className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                         <div>
                           <span className="text-xs font-bold block text-white">{sub.name}</span>
                           <span className="text-[10px] text-slate-400">{sub.tag}</span>
                         </div>
-                      </a>
+                      </div>
                     </DropdownMenuItem>
                   ))}
                 </div>

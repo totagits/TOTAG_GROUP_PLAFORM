@@ -95,21 +95,23 @@ import FIMSProjectsPage from "@/pages/saas/modules/fims-projects";
 
 // Hybrid Location Hook supporting both standard path URLs (/solar) and hash URLs (/#/solar) on GitHub Pages & VPS
 const useHybridLocation = () => {
-  const [loc, setLoc] = useState(() => {
+  const getPath = () => {
     if (typeof window === "undefined") return "/";
+    const path = window.location.pathname;
+    // On VPS/custom domain, pathname takes priority if present
+    if (path && path !== "/" && path !== "/index.html" && path !== "/TOTAG_GROUP_PLAFORM/") {
+      return path;
+    }
     const hash = window.location.hash.replace(/^#/, "");
     if (hash && hash.startsWith("/")) return hash;
-    return window.location.pathname || "/";
-  });
+    return path || "/";
+  };
+
+  const [loc, setLoc] = useState(getPath);
 
   useEffect(() => {
     const handler = () => {
-      const hash = window.location.hash.replace(/^#/, "");
-      if (hash && hash.startsWith("/")) {
-        setLoc(hash);
-      } else {
-        setLoc(window.location.pathname || "/");
-      }
+      setLoc(getPath());
     };
     window.addEventListener("hashchange", handler);
     window.addEventListener("popstate", handler);
@@ -121,7 +123,11 @@ const useHybridLocation = () => {
 
   const navigate = (to: string) => {
     if (typeof window !== "undefined") {
-      window.history.pushState(null, "", to);
+      if (window.location.host.includes("github.io")) {
+        window.location.hash = `#${to}`;
+      } else {
+        window.history.pushState(null, "", to);
+      }
       setLoc(to);
     }
   };
