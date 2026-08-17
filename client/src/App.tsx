@@ -97,14 +97,16 @@ import FIMSProjectsPage from "@/pages/saas/modules/fims-projects";
 const useHybridLocation = () => {
   const getPath = () => {
     if (typeof window === "undefined") return "/";
+    let hash = window.location.hash.replace(/^#/, "");
+    if (hash) {
+      if (!hash.startsWith("/")) hash = "/" + hash;
+      return hash;
+    }
     const path = window.location.pathname;
-    // On VPS/custom domain, pathname takes priority if present
-    if (path && path !== "/" && path !== "/index.html" && path !== "/TOTAG_GROUP_PLAFORM/") {
+    if (path && path !== "/index.html" && path !== "/TOTAG_GROUP_PLAFORM/") {
       return path;
     }
-    const hash = window.location.hash.replace(/^#/, "");
-    if (hash && hash.startsWith("/")) return hash;
-    return path || "/";
+    return "/";
   };
 
   const [loc, setLoc] = useState(getPath);
@@ -123,12 +125,14 @@ const useHybridLocation = () => {
 
   const navigate = (to: string) => {
     if (typeof window !== "undefined") {
-      if (window.location.host.includes("github.io")) {
-        window.location.hash = `#${to}`;
-      } else {
-        window.history.pushState(null, "", to);
-      }
-      setLoc(to);
+      const target = to.startsWith("/") ? to : "/" + to;
+      try {
+        window.history.pushState(null, "", target);
+      } catch (e) {}
+      try {
+        window.location.hash = target;
+      } catch (e) {}
+      setLoc(target);
     }
   };
 

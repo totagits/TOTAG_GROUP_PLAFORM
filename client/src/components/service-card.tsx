@@ -119,13 +119,7 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
   const handleCardClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (window.location.host.includes("github.io")) {
-      window.location.hash = targetUrl;
-    } else {
-      window.history.pushState(null, "", targetUrl);
-      setLocation(targetUrl);
-    }
+    setLocation(targetUrl);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -136,10 +130,9 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
       transition={{ duration: 0.25 }}
       className="h-full"
     >
-      <a 
-        href={`#${targetUrl}`} 
+      <div 
         onClick={handleCardClick}
-        className="block h-full no-underline"
+        className="block h-full no-underline cursor-pointer"
       >
         <Card 
           id={id} 
@@ -176,7 +169,7 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
             </div>
           </div>
         </Card>
-      </a>
+      </div>
     </motion.div>
   );
 }

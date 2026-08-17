@@ -57,10 +57,6 @@ export default function Header() {
   const handleGoHome = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
     setIsMenuOpen(false);
-    if (typeof window !== "undefined") {
-      window.location.hash = "/";
-      window.history.pushState(null, "", "/");
-    }
     setLocation("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -69,10 +65,6 @@ export default function Header() {
     setIsMenuOpen(false);
     if (href.startsWith("#")) {
       if (isSubPage) {
-        if (typeof window !== "undefined") {
-          window.location.hash = "/";
-          window.history.pushState(null, "", "/");
-        }
         setLocation("/");
         setTimeout(() => {
           const element = document.querySelector(href);
@@ -91,14 +83,7 @@ export default function Header() {
         }
       }
     } else {
-      if (typeof window !== "undefined") {
-        if (window.location.host.includes("github.io")) {
-          window.location.hash = href;
-        } else {
-          window.history.pushState(null, "", href);
-          setLocation(href);
-        }
-      }
+      setLocation(href);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
