@@ -92,13 +92,13 @@ export default function Header() {
       }
     } else {
       if (typeof window !== "undefined") {
-        if (window.location.hash || window.location.host.includes("github.io")) {
+        if (window.location.host.includes("github.io")) {
           window.location.hash = href;
         } else {
-          window.location.pathname = href;
+          window.history.pushState(null, "", href);
+          setLocation(href);
         }
       }
-      setLocation(href);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };

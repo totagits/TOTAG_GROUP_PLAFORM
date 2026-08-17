@@ -120,12 +120,12 @@ export default function ServiceCard({ id, title, description, icon, color, tags,
     e.preventDefault();
     e.stopPropagation();
     
-    if (window.location.hash || window.location.host.includes("github.io")) {
+    if (window.location.host.includes("github.io")) {
       window.location.hash = targetUrl;
     } else {
-      window.location.pathname = targetUrl;
+      window.history.pushState(null, "", targetUrl);
+      setLocation(targetUrl);
     }
-    setLocation(targetUrl);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
