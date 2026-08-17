@@ -146,9 +146,9 @@ export default function CargoPage() {
           titleHighlight="Cargo Handling & Logistics"
           subtitle="Enterprise port stevedoring, container freight forwarding, LRA customs clearance, bonded warehousing, and cross-border haulage across Liberia and West Africa."
           slides={[
-            { url: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&h=800&fit=crop", caption: "Freeport of Monrovia Berth Stevedoring Operations" },
-            { url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&h=800&fit=crop", caption: "TOTAG Bonded Container Freight Terminal" },
-            { url: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?w=1600&h=800&fit=crop", caption: "Cross-Border Fleet Haulage & Inland Logistics" }
+            { url: "/images/hero/solar-rooftop-team.jpg", caption: "Freeport of Monrovia Berth Stevedoring Operations" },
+            { url: "/images/hero/solar-rooftop-team.jpg", caption: "TOTAG Bonded Container Freight Terminal" },
+            { url: "/images/hero/solar-rooftop-team.jpg", caption: "Cross-Border Fleet Haulage & Inland Logistics" }
           ]}
           stats={[
             { label: "Active Waybills", value: "1,240+" },

@@ -365,9 +365,9 @@ export default function CateringPage() {
         titleHighlight="Catering & Events Services"
         subtitle="Premier institutional culinary management, corporate event catering, luxury banquet spreads, and professional event coordination across West Africa."
         slides={[
-          { url: "https://images.unsplash.com/photo-1555244162-803834f70033?w=1600&h=800&fit=crop", caption: "TOCEPS Corporate Culinary & Gourmet Banquet Setup" },
-          { url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1600&h=800&fit=crop", caption: "Specialty Wedding & Social Celebration Reception" },
-          { url: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&h=800&fit=crop", caption: "ISO-Compliant Institutional Food Safety Kitchen" }
+          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "TOCEPS Corporate Culinary & Gourmet Banquet Setup" },
+          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "Specialty Wedding & Social Celebration Reception" },
+          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "ISO-Compliant Institutional Food Safety Kitchen" }
         ]}
         stats={[
           { label: "Events Served", value: "850+" },

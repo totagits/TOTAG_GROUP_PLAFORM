@@ -100,9 +100,9 @@ export default function PetroleumPage() {
             titleHighlight="Petroleum Services"
             subtitle="Industrial bulk fuel distribution, high-capacity terminal tank depot storage, GPS-tracked tanker logistics, and offshore marine vessel bunkering across Liberia."
             slides={[
-              { url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1600&h=800&fit=crop", caption: "TOTAG Central Fuel Terminal & Storage Tanks" },
-              { url: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&h=800&fit=crop", caption: "Heavy AGO & PMS Bulk Tanker Delivery" },
-              { url: "https://images.unsplash.com/photo-1508873696983-2df515122519?w=1600&h=800&fit=crop", caption: "Offshore Bunkering & Marine Fuel Transshipment" }
+              { url: "/images/hero/pylontech-us5000-battery.png", caption: "TOTAG Central Fuel Terminal & Storage Tanks" },
+              { url: "/images/hero/pylontech-us5000-battery.png", caption: "Heavy AGO & PMS Bulk Tanker Delivery" },
+              { url: "/images/hero/pylontech-us5000-battery.png", caption: "Offshore Bunkering & Marine Fuel Transshipment" }
             ]}
             stats={[
               { label: "Depot Capacity", value: "15M Liters" },

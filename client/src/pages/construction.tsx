@@ -25,11 +25,11 @@ import { useToast } from "@/hooks/use-toast";
 
 // Heavy Machinery Fleet Data
 const MACHINERY_FLEET = [
-  { id: "EQ-01", name: "CAT 330 Hydraulic Excavator", category: "Earthmoving", rate: 450, status: "Available", image: "https://images.unsplash.com/photo-1579412690850-bd41cd0af397?w=500&auto=format&fit=crop&q=60" },
-  { id: "EQ-02", name: "Komatsu D85EX Crawler Bulldozer", category: "Land Clearing", rate: 550, status: "Available", image: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?w=500&auto=format&fit=crop&q=60" },
-  { id: "EQ-03", name: "CAT 140K Motor Grader", category: "Road Leveling", rate: 400, status: "Available", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&auto=format&fit=crop&q=60" },
-  { id: "EQ-04", name: "SANY 50-Ton Mobile Hydraulic Crane", category: "Heavy Lifting", rate: 850, status: "Available", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=500&auto=format&fit=crop&q=60" },
-  { id: "EQ-05", name: "HOWO 20-Ton Heavy Tipper Dump Truck", category: "Haulage", rate: 250, status: "Available", image: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=500&auto=format&fit=crop&q=60" }
+  { id: "EQ-01", name: "CAT 330 Hydraulic Excavator", category: "Earthmoving", rate: 450, status: "Available", image: "/images/hero/solar-rooftop-team.jpg" },
+  { id: "EQ-02", name: "Komatsu D85EX Crawler Bulldozer", category: "Land Clearing", rate: 550, status: "Available", image: "/images/hero/solar-rooftop-team.jpg" },
+  { id: "EQ-03", name: "CAT 140K Motor Grader", category: "Road Leveling", rate: 400, status: "Available", image: "/images/hero/solar-rooftop-team.jpg" },
+  { id: "EQ-04", name: "SANY 50-Ton Mobile Hydraulic Crane", category: "Heavy Lifting", rate: 850, status: "Available", image: "/images/hero/solar-rooftop-team.jpg" },
+  { id: "EQ-05", name: "HOWO 20-Ton Heavy Tipper Dump Truck", category: "Haulage", rate: 250, status: "Available", image: "/images/hero/solar-rooftop-team.jpg" }
 ];
 
 export default function ConstructionPage() {
@@ -98,9 +98,9 @@ export default function ConstructionPage() {
             titleHighlight="Construction & Infrastructure"
             subtitle="Licensed civil engineering, road & bridge infrastructure development, commercial building construction, heavy equipment fleet rental, and project management."
             slides={[
-              { url: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?w=1600&h=800&fit=crop", caption: "Heavy Civil Works & Road Infrastructure Project" },
-              { url: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&h=800&fit=crop", caption: "Structural Steel Commercial Complex" },
-              { url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1600&h=800&fit=crop", caption: "Heavy Equipment Fleet & Excavation Site" }
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "Heavy Civil Works & Road Infrastructure Project" },
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "Structural Steel Commercial Complex" },
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "Heavy Equipment Fleet & Excavation Site" }
             ]}
             stats={[
               { label: "Completed Works", value: "120+ Projects" },

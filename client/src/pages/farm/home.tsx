@@ -55,9 +55,9 @@ export default function FarmHome() {
         titleHighlight="FARM & Agribusiness"
         subtitle="Commercial crop cultivation, livestock management, greenhouse farming technology, and sustainable agro-processing from seed to regional market."
         slides={[
-          { url: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&h=800&fit=crop", caption: "Mechanized Grain & Crop Harvest Operations" },
-          { url: "https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=1600&h=800&fit=crop", caption: "Controlled Climate Greenhouse Agribusiness" },
-          { url: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=1600&h=800&fit=crop", caption: "Integrated Livestock & Poultry Farming" }
+          { url: "/images/hero/solar-rooftop-team.jpg", caption: "Mechanized Grain & Crop Harvest Operations" },
+          { url: "/images/hero/solar-rooftop-team.jpg", caption: "Controlled Climate Greenhouse Agribusiness" },
+          { url: "/images/hero/solar-rooftop-team.jpg", caption: "Integrated Livestock & Poultry Farming" }
         ]}
         stats={[
           { label: "Cultivated Acres", value: "2,500+" },

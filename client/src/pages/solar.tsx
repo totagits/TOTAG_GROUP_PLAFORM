@@ -1292,9 +1292,9 @@ export default function SolarPage() {
             titleHighlight="Solar Energy & Smart Power"
             subtitle="Turnkey solar PV EPC, lithium storage microgrids, automated BOQ costing, serialized inventory ledger, and 24/7 NOC remote monitoring telemetry."
             slides={[
-              { url: "https://images.unsplash.com/photo-1509391365360-2e959784a276?w=1600&h=800&fit=crop", caption: "Utility & Commercial Ground-Mounted Solar Array" },
-              { url: "https://images.unsplash.com/photo-1545259741-2ea3ebf61fa3?w=1600&h=800&fit=crop", caption: "Lithium Energy Storage Bank & Hybrid Inverters" },
-              { url: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=1600&h=800&fit=crop", caption: "TOTAG Smart Energy NOC Telemetry Control Center" }
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "Utility & Commercial Ground-Mounted Solar Array" },
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "Lithium Energy Storage Bank & Hybrid Inverters" },
+              { url: "/images/hero/solar-rooftop-team.jpg", caption: "TOTAG Smart Energy NOC Telemetry Control Center" }
             ]}
             stats={[
               { label: "Installed Capacity", value: "18.5 MWp" },

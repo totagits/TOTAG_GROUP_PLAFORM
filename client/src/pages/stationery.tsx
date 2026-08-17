@@ -102,9 +102,9 @@ export default function StationeryPage() {
           titleHighlight="Stationery Supplies"
           subtitle="Wholesale corporate office procurement, educational supply bundles for schools & ministries, custom commercial printing, and automated recurring stationery replenishment."
           slides={[
-            { url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=1600&h=800&fit=crop", caption: "B2B Corporate Stationery & Office Inventory Depot" },
-            { url: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=1600&h=800&fit=crop", caption: "Educational & Institutional Paper Supply Warehouse" },
-            { url: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=1600&h=800&fit=crop", caption: "Commercial High-Speed Offset Printing & Binding" }
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "B2B Corporate Stationery & Office Inventory Depot" },
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "Educational & Institutional Paper Supply Warehouse" },
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "Commercial High-Speed Offset Printing & Binding" }
           ]}
           stats={[
             { label: "Catalog Products", value: "3,200+" },

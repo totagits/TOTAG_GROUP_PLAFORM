@@ -449,7 +449,7 @@ export default function ContentManagementSystem({ onBack }: ContentManagementSys
                         id="slideImage"
                         value={slideForm.imageUrl}
                         onChange={(e) => setSlideForm({ ...slideForm, imageUrl: e.target.value })}
-                        placeholder="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=400&fit=crop"
+                        placeholder="/images/hero/solar-rooftop-team.jpg"
                         required
                       />
                       {slideForm.imageUrl && (
@@ -566,18 +566,18 @@ export default function ContentManagementSystem({ onBack }: ContentManagementSys
                       <p className="pt-2">Or select from our image library:</p>
                       <div className="grid grid-cols-1 gap-2">
                         {[
-                          { name: "Premium Rice", url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Construction Steel", url: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Office Paper", url: "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Cooking Oil", url: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Portland Cement", url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Carib Beer", url: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Office Supplies", url: "https://images.unsplash.com/photo-1531973968078-9bb02785f13d?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Fresh Vegetables", url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Electronics", url: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Textile & Clothing", url: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Home Appliances", url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=400&fit=crop&crop=center" },
-                          { name: "Building Materials", url: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=400&fit=crop&crop=center" }
+                          { name: "Premium Rice", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Construction Steel", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Office Paper", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Cooking Oil", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Portland Cement", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Carib Beer", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Office Supplies", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Fresh Vegetables", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Electronics", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Textile & Clothing", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Home Appliances", url: "/images/hero/solar-rooftop-team.jpg" },
+                          { name: "Building Materials", url: "/images/hero/solar-rooftop-team.jpg" }
                         ].map((image, idx) => (
                           <Button
                             key={idx}
@@ -692,11 +692,11 @@ export default function ContentManagementSystem({ onBack }: ContentManagementSys
                     onClick={() => {
                       // Quick action to change all images at once
                       const imageUrls = [
-                        "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=400&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&h=400&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?w=800&h=400&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&h=400&fit=crop&crop=center",
-                        "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=400&fit=crop&crop=center"
+                        "/images/hero/solar-rooftop-team.jpg",
+                        "/images/hero/solar-rooftop-team.jpg",
+                        "/images/hero/solar-rooftop-team.jpg",
+                        "/images/hero/solar-rooftop-team.jpg",
+                        "/images/hero/solar-rooftop-team.jpg"
                       ];
                       
                       if (window.confirm("Replace all carousel images with fresh product photos?")) {
@@ -736,7 +736,7 @@ export default function ContentManagementSystem({ onBack }: ContentManagementSys
                         setSlideForm({
                           title: "Your Product",
                           subtitle: "Add your product description",
-                          imageUrl: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=400&fit=crop&crop=center",
+                          imageUrl: "/images/hero/solar-rooftop-team.jpg",
                           order: 1,
                           isActive: true
                         });
@@ -949,14 +949,14 @@ export default function ContentManagementSystem({ onBack }: ContentManagementSys
                         <Label className="text-sm font-medium text-purple-800">Quick Image Library:</Label>
                         <div className="grid grid-cols-4 gap-2 mt-2">
                           {[
-                            { name: "Rice", url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Steel", url: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=300&fit=crop&crop=center" }, 
-                            { name: "Paper", url: "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Oil", url: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Cement", url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Beer", url: "https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Office", url: "https://images.unsplash.com/photo-1497005367839-6e852de72767?w=400&h=300&fit=crop&crop=center" },
-                            { name: "Tools", url: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=400&h=300&fit=crop&crop=center" }
+                            { name: "Rice", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Steel", url: "/images/hero/solar-rooftop-team.jpg" }, 
+                            { name: "Paper", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Oil", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Cement", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Beer", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Office", url: "/images/hero/solar-rooftop-team.jpg" },
+                            { name: "Tools", url: "/images/hero/solar-rooftop-team.jpg" }
                           ].map((image, index) => (
                             <button
                               key={index}

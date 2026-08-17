@@ -307,9 +307,9 @@ export default function ITServicesPortal() {
           titleHighlight="IT Services & SaaS Platform"
           subtitle="Empowering digital transformation with 14 modular enterprise SaaS solutions ($35-$75/mo), custom software engineering, cybersecurity, and cloud infrastructure."
           slides={[
-            { url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1600&h=800&fit=crop", caption: "TOTAG Enterprise Data Center & Server Infrastructure" },
-            { url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=1600&h=800&fit=crop", caption: "Custom Software Engineering & FIMS/HRMIS SaaS Development" },
-            { url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1600&h=800&fit=crop", caption: "24/7 Cybersecurity Operations & Telemetry Monitoring" }
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "TOTAG Enterprise Data Center & Server Infrastructure" },
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "Custom Software Engineering & FIMS/HRMIS SaaS Development" },
+            { url: "/images/hero/farm-surveyor-field.jpg", caption: "24/7 Cybersecurity Operations & Telemetry Monitoring" }
           ]}
           stats={[
             { label: "SaaS Modules", value: "14 Suite" },

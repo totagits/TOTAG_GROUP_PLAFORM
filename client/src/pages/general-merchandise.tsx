@@ -473,9 +473,9 @@ export default function GeneralMerchandisePage() {
         titleHighlight="General Merchandise"
         subtitle="Leading wholesale and retail distributor across West Africa, providing FMCG goods, industrial supplies, multi-outlet management, and nationwide supply chain logistics."
         slides={[
-          { url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1600&h=800&fit=crop", caption: "TOTAG Wholesale Central Distribution Depot" },
-          { url: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=1600&h=800&fit=crop", caption: "Multi-Outlet Retail Merchandise Distribution" },
-          { url: "https://images.unsplash.com/photo-1553413077-190dd305871c?w=1600&h=800&fit=crop", caption: "Bulk Consumer & Industrial Goods Inventory" }
+          { url: "/images/hero/farm-rice-harvest.jpg", caption: "TOTAG Wholesale Central Distribution Depot" },
+          { url: "/images/hero/farm-rice-harvest.jpg", caption: "Multi-Outlet Retail Merchandise Distribution" },
+          { url: "/images/hero/farm-rice-harvest.jpg", caption: "Bulk Consumer & Industrial Goods Inventory" }
         ]}
         stats={[
           { label: "Active SKUs", value: "14,500+" },

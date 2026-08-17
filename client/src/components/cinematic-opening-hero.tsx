@@ -80,7 +80,7 @@ const HERO_SLIDES = [
     icon: Truck,
     gradient: "from-blue-600/30 via-slate-900 to-slate-950",
     badge: "Pan-African Port Operations",
-    image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1600&h=800&fit=crop"
+    image: "/images/hero/solar-rooftop-team.jpg"
   },
   {
     id: "petroleum",
@@ -90,7 +90,7 @@ const HERO_SLIDES = [
     icon: Fuel,
     gradient: "from-rose-600/30 via-amber-900 to-slate-950",
     badge: "Downstream Energy Logistics",
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600&h=800&fit=crop"
+    image: "/images/hero/solar-rooftop-team.jpg"
   },
   {
     id: "construction",
@@ -100,7 +100,7 @@ const HERO_SLIDES = [
     icon: Hammer,
     gradient: "from-amber-600/30 via-stone-900 to-slate-950",
     badge: "Civil Engineering Excellence",
-    image: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?w=1600&h=800&fit=crop"
+    image: "/images/hero/solar-rooftop-team.jpg"
   },
   {
     id: "it-services",
@@ -110,7 +110,7 @@ const HERO_SLIDES = [
     icon: Cpu,
     gradient: "from-cyan-600/30 via-blue-950 to-slate-950",
     badge: "Digital Transformation & Cloud",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&h=800&fit=crop"
+    image: "/images/hero/solar-rooftop-team.jpg"
   }
 ];
 
