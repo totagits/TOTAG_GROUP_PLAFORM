@@ -1041,14 +1041,50 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
 
       {/* PRINTABLE INVOICE MODAL */}
       <Dialog open={!!selectedInvoice} onOpenChange={() => setSelectedInvoice(null)}>
-        <DialogContent className="max-w-3xl bg-white text-slate-900 border border-slate-200 rounded-3xl p-8 max-h-[90vh] overflow-y-auto">
+        <DialogContent id="printable-invoice-modal" className="max-w-3xl bg-white text-slate-900 border border-slate-200 rounded-3xl p-8 max-h-[90vh] overflow-y-auto">
           {selectedInvoice && (
             <div className="space-y-6">
+              <style>{`
+                @media print {
+                  body > * {
+                    visibility: hidden !important;
+                  }
+                  .radix-overlay, [data-radix-portal] {
+                    visibility: visible !important;
+                  }
+                  #printable-invoice-modal, #printable-invoice-modal * {
+                    visibility: visible !important;
+                  }
+                  #printable-invoice-modal {
+                    position: absolute !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    height: auto !important;
+                    max-height: none !important;
+                    margin: 0 !important;
+                    padding: 24px !important;
+                    background: #ffffff !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                    overflow: visible !important;
+                  }
+                  .no-print, button, [role="button"], .dialog-close {
+                    display: none !important;
+                  }
+                  * {
+                    -webkit-print-color-adjust: exact !important;
+                    print-color-adjust: exact !important;
+                    color-adjust: exact !important;
+                  }
+                }
+              `}</style>
               
               {/* Header */}
               <div className="flex justify-between items-start border-b pb-6">
                 <div className="flex items-center gap-3">
-                  <img src="/images/totag-logo.png" alt="TOTAG Group" className="h-14 w-auto object-contain bg-white p-1 rounded-xl border" />
+                  <img src="/images/totag-logo.png" alt="TOTAG Group" className="h-14 w-auto object-contain bg-white p-1 rounded-xl border border-slate-200" />
                   <div>
                     <h2 className="text-xl font-black text-slate-900">TOTAG Group of Companies Ltd</h2>
                     <p className="text-xs text-emerald-600 font-bold">TOCEPS Catering & Events Services</p>
@@ -1056,7 +1092,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                  <span className="text-xs font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
                     {selectedInvoice.status.toUpperCase()} INVOICE
                   </span>
                   <p className="text-lg font-mono font-bold mt-2 text-slate-900">{selectedInvoice.invoiceNumber}</p>
@@ -1064,7 +1100,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
               </div>
 
               {/* Meta Grid */}
-              <div className="grid grid-cols-2 gap-6 bg-slate-50 p-4 rounded-2xl border">
+              <div className="grid grid-cols-2 gap-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div>
                   <h4 className="text-xs font-bold text-slate-500 uppercase">Billed To</h4>
                   <p className="text-sm font-bold text-slate-900 mt-1">{selectedInvoice.clientName}</p>
@@ -1082,11 +1118,11 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
 
               {/* Audit Details */}
               {(selectedInvoice.datesOfService || selectedInvoice.locationsServed || selectedInvoice.quantitiesDelivered) && (
-                <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-xs space-y-1">
+                <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-300 text-xs space-y-1">
                   <h4 className="font-bold text-emerald-800 uppercase text-[11px]">UNIDO Contract Audit Deliverables</h4>
-                  {selectedInvoice.datesOfService && <p><strong>Dates of Service:</strong> {selectedInvoice.datesOfService}</p>}
-                  {selectedInvoice.locationsServed && <p><strong>Locations Served:</strong> {selectedInvoice.locationsServed}</p>}
-                  {selectedInvoice.quantitiesDelivered && <p><strong>Quantities Delivered:</strong> {selectedInvoice.quantitiesDelivered}</p>}
+                  {selectedInvoice.datesOfService && <p className="text-slate-800"><strong>Dates of Service:</strong> {selectedInvoice.datesOfService}</p>}
+                  {selectedInvoice.locationsServed && <p className="text-slate-800"><strong>Locations Served:</strong> {selectedInvoice.locationsServed}</p>}
+                  {selectedInvoice.quantitiesDelivered && <p className="text-slate-800"><strong>Quantities Delivered:</strong> {selectedInvoice.quantitiesDelivered}</p>}
                 </div>
               )}
 
@@ -1094,33 +1130,33 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
               <table className="w-full border-collapse text-xs">
                 <thead>
                   <tr className="bg-slate-900 text-white text-left">
-                    <th className="p-2.5 rounded-l-lg">Description</th>
-                    <th className="p-2.5 text-center">Qty</th>
-                    <th className="p-2.5 text-right">Unit Price</th>
-                    <th className="p-2.5 text-right rounded-r-lg">Total</th>
+                    <th className="p-2.5 rounded-l-lg bg-slate-900 text-white">Description</th>
+                    <th className="p-2.5 text-center bg-slate-900 text-white">Qty</th>
+                    <th className="p-2.5 text-right bg-slate-900 text-white">Unit Price</th>
+                    <th className="p-2.5 text-right rounded-r-lg bg-slate-900 text-white">Total</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {Array.isArray(selectedInvoice.lineItems) && selectedInvoice.lineItems.map((item: any, idx: number) => (
                     <tr key={idx}>
                       <td className="py-2.5 px-2">
-                        <strong>{item.description}</strong>
+                        <strong className="text-slate-900">{item.description}</strong>
                         {item.datesOfService && <div className="text-[11px] text-slate-500">Service Dates: {item.datesOfService}</div>}
                         {item.location && <div className="text-[11px] text-slate-500">Location: {item.location}</div>}
                       </td>
-                      <td className="py-2.5 px-2 text-center">{item.quantity}</td>
-                      <td className="py-2.5 px-2 text-right">{selectedInvoice.currency} {parseFloat(item.unitPrice || 0).toFixed(2)}</td>
-                      <td className="py-2.5 px-2 text-right font-bold">{selectedInvoice.currency} {parseFloat(item.total || 0).toFixed(2)}</td>
+                      <td className="py-2.5 px-2 text-center text-slate-900 font-semibold">{item.quantity}</td>
+                      <td className="py-2.5 px-2 text-right text-slate-900">{selectedInvoice.currency} {parseFloat(item.unitPrice || 0).toFixed(2)}</td>
+                      <td className="py-2.5 px-2 text-right font-bold text-slate-900">{selectedInvoice.currency} {parseFloat(item.total || 0).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               {/* Settlement Instructions & Total */}
-              <div className="grid grid-cols-2 gap-6 pt-4 border-t">
-                <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-xs text-amber-900">
-                  <h4 className="font-bold text-[11px] uppercase mb-1">Settlement Details</h4>
-                  <p className="whitespace-pre-line text-[11px]">{selectedInvoice.paymentDetails}</p>
+              <div className="grid grid-cols-2 gap-6 pt-4 border-t border-slate-200">
+                <div className="bg-amber-50 p-3.5 rounded-xl border border-amber-300 text-xs text-amber-950">
+                  <h4 className="font-bold text-[11px] uppercase mb-1 text-amber-900">Settlement Details</h4>
+                  <p className="whitespace-pre-line text-[11px] text-amber-950 font-medium">{selectedInvoice.paymentDetails}</p>
                 </div>
                 <div className="text-right space-y-1">
                   <p className="text-xs text-slate-600">Subtotal: <strong>{selectedInvoice.currency} {parseFloat(selectedInvoice.subtotal || 0).toFixed(2)}</strong></p>
@@ -1129,8 +1165,8 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
               </div>
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button variant="outline" onClick={() => window.print()} className="text-xs font-bold">
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 no-print">
+                <Button variant="outline" onClick={() => window.print()} className="text-xs font-bold no-print">
                   <Printer className="w-4 h-4 mr-1.5" /> Print / Save as PDF
                 </Button>
               </div>
