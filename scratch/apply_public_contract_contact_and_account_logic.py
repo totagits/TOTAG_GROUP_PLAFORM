@@ -1,4 +1,6 @@
-import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
+import os
+
+cargo_code = '''import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
@@ -2349,3 +2351,9 @@ export default function CargoPage() {
     </div>
   );
 }
+'''
+
+with open(r'c:\Users\MichaelGwoah\Videos\TOTAGGROUP\client\src\pages\cargo.tsx', 'w', encoding='utf-8') as f:
+    f.write(cargo_code)
+
+print("Applied public contract contact fields, automated dual onboarding logic, and moved Change Password to B2B Customer Portal successfully!")
