@@ -122,6 +122,7 @@ import {
   cateringTasks,
   cateringIncidents,
   cateringQuotations,
+  cateringInvoices,
   type CateringStaff,
   type InsertCateringStaff,
   type CateringRequest,
@@ -134,6 +135,8 @@ import {
   type InsertCateringIncident,
   type CateringQuotation,
   type InsertCateringQuotation,
+  type CateringInvoice,
+  type InsertCateringInvoice,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -291,6 +294,10 @@ export interface IStorage {
   getCateringQuotationById(id: number): Promise<CateringQuotation | undefined>;
   getCateringQuotationsByRequestId(requestId: number): Promise<CateringQuotation[]>;
   updateCateringQuotation(id: number, updates: Partial<CateringQuotation>): Promise<CateringQuotation | undefined>;
+  createCateringInvoice(invoice: InsertCateringInvoice): Promise<CateringInvoice>;
+  getCateringInvoices(): Promise<CateringInvoice[]>;
+  getCateringInvoiceById(id: number): Promise<CateringInvoice | undefined>;
+  updateCateringInvoice(id: number, updates: Partial<CateringInvoice>): Promise<CateringInvoice | undefined>;
 
   // Cargo Operations
   getCargoShipments(): Promise<CargoShipment[]>;
@@ -1402,6 +1409,25 @@ export class DatabaseStorage implements IStorage {
 
   async updateCateringQuotation(id: number, updates: Partial<CateringQuotation>): Promise<CateringQuotation | undefined> {
     const [updated] = await db.update(cateringQuotations).set({ ...updates, updatedAt: new Date() }).where(eq(cateringQuotations.id, id)).returning();
+    return updated || undefined;
+  }
+
+  async createCateringInvoice(invoice: InsertCateringInvoice): Promise<CateringInvoice> {
+    const [created] = await db.insert(cateringInvoices).values(invoice).returning();
+    return created;
+  }
+
+  async getCateringInvoices(): Promise<CateringInvoice[]> {
+    return await db.select().from(cateringInvoices).orderBy(desc(cateringInvoices.createdAt));
+  }
+
+  async getCateringInvoiceById(id: number): Promise<CateringInvoice | undefined> {
+    const [inv] = await db.select().from(cateringInvoices).where(eq(cateringInvoices.id, id));
+    return inv || undefined;
+  }
+
+  async updateCateringInvoice(id: number, updates: Partial<CateringInvoice>): Promise<CateringInvoice | undefined> {
+    const [updated] = await db.update(cateringInvoices).set({ ...updates, updatedAt: new Date() }).where(eq(cateringInvoices.id, id)).returning();
     return updated || undefined;
   }
 

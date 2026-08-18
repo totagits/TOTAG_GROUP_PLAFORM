@@ -1931,12 +1931,50 @@ export const cateringQuotations = pgTable("catering_quotations", {
   statusIdx: index("catering_quot_status_idx").on(table.status),
 }));
 
+export const cateringInvoices = pgTable("catering_invoices", {
+  id: serial("id").primaryKey(),
+  invoiceNumber: text("invoice_number").notNull(),
+  requestId: integer("request_id").references(() => cateringRequests.id),
+  quotationId: integer("quotation_id").references(() => cateringQuotations.id),
+  clientName: text("client_name").notNull(),
+  clientEmail: text("client_email").notNull(),
+  clientPhone: text("client_phone"),
+  clientCompany: text("client_company"),
+  contractRef: text("contract_ref"),
+  invoiceDate: text("invoice_date").notNull(),
+  dueDate: text("due_date").notNull(),
+  paymentTerms: text("payment_terms").notNull().default("Net 30"),
+  currency: text("currency").notNull().default("USD"),
+  datesOfService: text("dates_of_service"),
+  locationsServed: text("locations_served"),
+  quantitiesDelivered: text("quantities_delivered"),
+  lineItems: jsonb("line_items").notNull().default('[]'),
+  subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull().default("0"),
+  taxRate: numeric("tax_rate", { precision: 5, scale: 2 }).notNull().default("0"),
+  taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).notNull().default("0"),
+  discount: numeric("discount", { precision: 12, scale: 2 }).notNull().default("0"),
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull().default("0"),
+  amountPaid: numeric("amount_paid", { precision: 12, scale: 2 }).notNull().default("0"),
+  paymentDetails: text("payment_details"),
+  termsAndConditions: text("terms_and_conditions"),
+  notes: text("notes"),
+  vaultSaved: boolean("vault_saved").notNull().default(true),
+  status: text("status").notNull().default("issued"),
+  createdBy: integer("created_by").references(() => cateringStaff.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  numberIdx: index("catering_inv_number_idx").on(table.invoiceNumber),
+  statusIdx: index("catering_inv_status_idx").on(table.status),
+}));
+
 export const insertCateringStaffSchema = createInsertSchema(cateringStaff).omit({ id: true, createdAt: true });
 export const insertCateringRequestSchema = createInsertSchema(cateringRequests).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertCateringEventSchema = createInsertSchema(cateringEvents).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertCateringTaskSchema = createInsertSchema(cateringTasks).omit({ id: true, createdAt: true });
 export const insertCateringIncidentSchema = createInsertSchema(cateringIncidents).omit({ id: true, createdAt: true });
 export const insertCateringQuotationSchema = createInsertSchema(cateringQuotations).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCateringInvoiceSchema = createInsertSchema(cateringInvoices).omit({ id: true, createdAt: true, updatedAt: true });
 
 export type CateringStaff = typeof cateringStaff.$inferSelect;
 export type InsertCateringStaff = z.infer<typeof insertCateringStaffSchema>;
@@ -1950,6 +1988,8 @@ export type CateringIncident = typeof cateringIncidents.$inferSelect;
 export type InsertCateringIncident = z.infer<typeof insertCateringIncidentSchema>;
 export type CateringQuotation = typeof cateringQuotations.$inferSelect;
 export type InsertCateringQuotation = z.infer<typeof insertCateringQuotationSchema>;
+export type CateringInvoice = typeof cateringInvoices.$inferSelect;
+export type InsertCateringInvoice = z.infer<typeof insertCateringInvoiceSchema>;
 
 // SaaS Types
 export type Tenant = typeof tenants.$inferSelect;
