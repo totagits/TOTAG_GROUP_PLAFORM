@@ -83,7 +83,7 @@ export default function SubsidiaryHeroCarousel({
       </AnimatePresence>
 
       {/* Dark Glass Morphic Gradient Overlay */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-transparent" />
 
       {/* Content Container */}
       <div className="relative z-20 container mx-auto px-6 sm:px-10 py-10 sm:py-14 flex flex-col justify-center h-full">
