@@ -34,14 +34,36 @@ async function ensureCateringInvoicesTable() {
         notes TEXT,
         vault_saved BOOLEAN NOT NULL DEFAULT true,
         status TEXT NOT NULL DEFAULT 'issued',
+        is_deleted BOOLEAN NOT NULL DEFAULT false,
+        deleted_at TIMESTAMP,
+        deleted_by_name TEXT,
+        deletion_reason TEXT,
         created_by INTEGER,
         created_at TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMP NOT NULL DEFAULT NOW()
       );
+
+      ALTER TABLE catering_invoices ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN NOT NULL DEFAULT false;
+      ALTER TABLE catering_invoices ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
+      ALTER TABLE catering_invoices ADD COLUMN IF NOT EXISTS deleted_by_name TEXT;
+      ALTER TABLE catering_invoices ADD COLUMN IF NOT EXISTS deletion_reason TEXT;
+
+      CREATE TABLE IF NOT EXISTS catering_audit_logs (
+        id SERIAL PRIMARY KEY,
+        action TEXT NOT NULL,
+        entity_type TEXT NOT NULL DEFAULT 'invoice',
+        entity_id TEXT NOT NULL,
+        entity_reference TEXT,
+        performed_by_id INTEGER,
+        performed_by_name TEXT NOT NULL,
+        reason TEXT,
+        details JSONB DEFAULT '{}',
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
     `);
-    console.log("✅ Verified PostgreSQL catering_invoices table structure");
+    console.log("✅ Verified PostgreSQL catering_invoices & catering_audit_logs tables structure");
   } catch (err: any) {
-    console.error("⚠️ Failed to ensure catering_invoices table:", err.message);
+    console.error("⚠️ Failed to ensure catering tables:", err.message);
   }
 }
 
@@ -1162,6 +1184,41 @@ TOCEPS Finance & Billing Desk`,
   } catch (error: any) {
     console.error("Failed to send invoice email:", error.message);
     res.status(500).json({ success: false, error: "Failed to dispatch invoice email" });
+  }
+});
+
+// ===== AUDIT TRAIL: Delete Invoice & Record Immutable Log =====
+router.delete("/invoices/:id", authenticateCateringStaff, requireCateringRole("account_manager"), async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const invoice = await storage.getCateringInvoiceById(id);
+    if (!invoice) return res.status(404).json({ success: false, error: "Invoice not found in vault" });
+
+    const reason = req.body.reason || "Administrative removal from vault";
+    const userName = req.staffUser ? `${req.staffUser.firstName} ${req.staffUser.lastName} (${req.staffUser.role})` : "TOCEPS Admin";
+    const userId = req.staffUser?.id;
+
+    await storage.deleteCateringInvoice(id, reason, userName, userId);
+
+    res.json({
+      success: true,
+      message: `Invoice ${invoice.invoiceNumber} removed from Active Vault and recorded in Compliance Audit Trail.`,
+      invoiceNumber: invoice.invoiceNumber
+    });
+  } catch (error: any) {
+    console.error("Invoice deletion error:", error.message);
+    res.status(500).json({ success: false, error: error.message || "Failed to delete invoice" });
+  }
+});
+
+// ===== AUDIT TRAIL: Get Compliance Event Logs =====
+router.get("/audit-logs", authenticateCateringStaff, async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const logs = await storage.getCateringAuditLogs();
+    res.json({ success: true, logs });
+  } catch (error: any) {
+    console.error("Failed to fetch audit logs:", error.message);
+    res.status(500).json({ success: false, error: "Failed to fetch audit logs" });
   }
 });
 

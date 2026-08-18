@@ -1960,12 +1960,32 @@ export const cateringInvoices = pgTable("catering_invoices", {
   notes: text("notes"),
   vaultSaved: boolean("vault_saved").notNull().default(true),
   status: text("status").notNull().default("issued"),
+  isDeleted: boolean("is_deleted").notNull().default(false),
+  deletedAt: timestamp("deleted_at"),
+  deletedByName: text("deleted_by_name"),
+  deletionReason: text("deletion_reason"),
   createdBy: integer("created_by").references(() => cateringStaff.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   numberIdx: index("catering_inv_number_idx").on(table.invoiceNumber),
   statusIdx: index("catering_inv_status_idx").on(table.status),
+}));
+
+export const cateringAuditLogs = pgTable("catering_audit_logs", {
+  id: serial("id").primaryKey(),
+  action: text("action").notNull(),
+  entityType: text("entity_type").notNull().default("invoice"),
+  entityId: text("entity_id").notNull(),
+  entityReference: text("entity_reference"),
+  performedById: integer("performed_by_id"),
+  performedByName: text("performed_by_name").notNull(),
+  reason: text("reason"),
+  details: jsonb("details").default({}),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  actionIdx: index("catering_audit_action_idx").on(table.action),
+  createdIdx: index("catering_audit_created_idx").on(table.createdAt),
 }));
 
 export const insertCateringStaffSchema = createInsertSchema(cateringStaff).omit({ id: true, createdAt: true });
@@ -1975,9 +1995,12 @@ export const insertCateringTaskSchema = createInsertSchema(cateringTasks).omit({
 export const insertCateringIncidentSchema = createInsertSchema(cateringIncidents).omit({ id: true, createdAt: true });
 export const insertCateringQuotationSchema = createInsertSchema(cateringQuotations).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertCateringInvoiceSchema = createInsertSchema(cateringInvoices).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCateringAuditLogSchema = createInsertSchema(cateringAuditLogs).omit({ id: true, createdAt: true });
 
 export type CateringStaff = typeof cateringStaff.$inferSelect;
 export type InsertCateringStaff = z.infer<typeof insertCateringStaffSchema>;
+export type CateringAuditLog = typeof cateringAuditLogs.$inferSelect;
+export type InsertCateringAuditLog = z.infer<typeof insertCateringAuditLogSchema>;
 export type CateringRequest = typeof cateringRequests.$inferSelect;
 export type InsertCateringRequest = z.infer<typeof insertCateringRequestSchema>;
 export type CateringEvent = typeof cateringEvents.$inferSelect;

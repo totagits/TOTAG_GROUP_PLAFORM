@@ -923,8 +923,18 @@ function InvoiceBuilder({ requests, quotations, onSaveInvoice, onSendInvoice }: 
 
 function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: () => void }) {
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
+  const [vaultSubTab, setVaultSubTab] = useState<"active-docs" | "audit-trail">("active-docs");
+  const [invoiceToDelete, setInvoiceToDelete] = useState<any | null>(null);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [deleting, setDeleting] = useState(false);
   const [sending, setSending] = useState(false);
   const { toast } = useToast();
+
+  const { data: auditLogsData, refetch: refetchAuditLogs } = useQuery({
+    queryKey: ["/api/catering/audit-logs"],
+    queryFn: () => cateringFetch("/api/catering/audit-logs"),
+  });
+  const auditLogs = auditLogsData?.logs || [];
 
   const handleSendInvoiceEmail = async (invId: number) => {
     setSending(true);
@@ -933,6 +943,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
       if (res && res.success) {
         toast({ title: "Invoice Dispatched", description: res.message });
         if (onRefresh) onRefresh();
+        refetchAuditLogs();
       } else {
         toast({ title: "Email Failed", description: res?.error || "Could not send email", variant: "destructive" });
       }
@@ -953,15 +964,54 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
       if (res && res.success) {
         toast({ title: "Invoice Updated", description: `Marked invoice as ${newStatus.toUpperCase()}` });
         if (onRefresh) onRefresh();
+        refetchAuditLogs();
       }
     } catch (err: any) {
       toast({ title: "Error", description: "Failed to update invoice", variant: "destructive" });
     }
   };
 
+  const handleDeleteInvoice = async () => {
+    if (!invoiceToDelete) return;
+    if (!deleteReason.trim()) {
+      toast({ title: "Audit Reason Required", description: "Please enter an explanation for the Compliance Audit Trail.", variant: "destructive" });
+      return;
+    }
+    setDeleting(true);
+    try {
+      const res = await cateringFetch(`/api/catering/invoices/${invoiceToDelete.id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: deleteReason.trim() }),
+      });
+      if (res && res.success) {
+        toast({ title: "Invoice Removed & Logged", description: res.message });
+        setInvoiceToDelete(null);
+        setDeleteReason("");
+        if (onRefresh) onRefresh();
+        refetchAuditLogs();
+      } else {
+        toast({ title: "Delete Failed", description: res?.error || "Could not remove invoice", variant: "destructive" });
+      }
+    } catch (err: any) {
+      toast({ title: "Error", description: "Failed to remove invoice", variant: "destructive" });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const quickReasons = [
+    "Created in error / Test draft",
+    "Duplicate entry revision",
+    "Revised quotation issued",
+    "Client requested amendment",
+    "Cancelled contract deliverable"
+  ];
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-lg">
+      {/* Top Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-lg gap-3">
         <div>
           <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
             <FileSpreadsheet className="w-5 h-5 text-emerald-500" />
@@ -971,73 +1021,245 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
             Archived enterprise invoices, UNIDO contract audit compliance logs, & billing settlement tracker
           </p>
         </div>
-        <Badge className="bg-emerald-500/20 text-emerald-500 font-bold text-xs">
-          {invoices.length} Invoices Archived
-        </Badge>
+        
+        {/* Sub-Tab Navigation */}
+        <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-white/10">
+          <button
+            onClick={() => setVaultSubTab("active-docs")}
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+              vaultSubTab === "active-docs"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" /> Active Vault ({invoices.length})
+          </button>
+          <button
+            onClick={() => { setVaultSubTab("audit-trail"); refetchAuditLogs(); }}
+            className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+              vaultSubTab === "audit-trail"
+                ? "bg-slate-900 text-white shadow-sm"
+                : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Audit Trail ({auditLogs.length})
+          </button>
+        </div>
       </div>
 
-      {invoices.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-slate-500">No archived invoices in Document Vault yet</CardContent></Card>
-      ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {invoices.map((inv: any) => (
-            <Card key={inv.id} className="border border-slate-200 dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden bg-white/95 dark:bg-slate-900/95">
-              <CardContent className="p-5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-mono font-bold text-emerald-500 text-xs">
-                      INV
+      {/* SUBTAB 1: ACTIVE VAULT DOCUMENTS */}
+      {vaultSubTab === "active-docs" && (
+        <>
+          {invoices.length === 0 ? (
+            <Card><CardContent className="py-12 text-center text-slate-500">No active invoices in Document Vault</CardContent></Card>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {invoices.map((inv: any) => (
+                <Card key={inv.id} className="border border-slate-200 dark:border-white/10 rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden bg-white/95 dark:bg-slate-900/95">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center font-mono font-bold text-emerald-500 text-xs">
+                          INV
+                        </div>
+                        <div>
+                          <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            {inv.invoiceNumber}
+                            <Badge className={inv.status === "paid" ? "bg-emerald-500 text-slate-950 text-[10px] font-extrabold" : "bg-amber-500/20 text-amber-400 text-[10px] font-extrabold"}>
+                              {inv.status.toUpperCase()}
+                            </Badge>
+                          </h4>
+                          <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{inv.clientName} ({inv.clientCompany || "Client"})</p>
+                          {inv.contractRef && <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">Contract: {inv.contractRef}</p>}
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 block">{inv.currency} {parseFloat(inv.totalAmount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                        <span className="text-[11px] text-slate-400 block">Due: {inv.dueDate}</span>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                        {inv.invoiceNumber}
-                        <Badge className={inv.status === "paid" ? "bg-emerald-500 text-slate-950 text-[10px] font-extrabold" : "bg-amber-500/20 text-amber-400 text-[10px] font-extrabold"}>
-                          {inv.status.toUpperCase()}
-                        </Badge>
-                      </h4>
-                      <p className="text-xs font-bold text-slate-700 dark:text-slate-300">{inv.clientName} ({inv.clientCompany || "Client"})</p>
-                      {inv.contractRef && <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">Contract: {inv.contractRef}</p>}
-                    </div>
-                  </div>
 
-                  <div className="text-right">
-                    <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 block">{inv.currency} {parseFloat(inv.totalAmount || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
-                    <span className="text-[11px] text-slate-400 block">Due: {inv.dueDate}</span>
-                  </div>
-                </div>
-
-                {/* Audit details snippet */}
-                {(inv.datesOfService || inv.locationsServed) && (
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-white/5 text-xs space-y-1">
-                    {inv.datesOfService && <p className="text-slate-600 dark:text-slate-300">📅 <strong>Service Dates:</strong> {inv.datesOfService}</p>}
-                    {inv.locationsServed && <p className="text-slate-600 dark:text-slate-300">📍 <strong>Locations:</strong> {inv.locationsServed}</p>}
-                    {inv.quantitiesDelivered && <p className="text-slate-600 dark:text-slate-300">📦 <strong>Quantities Delivered:</strong> {inv.quantitiesDelivered}</p>}
-                  </div>
-                )}
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-white/5">
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline" onClick={() => setSelectedInvoice(inv)} className="text-xs font-bold rounded-xl">
-                      <Eye className="w-3.5 h-3.5 mr-1 text-emerald-500" /> View & Print Invoice
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => handleSendInvoiceEmail(inv.id)} disabled={sending} className="text-xs font-bold rounded-xl text-sky-400 border-sky-400/30">
-                      <Send className="w-3.5 h-3.5 mr-1" /> {sending ? "Sending..." : "Resend Email"}
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {inv.status !== "paid" && (
-                      <Button size="sm" onClick={() => handleUpdateStatus(inv.id, "paid")} className="text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white">
-                        <CheckCircle className="w-3.5 h-3.5 mr-1" /> Mark Paid
-                      </Button>
+                    {/* Audit details snippet */}
+                    {(inv.datesOfService || inv.locationsServed) && (
+                      <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-white/5 text-xs space-y-1">
+                        {inv.datesOfService && <p className="text-slate-600 dark:text-slate-300">📅 <strong>Service Dates:</strong> {inv.datesOfService}</p>}
+                        {inv.locationsServed && <p className="text-slate-600 dark:text-slate-300">📍 <strong>Locations:</strong> {inv.locationsServed}</p>}
+                        {inv.quantitiesDelivered && <p className="text-slate-600 dark:text-slate-300">📦 <strong>Quantities Delivered:</strong> {inv.quantitiesDelivered}</p>}
+                      </div>
                     )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex items-center gap-2">
+                        <Button size="sm" variant="outline" onClick={() => setSelectedInvoice(inv)} className="text-xs font-bold rounded-xl">
+                          <Eye className="w-3.5 h-3.5 mr-1 text-emerald-500" /> View & Print Invoice
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handleSendInvoiceEmail(inv.id)} disabled={sending} className="text-xs font-bold rounded-xl text-sky-400 border-sky-400/30">
+                          <Send className="w-3.5 h-3.5 mr-1" /> {sending ? "Sending..." : "Resend Email"}
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {inv.status !== "paid" && (
+                          <Button size="sm" onClick={() => handleUpdateStatus(inv.id, "paid")} className="text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white">
+                            <CheckCircle className="w-3.5 h-3.5 mr-1" /> Mark Paid
+                          </Button>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => { setInvoiceToDelete(inv); setDeleteReason(""); }}
+                          className="text-xs font-bold rounded-xl text-rose-500 hover:text-rose-400 border-rose-500/30 hover:border-rose-500/60 hover:bg-rose-500/10"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete & Audit
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </>
       )}
+
+      {/* SUBTAB 2: COMPLIANCE AUDIT TRAIL */}
+      {vaultSubTab === "audit-trail" && (
+        <Card className="border border-slate-200 dark:border-white/10 rounded-2xl bg-white/95 dark:bg-slate-900/95 overflow-hidden shadow-lg">
+          <CardHeader className="p-5 border-b border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-800/30">
+            <CardTitle className="text-sm font-black text-slate-900 dark:text-white flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                Immutable Document Vault Compliance Log
+              </span>
+              <Badge variant="outline" className="text-[11px] font-bold">
+                {auditLogs.length} Recorded Events
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {auditLogs.length === 0 ? (
+              <div className="p-12 text-center text-slate-500 text-xs">No audit trail events recorded yet.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-white/10">
+                      <th className="p-3.5">Timestamp</th>
+                      <th className="p-3.5">Action</th>
+                      <th className="p-3.5">Document Ref</th>
+                      <th className="p-3.5">Authorized Actor</th>
+                      <th className="p-3.5">Audit Reason / Description</th>
+                      <th className="p-3.5 text-right">Financial Details</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                    {auditLogs.map((log: any) => (
+                      <tr key={log.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
+                        <td className="p-3.5 whitespace-nowrap font-mono text-[11px] text-slate-500">
+                          {new Date(log.createdAt).toLocaleString()}
+                        </td>
+                        <td className="p-3.5 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full font-extrabold text-[10px] ${
+                            log.action === "INVOICE_DELETED"
+                              ? "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800"
+                              : log.action === "INVOICE_DISPATCHED"
+                              ? "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-300 dark:border-sky-800"
+                              : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800"
+                          }`}>
+                            {log.action}
+                          </span>
+                        </td>
+                        <td className="p-3.5 whitespace-nowrap font-mono font-bold text-slate-900 dark:text-white">
+                          {log.entityReference || log.entityId}
+                        </td>
+                        <td className="p-3.5 font-medium text-slate-800 dark:text-slate-200">
+                          {log.performedByName}
+                        </td>
+                        <td className="p-3.5 text-slate-600 dark:text-slate-400">
+                          <span className="font-semibold text-slate-900 dark:text-slate-200">{log.reason || "—"}</span>
+                        </td>
+                        <td className="p-3.5 text-right font-mono text-slate-700 dark:text-slate-300">
+                          {log.details?.totalAmount ? `${log.details.currency || "USD"} ${parseFloat(log.details.totalAmount).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* DELETION CONFIRMATION & AUDIT REASON MODAL */}
+      <Dialog open={!!invoiceToDelete} onOpenChange={() => setInvoiceToDelete(null)}>
+        <DialogContent className="max-w-md bg-white text-slate-900 border border-slate-200 rounded-3xl p-6 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-rose-600 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-rose-600" />
+              Confirm Vault Document Deletion
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-600 pt-1">
+              This action will remove the document from the active vault and record an immutable entry in the Compliance Audit Trail.
+            </DialogDescription>
+          </DialogHeader>
+
+          {invoiceToDelete && (
+            <div className="space-y-4 pt-2">
+              <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
+                <p><strong>Document Ref:</strong> <span className="font-mono">{invoiceToDelete.invoiceNumber}</span></p>
+                <p><strong>Client:</strong> {invoiceToDelete.clientName}</p>
+                <p><strong>Total Amount:</strong> {invoiceToDelete.currency} {parseFloat(invoiceToDelete.totalAmount || 0).toFixed(2)}</p>
+                {invoiceToDelete.contractRef && <p className="text-emerald-700 font-semibold"><strong>Contract:</strong> {invoiceToDelete.contractRef}</p>}
+              </div>
+
+              <div>
+                <Label className="text-xs font-bold text-slate-700 block mb-1.5">
+                  Reason for Deletion <span className="text-rose-500">* (Mandatory for Audit Trail)</span>
+                </Label>
+                <Textarea
+                  placeholder="Explain why this document is being removed (e.g., duplicate test draft, revised quotation issued)..."
+                  value={deleteReason}
+                  onChange={(e) => setDeleteReason(e.target.value)}
+                  className="text-xs rounded-xl min-h-[70px]"
+                />
+              </div>
+
+              {/* Quick Reason Chips */}
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Quick Presets:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {quickReasons.map((preset, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setDeleteReason(preset)}
+                      className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition-colors border border-slate-200"
+                    >
+                      {preset}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200">
+                <Button variant="outline" size="sm" onClick={() => setInvoiceToDelete(null)} className="text-xs font-bold">
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleDeleteInvoice}
+                  disabled={deleting || !deleteReason.trim()}
+                  className="text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white"
+                >
+                  {deleting ? "Deleting & Logging..." : "Confirm Deletion & Log"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* PRINTABLE INVOICE MODAL */}
       <Dialog open={!!selectedInvoice} onOpenChange={() => setSelectedInvoice(null)}>

@@ -123,6 +123,7 @@ import {
   cateringIncidents,
   cateringQuotations,
   cateringInvoices,
+  cateringAuditLogs,
   type CateringStaff,
   type InsertCateringStaff,
   type CateringRequest,
@@ -137,6 +138,8 @@ import {
   type InsertCateringQuotation,
   type CateringInvoice,
   type InsertCateringInvoice,
+  type CateringAuditLog,
+  type InsertCateringAuditLog,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc } from "drizzle-orm";
@@ -295,9 +298,12 @@ export interface IStorage {
   getCateringQuotationsByRequestId(requestId: number): Promise<CateringQuotation[]>;
   updateCateringQuotation(id: number, updates: Partial<CateringQuotation>): Promise<CateringQuotation | undefined>;
   createCateringInvoice(invoice: InsertCateringInvoice): Promise<CateringInvoice>;
-  getCateringInvoices(): Promise<CateringInvoice[]>;
+  getCateringInvoices(includeDeleted?: boolean): Promise<CateringInvoice[]>;
   getCateringInvoiceById(id: number): Promise<CateringInvoice | undefined>;
   updateCateringInvoice(id: number, updates: Partial<CateringInvoice>): Promise<CateringInvoice | undefined>;
+  deleteCateringInvoice(id: number, reason: string, performedByName: string, performedById?: number): Promise<CateringInvoice | undefined>;
+  createCateringAuditLog(log: InsertCateringAuditLog): Promise<CateringAuditLog>;
+  getCateringAuditLogs(): Promise<CateringAuditLog[]>;
 
   // Cargo Operations
   getCargoShipments(): Promise<CargoShipment[]>;
@@ -1417,8 +1423,11 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
-  async getCateringInvoices(): Promise<CateringInvoice[]> {
-    return await db.select().from(cateringInvoices).orderBy(desc(cateringInvoices.createdAt));
+  async getCateringInvoices(includeDeleted: boolean = false): Promise<CateringInvoice[]> {
+    if (includeDeleted) {
+      return await db.select().from(cateringInvoices).orderBy(desc(cateringInvoices.createdAt));
+    }
+    return await db.select().from(cateringInvoices).where(eq(cateringInvoices.isDeleted, false)).orderBy(desc(cateringInvoices.createdAt));
   }
 
   async getCateringInvoiceById(id: number): Promise<CateringInvoice | undefined> {
@@ -1429,6 +1438,53 @@ export class DatabaseStorage implements IStorage {
   async updateCateringInvoice(id: number, updates: Partial<CateringInvoice>): Promise<CateringInvoice | undefined> {
     const [updated] = await db.update(cateringInvoices).set({ ...updates, updatedAt: new Date() }).where(eq(cateringInvoices.id, id)).returning();
     return updated || undefined;
+  }
+
+  async deleteCateringInvoice(id: number, reason: string, performedByName: string, performedById?: number): Promise<CateringInvoice | undefined> {
+    const [inv] = await db.select().from(cateringInvoices).where(eq(cateringInvoices.id, id));
+    if (!inv) return undefined;
+
+    const [deleted] = await db
+      .update(cateringInvoices)
+      .set({
+        isDeleted: true,
+        deletedAt: new Date(),
+        deletedByName: performedByName,
+        deletionReason: reason,
+        updatedAt: new Date(),
+      })
+      .where(eq(cateringInvoices.id, id))
+      .returning();
+
+    // Automatically record to immutable audit log
+    await this.createCateringAuditLog({
+      action: "INVOICE_DELETED",
+      entityType: "invoice",
+      entityId: id.toString(),
+      entityReference: inv.invoiceNumber,
+      performedById: performedById || null,
+      performedByName,
+      reason,
+      details: {
+        invoiceNumber: inv.invoiceNumber,
+        clientName: inv.clientName,
+        totalAmount: inv.totalAmount,
+        contractRef: inv.contractRef,
+        currency: inv.currency,
+        invoiceDate: inv.invoiceDate,
+      },
+    });
+
+    return deleted || undefined;
+  }
+
+  async createCateringAuditLog(log: InsertCateringAuditLog): Promise<CateringAuditLog> {
+    const [created] = await db.insert(cateringAuditLogs).values(log).returning();
+    return created;
+  }
+
+  async getCateringAuditLogs(): Promise<CateringAuditLog[]> {
+    return await db.select().from(cateringAuditLogs).orderBy(desc(cateringAuditLogs.createdAt));
   }
 
   // Cargo Operations
