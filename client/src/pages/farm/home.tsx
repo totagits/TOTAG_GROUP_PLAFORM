@@ -59,7 +59,8 @@ import {
   Package, 
   Database,
   Award,
-  AlertCircle
+  AlertCircle,
+  FileSignature
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
