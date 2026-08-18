@@ -19,7 +19,8 @@ import {
   Headphones,
   AlertCircle,
   CheckCircle2,
-  Radio
+  Radio,
+  Globe
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -34,15 +35,15 @@ interface Message {
 const TOTAG_KNOWLEDGE_STANDARD = [
   {
     keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening"],
-    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant based in Monrovia, Liberia. We deliver industry-leading solutions across our nine specialized subsidiaries, connecting West Africa to Seattle, USA. How may I assist you today?",
+    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant based in Monrovia, Liberia. We deliver industry-leading enterprise solutions across our nine specialized subsidiaries, connecting West Africa to global markets worldwide. How may I assist you today?",
     links: [
       { label: "Explore All 9 Subsidiaries", url: "/#services" },
       { label: "Contact Corporate Office", url: "/#contact" }
     ]
   },
   {
-    keywords: ["cargo", "shipping", "freight", "logistics", "seattle", "port", "tracking", "container", "vessel", "ship", "customs"],
-    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers, including Seattle, USA. We offer real-time shipment tracking and secure bonded warehousing.",
+    keywords: ["cargo", "shipping", "freight", "logistics", "global", "port", "tracking", "container", "vessel", "ship", "customs", "international"],
+    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, international air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers across North America, Europe, Asia, and Africa. We offer real-time shipment tracking and secure bonded warehousing.",
     links: [
       { label: "Cargo Logistics Portal", url: "/cargo" },
       { label: "Track Shipment", url: "/order-tracking" }
@@ -108,7 +109,7 @@ const TOTAG_KNOWLEDGE_STANDARD = [
   },
   {
     keywords: ["contact", "email", "phone", "address", "location", "office", "where", "headquarters", "monrovia"],
-    response: "TOTAG Group of Companies Ltd is headquartered in Monrovia, Liberia with global trade partnerships in Seattle, USA. You can contact our corporate desk at info@totaggroup.com, IT services at tis@totaggroup.com, or Catering at toceps@totaggroup.com.",
+    response: "TOTAG Group of Companies Ltd is headquartered in Monrovia, Liberia with global enterprise trade networks worldwide. You can contact our corporate desk at info@totaggroup.com, IT services at tis@totaggroup.com, or Catering at toceps@totaggroup.com.",
     links: [
       { label: "Corporate Contact Form", url: "/#contact" }
     ]
@@ -158,7 +159,7 @@ export default function VoiceChatWidget() {
       timestamp: "Just now",
       links: [
         { label: "Explore 9 Subsidiaries", url: "/#services" },
-        { label: "Cargo (Liberia ↔ Seattle)", url: "/cargo" },
+        { label: "Global Cargo Logistics", url: "/cargo" },
         { label: "Contact Corporate Office", url: "/#contact" }
       ]
     }
@@ -246,7 +247,7 @@ export default function VoiceChatWidget() {
     }, 400);
   };
 
-  // Direct, clean speech recognition without device lock conflicts
+  // Direct, clean speech recognition
   const startListening = () => {
     stopSpeaking();
     setMicError(null);
@@ -265,7 +266,6 @@ export default function VoiceChatWidget() {
       }
 
       const recognition = new SpeechRecognitionClass();
-      // Using continuous: false guarantees instant utterance delivery and prevents browser buffer stall
       recognition.continuous = false;
       recognition.interimResults = true;
       recognition.lang = "en-US";
@@ -370,7 +370,7 @@ export default function VoiceChatWidget() {
 
   const quickPrompts = [
     "Tell me about the 9 Subsidiaries",
-    "Cargo routes to Seattle",
+    "Global Cargo & Freight routes",
     "IT Services & SaaS modules",
     "TOCEPS Catering & UNIDO contracts",
     "Solar Power & Deye inverters",
@@ -406,7 +406,7 @@ export default function VoiceChatWidget() {
                       Liberia HQ
                     </span>
                   </h4>
-                  <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Seattle, USA</p>
+                  <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Global Reach</p>
                 </div>
               </div>
 

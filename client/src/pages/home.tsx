@@ -85,7 +85,7 @@ export default function Home() {
             {/* Bottom Subtle Brand Watermark */}
             <div className="absolute bottom-6 inset-x-0 text-center z-20 pointer-events-none">
               <p className="text-white/80 font-bold text-xs uppercase tracking-widest drop-shadow-md">
-                TOTAG GROUP OF COMPANIES LTD • LIBERIA ⟷ SEATTLE
+                TOTAG GROUP OF COMPANIES LTD • LIBERIA ⟷ GLOBAL REACH
               </p>
             </div>
           </motion.div>
