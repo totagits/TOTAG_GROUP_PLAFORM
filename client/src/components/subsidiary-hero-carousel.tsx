@@ -125,12 +125,11 @@ export default function SubsidiaryHeroCarousel({
 
           {secondaryAction && (
             <Button
-              variant="outline"
               size="lg"
               onClick={secondaryAction.onClick}
-              className="border-white/20 text-white hover:bg-white/10 backdrop-blur-md px-7 py-3.5 rounded-2xl font-bold text-sm cursor-pointer"
+              className="bg-slate-900/90 hover:bg-slate-800 text-emerald-400 border border-emerald-500/40 hover:border-emerald-400 backdrop-blur-md px-7 py-3.5 rounded-2xl font-bold text-sm cursor-pointer flex items-center space-x-2 shadow-lg transition-all"
             >
-              {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4 mr-2" />}
+              {secondaryAction.icon && <secondaryAction.icon className="w-4 h-4 text-emerald-400" />}
               <span>{secondaryAction.label}</span>
             </Button>
           )}
