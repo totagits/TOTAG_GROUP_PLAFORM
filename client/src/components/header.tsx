@@ -60,10 +60,14 @@ export default function Header() {
     setIsMenuOpen(false);
     setLocation("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    window.dispatchEvent(new CustomEvent("totag-play-intro"));
   };
 
   const handleNavClick = (href: string) => {
     setIsMenuOpen(false);
+    if (href === "/" || href === "/home" || href === "#home" || href === "#") {
+      window.dispatchEvent(new CustomEvent("totag-play-intro"));
+    }
     if (href.startsWith("#")) {
       if (isSubPage) {
         setLocation("/");

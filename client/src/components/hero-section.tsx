@@ -6,7 +6,8 @@ import {
   ShieldCheck, 
   Globe, 
   Building2, 
-  Award
+  Award,
+  Play
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -64,7 +65,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+            className="flex flex-col sm:flex-row gap-3.5 justify-center items-center mb-16"
           >
             <Button
               onClick={() => handleNavClick("#services")}
@@ -83,6 +84,16 @@ export default function HeroSection() {
             >
               <span>Get in Touch</span>
               <Phone className="ml-2.5 h-5 w-5 text-sky-500" />
+            </Button>
+
+            <Button
+              onClick={() => window.dispatchEvent(new CustomEvent("totag-play-intro"))}
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto px-6 py-6 glass-card border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-semibold text-base rounded-2xl hover:bg-emerald-500/10 transition-all duration-200"
+            >
+              <Play className="mr-2 h-4 w-4 text-emerald-600 fill-emerald-600" />
+              <span>Replay Opening</span>
             </Button>
           </motion.div>
 
