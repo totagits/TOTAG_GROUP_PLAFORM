@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 const DEFAULT_PASSWORD = "Zwedru4gedeh";
 
 const defaultStaff = [
+  { username: "admin_toceps", password: DEFAULT_PASSWORD, email: "admin.toceps@totaggroup.com", firstName: "TOCEPS", lastName: "Admin", phone: "+231-886-100-000", role: "account_manager" },
   { username: "lta.manager", password: DEFAULT_PASSWORD, email: "lta.manager@totaggroup.com", firstName: "James", lastName: "Kollie", phone: "+231-777-100-001", role: "account_manager" },
   { username: "ops.supervisor", password: DEFAULT_PASSWORD, email: "ops.supervisor@totaggroup.com", firstName: "Martha", lastName: "Weah", phone: "+231-777-100-002", role: "operations_supervisor" },
   { username: "head.chef", password: DEFAULT_PASSWORD, email: "head.chef@totaggroup.com", firstName: "Emmanuel", lastName: "Doe", phone: "+231-777-100-003", role: "head_chef" },

@@ -1,4 +1,8 @@
-import { useState } from "react";
+import os
+
+login_path = r"c:\Users\MichaelGwoah\Videos\TOTAGGROUP\client\src\pages\catering\ops\login.tsx"
+
+new_code = '''import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -209,3 +213,9 @@ export default function CateringOpsLogin() {
     </div>
   );
 }
+'''
+
+with open(login_path, "w", encoding="utf-8") as f:
+    f.write(new_code)
+
+print("Updated TOCEPS staff login page with TOTAG GROUP logo and seeded admin credentials!")
