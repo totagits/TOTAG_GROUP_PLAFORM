@@ -426,13 +426,16 @@ export class EmailService {
       let emailStatus = 'pending';
       let emailId = null;
 
-      // Attempt to send email via Zoho
-      if (process.env.ZOHO_CLIENT_ID && process.env.ZOHO_CLIENT_SECRET && process.env.ZOHO_REFRESH_TOKEN) {
+      // Attempt to send email via Zoho (SMTP or OAuth)
+      if (process.env.ZOHO_SMTP_PASS || process.env.ZOHO_PASSWORD || process.env.SMTP_PASS || (process.env.ZOHO_CLIENT_ID && process.env.ZOHO_CLIENT_SECRET && process.env.ZOHO_REFRESH_TOKEN)) {
         try {
           const success = await zohoEmailService.sendEmail({
             to: emailData.to,
             subject: emailData.subject,
             htmlContent: emailData.html,
+            html: emailData.html,
+            text: emailData.text,
+            from: emailData.from,
           });
 
           if (success) {
@@ -441,6 +444,7 @@ export class EmailService {
               to: emailData.to,
               subject: emailData.subject
             });
+            return true;
           } else {
             emailStatus = 'failed';
           }
