@@ -1,10 +1,10 @@
+import Header from "@/components/header";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import FarmNavbar from "@/components/farm-navbar";
 import { Lock, User, AlertCircle, CheckCircle2, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -105,7 +105,7 @@ export default function FarmLogin() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-sans transition-colors">
-      <FarmNavbar />
+      <Header />
       
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto">

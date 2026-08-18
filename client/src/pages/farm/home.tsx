@@ -3,7 +3,6 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import FarmNavbar from "@/components/farm-navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -442,7 +441,6 @@ export default function FarmHome() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-sans selection:bg-emerald-500 selection:text-slate-950 transition-colors">
       <Header />
-      <FarmNavbar />
 
       {/* Main Content Area */}
       <main className="pb-20">

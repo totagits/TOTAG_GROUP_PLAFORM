@@ -1,3 +1,4 @@
+import Header from "@/components/header";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -13,7 +14,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import FarmNavbar from "@/components/farm-navbar";
 import totagFarmLogoPath from "@assets/TOTAG FARM  Logo_1752502100780.png";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -166,7 +166,7 @@ export default function MarketPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <FarmNavbar />
+      <Header />
 
       {/* Hero */}
       <div className="bg-gradient-to-r from-green-700 to-green-900 text-white py-14 px-4">

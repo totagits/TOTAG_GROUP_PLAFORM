@@ -1,7 +1,7 @@
+import Header from "@/components/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import FarmNavbar from "@/components/farm-navbar";
 import { Play, Download, Calendar, Eye } from "lucide-react";
 
 export default function FarmMedia() {
@@ -78,7 +78,7 @@ export default function FarmMedia() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <FarmNavbar />
+      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}

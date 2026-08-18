@@ -1,5 +1,5 @@
+import Header from "@/components/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FarmNavbar from "@/components/farm-navbar";
 
 export default function FarmAbout() {
   const teamMembers = [
@@ -54,7 +54,7 @@ export default function FarmAbout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <FarmNavbar />
+      <Header />
       
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
