@@ -13,14 +13,10 @@ import {
   Bot, 
   User, 
   ExternalLink,
-  RotateCcw,
-  MessageSquare,
-  HelpCircle,
-  Headphones,
-  AlertCircle,
-  CheckCircle2,
+  PhoneCall,
+  PhoneOff,
   Radio,
-  Globe
+  CheckCircle2
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -34,8 +30,13 @@ interface Message {
 
 const TOTAG_KNOWLEDGE_STANDARD = [
   {
+    keywords: ["bye", "goodbye", "that is all", "that's all", "nothing else", "no more", "im done", "i am done", "no thanks", "no thank you", "thank you", "thanks"],
+    response: "Thank you for reaching out to TOTAG Group of Companies Ltd. It was a pleasure assisting you. We look forward to serving you again soon. Have a wonderful day!",
+    isFarewell: true
+  },
+  {
     keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening"],
-    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant based in Monrovia, Liberia. We deliver industry-leading enterprise solutions across our nine specialized subsidiaries, connecting West Africa to global markets worldwide. How may I assist you today?",
+    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. We deliver industry-leading enterprise solutions across our nine specialized subsidiaries, connecting West Africa to global markets worldwide. How may I assist you today?",
     links: [
       { label: "Explore All 9 Subsidiaries", url: "/#services" },
       { label: "Contact Corporate Office", url: "/#contact" }
@@ -43,7 +44,7 @@ const TOTAG_KNOWLEDGE_STANDARD = [
   },
   {
     keywords: ["cargo", "shipping", "freight", "logistics", "global", "port", "tracking", "container", "vessel", "ship", "customs", "international"],
-    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, international air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers across North America, Europe, Asia, and Africa. We offer real-time shipment tracking and secure bonded warehousing.",
+    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, international air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers worldwide. We offer real-time shipment tracking and secure bonded warehousing.",
     links: [
       { label: "Cargo Logistics Portal", url: "/cargo" },
       { label: "Track Shipment", url: "/order-tracking" }
@@ -123,17 +124,17 @@ const TOTAG_KNOWLEDGE_STANDARD = [
   }
 ];
 
-function getBotResponse(userText: string): { response: string; links?: { label: string; url: string }[] } {
-  const lower = userText.toLowerCase();
+function getBotResponse(userText: string): { response: string; links?: { label: string; url: string }[]; isFarewell?: boolean } {
+  const lower = userText.toLowerCase().trim();
 
   for (const item of TOTAG_KNOWLEDGE_STANDARD) {
     if (item.keywords.some((kw) => lower.includes(kw))) {
-      return { response: item.response, links: item.links };
+      return { response: item.response, links: item.links, isFarewell: (item as any).isFarewell };
     }
   }
 
   return {
-    response: `Thank you for your inquiry regarding "${userText}". TOTAG Group delivers enterprise solutions across Cargo Handling, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery Supplies. Would you like to connect directly with our corporate team or explore our subsidiary portals?`,
+    response: `Thank you for your inquiry regarding "${userText}". TOTAG Group delivers enterprise solutions across Cargo Handling, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery Supplies. Would you like to know more about a specific subsidiary?`,
     links: [
       { label: "Explore Our Subsidiaries", url: "/#services" },
       { label: "Contact Us Directly", url: "/#contact" }
@@ -148,14 +149,14 @@ export default function VoiceChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [inputText, setInputText] = useState("");
   const [liveTranscript, setLiveTranscript] = useState("");
-  const [micStatus, setMicStatus] = useState<string>("Ready");
-  const [micError, setMicError] = useState<string | null>(null);
-  
+  const [sessionStatus, setSessionStatus] = useState<string>("Ready");
+  const [silenceCountdown, setSilenceCountdown] = useState<number | null>(null);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. Click the green microphone and speak, type your question, or tap any quick topic below.",
+      text: "Welcome to TOTAG Group of Companies Ltd. I am your automated corporate voice assistant in Monrovia, Liberia. I am listening live to answer your questions!",
       timestamp: "Just now",
       links: [
         { label: "Explore 9 Subsidiaries", url: "/#services" },
@@ -167,7 +168,10 @@ export default function VoiceChatWidget() {
 
   const [_, setLocation] = useLocation();
   const recognitionRef = useRef<any>(null);
+  const autoCloseTimerRef = useRef<any>(null);
+  const countdownIntervalRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const isAgentActiveRef = useRef<boolean>(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -177,9 +181,60 @@ export default function VoiceChatWidget() {
     scrollToBottom();
   }, [messages, isListening, isSpeaking, liveTranscript]);
 
-  // Text-To-Speech with warm West African vocal tone
-  const speakText = (text: string) => {
-    if (!voiceEnabled || !window.speechSynthesis) return;
+  const stopSpeaking = () => {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setIsSpeaking(false);
+  };
+
+  const clearSilenceTimers = () => {
+    if (autoCloseTimerRef.current) {
+      clearTimeout(autoCloseTimerRef.current);
+      autoCloseTimerRef.current = null;
+    }
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+    setSilenceCountdown(null);
+  };
+
+  // Automated graceful farewell and widget close
+  const triggerFarewellAndClose = (customText?: string) => {
+    clearSilenceTimers();
+    if (recognitionRef.current) {
+      try { recognitionRef.current.abort(); } catch (_) {}
+    }
+    setIsListening(false);
+    isAgentActiveRef.current = false;
+
+    const farewellText = customText || "Thank you for visiting TOTAG Group of Companies Ltd. We look forward to serving you again. Have a wonderful day!";
+    
+    const botMsg: Message = {
+      id: `bot-${Date.now()}`,
+      sender: "bot",
+      text: farewellText,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+    setMessages((prev) => [...prev, botMsg]);
+    setSessionStatus("Closing session...");
+
+    speakText(farewellText, () => {
+      // Once voice completes speaking farewell, close widget smoothly
+      setTimeout(() => {
+        setIsOpen(false);
+        setSessionStatus("Ready");
+      }, 800);
+    });
+  };
+
+  // Text-To-Speech with Liberian/West African Vocal Cadence + callback on end
+  const speakText = (text: string, onEndCallback?: () => void) => {
+    if (!voiceEnabled || !window.speechSynthesis) {
+      if (onEndCallback) onEndCallback();
+      return;
+    }
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -196,31 +251,40 @@ export default function VoiceChatWidget() {
       utterance.voice = selectedVoice;
     }
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      setSessionStatus("Answering in voice...");
+    };
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      if (onEndCallback) {
+        onEndCallback();
+      }
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      if (onEndCallback) {
+        onEndCallback();
+      }
+    };
 
     window.speechSynthesis.speak(utterance);
   };
 
-  const stopSpeaking = () => {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-    }
-    setIsSpeaking(false);
-  };
-
-  // Handle Query Submission
+  // Handle Query Submission and automatically continue conversational loop
   const handleUserQuery = (queryText: string) => {
     if (!queryText.trim()) return;
 
+    clearSilenceTimers();
     if (recognitionRef.current) {
       try { recognitionRef.current.abort(); } catch (_) {}
     }
 
     setIsListening(false);
     setLiveTranscript("");
-    setMicStatus("Ready");
+    setSessionStatus("Processing question...");
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -233,7 +297,13 @@ export default function VoiceChatWidget() {
     setInputText("");
 
     setTimeout(() => {
-      const { response, links } = getBotResponse(queryText);
+      const { response, links, isFarewell } = getBotResponse(queryText);
+
+      if (isFarewell) {
+        triggerFarewellAndClose(response);
+        return;
+      }
+
       const botMsg: Message = {
         id: `bot-${Date.now()}`,
         sender: "bot",
@@ -243,20 +313,25 @@ export default function VoiceChatWidget() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
-      speakText(response);
-    }, 400);
+
+      // Speak response, and ON COMPLETION, automatically listen again for next question!
+      speakText(response, () => {
+        if (isAgentActiveRef.current) {
+          startListeningLoop();
+        }
+      });
+    }, 350);
   };
 
-  // Direct, clean speech recognition
-  const startListening = () => {
+  // Autonomous Listening Loop with Auto-Close Silence Detection
+  const startListeningLoop = () => {
+    clearSilenceTimers();
     stopSpeaking();
-    setMicError(null);
     setLiveTranscript("");
 
     const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognitionClass) {
-      setMicError("Speech recognition is not supported in your browser. Please use Chrome, Edge, or type your question below.");
-      setMicStatus("Not Supported");
+      setSessionStatus("Voice ready (Text mode)");
       return;
     }
 
@@ -271,19 +346,38 @@ export default function VoiceChatWidget() {
       recognition.lang = "en-US";
       recognition.maxAlternatives = 1;
 
-      let capturedPhrase = "";
+      let capturedText = "";
 
       recognition.onstart = () => {
         setIsListening(true);
-        setMicError(null);
-        setMicStatus("Listening... Speak now");
+        setSessionStatus("Listening... (Speak your question)");
+
+        // Start 8-second auto-close silence timer if customer doesn't speak further
+        let timeLeft = 8;
+        setSilenceCountdown(timeLeft);
+        countdownIntervalRef.current = setInterval(() => {
+          timeLeft -= 1;
+          if (timeLeft > 0) {
+            setSilenceCountdown(timeLeft);
+          } else {
+            clearInterval(countdownIntervalRef.current);
+          }
+        }, 1000);
+
+        autoCloseTimerRef.current = setTimeout(() => {
+          if (isAgentActiveRef.current && !capturedText.trim()) {
+            triggerFarewellAndClose();
+          }
+        }, 8000);
       };
 
       recognition.onspeechstart = () => {
-        setMicStatus("Hearing your voice...");
+        clearSilenceTimers();
+        setSessionStatus("Hearing your speech...");
       };
 
       recognition.onresult = (event: any) => {
+        clearSilenceTimers();
         let interim = "";
         let final = "";
 
@@ -297,73 +391,65 @@ export default function VoiceChatWidget() {
 
         const spoken = (final || interim).trim();
         if (spoken) {
-          capturedPhrase = spoken;
+          capturedText = spoken;
           setLiveTranscript(spoken);
           setInputText(spoken);
         }
       };
 
       recognition.onerror = (event: any) => {
-        console.warn("Speech recognition event:", event.error);
-        if (event.error === "not-allowed" || event.error === "permission-denied") {
-          setMicError("Microphone permission was blocked. Please click the lock icon in your browser address bar and allow Microphone access for totag.network.");
+        console.warn("Speech recognition notice:", event.error);
+        if (event.error === "no-speech") {
+          // If no speech was detected in this cycle, handle silence or retry
+        } else if (event.error === "not-allowed") {
           setIsListening(false);
-          setMicStatus("Permission Blocked");
-        } else if (event.error === "no-speech") {
-          setMicStatus("No speech detected. Tap mic to try again.");
-          setIsListening(false);
-        } else if (event.error === "audio-capture") {
-          setMicError("Microphone not detected or in use by another app. Please check your mic connection.");
-          setIsListening(false);
-          setMicStatus("Audio Device Busy");
-        } else if (event.error !== "aborted") {
-          setMicError(`Voice notice: ${event.error}. You can also type your message below.`);
-          setIsListening(false);
-          setMicStatus("Ready");
+          setSessionStatus("Microphone access blocked");
         }
       };
 
       recognition.onend = () => {
         setIsListening(false);
-        setMicStatus("Ready");
-        if (capturedPhrase.trim().length > 1) {
-          handleUserQuery(capturedPhrase.trim());
+        if (capturedText.trim().length > 1) {
+          clearSilenceTimers();
+          handleUserQuery(capturedText.trim());
         }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
-      console.error("SpeechRecognition start exception:", err);
+      console.warn("Speech loop exception:", err);
       setIsListening(false);
-      setMicStatus("Ready");
-      setMicError("Could not start microphone. Please check your browser permissions or type your question below.");
     }
   };
 
-  const stopListening = () => {
+  // Start Autonomous Hands-Free Conversation when User Opens Widget
+  const openConversationSession = () => {
+    setIsOpen(true);
+    isAgentActiveRef.current = true;
+    
+    // Automatically start listening immediately after welcoming
+    setTimeout(() => {
+      startListeningLoop();
+    }, 400);
+  };
+
+  const closeConversationSession = () => {
+    isAgentActiveRef.current = false;
+    clearSilenceTimers();
+    stopSpeaking();
     if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch (_) {}
+      try { recognitionRef.current.abort(); } catch (_) {}
     }
     setIsListening(false);
-    setMicStatus("Ready");
-
-    if (liveTranscript.trim().length > 1) {
-      handleUserQuery(liveTranscript.trim());
-    }
-  };
-
-  const toggleListening = () => {
-    if (isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
+    setIsOpen(false);
+    setSessionStatus("Ready");
   };
 
   const handleTextSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {
+      isAgentActiveRef.current = true;
       handleUserQuery(inputText.trim());
     }
   };
@@ -380,7 +466,7 @@ export default function VoiceChatWidget() {
   return (
     <div className="fixed bottom-6 right-6 z-[9999] font-sans">
       
-      {/* EXPANDED VOICE CHAT MODAL / PANEL */}
+      {/* EXPANDED AUTONOMOUS CONVERSATIONAL PANEL */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -388,9 +474,9 @@ export default function VoiceChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[380px] sm:w-[415px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className="w-[380px] sm:w-[420px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
           >
-            {/* Header with Official TOTAG Logo */}
+            {/* Header with Live Conversation Badge */}
             <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white flex items-center justify-between border-b border-emerald-500/20">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -401,9 +487,10 @@ export default function VoiceChatWidget() {
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                    TOTAG Corporate Assistant
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-medium">
-                      Liberia HQ
+                    TOTAG Voice Assistant
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      Live Call
                     </span>
                   </h4>
                   <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Global Reach</p>
@@ -411,7 +498,7 @@ export default function VoiceChatWidget() {
               </div>
 
               <div className="flex items-center gap-1">
-                {/* Voice Mute / Unmute */}
+                {/* Voice Output Mute Toggle */}
                 <button
                   onClick={() => {
                     if (isSpeaking) stopSpeaking();
@@ -420,89 +507,61 @@ export default function VoiceChatWidget() {
                   className={`p-2 rounded-xl text-xs font-bold transition-all ${
                     voiceEnabled ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30" : "bg-white/10 text-slate-400 hover:bg-white/20"
                   }`}
-                  title={voiceEnabled ? "Spoken Voice Active" : "Spoken Voice Muted"}
+                  title={voiceEnabled ? "Voice Output Active" : "Voice Output Muted"}
                 >
                   {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
 
-                {/* Close Button */}
+                {/* End Session Button */}
                 <button
-                  onClick={() => {
-                    stopSpeaking();
-                    stopListening();
-                    setIsOpen(false);
-                  }}
+                  onClick={closeConversationSession}
                   className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  title="End Conversation"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Error Notification Banner */}
-            {micError && (
-              <div className="bg-rose-500/10 border-b border-rose-500/30 px-3 py-2 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="font-semibold">{micError}</p>
-                </div>
-                <button onClick={() => setMicError(null)} className="text-slate-400 hover:text-slate-600">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-
-            {/* LIVE SOUNDWAVE & LISTENING STATUS */}
-            {isListening && (
-              <div className="bg-emerald-500/15 dark:bg-emerald-950/60 border-b border-emerald-500/30 px-4 py-2.5 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+            {/* LIVE CONVERSATION STATUS BAR */}
+            <div className="bg-slate-950/80 border-b border-emerald-500/20 px-4 py-2.5 flex items-center justify-between text-xs text-white">
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                {isListening ? (
                   <div className="flex items-center gap-1">
-                    <span className="w-1.5 h-4 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1.5 h-6 bg-emerald-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1.5 h-3 bg-emerald-300 rounded-full animate-bounce [animation-delay:300ms]" />
-                    <span className="w-1.5 h-5 bg-emerald-500 rounded-full animate-bounce [animation-delay:450ms]" />
+                    <span className="w-1.5 h-4 bg-emerald-400 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-6 bg-emerald-300 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                    <span className="w-1.5 h-5 bg-emerald-300 rounded-full animate-bounce [animation-delay:450ms]" />
                   </div>
+                ) : isSpeaking ? (
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-4 bg-sky-400 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-6 bg-sky-300 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-4 bg-sky-400 rounded-full animate-bounce [animation-delay:300ms]" />
+                  </div>
+                ) : (
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                )}
 
-                  <div className="truncate">
-                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400 block">
-                      🔴 {micStatus}
-                    </span>
-                    <p className="text-[11px] text-slate-700 dark:text-slate-200 truncate italic">
-                      "{liveTranscript || "Listening... Speak your question now"}"
+                <div className="truncate">
+                  <span className="font-bold text-[11px] text-emerald-400 block truncate">
+                    {sessionStatus}
+                  </span>
+                  {liveTranscript && (
+                    <p className="text-[11px] text-slate-300 truncate italic">
+                      "{liveTranscript}"
                     </p>
-                  </div>
+                  )}
                 </div>
-
-                <Button
-                  onClick={stopListening}
-                  size="sm"
-                  className="px-2.5 py-1 h-7 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shrink-0 ml-2"
-                >
-                  Done / Send ➔
-                </Button>
               </div>
-            )}
 
-            {/* Speaking State Visualizer */}
-            {isSpeaking && (
-              <div className="bg-sky-500/10 dark:bg-sky-950/40 border-b border-sky-500/20 px-4 py-2 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <span className="w-1 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1 h-5 bg-sky-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1 h-2 bg-sky-300 rounded-full animate-bounce [animation-delay:300ms]" />
-                  </div>
-                  <span className="font-bold text-sky-600 dark:text-sky-400">Responding with Liberian accent...</span>
-                </div>
-
-                <button
-                  onClick={stopSpeaking}
-                  className="text-[10px] font-bold text-slate-500 hover:text-rose-500 underline"
-                >
-                  Stop Voice
-                </button>
-              </div>
-            )}
+              {/* Silence countdown auto-close badge */}
+              {isListening && silenceCountdown !== null && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono shrink-0 ml-2">
+                  Auto-closes in {silenceCountdown}s
+                </span>
+              )}
+            </div>
 
             {/* Message Chat Body */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs">
@@ -546,7 +605,7 @@ export default function VoiceChatWidget() {
                               } else {
                                 setLocation(link.url);
                               }
-                              setIsOpen(false);
+                              closeConversationSession();
                             }}
                             className="w-full text-left text-[11px] font-bold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 flex items-center justify-between p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors"
                           >
@@ -566,17 +625,20 @@ export default function VoiceChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Prompt Chips */}
+            {/* Quick Topic Chips */}
             <div className="px-4 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
               <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-emerald-500" />
-                Tap to Inquire in 1-Click:
+                Tap to Ask in Voice:
               </p>
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {quickPrompts.map((prompt, idx) => (
                   <button
                     key={idx}
-                    onClick={() => handleUserQuery(prompt)}
+                    onClick={() => {
+                      isAgentActiveRef.current = true;
+                      handleUserQuery(prompt);
+                    }}
                     className="shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors flex items-center gap-1"
                   >
                     <span>{prompt}</span>
@@ -585,25 +647,36 @@ export default function VoiceChatWidget() {
               </div>
             </div>
 
-            {/* Input & Voice Trigger Footer */}
+            {/* Footer Input Bar with End Call button */}
             <div className="p-3 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-white/10">
               <form onSubmit={handleTextSubmit} className="flex items-center gap-2">
                 <Button
                   type="button"
-                  onClick={toggleListening}
+                  onClick={() => {
+                    if (isListening) {
+                      clearSilenceTimers();
+                      if (recognitionRef.current) {
+                        try { recognitionRef.current.stop(); } catch (_) {}
+                      }
+                      setIsListening(false);
+                    } else {
+                      isAgentActiveRef.current = true;
+                      startListeningLoop();
+                    }
+                  }}
                   className={`w-11 h-11 rounded-2xl shrink-0 p-0 transition-all ${
                     isListening
                       ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/20"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-500/20"
                   }`}
-                  title={isListening ? "Click to Send / Stop" : "Click to Speak"}
+                  title={isListening ? "Pause Listening" : "Tap to Speak"}
                 >
-                  {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                  {isListening ? <Mic className="w-5 h-5 animate-pulse" /> : <MicOff className="w-5 h-5 text-white/80" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening to your voice..." : "Click mic to speak or type..."}
+                  placeholder={isListening ? "Listening... or type message" : "Type your question..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
@@ -616,6 +689,18 @@ export default function VoiceChatWidget() {
                   className="w-11 h-11 rounded-2xl shrink-0 p-0 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-400"
                 >
                   <Send className="w-4 h-4" />
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={() => triggerFarewellAndClose()}
+                  size="sm"
+                  variant="outline"
+                  className="h-11 px-3 rounded-2xl border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 text-xs font-bold shrink-0"
+                  title="Say Goodbye & End Call"
+                >
+                  <PhoneOff className="w-4 h-4 sm:mr-1" />
+                  <span className="hidden sm:inline">End Call</span>
                 </Button>
               </form>
             </div>
@@ -643,11 +728,9 @@ export default function VoiceChatWidget() {
         <button
           onClick={() => {
             if (!isOpen) {
-              setIsOpen(true);
+              openConversationSession();
             } else {
-              stopSpeaking();
-              stopListening();
-              setIsOpen(false);
+              closeConversationSession();
             }
           }}
           className={`relative w-14 h-14 rounded-full p-2.5 shadow-2xl flex items-center justify-center transition-all duration-300 ${
@@ -655,7 +738,7 @@ export default function VoiceChatWidget() {
               ? "bg-slate-900 text-white ring-4 ring-emerald-500/30"
               : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-emerald-500 ring-4 ring-emerald-500/20 hover:ring-emerald-500/40"
           }`}
-          title="TOTAG Corporate Voice Assistant"
+          title="TOTAG Automated Conversational Voice Agent"
         >
           {/* Pulsing ring indicator */}
           <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
