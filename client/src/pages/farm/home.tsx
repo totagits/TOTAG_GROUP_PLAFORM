@@ -57,6 +57,7 @@ import {
   Clock, 
   Package, 
   Database,
+  LogIn,
   Award,
   AlertCircle,
   FileSignature
@@ -872,6 +873,36 @@ export default function FarmHome() {
             {/* TAB 3: ENTERPRISE OPERATIONS COMMAND CENTER                         */}
             {/* =================================================================== */}
             <TabsContent value="operations-command" className="space-y-8">
+              
+              {/* STAFF & WORKER ACCESS BANNER */}
+              <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 p-6 rounded-3xl text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl text-emerald-400">
+                    <Cpu className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="font-black text-xl text-white">TOTAG FARM Operations Command Center</h3>
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
+                        Staff & Worker Access
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-slate-300 mt-1 max-w-2xl">
+                      Precision agronomy, PostGIS spatial field mapping, smart greenhouse fertigation, solar microgrid NOC, and livestock bio-telemetry.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3 flex-shrink-0">
+                  <Button 
+                    onClick={() => window.location.href = "/farm/login"}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl px-5 py-2.5 shadow-lg flex items-center space-x-1.5"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Open Staff Login Portal</span>
+                  </Button>
+                </div>
+              </div>
               
               {/* SECTION 1: GIS MULTI-SPECTRAL FIELD MAPPING & SMART GREENHOUSE */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

@@ -14,7 +14,8 @@ import {
   ChefHat, 
   FileText, 
   Zap,
-  Sparkles
+  Sparkles,
+  LogIn
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -204,12 +205,22 @@ export default function Header() {
 
           {/* Quick Auth Actions */}
           <div className="hidden lg:flex items-center space-x-3">
-            <button 
-              onClick={() => handleNavClick("/admin-login")}
-              className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all"
-            >
-              Admin Login
-            </button>
+            {location.startsWith("/farm") ? (
+              <button 
+                onClick={() => handleNavClick("/farm/login")}
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all flex items-center space-x-1.5"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Staff Login</span>
+              </button>
+            ) : (
+              <button 
+                onClick={() => handleNavClick("/admin-login")}
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all"
+              >
+                Admin Login
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
