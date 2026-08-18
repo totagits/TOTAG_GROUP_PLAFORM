@@ -94,7 +94,7 @@ export default function CateringDashboard() {
     if (!stored) { window.location.href = "/catering/ops/login"; return; }
     try {
       setUser(JSON.parse(stored));
-    } catch {
+    } catch (err: any) {
       localStorage.removeItem("catering_user");
       localStorage.removeItem("catering_token");
       window.location.href = "/catering/ops/login";
@@ -140,7 +140,7 @@ export default function CateringDashboard() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch {
+    } catch (err: any) {
       toast({ title: "Error", description: "Failed to change password", variant: "destructive" });
     } finally {
       setChangingPassword(false);
@@ -631,8 +631,8 @@ function InvoiceBuilder({ requests, quotations, onSaveInvoice, onSendInvoice }: 
       } else {
         toast({ title: "Failed to Create Invoice", description: res?.error || "Error generating invoice", variant: "destructive" });
       }
-    } catch {
-      toast({ title: "Error", description: "Connection error", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: "Failed to Create Invoice", description: (err && err.message) ? err.message : "Error creating invoice", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -850,7 +850,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
       } else {
         toast({ title: "Email Failed", description: res?.error || "Could not send email", variant: "destructive" });
       }
-    } catch {
+    } catch (err: any) {
       toast({ title: "Error", description: "Failed to dispatch email", variant: "destructive" });
     } finally {
       setSending(false);
@@ -868,7 +868,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
         toast({ title: "Invoice Updated", description: `Marked invoice as ${newStatus.toUpperCase()}` });
         if (onRefresh) onRefresh();
       }
-    } catch {
+    } catch (err: any) {
       toast({ title: "Error", description: "Failed to update invoice", variant: "destructive" });
     }
   };
@@ -4941,7 +4941,7 @@ function StaffDirectory({ staff, onRefresh }: { staff: any[]; onRefresh?: () => 
       } else {
         toast({ title: "Error Creating User", description: res?.error || "Failed to create user", variant: "destructive" });
       }
-    } catch {
+    } catch (err: any) {
       toast({ title: "Error", description: "Failed to connect to staff API", variant: "destructive" });
     } finally {
       setSubmitting(false);
@@ -4969,7 +4969,7 @@ function StaffDirectory({ staff, onRefresh }: { staff: any[]; onRefresh?: () => 
       } else {
         toast({ title: "Update Failed", description: res?.error || "Failed to update staff member", variant: "destructive" });
       }
-    } catch {
+    } catch (err: any) {
       toast({ title: "Error", description: "Failed to update staff member", variant: "destructive" });
     } finally {
       setSubmitting(false);
@@ -5002,8 +5002,8 @@ function StaffDirectory({ staff, onRefresh }: { staff: any[]; onRefresh?: () => 
       } else {
         toast({ title: "Task Assignment Failed", description: res?.error || "Could not assign task", variant: "destructive" });
       }
-    } catch {
-      toast({ title: "Error", description: "Connection error", variant: "destructive" });
+    } catch (err: any) {
+      toast({ title: "Failed to Create Invoice", description: (err && err.message) ? err.message : "Error creating invoice", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }

@@ -1,3 +1,52 @@
+
+// Ensure catering_invoices table exists in Postgres
+import { pool } from "./db";
+
+async function ensureCateringInvoicesTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS catering_invoices (
+        id SERIAL PRIMARY KEY,
+        invoice_number TEXT NOT NULL,
+        request_id INTEGER,
+        quotation_id INTEGER,
+        client_name TEXT NOT NULL,
+        client_email TEXT NOT NULL,
+        client_phone TEXT,
+        client_company TEXT,
+        contract_ref TEXT,
+        invoice_date TEXT NOT NULL,
+        due_date TEXT NOT NULL,
+        payment_terms TEXT NOT NULL DEFAULT 'Net 30',
+        currency TEXT NOT NULL DEFAULT 'USD',
+        dates_of_service TEXT,
+        locations_served TEXT,
+        quantities_delivered TEXT,
+        line_items JSONB NOT NULL DEFAULT '[]',
+        subtotal NUMERIC(12, 2) NOT NULL DEFAULT '0',
+        tax_rate NUMERIC(5, 2) NOT NULL DEFAULT '0',
+        tax_amount NUMERIC(12, 2) NOT NULL DEFAULT '0',
+        discount NUMERIC(12, 2) NOT NULL DEFAULT '0',
+        total_amount NUMERIC(12, 2) NOT NULL DEFAULT '0',
+        amount_paid NUMERIC(12, 2) NOT NULL DEFAULT '0',
+        payment_details TEXT,
+        terms_and_conditions TEXT,
+        notes TEXT,
+        vault_saved BOOLEAN NOT NULL DEFAULT true,
+        status TEXT NOT NULL DEFAULT 'issued',
+        created_by INTEGER,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+    `);
+    console.log("✅ Verified PostgreSQL catering_invoices table structure");
+  } catch (err: any) {
+    console.error("⚠️ Failed to ensure catering_invoices table:", err.message);
+  }
+}
+
+ensureCateringInvoicesTable();
+
 import { Router, Request, Response } from "express";
 import { storage } from "./storage";
 import bcrypt from "bcrypt";
@@ -1035,7 +1084,7 @@ router.post("/invoices", authenticateCateringStaff, requireCateringRole("account
     const data = {
       ...req.body,
       invoiceNumber,
-      createdBy: req.staffUser!.id,
+      createdBy: (req.staffUser && typeof req.staffUser.id === "number") ? req.staffUser.id : null,
       vaultSaved: true,
     };
     const invoice = await storage.createCateringInvoice(data);
