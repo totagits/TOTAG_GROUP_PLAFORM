@@ -1,4 +1,6 @@
-import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
+import os
+
+farm_code = '''import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
@@ -1157,3 +1159,9 @@ export default function FarmHome() {
     </div>
   );
 }
+'''
+
+with open(r'c:\Users\MichaelGwoah\Videos\TOTAGGROUP\client\src\pages\farm\home.tsx', 'w', encoding='utf-8') as f:
+    f.write(farm_code)
+
+print("Generated complete TOTAG FARM Agribusiness Ecosystem page successfully!")
