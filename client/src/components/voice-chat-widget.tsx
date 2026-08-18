@@ -16,7 +16,9 @@ import {
   RotateCcw,
   MessageSquare,
   HelpCircle,
-  Headphones
+  Headphones,
+  AlertCircle,
+  CheckCircle2
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -144,11 +146,14 @@ export default function VoiceChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [inputText, setInputText] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [micError, setMicError] = useState<string | null>(null);
+  const [audioLevel, setAudioLevel] = useState<number>(0);
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the mic or type to ask about any of our 9 companies, Seattle trade routes, or corporate services!",
+      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the green microphone button and speak freely, or type your question!",
       timestamp: "Just now",
       links: [
         { label: "Explore 9 Companies", url: "/#services" },
@@ -160,6 +165,11 @@ export default function VoiceChatWidget() {
 
   const [_, setLocation] = useLocation();
   const recognitionRef = useRef<any>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+  const silenceTimerRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -168,19 +178,18 @@ export default function VoiceChatWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isListening, isSpeaking]);
+  }, [messages, isListening, isSpeaking, transcript]);
 
+  // Text-To-Speech
   const speakText = (text: string) => {
     if (!voiceEnabled || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    // Warm rhythmic speech rate for natural Liberian cadence
     utterance.rate = 0.95;
     utterance.pitch = 1.05;
     
     const voices = window.speechSynthesis.getVoices();
-    // Prefer West African / African English / British English / natural voices
     const selectedVoice = 
       voices.find((v) => v.lang === "en-NG" || v.lang === "en-GH" || v.lang === "en-ZA") ||
       voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Arthur"))) ||
@@ -204,61 +213,79 @@ export default function VoiceChatWidget() {
     setIsSpeaking(false);
   };
 
-  useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-
-      recognition.onresult = (event: any) => {
-        const current = event.resultIndex;
-        const transcriptText = event.results[current][0].transcript;
-        setTranscript(transcriptText);
-
-        if (event.results[current].isFinal) {
-          handleUserQuery(transcriptText);
-          setTranscript("");
-          setIsListening(false);
-        }
-      };
-
-      recognition.onerror = (event: any) => {
-        console.warn("Speech recognition error:", event.error);
-        setIsListening(false);
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recognition;
+  // Cleanup Web Audio & MediaStream
+  const stopAudioCapture = () => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
     }
-  }, [voiceEnabled]);
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current = null;
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    setAudioLevel(0);
+  };
 
-  const toggleListening = () => {
-    stopSpeaking();
-    if (isListening) {
-      if (recognitionRef.current) recognitionRef.current.stop();
-      setIsListening(false);
-    } else {
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.start();
-          setIsListening(true);
-          setTranscript("Listening... Talk now!");
-        } catch (e) {
-          console.warn("Mic start error:", e);
+  // Start Real-time Microphone Audio Level Monitor
+  const startAudioMonitor = async (stream: MediaStream) => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+
+      const audioCtx = new AudioCtx();
+      audioContextRef.current = audioCtx;
+
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      analyserRef.current = analyser;
+
+      const source = audioCtx.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      const updateLevel = () => {
+        if (!analyserRef.current) return;
+        analyserRef.current.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i];
         }
-      } else {
-        alert("Speech recognition not supported in this browser. Please type your message.");
-      }
+        const avg = sum / dataArray.length;
+        const normalized = Math.min(100, Math.round((avg / 128) * 100));
+        setAudioLevel(normalized);
+
+        animFrameRef.current = requestAnimationFrame(updateLevel);
+      };
+
+      updateLevel();
+    } catch (e) {
+      console.warn("Audio visualizer error:", e);
     }
   };
 
+  // Handle Speech Query Submission
   const handleUserQuery = (queryText: string) => {
     if (!queryText.trim()) return;
+
+    // Reset listening state
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (_) {}
+    }
+    stopAudioCapture();
+    setIsListening(false);
+    setTranscript("");
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -283,6 +310,133 @@ export default function VoiceChatWidget() {
       setMessages((prev) => [...prev, botMsg]);
       speakText(response);
     }, 400);
+  };
+
+  // Start Voice Listening with getUserMedia prompt & continuous Web Speech
+  const startListening = async () => {
+    stopSpeaking();
+    setMicError(null);
+    setTranscript("");
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMicError("Speech recognition is not supported in this browser. Please type your message.");
+      return;
+    }
+
+    try {
+      // 1. Explicitly request microphone stream to trigger browser prompt and ensure mic is active
+      let stream: MediaStream | null = null;
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+        mediaStreamRef.current = stream;
+        startAudioMonitor(stream);
+      }
+
+      // 2. Instantiate and configure SpeechRecognition
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+      recognition.maxAlternatives = 1;
+
+      let accumulatedText = "";
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setMicError(null);
+      };
+
+      recognition.onresult = (event: any) => {
+        let interimTranscript = "";
+        let finalTranscript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+
+        const currentSaid = (finalTranscript || interimTranscript).trim();
+        if (currentSaid) {
+          accumulatedText = currentSaid;
+          setTranscript(accumulatedText);
+          setInputText(accumulatedText);
+
+          // Reset silence timer on every spoken word (submits after 2 seconds of silence)
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+          }
+          silenceTimerRef.current = setTimeout(() => {
+            if (accumulatedText.trim().length > 1) {
+              handleUserQuery(accumulatedText.trim());
+            }
+          }, 2200);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition error:", event.error);
+        if (event.error === "not-allowed" || event.error === "permission-denied") {
+          setMicError("Microphone access denied. Please click the lock icon in your browser address bar and allow Microphone access.");
+        } else if (event.error === "no-speech") {
+          // Keep listening or allow user to speak
+        } else if (event.error !== "aborted") {
+          setMicError(`Voice error: ${event.error}. You can still type below.`);
+        }
+      };
+
+      recognition.onend = () => {
+        // If still flagged as listening without error, don't abort abruptly
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err: any) {
+      console.error("Mic access error:", err);
+      stopAudioCapture();
+      setIsListening(false);
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        setMicError("Microphone permission was blocked. Please enable microphone permissions in your browser settings to speak.");
+      } else {
+        setMicError("Could not access microphone. Please check your microphone connection or type below.");
+      }
+    }
+  };
+
+  const stopListening = () => {
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (_) {}
+    }
+    stopAudioCapture();
+    setIsListening(false);
+
+    // If there is transcript captured, submit it
+    if (transcript.trim().length > 1) {
+      handleUserQuery(transcript.trim());
+    }
+  };
+
+  const toggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
   };
 
   const handleTextSubmit = (e: React.FormEvent) => {
@@ -312,7 +466,7 @@ export default function VoiceChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[380px] sm:w-[410px] max-w-[92vw] h-[590px] max-h-[84vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className="w-[380px] sm:w-[410px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
           >
             {/* Header with TOTAG Logo & Liberian Kolokwa Badge */}
             <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white flex items-center justify-between border-b border-emerald-500/20">
@@ -353,7 +507,7 @@ export default function VoiceChatWidget() {
                 <button
                   onClick={() => {
                     stopSpeaking();
-                    if (isListening && recognitionRef.current) recognitionRef.current.stop();
+                    stopListening();
                     setIsOpen(false);
                   }}
                   className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
@@ -363,29 +517,85 @@ export default function VoiceChatWidget() {
               </div>
             </div>
 
-            {/* Speaking / Listening Audio Visualizer Bar */}
-            {(isListening || isSpeaking) && (
-              <div className="bg-emerald-500/10 dark:bg-emerald-950/40 border-b border-emerald-500/20 px-4 py-2 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <span className="w-1 h-3 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
-                    <span className="w-1 h-5 bg-emerald-400 rounded-full animate-bounce [animation-delay:150ms]" />
-                    <span className="w-1 h-2 bg-emerald-300 rounded-full animate-bounce [animation-delay:300ms]" />
-                    <span className="w-1 h-4 bg-emerald-500 rounded-full animate-bounce [animation-delay:450ms]" />
+            {/* Error Notification Banner */}
+            {micError && (
+              <div className="bg-rose-500/10 border-b border-rose-500/30 px-3 py-2 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold">{micError}</p>
+                </div>
+                <button onClick={() => setMicError(null)} className="text-slate-400 hover:text-slate-600">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* LIVE SOUNDWAVE & LISTENING STATUS */}
+            {isListening && (
+              <div className="bg-emerald-500/15 dark:bg-emerald-950/60 border-b border-emerald-500/30 px-4 py-2.5 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                  {/* Real-time Voice Audio Visualizer */}
+                  <div className="flex items-end gap-1 h-5">
+                    <span 
+                      className="w-1 bg-emerald-500 rounded-full transition-all duration-75" 
+                      style={{ height: `${Math.max(4, audioLevel * 0.2)}px` }} 
+                    />
+                    <span 
+                      className="w-1 bg-emerald-400 rounded-full transition-all duration-75" 
+                      style={{ height: `${Math.max(6, audioLevel * 0.35)}px` }} 
+                    />
+                    <span 
+                      className="w-1 bg-emerald-300 rounded-full transition-all duration-75" 
+                      style={{ height: `${Math.max(4, audioLevel * 0.25)}px` }} 
+                    />
+                    <span 
+                      className="w-1 bg-emerald-500 rounded-full transition-all duration-75" 
+                      style={{ height: `${Math.max(8, audioLevel * 0.45)}px` }} 
+                    />
+                    <span 
+                      className="w-1 bg-emerald-400 rounded-full transition-all duration-75" 
+                      style={{ height: `${Math.max(4, audioLevel * 0.2)}px` }} 
+                    />
                   </div>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    {isListening ? (transcript || "Listening... Talk now!") : "Speaking Kolokwa response..."}
-                  </span>
+
+                  <div className="truncate">
+                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400 block">
+                      🔴 Hearing You:
+                    </span>
+                    <p className="text-[11px] text-slate-700 dark:text-slate-200 truncate italic">
+                      "{transcript || "Talk freely, I am listening..."}"
+                    </p>
+                  </div>
                 </div>
 
-                {isSpeaking && (
-                  <button
-                    onClick={stopSpeaking}
-                    className="text-[10px] font-bold text-slate-500 hover:text-rose-500 underline"
-                  >
-                    Stop Talking
-                  </button>
-                )}
+                <Button
+                  onClick={stopListening}
+                  size="sm"
+                  className="px-2.5 py-1 h-7 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shrink-0 ml-2"
+                >
+                  Done / Send ➔
+                </Button>
+              </div>
+            )}
+
+            {/* Speaking State Visualizer */}
+            {isSpeaking && (
+              <div className="bg-sky-500/10 dark:bg-sky-950/40 border-b border-sky-500/20 px-4 py-2 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <span className="w-1 h-3 bg-sky-500 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1 h-5 bg-sky-400 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1 h-2 bg-sky-300 rounded-full animate-bounce [animation-delay:300ms]" />
+                  </div>
+                  <span className="font-bold text-sky-600 dark:text-sky-400">Speaking Kolokwa response...</span>
+                </div>
+
+                <button
+                  onClick={stopSpeaking}
+                  className="text-[10px] font-bold text-slate-500 hover:text-rose-500 underline"
+                >
+                  Stop Talking
+                </button>
               </div>
             )}
 
@@ -411,7 +621,7 @@ export default function VoiceChatWidget() {
                   <div
                     className={`max-w-[78%] rounded-2xl p-3 leading-relaxed ${
                       msg.sender === "user"
-                        ? "bg-sky-600 text-white rounded-tr-sm"
+                        ? "bg-sky-600 text-white rounded-tr-sm shadow-md"
                         : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm font-medium"
                     }`}
                   >
@@ -472,19 +682,19 @@ export default function VoiceChatWidget() {
                 <Button
                   type="button"
                   onClick={toggleListening}
-                  className={`w-10 h-10 rounded-2xl shrink-0 p-0 transition-all ${
+                  className={`w-11 h-11 rounded-2xl shrink-0 p-0 transition-all ${
                     isListening
-                      ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/30"
-                      : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20"
+                      ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/20"
+                      : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-500/20"
                   }`}
-                  title={isListening ? "Stop Listening" : "Tap to Speak Liberian Patois"}
+                  title={isListening ? "Stop / Done Speaking" : "Click to Speak Liberian Kolokwa"}
                 >
                   {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening to your voice..." : "Talk or type to TOTAG Kolokwa AI..."}
+                  placeholder={isListening ? "Listening to your voice now..." : "Speak or type your question..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
@@ -494,7 +704,7 @@ export default function VoiceChatWidget() {
                   type="submit"
                   disabled={!inputText.trim()}
                   size="sm"
-                  className="w-10 h-10 rounded-2xl shrink-0 p-0 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                  className="w-11 h-11 rounded-2xl shrink-0 p-0 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-emerald-600 dark:hover:bg-emerald-400"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
@@ -517,12 +727,20 @@ export default function VoiceChatWidget() {
             className="absolute right-16 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 dark:bg-white/90 text-white dark:text-slate-900 font-bold text-xs shadow-xl border border-white/20 backdrop-blur-md whitespace-nowrap pointer-events-none"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>🇱🇷 Talk with TOTAG AI (Kolokwa)</span>
+            <span>🇱🇷 Talk with TOTAG AI</span>
           </motion.div>
         )}
 
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            if (!isOpen) {
+              setIsOpen(true);
+            } else {
+              stopSpeaking();
+              stopListening();
+              setIsOpen(false);
+            }
+          }}
           className={`relative w-14 h-14 rounded-full p-2.5 shadow-2xl flex items-center justify-center transition-all duration-300 ${
             isOpen
               ? "bg-slate-900 text-white ring-4 ring-emerald-500/30"
