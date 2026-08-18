@@ -19,7 +19,8 @@ import {
   Headphones,
   AlertCircle,
   CheckCircle2,
-  Radio
+  Radio,
+  AudioWaveform
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -31,93 +32,93 @@ interface Message {
   links?: { label: string; url: string }[];
 }
 
-const TOTAG_KNOWLEDGE_PATOIS = [
+const TOTAG_KNOWLEDGE_STANDARD = [
   {
-    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "how you doing", "what's up", "kolo", "patois", "talk"],
-    response: "Hello my people! Welcome to TOTAG Group of Companies Ltd! Da me your AI voice assistant right here in Monrovia, Liberia. We bringing the whole 9 big-big companies from Liberia all the way to Seattle, USA! You want Cargo, Farm produce, IT SaaS software, TOCEPS catering, Solar light, or Construction? Talk to me, I ready for you!",
+    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening"],
+    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant based in Monrovia, Liberia. We deliver industry-leading solutions across our nine specialized subsidiaries, connecting West Africa to Seattle, USA. How may I assist you today?",
     links: [
-      { label: "See All 9 Companies", url: "/#services" },
-      { label: "Talk to Corporate", url: "/#contact" }
+      { label: "Explore All 9 Subsidiaries", url: "/#services" },
+      { label: "Contact Corporate Office", url: "/#contact" }
     ]
   },
   {
-    keywords: ["cargo", "shipping", "freight", "logistics", "seattle", "port", "tracking", "container", "vessel", "ship", "boat"],
-    response: "Look here my people, TOTAG Cargo Handling and Logistics na small thing oh! We packing heavy containers and moving sea and air cargo straight from Monrovia port to Seattle, USA. We clearing customs fast-fast and tracking your container one time!",
+    keywords: ["cargo", "shipping", "freight", "logistics", "seattle", "port", "tracking", "container", "vessel", "ship", "customs"],
+    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers, including Seattle, USA. We offer real-time shipment tracking and secure bonded warehousing.",
     links: [
-      { label: "Open Cargo Logistics", url: "/cargo" },
-      { label: "Track Your Shipment", url: "/order-tracking" }
+      { label: "Cargo Logistics Portal", url: "/cargo" },
+      { label: "Track Shipment", url: "/order-tracking" }
     ]
   },
   {
-    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "computer", "app"],
-    response: "Da IT software business you asking about? TOTAG IT Services running heavy enterprise tech, cybersecurity, and full 14 FIMS Financial and HRMIS modules for business! Hit our tech people direct on tis@totaggroup.com, they will fix you up one time!",
+    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "cybersecurity", "app", "custom software"],
+    response: "TOTAG IT Services & SaaS delivers enterprise managed IT infrastructure, cybersecurity, and our proprietary 14-module FIMS Financial & HRMIS Enterprise Suite. You can reach our IT department directly at tis@totaggroup.com.",
     links: [
-      { label: "Open IT Services Portal", url: "/it-services" },
-      { label: "14 FIMS/HRMIS SaaS Modules", url: "/saas" }
+      { label: "IT Services Portal", url: "/it-services" },
+      { label: "Enterprise SaaS Modules", url: "/saas" }
     ]
   },
   {
-    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "invoice", "cook"],
-    response: "Ah, TOCEPS Catering and Event Planning na master of sweet food and big-big programs! We catering for UNIDO contract deliverables, executive corporate meetings, and wedding banquets with proper protocol. For invoices and bookings, email our food desk on toceps@totaggroup.com!",
+    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "invoice", "hospitality"],
+    response: "TOTAG Catering & Event Planning Services (TOCEPS) manages institutional catering, UNIDO contract deliverables, executive banquets, and social event hospitality. For billing, invoices, or event reservations, please email toceps@totaggroup.com.",
     links: [
       { label: "TOCEPS Catering Services", url: "/catering" },
-      { label: "Executive Document Vault", url: "/catering/ops/dashboard" }
+      { label: "Document Vault & Dashboard", url: "/catering/ops/dashboard" }
     ]
   },
   {
-    keywords: ["farm", "agriculture", "livestock", "crops", "produce", "food supply", "cassava", "poultry", "chicken", "pig", "cow", "palm oil"],
-    response: "TOTAG Farm doing serious agribusiness oh! Fresh cassava, rich palm oil, healthy livestock and poultry fresh from the soil right here in Liberia. Food security na play play business with we!",
+    keywords: ["farm", "agriculture", "livestock", "crops", "produce", "food supply", "cassava", "poultry", "palm oil", "agribusiness"],
+    response: "TOTAG FARM & Agribusiness leads sustainable agriculture, organic crop production, poultry, and livestock farming in Liberia, strengthening food security and local commercial agro-processing.",
     links: [
-      { label: "Visit TOTAG Farm Hub", url: "/farm" }
+      { label: "TOTAG Farm Hub", url: "/farm" }
     ]
   },
   {
-    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "light", "generator", "current"],
-    response: "No more darkness business! TOTAG Solar Energy and Deye hybrid inverters bringing clean 24/7 solar smart power with heavy battery storage straight to your home, office, and factory. Light will shine always!",
+    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "telemetry", "noc"],
+    response: "TOTAG Solar Energy & Smart Power engineers turnkey commercial and residential solar microgrids, Deye hybrid inverter systems, lithium battery storage, and 24/7 telemetry Network Operations Center monitoring.",
     links: [
-      { label: "Solar Energy & Deye Inverters", url: "/solar" }
+      { label: "Solar Energy & Deye Systems", url: "/solar" }
     ]
   },
   {
-    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil", "gas"],
-    response: "From bulk petroleum depot storage to heavy fuel haulage, TOTAG Petroleum supplying certified diesel, gasoline, and lubricants for commercial fleets and industries across Liberia.",
+    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil", "haulage"],
+    response: "TOTAG Petroleum Services operates certified bulk fuel storage facilities, commercial petroleum supply depots, and reliable fuel haulage logistics across Liberia.",
     links: [
       { label: "Petroleum Services", url: "/petroleum" }
     ]
   },
   {
-    keywords: ["construction", "building", "civil", "roads", "infrastructure", "cement", "house"],
-    response: "TOTAG General Construction doing the real heavy civil engineering! Roads, strong concrete foundations, and modern architectural buildings built to last long-long time.",
+    keywords: ["construction", "building", "civil", "roads", "infrastructure", "engineering"],
+    response: "TOTAG General Construction delivers civil engineering, structural construction, road rehabilitation, and modern commercial facilities built to international safety standards.",
     links: [
       { label: "Construction Services", url: "/construction" }
     ]
   },
   {
-    keywords: ["stationery", "office", "supplies", "printing", "paper", "pen", "books"],
-    response: "TOTAG Stationery Supplies providing bulk B2B office materials, high-speed printing supplies, and school materials for business and institutions plenty-plenty.",
+    keywords: ["stationery", "office", "supplies", "printing", "paper", "procurement"],
+    response: "TOTAG Stationery Supplies provides bulk B2B office procurement, enterprise printing materials, and scholastic supplies for corporate and institutional clients.",
     links: [
       { label: "Stationery Supplies", url: "/stationery" }
     ]
   },
   {
-    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods", "market", "store"],
-    response: "TOTAG General Merchandise (TGM) got all your wholesale and retail trading goods in town, supplying quality FMCG products and consumer goods across local markets.",
+    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods", "fmcg"],
+    response: "TOTAG General Merchandise (TGM) manages large-scale wholesale and retail distribution of quality consumer goods and commercial merchandise across regional markets.",
     links: [
       { label: "General Merchandise Hub", url: "/general-merchandise" }
     ]
   },
   {
-    keywords: ["contact", "email", "phone", "address", "location", "office", "where", "call", "reach"],
-    response: "You want to reach we? Head office right here in Monrovia, Liberia with connection to Seattle, USA. Send corporate mail to info@totaggroup.com, IT requests to tis@totaggroup.com, or Catering to toceps@totaggroup.com. We ready for you!",
+    keywords: ["contact", "email", "phone", "address", "location", "office", "where", "headquarters", "monrovia"],
+    response: "TOTAG Group of Companies Ltd is headquartered in Monrovia, Liberia with global trade partnerships in Seattle, USA. You can contact our corporate desk at info@totaggroup.com, IT services at tis@totaggroup.com, or Catering at toceps@totaggroup.com.",
     links: [
-      { label: "Contact Information", url: "/#contact" }
+      { label: "Corporate Contact Form", url: "/#contact" }
     ]
   },
   {
     keywords: ["subsidiary", "subsidiaries", "companies", "services", "all", "nine", "9"],
-    response: "TOTAG Group running 9 solid subsidiaries: 1. Cargo Logistics (Liberia to Seattle), 2. Farm & Agribusiness, 3. Petroleum, 4. General Construction, 5. General Merchandise, 6. TOCEPS Catering, 7. Managed IT & SaaS, 8. Stationery, and 9. Solar Smart Power!",
+    response: "TOTAG Group encompasses 9 specialized subsidiaries: 1. Cargo Handling & Logistics, 2. Farm & Agribusiness, 3. Petroleum Services, 4. General Construction, 5. General Merchandise, 6. TOCEPS Catering & Event Planning, 7. Managed IT Services & SaaS, 8. Stationery Supplies, and 9. Solar Smart Power.",
     links: [
-      { label: "Explore All 9 Subsidiaries", url: "/#services" }
+      { label: "View All 9 Subsidiaries", url: "/#services" }
     ]
   }
 ];
@@ -125,17 +126,17 @@ const TOTAG_KNOWLEDGE_PATOIS = [
 function getBotResponse(userText: string): { response: string; links?: { label: string; url: string }[] } {
   const lower = userText.toLowerCase();
 
-  for (const item of TOTAG_KNOWLEDGE_PATOIS) {
+  for (const item of TOTAG_KNOWLEDGE_STANDARD) {
     if (item.keywords.some((kw) => lower.includes(kw))) {
       return { response: item.response, links: item.links };
     }
   }
 
   return {
-    response: `My people, I hear you about "${userText}"! TOTAG Group running 9 solid companies across Cargo, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery from Liberia to Seattle. You want to see our services or send us a message direct?`,
+    response: `Thank you for your inquiry regarding "${userText}". TOTAG Group delivers enterprise solutions across Cargo Handling, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery Supplies. Would you like to connect directly with our corporate team or explore our subsidiary portals?`,
     links: [
-      { label: "Explore 9 Companies", url: "/#services" },
-      { label: "Talk to Us Direct", url: "/#contact" }
+      { label: "Explore Our Subsidiaries", url: "/#services" },
+      { label: "Contact Us Directly", url: "/#contact" }
     ]
   };
 }
@@ -154,18 +155,20 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the green microphone button and talk to me, or tap any question below!",
+      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. Click the green microphone to speak, type your question, or tap any quick topic below.",
       timestamp: "Just now",
       links: [
-        { label: "Explore 9 Companies", url: "/#services" },
+        { label: "Explore 9 Subsidiaries", url: "/#services" },
         { label: "Cargo (Liberia ↔ Seattle)", url: "/cargo" },
-        { label: "Talk to Corporate", url: "/#contact" }
+        { label: "Contact Corporate Office", url: "/#contact" }
       ]
     }
   ]);
 
   const [_, setLocation] = useLocation();
   const recognitionRef = useRef<any>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const silenceTimerRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -177,16 +180,18 @@ export default function VoiceChatWidget() {
     scrollToBottom();
   }, [messages, isListening, isSpeaking, transcript]);
 
-  // Text-To-Speech
+  // Text-To-Speech with warm West African / Liberian vocal cadence
   const speakText = (text: string) => {
     if (!voiceEnabled || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    // Warm, articulate pace and melodic pitch reflecting West African English
     utterance.rate = 0.95;
     utterance.pitch = 1.05;
     
     const voices = window.speechSynthesis.getVoices();
+    // Prioritize African English (Nigeria/Ghana/South Africa), British English, or warm natural voices
     const selectedVoice = 
       voices.find((v) => v.lang === "en-NG" || v.lang === "en-GH" || v.lang === "en-ZA") ||
       voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Arthur"))) ||
@@ -223,9 +228,15 @@ export default function VoiceChatWidget() {
         recognitionRef.current.stop();
       } catch (_) {}
     }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (_) {}
+    }
+
     setIsListening(false);
     setTranscript("");
-    setMicStatus("Processing...");
+    setMicStatus("Ready");
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -248,135 +259,126 @@ export default function VoiceChatWidget() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
-      setMicStatus("Ready");
       speakText(response);
     }, 400);
   };
 
-  // Start Voice Listening with Clean Exclusive Access
+  // Start Voice Capture with Dual Recognition Engine
   const startListening = async () => {
     stopSpeaking();
     setMicError(null);
     setTranscript("");
-    setMicStatus("Requesting mic...");
+    setMicStatus("Connecting mic...");
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setMicError("Speech recognition is not supported in this browser. Please use Chrome, Edge, or type your question below.");
-      setMicStatus("Not Supported");
-      return;
-    }
 
+    // 1. Start MediaRecorder Audio Stream (guarantees microphone access and user prompt)
     try {
-      // 1. Verify mic permission without locking audio stream
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
         try {
-          const testStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          // Crucial on Windows: Stop all tracks immediately so SpeechRecognition has 100% exclusive hardware access
-          testStream.getTracks().forEach((track) => track.stop());
-        } catch (e: any) {
-          if (e.name === "NotAllowedError" || e.name === "PermissionDeniedError") {
-            setMicError("Microphone permission was denied. Please click the lock icon in your address bar and allow Microphone access.");
-            setMicStatus("Permission Denied");
-            return;
-          }
+          const mediaRecorder = new MediaRecorder(stream);
+          audioChunksRef.current = [];
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data.size > 0) audioChunksRef.current.push(e.data);
+          };
+          mediaRecorder.start();
+          mediaRecorderRef.current = mediaRecorder;
+        } catch (e) {
+          console.warn("MediaRecorder init:", e);
         }
       }
-
-      // 2. Stop any existing recognition instance
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.abort();
-        } catch (_) {}
-      }
-
-      // 3. Configure new clean recognition instance
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-      recognition.maxAlternatives = 1;
-
-      let currentTranscript = "";
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        setMicError(null);
-        setMicStatus("Listening... Talk now!");
-      };
-
-      recognition.onaudiostart = () => {
-        setMicStatus("Mic Active • Speak freely");
-      };
-
-      recognition.onsoundstart = () => {
-        setMicStatus("Hearing sound...");
-      };
-
-      recognition.onspeechstart = () => {
-        setMicStatus("Hearing your speech...");
-      };
-
-      recognition.onresult = (event: any) => {
-        let interim = "";
-        let final = "";
-
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            final += event.results[i][0].transcript;
-          } else {
-            interim += event.results[i][0].transcript;
-          }
-        }
-
-        const spoken = (final || interim).trim();
-        if (spoken) {
-          currentTranscript = spoken;
-          setTranscript(spoken);
-          setInputText(spoken);
-
-          // Reset silence timer: auto-submit 2.2s after user pauses speaking
-          if (silenceTimerRef.current) {
-            clearTimeout(silenceTimerRef.current);
-          }
-          silenceTimerRef.current = setTimeout(() => {
-            if (currentTranscript.trim().length > 1) {
-              handleUserQuery(currentTranscript.trim());
-            }
-          }, 2200);
-        }
-      };
-
-      recognition.onerror = (event: any) => {
-        console.warn("Speech recognition error:", event.error);
-        if (event.error === "not-allowed" || event.error === "permission-denied") {
-          setMicError("Microphone permission was blocked. Click the lock icon in your browser address bar and enable Microphone for totag.network.");
-          setIsListening(false);
-          setMicStatus("Permission Blocked");
-        } else if (event.error === "no-speech") {
-          setMicStatus("No voice detected. Please speak louder or closer to your mic.");
-        } else if (event.error !== "aborted") {
-          setMicError(`Voice message: ${event.error}. You can also type or tap question chips below.`);
-          setIsListening(false);
-          setMicStatus("Error");
-        }
-      };
-
-      recognition.onend = () => {
-        // If user didn't explicitly stop and we have text, process it
-        if (currentTranscript.trim().length > 1) {
-          handleUserQuery(currentTranscript.trim());
-        }
-      };
-
-      recognitionRef.current = recognition;
-      recognition.start();
     } catch (err: any) {
-      console.error("Mic start failed:", err);
-      setIsListening(false);
-      setMicStatus("Failed to Start");
-      setMicError("Could not initialize microphone. Please check your browser mic settings or type below.");
+      console.warn("Microphone access check:", err);
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        setMicError("Microphone permission was denied. Please allow microphone access in your browser to speak.");
+        setMicStatus("Permission Denied");
+        return;
+      }
     }
+
+    // 2. Start Web Speech Recognition
+    if (SpeechRecognition) {
+      try {
+        if (recognitionRef.current) {
+          try { recognitionRef.current.abort(); } catch (_) {}
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "en-US";
+        recognition.maxAlternatives = 1;
+
+        let capturedText = "";
+
+        recognition.onstart = () => {
+          setIsListening(true);
+          setMicError(null);
+          setMicStatus("Listening... Speak now");
+        };
+
+        recognition.onresult = (event: any) => {
+          let interim = "";
+          let final = "";
+
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript;
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+
+          const currentSpoken = (final || interim).trim();
+          if (currentSpoken) {
+            capturedText = currentSpoken;
+            setTranscript(capturedText);
+            setInputText(capturedText);
+
+            if (silenceTimerRef.current) {
+              clearTimeout(silenceTimerRef.current);
+            }
+            silenceTimerRef.current = setTimeout(() => {
+              if (capturedText.trim().length > 1) {
+                handleUserQuery(capturedText.trim());
+              }
+            }, 2200);
+          }
+        };
+
+        recognition.onerror = (event: any) => {
+          console.warn("Speech error:", event.error);
+          if (event.error === "not-allowed" || event.error === "permission-denied") {
+            setMicError("Microphone permission blocked. Please enable microphone permissions in your browser.");
+            setIsListening(false);
+          } else if (event.error === "no-speech") {
+            setMicStatus("No voice detected. Please speak closer to your mic.");
+          } else if (event.error !== "aborted") {
+            // Keep listening or allow user to use quick chips
+            setMicStatus("Listening...");
+          }
+        };
+
+        recognition.onend = () => {
+          if (capturedText.trim().length > 1) {
+            handleUserQuery(capturedText.trim());
+          }
+        };
+
+        recognitionRef.current = recognition;
+        recognition.start();
+        setIsListening(true);
+        return;
+      } catch (e) {
+        console.warn("SpeechRecognition start error:", e);
+      }
+    }
+
+    // Fallback if browser doesn't support SpeechRecognition
+    setIsListening(true);
+    setMicStatus("Listening... (Tap Send when done)");
   };
 
   const stopListening = () => {
@@ -385,15 +387,19 @@ export default function VoiceChatWidget() {
       silenceTimerRef.current = null;
     }
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (_) {}
+      try { recognitionRef.current.stop(); } catch (_) {}
     }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try { mediaRecorderRef.current.stop(); } catch (_) {}
+    }
+
     setIsListening(false);
     setMicStatus("Ready");
 
     if (transcript.trim().length > 1) {
       handleUserQuery(transcript.trim());
+    } else if (inputText.trim().length > 1) {
+      handleUserQuery(inputText.trim());
     }
   };
 
@@ -413,12 +419,12 @@ export default function VoiceChatWidget() {
   };
 
   const quickPrompts = [
-    "Tell me about the 9 Companies",
-    "Cargo from Monrovia to Seattle",
-    "IT SaaS 14 modules",
-    "TOCEPS sweet catering & UNIDO",
-    "Solar light & Deye inverters",
-    "How to reach we?"
+    "Tell me about the 9 Subsidiaries",
+    "Cargo routes to Seattle",
+    "IT Services & SaaS modules",
+    "TOCEPS Catering & UNIDO contracts",
+    "Solar Power & Deye inverters",
+    "Contact Corporate Office"
   ];
 
   return (
@@ -432,9 +438,9 @@ export default function VoiceChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[380px] sm:w-[410px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className="w-[380px] sm:w-[415px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
           >
-            {/* Header with TOTAG Logo & Liberian Kolokwa Badge */}
+            {/* Header with Official TOTAG Logo */}
             <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white flex items-center justify-between border-b border-emerald-500/20">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -445,9 +451,9 @@ export default function VoiceChatWidget() {
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                    TOTAG Voice Assistant
-                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-mono">
-                      🇱🇷 Kolokwa
+                    TOTAG Corporate Assistant
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-medium">
+                      Liberia HQ
                     </span>
                   </h4>
                   <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Seattle, USA</p>
@@ -464,7 +470,7 @@ export default function VoiceChatWidget() {
                   className={`p-2 rounded-xl text-xs font-bold transition-all ${
                     voiceEnabled ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30" : "bg-white/10 text-slate-400 hover:bg-white/20"
                   }`}
-                  title={voiceEnabled ? "Voice Speech Active" : "Voice Speech Muted"}
+                  title={voiceEnabled ? "Spoken Voice Active" : "Spoken Voice Muted"}
                 >
                   {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
@@ -512,7 +518,7 @@ export default function VoiceChatWidget() {
                       🔴 {micStatus}
                     </span>
                     <p className="text-[11px] text-slate-700 dark:text-slate-200 truncate italic">
-                      "{transcript || "Talk now, I am hearing you..."}"
+                      "{transcript || "Listening to your voice..."}"
                     </p>
                   </div>
                 </div>
@@ -536,14 +542,14 @@ export default function VoiceChatWidget() {
                     <span className="w-1 h-5 bg-sky-400 rounded-full animate-bounce [animation-delay:150ms]" />
                     <span className="w-1 h-2 bg-sky-300 rounded-full animate-bounce [animation-delay:300ms]" />
                   </div>
-                  <span className="font-bold text-sky-600 dark:text-sky-400">Speaking Kolokwa response...</span>
+                  <span className="font-bold text-sky-600 dark:text-sky-400">Responding with Liberian accent...</span>
                 </div>
 
                 <button
                   onClick={stopSpeaking}
                   className="text-[10px] font-bold text-slate-500 hover:text-rose-500 underline"
                 >
-                  Stop Talking
+                  Stop Voice
                 </button>
               </div>
             )}
@@ -570,8 +576,8 @@ export default function VoiceChatWidget() {
                   <div
                     className={`max-w-[78%] rounded-2xl p-3 leading-relaxed ${
                       msg.sender === "user"
-                        ? "bg-sky-600 text-white rounded-tr-sm shadow-md"
-                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm font-medium"
+                        ? "bg-sky-600 text-white rounded-tr-sm shadow-md font-medium"
+                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm font-normal"
                     }`}
                   >
                     <p>{msg.text}</p>
@@ -640,14 +646,14 @@ export default function VoiceChatWidget() {
                       ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/20"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-500/20"
                   }`}
-                  title={isListening ? "Click to Send / Stop" : "Click to Speak Liberian Kolokwa"}
+                  title={isListening ? "Click to Send / Stop" : "Click to Speak"}
                 >
                   {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Hearing your voice..." : "Click green mic to speak or type..."}
+                  placeholder={isListening ? "Listening to your voice..." : "Click mic to speak or type..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
@@ -680,7 +686,7 @@ export default function VoiceChatWidget() {
             className="absolute right-16 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 dark:bg-white/90 text-white dark:text-slate-900 font-bold text-xs shadow-xl border border-white/20 backdrop-blur-md whitespace-nowrap pointer-events-none"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>🇱🇷 Talk with TOTAG AI</span>
+            <span>Speak with TOTAG AI</span>
           </motion.div>
         )}
 
@@ -699,7 +705,7 @@ export default function VoiceChatWidget() {
               ? "bg-slate-900 text-white ring-4 ring-emerald-500/30"
               : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-emerald-500 ring-4 ring-emerald-500/20 hover:ring-emerald-500/40"
           }`}
-          title="TOTAG Voice Assistant (Liberian Kolokwa)"
+          title="TOTAG Corporate Voice Assistant"
         >
           {/* Pulsing ring indicator */}
           <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
