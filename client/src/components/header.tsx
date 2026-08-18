@@ -213,13 +213,42 @@ export default function Header() {
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Staff Login</span>
               </button>
-            ) : (
+            ) : location.startsWith("/catering") ? (
               <button 
-                onClick={() => handleNavClick("/admin-login")}
-                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all"
+                onClick={() => handleNavClick("/catering/ops/login")}
+                className="bg-gradient-to-r from-red-500 to-amber-500 hover:from-red-400 hover:to-amber-400 text-white text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all flex items-center space-x-1.5"
               >
-                Admin Login
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Staff Operations Portal</span>
               </button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all flex items-center space-x-1">
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>Staff & Admin Login</span>
+                    <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-slate-900/95 backdrop-blur-xl border border-white/10 shadow-2xl p-2 rounded-2xl text-white">
+                  <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-wider text-emerald-400 px-3 py-1">
+                    Select Staff Portal
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem onSelect={() => handleNavClick("/farm/login")} className="cursor-pointer font-bold text-xs p-2.5 rounded-xl hover:bg-emerald-500/20 text-emerald-400 flex items-center space-x-2">
+                    <Wheat className="w-4 h-4" />
+                    <span>FARM Staff Portal</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => handleNavClick("/catering/ops/login")} className="cursor-pointer font-bold text-xs p-2.5 rounded-xl hover:bg-red-500/20 text-red-400 flex items-center space-x-2">
+                    <ChefHat className="w-4 h-4" />
+                    <span>Catering Staff Portal</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => handleNavClick("/farm/login")} className="cursor-pointer font-bold text-xs p-2.5 rounded-xl hover:bg-amber-500/20 text-amber-400 flex items-center space-x-2">
+                    <LogIn className="w-4 h-4" />
+                    <span>Enterprise Staff Login</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
 
