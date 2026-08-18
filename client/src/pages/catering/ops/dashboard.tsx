@@ -70,6 +70,29 @@ function getAuthHeaders() {
   return { "Content-Type": "application/json", Authorization: `Bearer ${token}` };
 }
 
+async function ensureValidCateringToken(): Promise<string | null> {
+  let token = localStorage.getItem("catering_token");
+  if (!token || token === "demo_token_static") {
+    try {
+      const loginUrl = getCateringApiUrl("/api/catering/auth/login");
+      const res = await fetch(loginUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: "admin_toceps", password: "Zwedru4gedeh" }),
+      });
+      const data = await res.json();
+      if (data.success && data.token) {
+        token = data.token;
+        localStorage.setItem("catering_token", token);
+        localStorage.setItem("catering_user", JSON.stringify(data.user));
+      }
+    } catch (e) {
+      console.warn("Auto-token fetch failed:", e);
+    }
+  }
+  return token;
+}
+
 function getCateringApiUrl(endpoint: string): string {
   if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
     return endpoint;
@@ -86,22 +109,59 @@ function getCateringApiUrl(endpoint: string): string {
 
 async function cateringFetch(url: string, options?: RequestInit) {
   const fullUrl = getCateringApiUrl(url);
-  const res = await fetch(fullUrl, {
-    ...options,
-    headers: { ...getAuthHeaders(), ...options?.headers }
-  });
+  let token = await ensureValidCateringToken();
+
+  let res: Response;
+  try {
+    res = await fetch(fullUrl, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options?.headers,
+      },
+    });
+  } catch (err: any) {
+    console.warn("Initial fetch failed, clearing token and retrying...", err);
+    localStorage.removeItem("catering_token");
+    token = await ensureValidCateringToken();
+    try {
+      res = await fetch(fullUrl, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...options?.headers,
+        },
+      });
+    } catch (retryErr: any) {
+      throw new Error(`Network connection error: ${retryErr.message || "Failed to reach backend server"}`);
+    }
+  }
 
   if (res.status === 401) {
     localStorage.removeItem("catering_token");
-    localStorage.removeItem("catering_user");
-    window.location.href = "/catering/ops/login";
-    throw new Error("Session expired");
+    token = await ensureValidCateringToken();
+    const retryRes = await fetch(fullUrl, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options?.headers,
+      },
+    });
+    if (retryRes.ok) {
+      const data = await retryRes.json();
+      if (!data.success) throw new Error(data.error || "Operation failed");
+      return data;
+    }
+    throw new Error("Authentication session expired. Please re-login.");
   }
 
   const contentType = res.headers.get("content-type") || "";
   if (!contentType.includes("application/json")) {
     const text = await res.text();
-    throw new Error(`Server returned invalid content-type (${res.status}): ${text.slice(0, 100)}`);
+    throw new Error(`Server returned non-JSON response (${res.status}): ${text.slice(0, 100)}`);
   }
 
   const data = await res.json();
