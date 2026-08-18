@@ -415,7 +415,7 @@ export default function CateringDashboard() {
         </div>
 
         {user.role === "account_manager" && (
-          <AccountManagerView requests={requests} events={events} staff={staff} allTasks={allTasks} quotations={quotations} loading={loadingRequests}
+          <AccountManagerView invoices={invoices} refetchInvoices={refetchInvoices} requests={requests} events={events} staff={staff} allTasks={allTasks} quotations={quotations} loading={loadingRequests}
             onUpdateRequest={(id: number, updates: any) => updateRequestMutation.mutate({ id, updates })}
             onCreateEvent={(data: any) => createEventMutation.mutate(data)}
             onCreateTask={(data: any) => createTaskMutation.mutate(data)}
@@ -425,7 +425,7 @@ export default function CateringDashboard() {
         )}
 
         {user.role === "operations_supervisor" && (
-          <OperationsSupervisorView events={events} allTasks={allTasks} staff={staff} requests={requests}
+          <OperationsSupervisorView invoices={invoices} refetchInvoices={refetchInvoices} events={events} allTasks={allTasks} staff={staff} requests={requests}
             quotations={quotations} loading={loadingRequests}
             onUpdateRequest={(id: number, updates: any) => updateRequestMutation.mutate({ id, updates })}
             onDeleteRequest={(id: number) => deleteRequestMutation.mutate(id)}
@@ -1057,7 +1057,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
   );
 }
 
-function AccountManagerView({ requests, events, staff, allTasks, quotations, loading, onUpdateRequest, onCreateEvent, onCreateTask, onCreateQuotation, onUpdateQuotation }: any) {
+function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefetchInvoices, requests, events, staff, allTasks, quotations, loading, onUpdateRequest, onCreateEvent, onCreateTask, onCreateQuotation, onUpdateQuotation }: any) {
   const { data: invoicesData, refetch: refetchInvoices } = useQuery({
     queryKey: ["/api/catering/invoices"],
     queryFn: () => cateringFetch("/api/catering/invoices"),
@@ -2746,7 +2746,7 @@ function QuotationsList({ quotations, onPreview, onUpdateQuotation }: any) {
 }
 
 // ===== OPERATIONS SUPERVISOR VIEW =====
-function OperationsSupervisorView({ events, allTasks, staff, requests, quotations, loading, onCreateTask, onUpdateTask, onUpdateEvent, onCreateEvent, onUpdateRequest, onDeleteRequest, onCreateQuotation, onUpdateQuotation, onSaveAndSendQuotation, onSendQuotation, isSending }: any) {
+function OperationsSupervisorView({ invoices: propInvoices, refetchInvoices: propRefetchInvoices, events, allTasks, staff, requests, quotations, loading, onCreateTask, onUpdateTask, onUpdateEvent, onCreateEvent, onUpdateRequest, onDeleteRequest, onCreateQuotation, onUpdateQuotation, onSaveAndSendQuotation, onSendQuotation, isSending }: any) {
   const { data: invoicesData, refetch: refetchInvoices } = useQuery({
     queryKey: ["/api/catering/invoices"],
     queryFn: () => cateringFetch("/api/catering/invoices"),
