@@ -582,7 +582,7 @@ router.patch("/incidents/:id", authenticateCateringStaff, requireCateringRole("f
   }
 });
 
-// ===== STAFF (account_manager only) =====
+// ===== STAFF MANAGEMENT (Admin / Account Manager) =====
 router.get("/staff", authenticateCateringStaff, async (req: CateringAuthRequest, res: Response) => {
   try {
     const allStaff = await storage.getAllCateringStaff();
@@ -590,6 +590,64 @@ router.get("/staff", authenticateCateringStaff, async (req: CateringAuthRequest,
     res.json({ success: true, staff: safeStaff });
   } catch {
     res.status(500).json({ success: false, error: "Failed to fetch staff" });
+  }
+});
+
+router.post("/staff", authenticateCateringStaff, requireCateringRole("account_manager"), async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const { username, password, email, firstName, lastName, phone, role } = req.body;
+    if (!username || !password || !email || !firstName || !lastName || !role) {
+      return res.status(400).json({ success: false, error: "Missing required fields (username, password, email, firstName, lastName, role)" });
+    }
+
+    const existing = await storage.getCateringStaffByUsername(username);
+    if (existing) {
+      return res.status(400).json({ success: false, error: `Username '${username}' is already taken` });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newStaff = await storage.createCateringStaff({
+      username,
+      password: hashedPassword,
+      email,
+      firstName,
+      lastName,
+      phone: phone || "",
+      role,
+      isActive: true,
+    });
+
+    const { password: _, ...safeStaff } = newStaff;
+    res.status(201).json({ success: true, staff: safeStaff, message: `Staff account '${username}' created with role '${role}'` });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message || "Failed to create staff member" });
+  }
+});
+
+router.patch("/staff/:id", authenticateCateringStaff, requireCateringRole("account_manager"), async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const updates = { ...req.body };
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, 12);
+    }
+    const updated = await storage.updateCateringStaff(id, updates);
+    if (!updated) return res.status(404).json({ success: false, error: "Staff member not found" });
+    const { password: _, ...safeStaff } = updated;
+    res.json({ success: true, staff: safeStaff, message: "Staff user updated successfully" });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message || "Failed to update staff member" });
+  }
+});
+
+router.delete("/staff/:id", authenticateCateringStaff, requireCateringRole("account_manager"), async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const updated = await storage.updateCateringStaff(id, { isActive: false });
+    if (!updated) return res.status(404).json({ success: false, error: "Staff member not found" });
+    res.json({ success: true, message: "Staff account deactivated successfully" });
+  } catch {
+    res.status(500).json({ success: false, error: "Failed to deactivate staff member" });
   }
 });
 
