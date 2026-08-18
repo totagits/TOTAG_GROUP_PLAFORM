@@ -78,7 +78,7 @@ function getCateringApiUrl(endpoint: string): string {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
     if (host.includes("github.io") || host === "totag.network" || host.includes("totag")) {
-      return `http://srv1902704.hstgr.cloud${cleanEndpoint}`;
+      return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
     }
   }
   return cleanEndpoint;
