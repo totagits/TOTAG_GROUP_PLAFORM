@@ -82,22 +82,25 @@ class ZohoEmailService {
   }
 
   private async sendViaSMTP(options: EmailOptions): Promise<boolean> {
-    const smtpUser = process.env.ZOHO_FROM_EMAIL || 'info@totaggroup.com';
+    const smtpHost = process.env.ZOHO_SMTP_HOST || 'smtp.zoho.com';
+    const smtpPort = parseInt(process.env.ZOHO_SMTP_PORT || '465');
+    const smtpUser = process.env.ZOHO_SMTP_USER || process.env.ZOHO_FROM_EMAIL || 'info@totaggroup.com';
     const smtpPass = process.env.ZOHO_SMTP_PASS;
     if (!smtpPass) return false;
 
     const transporter = nodemailer.createTransport({
-      host: 'smtp.zoho.com',
-      port: 587,
-      secure: false,
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
       auth: { user: smtpUser, pass: smtpPass },
     });
 
     const htmlBody = options.htmlContent || options.html;
 
     await transporter.sendMail({
-      from: `"TOTAG Group of Companies" <${smtpUser}>`,
+      from: options.from || `"TOTAG Group of Companies" <${smtpUser}>`,
       to: options.to,
+      replyTo: "toceps@totaggroup.com",
       subject: options.subject,
       html: htmlBody,
       text: options.text,
