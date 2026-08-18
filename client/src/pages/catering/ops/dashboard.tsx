@@ -1484,7 +1484,7 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
 
       
       <TabsContent value="invoice-builder">
-        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={refetchInvoices} />
+        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={() => { refetchInvoices(); setActiveTab("invoices-vault"); }} />
       </TabsContent>
 
       <TabsContent value="invoices-vault">
@@ -3101,7 +3101,7 @@ function OperationsSupervisorView({ invoices: propInvoices, refetchInvoices: pro
 
       
       <TabsContent value="invoice-builder">
-        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={refetchInvoices} />
+        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={() => { refetchInvoices(); setActiveTab("invoices-vault"); }} />
       </TabsContent>
 
       <TabsContent value="invoices-vault">
