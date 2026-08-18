@@ -1,0 +1,170 @@
+openapi: 3.0.3
+info:
+  title: Enterprise Cargo Logistics & WMS API
+  version: 1.0.0
+  description: High-throughput API for Cargo Tracking, Warehouse Management, ULD Buildup, and Scanner Integration.
+servers:
+  - url: https://api.cargo-enterprise.io/v1
+    description: Production Gateway
+paths:
+  /tracking/{awbNumber}:
+    get:
+      summary: Get real-time shipment status & milestones
+      operationId: getShipmentTracking
+      parameters:
+        - name: awbNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "020-12345675"
+      responses:
+        '200':
+          description: Tracking history and current status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShipmentTrackingResponse'
+        '404':
+          description: AWB not found
+
+  /wms/scan:
+    post:
+      summary: Ingest cargo scanner barcode operation
+      operationId: processBarcodeScan
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScanEventRequest'
+      responses:
+        '202':
+          description: Scan event accepted and queued into event bus
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  eventId: { type: string, format: uuid }
+                  status: { type: string, example: "QUEUED" }
+                  timestamp: { type: string, format: date-time }
+        '400':
+          description: Invalid payload or unresolvable barcode
+
+  /wms/uld/{uldNumber}/manifest:
+    post:
+      summary: Load cargo piece into ULD (Pallet/Container)
+      operationId: addCargoToUld
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: uldNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            example: "AKE98231AA"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cargoBarcode, staffId]
+              properties:
+                cargoBarcode: { type: string, example: "020-12345675-001" }
+                staffId: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Piece attached to ULD successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UldManifestResponse'
+
+  /wms/discrepancies:
+    post:
+      summary: Log damage, seal breach, or weight mismatch
+      operationId: reportDiscrepancy
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscrepancyReportRequest'
+      responses:
+        '201':
+          description: Discrepancy logged and notification dispatched
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ShipmentTrackingResponse:
+      type: object
+      properties:
+        awbNumber: { type: string }
+        currentStatus: { type: string, enum: [BOOKED, RECEIVED_AT_TERMINAL, IN_STORAGE, CUSTOMS_HOLD, CUSTOMS_CLEARED, LOADED_TO_ULD, DEPARTED, ARRIVED, RELEASED_TO_CONSIGNEE] }
+        originPort: { type: string }
+        destinationPort: { type: string }
+        totalPieces: { type: integer }
+        totalWeightKg: { type: number }
+        events:
+          type: array
+          items:
+            type: object
+            properties:
+              eventType: { type: string }
+              location: { type: string }
+              timestamp: { type: string, format: date-time }
+
+    ScanEventRequest:
+      type: object
+      required: [barcode, scanType, warehouseCode, staffId]
+      properties:
+        barcode: { type: string, example: "020-12345675-001" }
+        scanType: { type: string, enum: [RECEIVE, BIN_ASSIGN, ULD_LOAD, DISPATCH, CUSTOMS_INSPECT] }
+        warehouseCode: { type: string, example: "WH-ORD-01" }
+        locationBarcode: { type: string, example: "LOC-Z01-A02-R03-S01" }
+        staffId: { type: string, format: uuid }
+        deviceTelemetry:
+          type: object
+          properties:
+            deviceId: { type: string }
+            batteryLevel: { type: number }
+            gpsLat: { type: number }
+            gpsLng: { type: number }
+
+    UldManifestResponse:
+      type: object
+      properties:
+        uldNumber: { type: string }
+        currentWeightKg: { type: number }
+        maxPayloadKg: { type: number }
+        piecesCount: { type: integer }
+        loadedItems:
+          type: array
+          items:
+            type: string
+
+    DiscrepancyReportRequest:
+      type: object
+      required: [awbNumber, cargoBarcode, discrepancyType, description, reportedBy]
+      properties:
+        awbNumber: { type: string }
+        cargoBarcode: { type: string }
+        discrepancyType: { type: string, enum: [DAMAGED_CARTON, TEMPERATURE_EXCURSION, SEAL_BROKEN, WEIGHT_MISMATCH, MISSING_PIECE, HAZMAT_VIOLATION] }
+        description: { type: string }
+        photoUrls:
+          type: array
+          items: { type: string }
+        reportedBy: { type: string, format: uuid }
