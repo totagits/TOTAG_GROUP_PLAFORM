@@ -18,7 +18,8 @@ import {
   HelpCircle,
   Headphones,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Radio
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -146,14 +147,14 @@ export default function VoiceChatWidget() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [inputText, setInputText] = useState("");
   const [transcript, setTranscript] = useState("");
+  const [micStatus, setMicStatus] = useState<string>("Ready");
   const [micError, setMicError] = useState<string | null>(null);
-  const [audioLevel, setAudioLevel] = useState<number>(0);
   
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the green microphone button and speak freely, or type your question!",
+      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the green microphone button and talk to me, or tap any question below!",
       timestamp: "Just now",
       links: [
         { label: "Explore 9 Companies", url: "/#services" },
@@ -165,10 +166,6 @@ export default function VoiceChatWidget() {
 
   const [_, setLocation] = useLocation();
   const recognitionRef = useRef<any>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const animFrameRef = useRef<number | null>(null);
   const silenceTimerRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -213,67 +210,10 @@ export default function VoiceChatWidget() {
     setIsSpeaking(false);
   };
 
-  // Cleanup Web Audio & MediaStream
-  const stopAudioCapture = () => {
-    if (animFrameRef.current) {
-      cancelAnimationFrame(animFrameRef.current);
-      animFrameRef.current = null;
-    }
-    if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      mediaStreamRef.current = null;
-    }
-    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
-      audioContextRef.current.close().catch(() => {});
-      audioContextRef.current = null;
-    }
-    setAudioLevel(0);
-  };
-
-  // Start Real-time Microphone Audio Level Monitor
-  const startAudioMonitor = async (stream: MediaStream) => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-
-      const audioCtx = new AudioCtx();
-      audioContextRef.current = audioCtx;
-
-      const analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
-      analyserRef.current = analyser;
-
-      const source = audioCtx.createMediaStreamSource(stream);
-      source.connect(analyser);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      const updateLevel = () => {
-        if (!analyserRef.current) return;
-        analyserRef.current.getByteFrequencyData(dataArray);
-
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          sum += dataArray[i];
-        }
-        const avg = sum / dataArray.length;
-        const normalized = Math.min(100, Math.round((avg / 128) * 100));
-        setAudioLevel(normalized);
-
-        animFrameRef.current = requestAnimationFrame(updateLevel);
-      };
-
-      updateLevel();
-    } catch (e) {
-      console.warn("Audio visualizer error:", e);
-    }
-  };
-
   // Handle Speech Query Submission
   const handleUserQuery = (queryText: string) => {
     if (!queryText.trim()) return;
 
-    // Reset listening state
     if (silenceTimerRef.current) {
       clearTimeout(silenceTimerRef.current);
       silenceTimerRef.current = null;
@@ -283,9 +223,9 @@ export default function VoiceChatWidget() {
         recognitionRef.current.stop();
       } catch (_) {}
     }
-    stopAudioCapture();
     setIsListening(false);
     setTranscript("");
+    setMicStatus("Processing...");
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -308,76 +248,100 @@ export default function VoiceChatWidget() {
       };
 
       setMessages((prev) => [...prev, botMsg]);
+      setMicStatus("Ready");
       speakText(response);
     }, 400);
   };
 
-  // Start Voice Listening with getUserMedia prompt & continuous Web Speech
+  // Start Voice Listening with Clean Exclusive Access
   const startListening = async () => {
     stopSpeaking();
     setMicError(null);
     setTranscript("");
+    setMicStatus("Requesting mic...");
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      setMicError("Speech recognition is not supported in this browser. Please type your message.");
+      setMicError("Speech recognition is not supported in this browser. Please use Chrome, Edge, or type your question below.");
+      setMicStatus("Not Supported");
       return;
     }
 
     try {
-      // 1. Explicitly request microphone stream to trigger browser prompt and ensure mic is active
-      let stream: MediaStream | null = null;
+      // 1. Verify mic permission without locking audio stream
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        stream = await navigator.mediaDevices.getUserMedia({ 
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          } 
-        });
-        mediaStreamRef.current = stream;
-        startAudioMonitor(stream);
+        try {
+          const testStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          // Crucial on Windows: Stop all tracks immediately so SpeechRecognition has 100% exclusive hardware access
+          testStream.getTracks().forEach((track) => track.stop());
+        } catch (e: any) {
+          if (e.name === "NotAllowedError" || e.name === "PermissionDeniedError") {
+            setMicError("Microphone permission was denied. Please click the lock icon in your address bar and allow Microphone access.");
+            setMicStatus("Permission Denied");
+            return;
+          }
+        }
       }
 
-      // 2. Instantiate and configure SpeechRecognition
+      // 2. Stop any existing recognition instance
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort();
+        } catch (_) {}
+      }
+
+      // 3. Configure new clean recognition instance
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = "en-US";
       recognition.maxAlternatives = 1;
 
-      let accumulatedText = "";
+      let currentTranscript = "";
 
       recognition.onstart = () => {
         setIsListening(true);
         setMicError(null);
+        setMicStatus("Listening... Talk now!");
+      };
+
+      recognition.onaudiostart = () => {
+        setMicStatus("Mic Active • Speak freely");
+      };
+
+      recognition.onsoundstart = () => {
+        setMicStatus("Hearing sound...");
+      };
+
+      recognition.onspeechstart = () => {
+        setMicStatus("Hearing your speech...");
       };
 
       recognition.onresult = (event: any) => {
-        let interimTranscript = "";
-        let finalTranscript = "";
+        let interim = "";
+        let final = "";
 
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
+            final += event.results[i][0].transcript;
           } else {
-            interimTranscript += event.results[i][0].transcript;
+            interim += event.results[i][0].transcript;
           }
         }
 
-        const currentSaid = (finalTranscript || interimTranscript).trim();
-        if (currentSaid) {
-          accumulatedText = currentSaid;
-          setTranscript(accumulatedText);
-          setInputText(accumulatedText);
+        const spoken = (final || interim).trim();
+        if (spoken) {
+          currentTranscript = spoken;
+          setTranscript(spoken);
+          setInputText(spoken);
 
-          // Reset silence timer on every spoken word (submits after 2 seconds of silence)
+          // Reset silence timer: auto-submit 2.2s after user pauses speaking
           if (silenceTimerRef.current) {
             clearTimeout(silenceTimerRef.current);
           }
           silenceTimerRef.current = setTimeout(() => {
-            if (accumulatedText.trim().length > 1) {
-              handleUserQuery(accumulatedText.trim());
+            if (currentTranscript.trim().length > 1) {
+              handleUserQuery(currentTranscript.trim());
             }
           }, 2200);
         }
@@ -386,29 +350,32 @@ export default function VoiceChatWidget() {
       recognition.onerror = (event: any) => {
         console.warn("Speech recognition error:", event.error);
         if (event.error === "not-allowed" || event.error === "permission-denied") {
-          setMicError("Microphone access denied. Please click the lock icon in your browser address bar and allow Microphone access.");
+          setMicError("Microphone permission was blocked. Click the lock icon in your browser address bar and enable Microphone for totag.network.");
+          setIsListening(false);
+          setMicStatus("Permission Blocked");
         } else if (event.error === "no-speech") {
-          // Keep listening or allow user to speak
+          setMicStatus("No voice detected. Please speak louder or closer to your mic.");
         } else if (event.error !== "aborted") {
-          setMicError(`Voice error: ${event.error}. You can still type below.`);
+          setMicError(`Voice message: ${event.error}. You can also type or tap question chips below.`);
+          setIsListening(false);
+          setMicStatus("Error");
         }
       };
 
       recognition.onend = () => {
-        // If still flagged as listening without error, don't abort abruptly
+        // If user didn't explicitly stop and we have text, process it
+        if (currentTranscript.trim().length > 1) {
+          handleUserQuery(currentTranscript.trim());
+        }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err: any) {
-      console.error("Mic access error:", err);
-      stopAudioCapture();
+      console.error("Mic start failed:", err);
       setIsListening(false);
-      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-        setMicError("Microphone permission was blocked. Please enable microphone permissions in your browser settings to speak.");
-      } else {
-        setMicError("Could not access microphone. Please check your microphone connection or type below.");
-      }
+      setMicStatus("Failed to Start");
+      setMicError("Could not initialize microphone. Please check your browser mic settings or type below.");
     }
   };
 
@@ -422,10 +389,9 @@ export default function VoiceChatWidget() {
         recognitionRef.current.stop();
       } catch (_) {}
     }
-    stopAudioCapture();
     setIsListening(false);
+    setMicStatus("Ready");
 
-    // If there is transcript captured, submit it
     if (transcript.trim().length > 1) {
       handleUserQuery(transcript.trim());
     }
@@ -534,36 +500,19 @@ export default function VoiceChatWidget() {
             {isListening && (
               <div className="bg-emerald-500/15 dark:bg-emerald-950/60 border-b border-emerald-500/30 px-4 py-2.5 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                  {/* Real-time Voice Audio Visualizer */}
-                  <div className="flex items-end gap-1 h-5">
-                    <span 
-                      className="w-1 bg-emerald-500 rounded-full transition-all duration-75" 
-                      style={{ height: `${Math.max(4, audioLevel * 0.2)}px` }} 
-                    />
-                    <span 
-                      className="w-1 bg-emerald-400 rounded-full transition-all duration-75" 
-                      style={{ height: `${Math.max(6, audioLevel * 0.35)}px` }} 
-                    />
-                    <span 
-                      className="w-1 bg-emerald-300 rounded-full transition-all duration-75" 
-                      style={{ height: `${Math.max(4, audioLevel * 0.25)}px` }} 
-                    />
-                    <span 
-                      className="w-1 bg-emerald-500 rounded-full transition-all duration-75" 
-                      style={{ height: `${Math.max(8, audioLevel * 0.45)}px` }} 
-                    />
-                    <span 
-                      className="w-1 bg-emerald-400 rounded-full transition-all duration-75" 
-                      style={{ height: `${Math.max(4, audioLevel * 0.2)}px` }} 
-                    />
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-4 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
+                    <span className="w-1.5 h-6 bg-emerald-400 rounded-full animate-bounce [animation-delay:150ms]" />
+                    <span className="w-1.5 h-3 bg-emerald-300 rounded-full animate-bounce [animation-delay:300ms]" />
+                    <span className="w-1.5 h-5 bg-emerald-500 rounded-full animate-bounce [animation-delay:450ms]" />
                   </div>
 
                   <div className="truncate">
                     <span className="font-extrabold text-emerald-600 dark:text-emerald-400 block">
-                      🔴 Hearing You:
+                      🔴 {micStatus}
                     </span>
                     <p className="text-[11px] text-slate-700 dark:text-slate-200 truncate italic">
-                      "{transcript || "Talk freely, I am listening..."}"
+                      "{transcript || "Talk now, I am hearing you..."}"
                     </p>
                   </div>
                 </div>
@@ -663,14 +612,18 @@ export default function VoiceChatWidget() {
 
             {/* Quick Prompt Chips */}
             <div className="px-4 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
+              <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-emerald-500" />
+                Tap to Ask in 1-Click:
+              </p>
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {quickPrompts.map((prompt, idx) => (
                   <button
                     key={idx}
                     onClick={() => handleUserQuery(prompt)}
-                    className="shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors"
+                    className="shrink-0 text-[10px] font-semibold px-2.5 py-1 rounded-full bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white transition-colors flex items-center gap-1"
                   >
-                    {prompt}
+                    <span>{prompt}</span>
                   </button>
                 ))}
               </div>
@@ -687,14 +640,14 @@ export default function VoiceChatWidget() {
                       ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/20"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-500/20"
                   }`}
-                  title={isListening ? "Stop / Done Speaking" : "Click to Speak Liberian Kolokwa"}
+                  title={isListening ? "Click to Send / Stop" : "Click to Speak Liberian Kolokwa"}
                 >
                   {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening to your voice now..." : "Speak or type your question..."}
+                  placeholder={isListening ? "Hearing your voice..." : "Click green mic to speak or type..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
