@@ -70,16 +70,42 @@ function getAuthHeaders() {
   return { "Content-Type": "application/json", Authorization: `Bearer ${token}` };
 }
 
+function getCateringApiUrl(endpoint: string): string {
+  if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+    return endpoint;
+  }
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host.includes("github.io") || host === "totag.network" || host.includes("totag")) {
+      return `http://srv1902704.hstgr.cloud${cleanEndpoint}`;
+    }
+  }
+  return cleanEndpoint;
+}
+
 async function cateringFetch(url: string, options?: RequestInit) {
-  const res = await fetch(url, { ...options, headers: { ...getAuthHeaders(), ...options?.headers } });
+  const fullUrl = getCateringApiUrl(url);
+  const res = await fetch(fullUrl, {
+    ...options,
+    headers: { ...getAuthHeaders(), ...options?.headers }
+  });
+
   if (res.status === 401) {
     localStorage.removeItem("catering_token");
     localStorage.removeItem("catering_user");
     window.location.href = "/catering/ops/login";
     throw new Error("Session expired");
   }
+
+  const contentType = res.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    const text = await res.text();
+    throw new Error(`Server returned invalid content-type (${res.status}): ${text.slice(0, 100)}`);
+  }
+
   const data = await res.json();
-  if (!data.success) throw new Error(data.error);
+  if (!data.success) throw new Error(data.error || "Operation failed");
   return data;
 }
 

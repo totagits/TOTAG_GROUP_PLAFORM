@@ -1,3 +1,16 @@
+function getCateringApiUrl(endpoint: string): string {
+  if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+    return endpoint;
+  }
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host.includes("github.io") || host === "totag.network" || host.includes("totag")) {
+      return `http://srv1902704.hstgr.cloud${cleanEndpoint}`;
+    }
+  }
+  return cleanEndpoint;
+}
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,7 +54,7 @@ export default function CateringOpsLogin() {
     }
 
     try {
-      const res = await fetch("/api/catering/auth/login", {
+      const res = await fetch(getCateringApiUrl("/api/catering/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
