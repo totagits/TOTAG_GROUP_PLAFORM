@@ -452,9 +452,11 @@ export default function FarmHome() {
           titleHighlight="TOTAG FARM & Agribusiness Ecosystem"
           subtitle="Commercial grain cultivation, smart climate-controlled greenhouses, IoT livestock biometrics, solar microgrids, industrial milling, cold-chain logistics, and tamper-evident seed-to-shelf provenance."
           slides={[
-            { url: "/images/hero/solar-rooftop-team.jpg", caption: "Mechanized Rice & Grain Harvest Operations (River Basin Estate)" },
-            { url: "/images/hero/solar-rooftop-team.jpg", caption: "Controlled Climate Hydroponic Greenhouse Complex" },
-            { url: "/images/hero/solar-rooftop-team.jpg", caption: "Solar Microgrid & Cold Storage Refrigeration NOC" }
+            { url: "/images/hero/farm_agronomist_gis.jpg", caption: "Precision GIS Field Mapping & Digital Agronomy Operations" },
+            { url: "/images/hero/farm_cocoa_harvest.jpg", caption: "Commercial Tree Crops & Sustainable Cocoa Harvest" },
+            { url: "/images/hero/farm_rice_paddy.jpg", caption: "Community Outgrower Rice Paddy Harvest & Seed Support" },
+            { url: "/images/hero/farm_pepper_sorting.jpg", caption: "Horticulture Harvest Sorting, Quality Grading & Cold Storage" },
+            { url: "/images/hero/farm_vegetable_field.jpg", caption: "Organic Vegetable Field Cultivation & Drip Irrigation" }
           ]}
           stats={[
             { label: "Cultivated Acres", value: "2,500+ Acres" },
