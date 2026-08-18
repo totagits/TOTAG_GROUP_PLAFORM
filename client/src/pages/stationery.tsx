@@ -95,7 +95,7 @@ export default function StationeryPage() {
     <div className="min-h-screen bg-mesh-glass text-slate-900 dark:text-white">
       <Header />
       
-      <main className="pt-28 pb-20">
+      <main className="pb-20">
         {/* Standardized Photo Carousel Hero Section */}
         <SubsidiaryHeroCarousel
           badge="TOTAG Subsidiary • B2B Office & Educational Procurement"

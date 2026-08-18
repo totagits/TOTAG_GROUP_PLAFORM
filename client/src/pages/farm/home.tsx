@@ -1,3 +1,4 @@
+import Header from "@/components/header";
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ export default function FarmHome() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-            <FarmNavbar />
+            <Header />
 
       {/* Standardized Photo Carousel Hero Section */}
       <SubsidiaryHeroCarousel

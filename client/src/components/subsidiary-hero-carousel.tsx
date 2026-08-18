@@ -66,7 +66,8 @@ export default function SubsidiaryHeroCarousel({
   const currentSlide = slides[currentIndex] || slides[0];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-slate-950 text-white min-h-[380px] sm:min-h-[440px] flex flex-col justify-between my-4 mx-4 sm:mx-6 lg:mx-8">
+    <div className="pt-24 sm:pt-28 pb-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-slate-950 text-white min-h-[380px] sm:min-h-[440px] flex flex-col justify-between">
       
       {/* Background Image Carousel with Framer Motion Crossfade */}
       <AnimatePresence mode="wait">
@@ -192,6 +193,7 @@ export default function SubsidiaryHeroCarousel({
         </div>
       )}
 
+    </div>
     </div>
   );
 }

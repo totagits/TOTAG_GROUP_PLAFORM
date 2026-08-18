@@ -92,7 +92,7 @@ export default function PetroleumPage() {
     <div className="min-h-screen bg-mesh-glass text-slate-900 dark:text-white">
       <Header />
       
-      <main className="pt-28 pb-20">
+      <main className="pb-20">
         {/* Standardized Photo Carousel Hero Section */}
         <section className="mb-12">
           <SubsidiaryHeroCarousel

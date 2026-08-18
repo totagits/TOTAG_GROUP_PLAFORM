@@ -300,7 +300,7 @@ export default function ITServicesPortal() {
       <Header />
 
       {/* Main Content */}
-      <main className="pt-24 pb-20">
+      <main className="pb-20">
         {/* Standardized Photo Carousel Hero Section */}
         <SubsidiaryHeroCarousel
           badge="TOTAG Subsidiary • Managed IT Services & 14 FIMS/HRMIS SaaS Modules"
