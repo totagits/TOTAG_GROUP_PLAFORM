@@ -1,4 +1,6 @@
-import { useState } from "react";
+import os
+
+login_code = '''import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -276,3 +278,9 @@ export default function FarmLogin() {
     </div>
   );
 }
+'''
+
+with open(r'c:\Users\MichaelGwoah\Videos\TOTAGGROUP\client\src\pages\farm\login.tsx', 'w', encoding='utf-8') as f:
+    f.write(login_code)
+
+print("Updated Farm Login with robust authentication and interactive demo credentials!")
