@@ -98,7 +98,7 @@ class ZohoEmailService {
     const htmlBody = options.htmlContent || options.html;
 
     await transporter.sendMail({
-      from: options.from || `"TOTAG Group of Companies" <${smtpUser}>`,
+      from: `"TOTAG Group of Companies" <${smtpUser}>`,
       to: options.to,
       replyTo: "toceps@totaggroup.com",
       subject: options.subject,
