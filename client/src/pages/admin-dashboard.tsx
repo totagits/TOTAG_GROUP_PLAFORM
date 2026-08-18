@@ -88,8 +88,8 @@ export default function AdminDashboard() {
     { id: "petroleum", name: "TOTAG Petroleum Services", email: "petroleum@totaggroup.com", href: "/petroleum", icon: Fuel, color: "text-amber-400", status: "Optimal" },
     { id: "construction", name: "TOTAG General Construction", email: "construction@totaggroup.com", href: "/construction", icon: HardHat, color: "text-yellow-400", status: "Optimal" },
     { id: "merchandise", name: "TOTAG General Merchandise", email: "merchandise@totaggroup.com", href: "/general-merchandise", icon: ShoppingBag, color: "text-purple-400", status: "Optimal" },
-    { id: "it", name: "TOTAG IT Services & SaaS", email: "it@totaggroup.com", href: "/it-services", icon: Laptop, color: "text-blue-400", status: "Optimal" },
-    { id: "catering", name: "TOTAG Catering (TCEPS)", email: "catering@totaggroup.com", href: "/catering", icon: Utensils, color: "text-red-400", status: "Optimal" },
+    { id: "it", name: "TOTAG IT Services & SaaS (TIS)", email: "tis@totaggroup.com", href: "/it-services", icon: Laptop, color: "text-blue-400", status: "Optimal" },
+    { id: "catering", name: "TOTAG Catering & Event Planning Services (TOCEPS)", email: "toceps@totaggroup.com", href: "/catering", icon: Utensils, color: "text-red-400", status: "Optimal" },
     { id: "stationery", name: "TOTAG Stationery Supplies", email: "stationery@totaggroup.com", href: "/stationery", icon: BookOpen, color: "text-teal-400", status: "Optimal" },
     { id: "solar", name: "TOTAG Solar Energy & Smart Power", email: "solar@totaggroup.com", href: "/solar", icon: Sun, color: "text-amber-300", status: "Optimal" }
   ];
