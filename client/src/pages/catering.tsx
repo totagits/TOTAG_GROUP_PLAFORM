@@ -1,5 +1,6 @@
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { useState, useEffect } from "react";
 import { EVENT_TYPES, PARTICIPANT_RANGES, URGENCY_LEVELS } from "@/lib/cateringConfig";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
