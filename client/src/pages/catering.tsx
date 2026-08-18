@@ -365,9 +365,11 @@ export default function CateringPage() {
         titleHighlight="Catering & Events Services"
         subtitle="Premier institutional culinary management, corporate event catering, luxury banquet spreads, and professional event coordination across West Africa."
         slides={[
-          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "TOCEPS Corporate Culinary & Gourmet Banquet Setup" },
-          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "Specialty Wedding & Social Celebration Reception" },
-          { url: "/images/hero/farm-cocoa-harvest.jpg", caption: "ISO-Compliant Institutional Food Safety Kitchen" }
+          { url: "/images/catering/catering_ballroom_luxury.jpg", caption: "TOCEPS Luxury Grand Ballroom & Crystal Centerpiece Setup" },
+          { url: "/images/catering/catering_gala_canopy.jpg", caption: "State Banquet & Wedding Gala Draped Canopy Venue" },
+          { url: "/images/catering/catering_navy_banquet.jpg", caption: "Corporate Executive Summit & Formal Dinner Reception" },
+          { url: "/images/catering/catering_gold_hall.jpg", caption: "Grand Illuminated Celebration Hall & Gold Accents" },
+          { url: "/images/catering/catering_buffet_setting.jpg", caption: "Premium Gourmet Buffet Line & Fine Tableware Service" }
         ]}
         stats={[
           { label: "Events Served", value: "850+" },
@@ -1068,12 +1070,12 @@ export default function CateringPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
-                { src: event1, title: "Conference Catering", desc: "Professional catering for workshops and conferences" },
-                { src: event2, title: "Corporate Events", desc: "Full-service corporate meeting and event support" },
-                { src: event3, title: "Venue Setup", desc: "Conference room setup with AV and catering" },
-                { src: event4, title: "Institutional Service", desc: "Catering for UN agencies and INGO partners" },
-                { src: event5, title: "Reception Service", desc: "Professional cocktail and reception events" },
-                { src: event6, title: "Outdoor Events", desc: "Catering for outdoor events and field operations" }
+                { src: "/images/catering/catering_ballroom_luxury.jpg", title: "Luxury Grand Ballroom", desc: "Tall crystal centerpieces and elegant round table arrangement" },
+                { src: "/images/catering/catering_gala_canopy.jpg", title: "State Gala & Draped Canopy", desc: "Flowing ceiling drapes, floral archway, and white aisle runner" },
+                { src: "/images/catering/catering_navy_banquet.jpg", title: "Executive Summit Banquet", desc: "Navy blue table runners, white chair covers, and formal dining" },
+                { src: "/images/catering/catering_gold_hall.jpg", title: "Illuminated Celebration Hall", desc: "Panoramic windowed hall with golden tablecloths and chair sashes" },
+                { src: "/images/catering/catering_buffet_setting.jpg", title: "Gourmet Buffet & Tableware", desc: "Polished stainless chafing dishes and fine glassware table setup" },
+                { src: event1, title: "Institutional Workshop Catering", desc: "HACCP-compliant catering for UN agencies, INGOs and corporate summits" }
               ].map((item, index) => (
                 <motion.div
                   key={index}
