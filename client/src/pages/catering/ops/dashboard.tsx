@@ -1058,6 +1058,11 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
 }
 
 function AccountManagerView({ requests, events, staff, allTasks, quotations, loading, onUpdateRequest, onCreateEvent, onCreateTask, onCreateQuotation, onUpdateQuotation }: any) {
+  const { data: invoicesData, refetch: refetchInvoices } = useQuery({
+    queryKey: ["/api/catering/invoices"],
+    queryFn: () => cateringFetch("/api/catering/invoices"),
+  });
+  const invoices = invoicesData?.invoices || [];
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("quick-actions");
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -2742,6 +2747,11 @@ function QuotationsList({ quotations, onPreview, onUpdateQuotation }: any) {
 
 // ===== OPERATIONS SUPERVISOR VIEW =====
 function OperationsSupervisorView({ events, allTasks, staff, requests, quotations, loading, onCreateTask, onUpdateTask, onUpdateEvent, onCreateEvent, onUpdateRequest, onDeleteRequest, onCreateQuotation, onUpdateQuotation, onSaveAndSendQuotation, onSendQuotation, isSending }: any) {
+  const { data: invoicesData, refetch: refetchInvoices } = useQuery({
+    queryKey: ["/api/catering/invoices"],
+    queryFn: () => cateringFetch("/api/catering/invoices"),
+  });
+  const invoices = invoicesData?.invoices || [];
   const token = localStorage.getItem("catering_token") || "";
   const [newTask, setNewTask] = useState({ eventId: "", role: "", title: "", description: "", priority: "normal", dueDate: "" });
   const [activeTab, setActiveTab] = useState("quick-actions");
@@ -3001,6 +3011,15 @@ function OperationsSupervisorView({ events, allTasks, staff, requests, quotation
           }}
           isSending={isSending}
         />
+      </TabsContent>
+
+      
+      <TabsContent value="invoice-builder">
+        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={refetchInvoices} />
+      </TabsContent>
+
+      <TabsContent value="invoices-vault">
+        <InvoicesVault invoices={invoices} onRefresh={refetchInvoices} />
       </TabsContent>
 
       <TabsContent value="resource-plan">
