@@ -19,8 +19,7 @@ import {
   Headphones,
   AlertCircle,
   CheckCircle2,
-  Radio,
-  AudioWaveform
+  Radio
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -147,7 +146,7 @@ export default function VoiceChatWidget() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [inputText, setInputText] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [liveTranscript, setLiveTranscript] = useState("");
   const [micStatus, setMicStatus] = useState<string>("Ready");
   const [micError, setMicError] = useState<string | null>(null);
   
@@ -155,7 +154,7 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. Click the green microphone to speak, type your question, or tap any quick topic below.",
+      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. Click the green microphone and speak, type your question, or tap any quick topic below.",
       timestamp: "Just now",
       links: [
         { label: "Explore 9 Subsidiaries", url: "/#services" },
@@ -167,9 +166,6 @@ export default function VoiceChatWidget() {
 
   const [_, setLocation] = useLocation();
   const recognitionRef = useRef<any>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const silenceTimerRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
@@ -178,20 +174,18 @@ export default function VoiceChatWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isListening, isSpeaking, transcript]);
+  }, [messages, isListening, isSpeaking, liveTranscript]);
 
-  // Text-To-Speech with warm West African / Liberian vocal cadence
+  // Text-To-Speech with warm West African vocal tone
   const speakText = (text: string) => {
     if (!voiceEnabled || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    // Warm, articulate pace and melodic pitch reflecting West African English
     utterance.rate = 0.95;
     utterance.pitch = 1.05;
     
     const voices = window.speechSynthesis.getVoices();
-    // Prioritize African English (Nigeria/Ghana/South Africa), British English, or warm natural voices
     const selectedVoice = 
       voices.find((v) => v.lang === "en-NG" || v.lang === "en-GH" || v.lang === "en-ZA") ||
       voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Arthur"))) ||
@@ -215,27 +209,16 @@ export default function VoiceChatWidget() {
     setIsSpeaking(false);
   };
 
-  // Handle Speech Query Submission
+  // Handle Query Submission
   const handleUserQuery = (queryText: string) => {
     if (!queryText.trim()) return;
 
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
-    }
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (_) {}
-    }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      try {
-        mediaRecorderRef.current.stop();
-      } catch (_) {}
+      try { recognitionRef.current.abort(); } catch (_) {}
     }
 
     setIsListening(false);
-    setTranscript("");
+    setLiveTranscript("");
     setMicStatus("Ready");
 
     const userMsg: Message = {
@@ -263,143 +246,110 @@ export default function VoiceChatWidget() {
     }, 400);
   };
 
-  // Start Voice Capture with Dual Recognition Engine
-  const startListening = async () => {
+  // Direct, clean speech recognition without device lock conflicts
+  const startListening = () => {
     stopSpeaking();
     setMicError(null);
-    setTranscript("");
-    setMicStatus("Connecting mic...");
+    setLiveTranscript("");
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognitionClass) {
+      setMicError("Speech recognition is not supported in your browser. Please use Chrome, Edge, or type your question below.");
+      setMicStatus("Not Supported");
+      return;
+    }
 
-    // 1. Start MediaRecorder Audio Stream (guarantees microphone access and user prompt)
     try {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        
-        try {
-          const mediaRecorder = new MediaRecorder(stream);
-          audioChunksRef.current = [];
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) audioChunksRef.current.push(e.data);
-          };
-          mediaRecorder.start();
-          mediaRecorderRef.current = mediaRecorder;
-        } catch (e) {
-          console.warn("MediaRecorder init:", e);
-        }
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch (_) {}
       }
-    } catch (err: any) {
-      console.warn("Microphone access check:", err);
-      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
-        setMicError("Microphone permission was denied. Please allow microphone access in your browser to speak.");
-        setMicStatus("Permission Denied");
-        return;
-      }
-    }
 
-    // 2. Start Web Speech Recognition
-    if (SpeechRecognition) {
-      try {
-        if (recognitionRef.current) {
-          try { recognitionRef.current.abort(); } catch (_) {}
-        }
+      const recognition = new SpeechRecognitionClass();
+      // Using continuous: false guarantees instant utterance delivery and prevents browser buffer stall
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+      recognition.maxAlternatives = 1;
 
-        const recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = "en-US";
-        recognition.maxAlternatives = 1;
+      let capturedPhrase = "";
 
-        let capturedText = "";
-
-        recognition.onstart = () => {
-          setIsListening(true);
-          setMicError(null);
-          setMicStatus("Listening... Speak now");
-        };
-
-        recognition.onresult = (event: any) => {
-          let interim = "";
-          let final = "";
-
-          for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-              final += event.results[i][0].transcript;
-            } else {
-              interim += event.results[i][0].transcript;
-            }
-          }
-
-          const currentSpoken = (final || interim).trim();
-          if (currentSpoken) {
-            capturedText = currentSpoken;
-            setTranscript(capturedText);
-            setInputText(capturedText);
-
-            if (silenceTimerRef.current) {
-              clearTimeout(silenceTimerRef.current);
-            }
-            silenceTimerRef.current = setTimeout(() => {
-              if (capturedText.trim().length > 1) {
-                handleUserQuery(capturedText.trim());
-              }
-            }, 2200);
-          }
-        };
-
-        recognition.onerror = (event: any) => {
-          console.warn("Speech error:", event.error);
-          if (event.error === "not-allowed" || event.error === "permission-denied") {
-            setMicError("Microphone permission blocked. Please enable microphone permissions in your browser.");
-            setIsListening(false);
-          } else if (event.error === "no-speech") {
-            setMicStatus("No voice detected. Please speak closer to your mic.");
-          } else if (event.error !== "aborted") {
-            // Keep listening or allow user to use quick chips
-            setMicStatus("Listening...");
-          }
-        };
-
-        recognition.onend = () => {
-          if (capturedText.trim().length > 1) {
-            handleUserQuery(capturedText.trim());
-          }
-        };
-
-        recognitionRef.current = recognition;
-        recognition.start();
+      recognition.onstart = () => {
         setIsListening(true);
-        return;
-      } catch (e) {
-        console.warn("SpeechRecognition start error:", e);
-      }
-    }
+        setMicError(null);
+        setMicStatus("Listening... Speak now");
+      };
 
-    // Fallback if browser doesn't support SpeechRecognition
-    setIsListening(true);
-    setMicStatus("Listening... (Tap Send when done)");
+      recognition.onspeechstart = () => {
+        setMicStatus("Hearing your voice...");
+      };
+
+      recognition.onresult = (event: any) => {
+        let interim = "";
+        let final = "";
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        const spoken = (final || interim).trim();
+        if (spoken) {
+          capturedPhrase = spoken;
+          setLiveTranscript(spoken);
+          setInputText(spoken);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        console.warn("Speech recognition event:", event.error);
+        if (event.error === "not-allowed" || event.error === "permission-denied") {
+          setMicError("Microphone permission was blocked. Please click the lock icon in your browser address bar and allow Microphone access for totag.network.");
+          setIsListening(false);
+          setMicStatus("Permission Blocked");
+        } else if (event.error === "no-speech") {
+          setMicStatus("No speech detected. Tap mic to try again.");
+          setIsListening(false);
+        } else if (event.error === "audio-capture") {
+          setMicError("Microphone not detected or in use by another app. Please check your mic connection.");
+          setIsListening(false);
+          setMicStatus("Audio Device Busy");
+        } else if (event.error !== "aborted") {
+          setMicError(`Voice notice: ${event.error}. You can also type your message below.`);
+          setIsListening(false);
+          setMicStatus("Ready");
+        }
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        setMicStatus("Ready");
+        if (capturedPhrase.trim().length > 1) {
+          handleUserQuery(capturedPhrase.trim());
+        }
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err: any) {
+      console.error("SpeechRecognition start exception:", err);
+      setIsListening(false);
+      setMicStatus("Ready");
+      setMicError("Could not start microphone. Please check your browser permissions or type your question below.");
+    }
   };
 
   const stopListening = () => {
-    if (silenceTimerRef.current) {
-      clearTimeout(silenceTimerRef.current);
-      silenceTimerRef.current = null;
-    }
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (_) {}
     }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
-      try { mediaRecorderRef.current.stop(); } catch (_) {}
-    }
-
     setIsListening(false);
     setMicStatus("Ready");
 
-    if (transcript.trim().length > 1) {
-      handleUserQuery(transcript.trim());
-    } else if (inputText.trim().length > 1) {
-      handleUserQuery(inputText.trim());
+    if (liveTranscript.trim().length > 1) {
+      handleUserQuery(liveTranscript.trim());
     }
   };
 
@@ -518,7 +468,7 @@ export default function VoiceChatWidget() {
                       🔴 {micStatus}
                     </span>
                     <p className="text-[11px] text-slate-700 dark:text-slate-200 truncate italic">
-                      "{transcript || "Listening to your voice..."}"
+                      "{liveTranscript || "Listening... Speak your question now"}"
                     </p>
                   </div>
                 </div>
@@ -620,7 +570,7 @@ export default function VoiceChatWidget() {
             <div className="px-4 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
               <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-emerald-500" />
-                Tap to Ask in 1-Click:
+                Tap to Inquire in 1-Click:
               </p>
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {quickPrompts.map((prompt, idx) => (
