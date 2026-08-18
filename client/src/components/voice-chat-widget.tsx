@@ -28,93 +28,93 @@ interface Message {
   links?: { label: string; url: string }[];
 }
 
-const TOTAG_KNOWLEDGE = [
+const TOTAG_KNOWLEDGE_PATOIS = [
   {
-    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start"],
-    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your intelligent voice assistant. I can guide you through our 9 specialized enterprise subsidiaries, international trade routes from Liberia to Seattle, customer services, or connect you directly with our departments. What can I assist you with today?",
+    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "how you doing", "what's up", "kolo", "patois", "talk"],
+    response: "Hello my people! Welcome to TOTAG Group of Companies Ltd! Da me your AI voice assistant right here in Monrovia, Liberia. We bringing the whole 9 big-big companies from Liberia all the way to Seattle, USA! You want Cargo, Farm produce, IT SaaS software, TOCEPS catering, Solar light, or Construction? Talk to me, I ready for you!",
     links: [
-      { label: "Explore 9 Subsidiaries", url: "/#services" },
-      { label: "Contact Corporate", url: "/#contact" }
+      { label: "See All 9 Companies", url: "/#services" },
+      { label: "Talk to Corporate", url: "/#contact" }
     ]
   },
   {
-    keywords: ["cargo", "shipping", "freight", "logistics", "seattle", "port", "tracking", "container", "vessel"],
-    response: "TOTAG Cargo Handling & Logistics provides end-to-end maritime freight, air cargo, and customs clearance bridging Liberia's ports with global trade hubs including Seattle, USA. We manage container freight, warehousing, and real-time cargo tracking.",
+    keywords: ["cargo", "shipping", "freight", "logistics", "seattle", "port", "tracking", "container", "vessel", "ship", "boat"],
+    response: "Look here my people, TOTAG Cargo Handling and Logistics na small thing oh! We packing heavy containers and moving sea and air cargo straight from Monrovia port to Seattle, USA. We clearing customs fast-fast and tracking your container one time!",
     links: [
-      { label: "Cargo Logistics Portal", url: "/cargo" },
-      { label: "Track Shipment", url: "/order-tracking" }
+      { label: "Open Cargo Logistics", url: "/cargo" },
+      { label: "Track Your Shipment", url: "/order-tracking" }
     ]
   },
   {
-    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber"],
-    response: "TOTAG IT Services & SaaS delivers enterprise managed IT, cybersecurity, and our proprietary 14-module FIMS Financial & HRMIS Enterprise Suite. You can reach our IT department directly at tis@totaggroup.com.",
+    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "computer", "app"],
+    response: "Da IT software business you asking about? TOTAG IT Services running heavy enterprise tech, cybersecurity, and full 14 FIMS Financial and HRMIS modules for business! Hit our tech people direct on tis@totaggroup.com, they will fix you up one time!",
     links: [
-      { label: "IT Services Portal", url: "/it-services" },
-      { label: "Enterprise SaaS Suite", url: "/saas" }
+      { label: "Open IT Services Portal", url: "/it-services" },
+      { label: "14 FIMS/HRMIS SaaS Modules", url: "/saas" }
     ]
   },
   {
-    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "invoice"],
-    response: "TOTAG Catering & Event Planning Services (TOCEPS) handles corporate catering, UNIDO contract deliverable hospitality, executive banquets, and high-volume meal distribution. You can reach our billing and operations team at toceps@totaggroup.com.",
+    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "invoice", "cook"],
+    response: "Ah, TOCEPS Catering and Event Planning na master of sweet food and big-big programs! We catering for UNIDO contract deliverables, executive corporate meetings, and wedding banquets with proper protocol. For invoices and bookings, email our food desk on toceps@totaggroup.com!",
     links: [
-      { label: "TOCEPS Catering", url: "/catering" },
-      { label: "Catering Ops Dashboard", url: "/catering/ops/dashboard" }
+      { label: "TOCEPS Catering Services", url: "/catering" },
+      { label: "Executive Document Vault", url: "/catering/ops/dashboard" }
     ]
   },
   {
-    keywords: ["farm", "agriculture", "livestock", "crops", "produce", "food supply", "cassava", "poultry"],
-    response: "TOTAG FARM & Agribusiness manages sustainable crop farming, poultry, livestock, and commercial agricultural supply chains across West Africa, ensuring premium food security and organic distribution.",
+    keywords: ["farm", "agriculture", "livestock", "crops", "produce", "food supply", "cassava", "poultry", "chicken", "pig", "cow", "palm oil"],
+    response: "TOTAG Farm doing serious agribusiness oh! Fresh cassava, rich palm oil, healthy livestock and poultry fresh from the soil right here in Liberia. Food security na play play business with we!",
     links: [
-      { label: "TOTAG Farm Hub", url: "/farm" }
+      { label: "Visit TOTAG Farm Hub", url: "/farm" }
     ]
   },
   {
-    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery"],
-    response: "TOTAG Solar Energy & Smart Power engineers turnkey solar microgrids, Deye hybrid inverter architectures, industrial battery storage, and 24/7 telemetry Network Operations Center monitoring.",
+    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "light", "generator", "current"],
+    response: "No more darkness business! TOTAG Solar Energy and Deye hybrid inverters bringing clean 24/7 solar smart power with heavy battery storage straight to your home, office, and factory. Light will shine always!",
     links: [
-      { label: "Solar Energy & Deye", url: "/solar" }
+      { label: "Solar Energy & Deye Inverters", url: "/solar" }
     ]
   },
   {
-    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil"],
-    response: "TOTAG Petroleum Services operates certified bulk fuel storage, commercial supply depots, and haulage logistics for industrial clients across Liberia.",
+    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil", "gas"],
+    response: "From bulk petroleum depot storage to heavy fuel haulage, TOTAG Petroleum supplying certified diesel, gasoline, and lubricants for commercial fleets and industries across Liberia.",
     links: [
       { label: "Petroleum Services", url: "/petroleum" }
     ]
   },
   {
-    keywords: ["construction", "building", "civil", "roads", "infrastructure"],
-    response: "TOTAG General Construction delivers civil engineering, structural construction, commercial facilities, and residential infrastructure with modern architectural standards.",
+    keywords: ["construction", "building", "civil", "roads", "infrastructure", "cement", "house"],
+    response: "TOTAG General Construction doing the real heavy civil engineering! Roads, strong concrete foundations, and modern architectural buildings built to last long-long time.",
     links: [
       { label: "Construction Services", url: "/construction" }
     ]
   },
   {
-    keywords: ["stationery", "office", "supplies", "printing", "paper"],
-    response: "TOTAG Stationery Supplies provides comprehensive B2B office procurement, enterprise printing materials, and educational supplies.",
+    keywords: ["stationery", "office", "supplies", "printing", "paper", "pen", "books"],
+    response: "TOTAG Stationery Supplies providing bulk B2B office materials, high-speed printing supplies, and school materials for business and institutions plenty-plenty.",
     links: [
       { label: "Stationery Supplies", url: "/stationery" }
     ]
   },
   {
-    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods"],
-    response: "TOTAG General Merchandise (TGM) is our wholesale and retail trading subsidiary managing bulk consumer products and FMCG inventory across local and regional markets.",
+    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods", "market", "store"],
+    response: "TOTAG General Merchandise (TGM) got all your wholesale and retail trading goods in town, supplying quality FMCG products and consumer goods across local markets.",
     links: [
-      { label: "General Merchandise", url: "/general-merchandise" }
+      { label: "General Merchandise Hub", url: "/general-merchandise" }
     ]
   },
   {
-    keywords: ["contact", "email", "phone", "address", "location", "office", "where"],
-    response: "TOTAG Group of Companies Ltd is headquartered in Monrovia, Liberia with international trade channels to Seattle, USA. You can email corporate inquiries to info@totaggroup.com, IT requests to tis@totaggroup.com, and Catering inquiries to toceps@totaggroup.com.",
+    keywords: ["contact", "email", "phone", "address", "location", "office", "where", "call", "reach"],
+    response: "You want to reach we? Head office right here in Monrovia, Liberia with connection to Seattle, USA. Send corporate mail to info@totaggroup.com, IT requests to tis@totaggroup.com, or Catering to toceps@totaggroup.com. We ready for you!",
     links: [
-      { label: "Contact Us", url: "/#contact" }
+      { label: "Contact Information", url: "/#contact" }
     ]
   },
   {
-    keywords: ["subsidiary", "subsidiaries", "companies", "services", "all"],
-    response: "TOTAG Group operates 9 specialized subsidiaries: 1. Cargo Logistics, 2. Farm & Agribusiness, 3. Petroleum, 4. General Construction, 5. General Merchandise, 6. TOCEPS Catering, 7. Managed IT & SaaS, 8. Stationery, and 9. Solar Smart Energy.",
+    keywords: ["subsidiary", "subsidiaries", "companies", "services", "all", "nine", "9"],
+    response: "TOTAG Group running 9 solid subsidiaries: 1. Cargo Logistics (Liberia to Seattle), 2. Farm & Agribusiness, 3. Petroleum, 4. General Construction, 5. General Merchandise, 6. TOCEPS Catering, 7. Managed IT & SaaS, 8. Stationery, and 9. Solar Smart Power!",
     links: [
-      { label: "View All 9 Subsidiaries", url: "/#services" }
+      { label: "Explore All 9 Subsidiaries", url: "/#services" }
     ]
   }
 ];
@@ -122,17 +122,17 @@ const TOTAG_KNOWLEDGE = [
 function getBotResponse(userText: string): { response: string; links?: { label: string; url: string }[] } {
   const lower = userText.toLowerCase();
 
-  for (const item of TOTAG_KNOWLEDGE) {
+  for (const item of TOTAG_KNOWLEDGE_PATOIS) {
     if (item.keywords.some((kw) => lower.includes(kw))) {
       return { response: item.response, links: item.links };
     }
   }
 
   return {
-    response: `Thank you for asking about "${userText}". TOTAG Group delivers excellence across Cargo Handling, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery. Would you like to connect with a department or explore our service catalog?`,
+    response: `My people, I hear you about "${userText}"! TOTAG Group running 9 solid companies across Cargo, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery from Liberia to Seattle. You want to see our services or send us a message direct?`,
     links: [
-      { label: "Explore Services", url: "/#services" },
-      { label: "Contact Us", url: "/#contact" }
+      { label: "Explore 9 Companies", url: "/#services" },
+      { label: "Talk to Us Direct", url: "/#contact" }
     ]
   };
 }
@@ -148,12 +148,12 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Hello! I am the TOTAG Voice Assistant. Tap the microphone to speak or type your question about any of our 9 subsidiaries, trade routes, or corporate services.",
+      text: "Hello my people! Da TOTAG Voice Assistant right here in Monrovia, Liberia. Tap the mic or type to ask about any of our 9 companies, Seattle trade routes, or corporate services!",
       timestamp: "Just now",
       links: [
-        { label: "Explore 9 Subsidiaries", url: "/#services" },
-        { label: "Cargo Logistics (Liberia ↔ Seattle)", url: "/cargo" },
-        { label: "Contact Corporate", url: "/#contact" }
+        { label: "Explore 9 Companies", url: "/#services" },
+        { label: "Cargo (Liberia ↔ Seattle)", url: "/cargo" },
+        { label: "Talk to Corporate", url: "/#contact" }
       ]
     }
   ]);
@@ -175,11 +175,17 @@ export default function VoiceChatWidget() {
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
+    // Warm rhythmic speech rate for natural Liberian cadence
+    utterance.rate = 0.95;
+    utterance.pitch = 1.05;
     
     const voices = window.speechSynthesis.getVoices();
-    const selectedVoice = voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha"))) || voices.find((v) => v.lang.startsWith("en"));
+    // Prefer West African / African English / British English / natural voices
+    const selectedVoice = 
+      voices.find((v) => v.lang === "en-NG" || v.lang === "en-GH" || v.lang === "en-ZA") ||
+      voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Arthur"))) ||
+      voices.find((v) => v.lang.startsWith("en"));
+
     if (selectedVoice) {
       utterance.voice = selectedVoice;
     }
@@ -241,12 +247,12 @@ export default function VoiceChatWidget() {
         try {
           recognitionRef.current.start();
           setIsListening(true);
-          setTranscript("Listening...");
+          setTranscript("Listening... Talk now!");
         } catch (e) {
           console.warn("Mic start error:", e);
         }
       } else {
-        alert("Speech recognition is not supported in this browser. Please type your message.");
+        alert("Speech recognition not supported in this browser. Please type your message.");
       }
     }
   };
@@ -287,12 +293,12 @@ export default function VoiceChatWidget() {
   };
 
   const quickPrompts = [
-    "What services do you offer?",
-    "Cargo routes to Seattle",
-    "IT Services & SaaS modules",
-    "TOCEPS Catering & UNIDO",
-    "Solar Power Solutions",
-    "How do I contact you?"
+    "Tell me about the 9 Companies",
+    "Cargo from Monrovia to Seattle",
+    "IT SaaS 14 modules",
+    "TOCEPS sweet catering & UNIDO",
+    "Solar light & Deye inverters",
+    "How to reach we?"
   ];
 
   return (
@@ -306,9 +312,9 @@ export default function VoiceChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[380px] sm:w-[410px] max-w-[92vw] h-[580px] max-h-[82vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className="w-[380px] sm:w-[410px] max-w-[92vw] h-[590px] max-h-[84vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
           >
-            {/* Header with TOTAG Logo */}
+            {/* Header with TOTAG Logo & Liberian Kolokwa Badge */}
             <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white flex items-center justify-between border-b border-emerald-500/20">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -320,9 +326,11 @@ export default function VoiceChatWidget() {
                 <div>
                   <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
                     TOTAG Voice Assistant
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 font-mono">
+                      🇱🇷 Kolokwa
+                    </span>
                   </h4>
-                  <p className="text-[11px] text-emerald-300/90 font-medium">9 Subsidiaries • Liberia ↔ Seattle</p>
+                  <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Seattle, USA</p>
                 </div>
               </div>
 
@@ -336,7 +344,7 @@ export default function VoiceChatWidget() {
                   className={`p-2 rounded-xl text-xs font-bold transition-all ${
                     voiceEnabled ? "bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30" : "bg-white/10 text-slate-400 hover:bg-white/20"
                   }`}
-                  title={voiceEnabled ? "Voice Output Active" : "Voice Output Muted"}
+                  title={voiceEnabled ? "Voice Speech Active" : "Voice Speech Muted"}
                 >
                   {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
@@ -366,7 +374,7 @@ export default function VoiceChatWidget() {
                     <span className="w-1 h-4 bg-emerald-500 rounded-full animate-bounce [animation-delay:450ms]" />
                   </div>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    {isListening ? (transcript || "Listening... Speak now") : "Speaking response..."}
+                    {isListening ? (transcript || "Listening... Talk now!") : "Speaking Kolokwa response..."}
                   </span>
                 </div>
 
@@ -375,7 +383,7 @@ export default function VoiceChatWidget() {
                     onClick={stopSpeaking}
                     className="text-[10px] font-bold text-slate-500 hover:text-rose-500 underline"
                   >
-                    Stop Speaking
+                    Stop Talking
                   </button>
                 )}
               </div>
@@ -404,7 +412,7 @@ export default function VoiceChatWidget() {
                     className={`max-w-[78%] rounded-2xl p-3 leading-relaxed ${
                       msg.sender === "user"
                         ? "bg-sky-600 text-white rounded-tr-sm"
-                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm"
+                        : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm font-medium"
                     }`}
                   >
                     <p>{msg.text}</p>
@@ -469,14 +477,14 @@ export default function VoiceChatWidget() {
                       ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/30"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20"
                   }`}
-                  title={isListening ? "Stop Listening" : "Tap to Speak"}
+                  title={isListening ? "Stop Listening" : "Tap to Speak Liberian Patois"}
                 >
                   {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening to your voice..." : "Type or speak to TOTAG AI..."}
+                  placeholder={isListening ? "Listening to your voice..." : "Talk or type to TOTAG Kolokwa AI..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
@@ -509,7 +517,7 @@ export default function VoiceChatWidget() {
             className="absolute right-16 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 dark:bg-white/90 text-white dark:text-slate-900 font-bold text-xs shadow-xl border border-white/20 backdrop-blur-md whitespace-nowrap pointer-events-none"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>Speak with TOTAG AI</span>
+            <span>🇱🇷 Talk with TOTAG AI (Kolokwa)</span>
           </motion.div>
         )}
 
@@ -520,7 +528,7 @@ export default function VoiceChatWidget() {
               ? "bg-slate-900 text-white ring-4 ring-emerald-500/30"
               : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-emerald-500 ring-4 ring-emerald-500/20 hover:ring-emerald-500/40"
           }`}
-          title="TOTAG Intelligent Voice Assistant"
+          title="TOTAG Voice Assistant (Liberian Kolokwa)"
         >
           {/* Pulsing ring indicator */}
           <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
