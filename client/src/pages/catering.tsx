@@ -357,76 +357,139 @@ export default function CateringPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-mesh-glass text-slate-900 dark:text-white">
       <Header />
 
-      <SubsidiaryHeroCarousel
-        badge="TOTAG Subsidiary • Institutional & Event Hospitality"
-        titleHighlight="Catering & Events Services"
-        subtitle="Premier institutional culinary management, corporate event catering, luxury banquet spreads, and professional event coordination across West Africa."
-        slides={[
-          { url: "/images/catering/catering_ballroom_luxury.jpg", caption: "TOCEPS Luxury Grand Ballroom & Crystal Centerpiece Setup" },
-          { url: "/images/catering/catering_gala_canopy.jpg", caption: "State Banquet & Wedding Gala Draped Canopy Venue" },
-          { url: "/images/catering/catering_navy_banquet.jpg", caption: "Corporate Executive Summit & Formal Dinner Reception" },
-          { url: "/images/catering/catering_gold_hall.jpg", caption: "Grand Illuminated Celebration Hall & Gold Accents" },
-          { url: "/images/catering/catering_buffet_setting.jpg", caption: "Premium Gourmet Buffet Line & Fine Tableware Service" }
-        ]}
-        stats={[
-          { label: "Events Served", value: "850+" },
-          { label: "Meals Daily", value: "5,000+" },
-          { label: "Client Rating", value: "4.9 / 5.0" }
-        ]}
-      />
+      <main className="pb-20">
+        
+        {/* Standardized Photo Carousel Hero Section */}
+        <section className="mb-10">
+          <SubsidiaryHeroCarousel
+            badge="TOTAG Subsidiary • Institutional & Event Hospitality"
+            titleHighlight="Catering & Events Services"
+            subtitle="Premier institutional culinary management, corporate event catering, luxury banquet spreads, HACCP food safety compliance, and professional venue coordination across West Africa."
+            slides={[
+              { url: "/images/catering/catering_ballroom_luxury.jpg", caption: "TOCEPS Luxury Grand Ballroom & Crystal Centerpiece Setup" },
+              { url: "/images/catering/catering_gala_canopy.jpg", caption: "State Banquet & Wedding Gala Draped Canopy Venue" },
+              { url: "/images/catering/catering_navy_banquet.jpg", caption: "Corporate Executive Summit & Formal Dinner Reception" },
+              { url: "/images/catering/catering_gold_hall.jpg", caption: "Grand Illuminated Celebration Hall & Gold Accents" },
+              { url: "/images/catering/catering_buffet_setting.jpg", caption: "Premium Gourmet Buffet Line & Fine Tableware Service" }
+            ]}
+            stats={[
+              { label: "Events Served", value: "850+" },
+              { label: "Meals Daily", value: "5,000+" },
+              { label: "Client Rating", value: "4.9 / 5.0" }
+            ]}
+          />
+        </section>
 
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4">
-          <nav className="flex justify-between items-center">
-            <div className="flex space-x-4 lg:space-x-8 overflow-x-auto">
-              {[
-                { id: "overview", label: "Overview" },
-                { id: "services", label: "Services" },
-                { id: "food-safety", label: "Food Safety" },
-                { id: "menus", label: "Menus" },
-                { id: "gallery", label: "Gallery" },
-                { id: "contact", label: "Contact" }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  data-tab={tab.id}
-                  className={`py-4 px-2 border-b-2 font-medium text-sm transition-colors whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? "border-red-500 text-red-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700"
-                  }`}
+        {/* Standardized Platform Navigation Tabs Bar */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
+            <div className="flex justify-center">
+              <TabsList className="grid grid-cols-2 md:grid-cols-6 w-full max-w-5xl mx-auto h-auto p-1.5 bg-white/70 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur-xl shadow-lg">
+                <TabsTrigger 
+                  value="overview"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            <Link href="/">
-              <Button variant="outline" size="sm" className="bg-white hover:bg-gray-50 border-gray-300 ml-4">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </Link>
-            <Link href="/catering/ops/login">
-              <Button variant="outline" size="sm" className="bg-red-600 hover:bg-red-700 text-white border-0 ml-2">
-                Staff Portal
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </div>
+                  <ChefHat className="w-4 h-4" />
+                  <span>Overview</span>
+                </TabsTrigger>
+                
+                <TabsTrigger 
+                  value="services"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <Utensils className="w-4 h-4" />
+                  <span>Services</span>
+                </TabsTrigger>
 
-      <main className="container mx-auto px-4 py-12">
-        {activeTab === "overview" && (
+                <TabsTrigger 
+                  value="food-safety"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <Shield className="w-4 h-4" />
+                  <span>Food Safety</span>
+                </TabsTrigger>
+
+                <TabsTrigger 
+                  value="menus"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Menus</span>
+                </TabsTrigger>
+
+                <TabsTrigger 
+                  value="gallery"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>Gallery</span>
+                </TabsTrigger>
+
+                <TabsTrigger 
+                  value="contact"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-red-600 data-[state=active]:text-white text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Contact & Quote</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+        <TabsContent value="overview" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="space-y-12"
           >
+
+          {/* AUTHENTIC CULINARY & EVENT PHOTOGRAPHY GALLERY SHOWCASE (HIGH DEFINITION CLARITY) */}
+          <div className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 p-6 rounded-3xl space-y-4 shadow-xl mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="p-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-red-500">
+                  <Utensils className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-slate-900 dark:text-white">Authentic Luxury Catering & Events Gallery</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">High-definition event & banquet photography from TOCEPS catering setups</p>
+                </div>
+              </div>
+              <Badge className="bg-red-500/20 text-red-500 text-[10px] font-bold">
+                5 Luxury Venues
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { title: "Luxury Grand Ballroom", img: "/images/catering/catering_ballroom_luxury.jpg", tag: "Crystal Gala" },
+                { title: "State Banquet Canopy", img: "/images/catering/catering_gala_canopy.jpg", tag: "Outdoor Gala" },
+                { title: "Executive Summit Dining", img: "/images/catering/catering_navy_banquet.jpg", tag: "Formal Banquet" },
+                { title: "Illuminated Celebration Hall", img: "/images/catering/catering_gold_hall.jpg", tag: "Gold Hall Setup" },
+                { title: "Gourmet International Buffet", img: "/images/catering/catering_buffet_setting.jpg", tag: "Buffet Spread" }
+              ].map((item, idx) => (
+                <div 
+                  key={idx} 
+                  onClick={() => window.open(item.img, '_blank')}
+                  className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-950 aspect-video cursor-pointer shadow-md hover:shadow-2xl transition-all"
+                >
+                  <img 
+                    src={item.img} 
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end opacity-90 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[9px] font-bold text-red-400 uppercase tracking-wider block">{item.tag}</span>
+                    <span className="text-xs font-black text-white truncate block">{item.title}</span>
+                    <span className="text-[8px] text-slate-300 font-semibold block mt-0.5 group-hover:text-amber-400 transition-colors">Click for Full-Res HD ↗</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
             <div className="text-center">
               <h2 className="text-4xl font-bold text-gray-900 mb-6">
                 Institutional-Grade Catering & Event Services
@@ -571,9 +634,9 @@ export default function CateringPage() {
               </CardContent>
             </Card>
           </motion.div>
-        )}
+        </TabsContent>
 
-        {activeTab === "services" && (
+        <TabsContent value="services" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -665,9 +728,9 @@ export default function CateringPage() {
               ))}
             </div>
           </motion.div>
-        )}
+        </TabsContent>
 
-        {activeTab === "food-safety" && (
+        <TabsContent value="food-safety" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -832,9 +895,9 @@ export default function CateringPage() {
               </div>
             </div>
           </motion.div>
-        )}
+        </TabsContent>
 
-        {activeTab === "menus" && (
+        <TabsContent value="menus" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1052,9 +1115,9 @@ export default function CateringPage() {
               </CardContent>
             </Card>
           </motion.div>
-        )}
+        </TabsContent>
 
-        {activeTab === "gallery" && (
+        <TabsContent value="gallery" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1096,9 +1159,9 @@ export default function CateringPage() {
               ))}
             </div>
           </motion.div>
-        )}
+        </TabsContent>
 
-        {activeTab === "contact" && (
+        <TabsContent value="contact" className="space-y-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1210,8 +1273,11 @@ export default function CateringPage() {
               </div>
             </div>
           </motion.div>
-        )}
-      </main>
+        </TabsContent>
+      </Tabs>
+    </section>
+  </main>
+  <Footer />
 
       <Dialog open={showQuoteDialog} onOpenChange={setShowQuoteDialog}>
         <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
