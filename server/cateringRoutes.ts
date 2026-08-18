@@ -955,17 +955,28 @@ function buildInvoiceEmailHtml(invoice: any): string {
     <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,0.09);border:1px solid #cbd5e1;">
       
       <!-- BRAND HEADER -->
-      <div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:32px;color:#ffffff;display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <h1 style="margin:0;font-size:24px;letter-spacing:-0.5px;color:#ffffff;">OFFICIAL INVOICE</h1>
-          <p style="color:#38bdf8;margin:6px 0 0;font-size:13px;font-weight:bold;">TOTAG Group of Companies Ltd — TOCEPS Division</p>
-          <p style="color:#94a3b8;margin:4px 0 0;font-size:12px;">Monrovia, Liberia | Email: toceps@totaggroup.com</p>
-        </div>
-        <div style="text-align:right;">
-          <span style="display:inline-block;background:#22c55e;color:#ffffff;font-size:12px;font-weight:bold;padding:4px 12px;border-radius:20px;text-transform:uppercase;">OFFICIAL BILLING</span>
-          <p style="margin:8px 0 0;font-size:16px;font-family:monospace;font-weight:bold;color:#f8fafc;">${invoice.invoiceNumber}</p>
-        </div>
-      </div>
+      <table style="width:100%;background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px 28px;color:#ffffff;border-collapse:collapse;border-radius:12px 12px 0 0;">
+        <tr>
+          <td style="vertical-align:middle;">
+            <table style="border-collapse:collapse;">
+              <tr>
+                <td style="padding-right:14px;vertical-align:middle;">
+                  <img src="https://totag.network/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
+                </td>
+                <td style="vertical-align:middle;">
+                  <h1 style="margin:0;font-size:20px;letter-spacing:-0.3px;color:#ffffff;">TOTAG Group of Companies Ltd</h1>
+                  <p style="color:#22c55e;margin:3px 0 0;font-size:12px;font-weight:bold;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
+                  <p style="color:#94a3b8;margin:2px 0 0;font-size:11px;">Monrovia, Liberia | Email: toceps@totaggroup.com</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td style="text-align:right;vertical-align:middle;">
+            <span style="display:inline-block;background:#22c55e;color:#ffffff;font-size:11px;font-weight:bold;padding:5px 14px;border-radius:20px;text-transform:uppercase;">OFFICIAL INVOICE</span>
+            <p style="margin:8px 0 0;font-size:15px;font-family:monospace;font-weight:bold;color:#f8fafc;">${invoice.invoiceNumber}</p>
+          </td>
+        </tr>
+      </table>
 
       <div style="padding:32px;">
         

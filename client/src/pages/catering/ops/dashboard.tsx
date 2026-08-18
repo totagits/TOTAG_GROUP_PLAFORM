@@ -1047,30 +1047,33 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
               <style>{`
                 @media print {
                   body > * {
-                    visibility: hidden !important;
+                    display: none !important;
                   }
-                  .radix-overlay, [data-radix-portal] {
-                    visibility: visible !important;
+                  body > [data-radix-portal] {
+                    display: block !important;
+                    position: static !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    width: 100% !important;
                   }
-                  #printable-invoice-modal, #printable-invoice-modal * {
-                    visibility: visible !important;
-                  }
-                  #printable-invoice-modal {
-                    position: absolute !important;
+                  #printable-invoice-modal, [role="dialog"] {
+                    display: block !important;
+                    position: relative !important;
                     left: 0 !important;
                     top: 0 !important;
+                    right: auto !important;
+                    bottom: auto !important;
+                    transform: none !important;
                     width: 100% !important;
                     max-width: 100% !important;
-                    height: auto !important;
-                    max-height: none !important;
                     margin: 0 !important;
-                    padding: 24px !important;
+                    padding: 20px !important;
                     background: #ffffff !important;
                     box-shadow: none !important;
                     border: none !important;
                     overflow: visible !important;
                   }
-                  .no-print, button, [role="button"], .dialog-close {
+                  .no-print, button, [role="button"], [data-radix-focus-guard], .radix-dialog-overlay, [data-state="open"] > button {
                     display: none !important;
                   }
                   * {
@@ -1087,7 +1090,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
                   <img src="/images/totag-logo.png" alt="TOTAG Group" className="h-14 w-auto object-contain bg-white p-1 rounded-xl border border-slate-200" />
                   <div>
                     <h2 className="text-xl font-black text-slate-900">TOTAG Group of Companies Ltd</h2>
-                    <p className="text-xs text-emerald-600 font-bold">TOCEPS Catering & Events Services</p>
+                    <p className="text-xs text-emerald-600 font-bold">TOTAG Catering & Event Planning Services (TOCEPS)</p>
                     <p className="text-[11px] text-slate-500">Monrovia, Liberia | Email: toceps@totaggroup.com</p>
                   </div>
                 </div>
