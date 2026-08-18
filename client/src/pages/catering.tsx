@@ -45,7 +45,7 @@ import {
   Truck,
   MonitorCheck
 } from "lucide-react";
-import cateringLogo from "@assets/Logo for TOTAG Catering1(1)_1752602584482.png";
+const cateringLogo = "/images/totag-logo.png";
 import headerBackground from "@assets/image_1752600437126.png";
 import event1 from "@assets/Event_1752617755645.jpg";
 import event2 from "@assets/Event1_1752617755645.jpg";

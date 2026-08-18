@@ -15,7 +15,7 @@ import {
   Phone,
   Settings
 } from "lucide-react";
-import cateringLogo from "@assets/Logo for TOTAG Catering1(1)_1752602584482.png";
+const cateringLogo = "/images/totag-logo.png";
 import coordinationBg from "@assets/Event_1752617755645.jpg";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";

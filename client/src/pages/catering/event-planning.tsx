@@ -21,7 +21,7 @@ import {
   Zap,
   Building
 } from "lucide-react";
-import cateringLogo from "@assets/Logo for TOTAG Catering1(1)_1752602584482.png";
+const cateringLogo = "/images/totag-logo.png";
 import eventPlanningBg from "@assets/Event3_1752617755646.jpg";
 import { Link, useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";

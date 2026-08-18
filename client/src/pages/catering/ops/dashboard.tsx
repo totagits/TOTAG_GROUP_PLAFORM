@@ -21,7 +21,7 @@ import {
   ArrowUpCircle, MessageSquare, ListChecks, CircleDot, ShieldCheck, UserPlus,
   Printer, Trash2, X, Receipt, Hash, Download, FileSpreadsheet
 } from "lucide-react";
-import cateringLogo from "@assets/Logo for TOTAG Catering1(1)_1752602584482.png";
+const cateringLogo = "/images/totag-logo.png";
 
 const ROLE_LABELS: Record<string, string> = {
   account_manager: "LTA Account Manager",
@@ -353,7 +353,7 @@ export default function CateringDashboard() {
       <header className="bg-white border-b shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={cateringLogo} alt="TOCEPS" className="w-10 h-10 object-contain" />
+            <img src="/images/totag-logo.png" alt="TOTAG Group of Companies Ltd" className="h-10 w-auto object-contain bg-white p-1 rounded-xl shadow-sm border border-slate-200" />
             <div>
               <h1 className="text-lg font-bold text-gray-900">TOCEPS Operations</h1>
               <p className="text-xs text-gray-500">{ROLE_LABELS[user.role]}</p>

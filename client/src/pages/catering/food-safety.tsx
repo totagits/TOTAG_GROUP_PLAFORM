@@ -19,7 +19,7 @@ import {
   Ban,
   Heart
 } from "lucide-react";
-import cateringLogo from "@assets/Logo for TOTAG Catering1(1)_1752602584482.png";
+const cateringLogo = "/images/totag-logo.png";
 import foodSafetyBg from "@assets/Event1_1752617755645.jpg";
 import { Link } from "wouter";
 
