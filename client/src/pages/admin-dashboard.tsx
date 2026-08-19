@@ -41,7 +41,9 @@ import {
   ArrowUpRight,
   ShieldCheck,
   CheckCircle2,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ExternalLink,
+  Sparkles
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -83,15 +85,15 @@ export default function AdminDashboard() {
   });
 
   const subsidiaries = [
-    { id: "cargo", name: "TOTAG Cargo Handling", email: "cargo@totaggroup.com", href: "/cargo", icon: Ship, color: "text-sky-400", status: "Optimal" },
-    { id: "farm", name: "TOTAG FARM", email: "farm@totaggroup.com", href: "/farm", icon: Zap, color: "text-emerald-400", status: "Optimal" },
-    { id: "petroleum", name: "TOTAG Petroleum Services", email: "petroleum@totaggroup.com", href: "/petroleum", icon: Fuel, color: "text-amber-400", status: "Optimal" },
-    { id: "construction", name: "TOTAG General Construction", email: "construction@totaggroup.com", href: "/construction", icon: HardHat, color: "text-yellow-400", status: "Optimal" },
-    { id: "merchandise", name: "TOTAG General Merchandise", email: "merchandise@totaggroup.com", href: "/general-merchandise", icon: ShoppingBag, color: "text-purple-400", status: "Optimal" },
-    { id: "it", name: "TOTAG IT Services & SaaS (TIS)", email: "tis@totaggroup.com", href: "/it-services", icon: Laptop, color: "text-blue-400", status: "Optimal" },
-    { id: "catering", name: "TOTAG Catering & Event Planning Services (TOCEPS)", email: "toceps@totaggroup.com", href: "/catering", icon: Utensils, color: "text-red-400", status: "Optimal" },
-    { id: "stationery", name: "TOTAG Stationery Supplies", email: "stationery@totaggroup.com", href: "/stationery", icon: BookOpen, color: "text-teal-400", status: "Optimal" },
-    { id: "solar", name: "TOTAG Solar Energy & Smart Power", email: "solar@totaggroup.com", href: "/solar", icon: Sun, color: "text-amber-300", status: "Optimal" }
+    { id: "cargo", name: "Cargo & Maritime Logistics", desc: "Freight forwarding, port ops & customs", email: "cargo@totaggroup.com", href: "/cargo", icon: Ship, color: "text-sky-600 dark:text-sky-400", bg: "bg-sky-500/10", border: "border-sky-500/30" },
+    { id: "farm", name: "TOTAG FARM & Agribusiness", desc: "Organic crops, poultry & agro-processing", email: "farm@totaggroup.com", href: "/farm", icon: Zap, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
+    { id: "petroleum", name: "Petroleum Haulage & Depots", desc: "Bulk fuel storage & retail distribution", email: "petroleum@totaggroup.com", href: "/petroleum", icon: Fuel, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+    { id: "construction", name: "General Civil Construction", desc: "Infrastructure, commercial build & roads", email: "construction@totaggroup.com", href: "/construction", icon: HardHat, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/30" },
+    { id: "merchandise", name: "General Merchandise (TGM)", desc: "FMCG, retail & wholesale distribution", email: "merchandise@totaggroup.com", href: "/general-merchandise", icon: ShoppingBag, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
+    { id: "it", name: "IT Services & 14 SaaS Modules", desc: "FIMS, HRMIS, cloud & cybersecurity", email: "tis@totaggroup.com", href: "/it-services", icon: Laptop, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/30" },
+    { id: "catering", name: "TOCEPS Catering & Events", desc: "Corporate banquets & UNIDO contracts", email: "toceps@totaggroup.com", href: "/catering", icon: Utensils, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30" },
+    { id: "stationery", name: "Stationery & Office Supplies", desc: "Bulk corporate paper & printing supplies", email: "stationery@totaggroup.com", href: "/stationery", icon: BookOpen, color: "text-teal-600 dark:text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500/30" },
+    { id: "solar", name: "Solar Smart Power & Deye", desc: "Commercial solar grids & hybrid inverters", email: "solar@totaggroup.com", href: "/solar", icon: Sun, color: "text-amber-500 dark:text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/30" }
   ];
 
   // The 11 Shared Core Enterprise Capabilities
@@ -154,355 +156,350 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-emerald-500 selection:text-white">
-      {/* High-Contrast Header */}
-      <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-xl">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white pb-16">
+      
+      {/* Top Corporate Executive Header */}
+      <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
+        <div className="container mx-auto px-4 py-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            
+            <div className="flex items-center gap-3">
               <Link href="/">
-                <Button variant="outline" size="sm" className="bg-slate-800 border-slate-700 hover:bg-slate-700 text-white font-bold">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
+                <Button variant="outline" size="sm" className="rounded-xl border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-bold shrink-0">
+                  <ArrowLeft className="h-4 w-4 mr-1.5" />
                   Public Website
                 </Button>
               </Link>
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-emerald-500/20 rounded-full border border-emerald-500/50">
-                  <Building2 className="h-6 w-6 text-emerald-400" />
+
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-1 flex items-center justify-center">
+                  <img src="/images/totag-logo.png" alt="TOTAG Logo" className="w-7 h-7 object-contain" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-black tracking-tight text-white flex items-center gap-2">
-                    <span>TOTAG Enterprise Digital Ecosystem</span>
-                    <Badge className="bg-emerald-500 text-slate-950 font-black text-[11px] px-2.5 py-0.5">
-                      10 Service Verticals Live
+                  <h1 className="text-base sm:text-lg font-extrabold tracking-tight flex items-center gap-2">
+                    <span>TOTAG Enterprise Ecosystem</span>
+                    <Badge className="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5">
+                      9 Subsidiaries Active
                     </Badge>
                   </h1>
-
-                  <p className="text-xs text-slate-300 font-semibold">Master Governance, Shared Core Capabilities & Subsidiary Operations Console</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Corporate Governance & Operations Console</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2">
               <Link href="/executive-dashboard">
-                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-black shadow-lg">
+                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md text-xs">
                   <BarChart3 className="h-4 w-4 mr-1.5" />
                   Executive Control Tower
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={handleLogout} className="bg-slate-800 border-slate-700 text-slate-200 font-bold hover:bg-slate-700">
+              <Button variant="outline" size="sm" onClick={handleLogout} className="rounded-xl border-slate-300 dark:border-slate-700 text-xs font-semibold">
                 Logout
               </Button>
             </div>
+
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      {/* Main Content Area */}
+      <main className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
+        
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* High Contrast Navigation Tabs Bar */}
-          <TabsList className="grid w-full grid-cols-5 bg-slate-900 p-1.5 border-2 border-slate-800 rounded-2xl mb-8 shadow-2xl">
+          
+          {/* Responsive Navigation Tabs Bar */}
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 bg-white dark:bg-slate-900 p-1.5 border border-slate-200 dark:border-slate-800 rounded-2xl mb-8 shadow-sm h-auto gap-1">
             <TabsTrigger 
               value="overview" 
-              className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
             >
               <BarChart3 className="h-4 w-4" />
               Overview
             </TabsTrigger>
             <TabsTrigger 
-              value="shared-core" 
-              className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
-            >
-              <Database className="h-4 w-4" />
-              11 Shared Enterprise Core
-            </TabsTrigger>
-            <TabsTrigger 
               value="subsidiaries" 
-              className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
             >
               <Building2 className="h-4 w-4" />
-              10 Service Verticals Console
+              9 Subsidiaries
             </TabsTrigger>
-
+            <TabsTrigger 
+              value="shared-core" 
+              className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
+            >
+              <Database className="h-4 w-4" />
+              11 Core SaaS Services
+            </TabsTrigger>
             <TabsTrigger 
               value="institutional" 
-              className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
             >
               <FileCheck className="h-4 w-4" />
-              Institutional Services
+              Institutional Ops
             </TabsTrigger>
             <TabsTrigger 
               value="communications" 
-              className="flex items-center gap-2 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg"
+              className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md col-span-2 sm:col-span-1"
             >
               <Mail className="h-4 w-4" />
               Communications
             </TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
+          {/* ===================== OVERVIEW TAB ===================== */}
           <TabsContent value="overview" className="space-y-8">
             
-            {/* Top-level High-Contrast KPI Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-2 shadow-xl">
-                <div className="flex justify-between items-center text-xs text-slate-300 font-extrabold uppercase tracking-wider">
-                  <span>Operational Subsidiaries</span>
-                  <Building2 className="h-5 w-5 text-emerald-400" />
-                </div>
-                <div className="text-4xl font-black text-white">9</div>
-                <div className="text-xs text-emerald-400 font-bold">100% Fully Productized</div>
-              </div>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <span>Subsidiaries</span>
+                    <Building2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">9</div>
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">100% Operational & Live</div>
+                </CardContent>
+              </Card>
 
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-2 shadow-xl">
-                <div className="flex justify-between items-center text-xs text-slate-300 font-extrabold uppercase tracking-wider">
-                  <span>Shared Core Capabilities</span>
-                  <Database className="h-5 w-5 text-sky-400" />
-                </div>
-                <div className="text-4xl font-black text-white">11</div>
-                <div className="text-xs text-sky-400 font-bold">Identity, CRM, FIMS, HRMIS, Event Bus</div>
-              </div>
+              <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <span>SaaS Modules</span>
+                    <Database className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">14</div>
+                  <div className="text-xs text-sky-600 dark:text-sky-400 font-semibold">FIMS & HRMIS Enterprise Suite</div>
+                </CardContent>
+              </Card>
 
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-2 shadow-xl">
-                <div className="flex justify-between items-center text-xs text-slate-300 font-extrabold uppercase tracking-wider">
-                  <span>Group Annualized Revenue</span>
-                  <TrendingUp className="h-5 w-5 text-purple-400" />
-                </div>
-                <div className="text-4xl font-black text-white">$1.42M <span className="text-xs font-normal text-slate-400">USD</span></div>
-                <div className="text-xs text-purple-400 font-bold">+18.5% YoY Growth</div>
-              </div>
+              <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <span>Annual Revenue</span>
+                    <TrendingUp className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">$1.42M <span className="text-xs font-normal text-slate-400">USD</span></div>
+                  <div className="text-xs text-purple-600 dark:text-purple-400 font-semibold">+18.5% YoY Growth</div>
+                </CardContent>
+              </Card>
 
-              <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-2 shadow-xl">
-                <div className="flex justify-between items-center text-xs text-slate-300 font-extrabold uppercase tracking-wider">
-                  <span>Total Group Workforce</span>
-                  <Users className="h-5 w-5 text-amber-400" />
-                </div>
-                <div className="text-4xl font-black text-white">280+</div>
-                <div className="text-xs text-amber-400 font-bold">Across all 9 business divisions</div>
-              </div>
+              <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                    <span>Total Workforce</span>
+                    <Users className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">280+</div>
+                  <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold">Across all business units</div>
+                </CardContent>
+              </Card>
             </div>
 
-            {/* Architecture Concept Map - Ultra High Contrast */}
-            <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-              <div>
-                <h2 className="text-2xl font-black text-white flex items-center gap-2">
-                  <Layers className="h-6 w-6 text-emerald-400" />
-                  <span>TOTAG Group Digital Ecosystem Conceptual Architecture</span>
-                </h2>
-                <p className="text-sm text-slate-300 font-semibold mt-1">
-                  Public corporate website serves as the front door (`totag.network`). Behind it, 9 operational subsidiary applications consume shared enterprise digital core capabilities.
-                </p>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-slate-950 border-2 border-slate-800 space-y-5 shadow-inner">
-                
-                {/* Corporate Front Door Banner */}
-                <div className="text-center p-4 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 border-2 border-emerald-400 text-white font-black text-base shadow-lg tracking-wide">
-                  TOTAG GROUP PUBLIC CORPORATE FRONT DOOR (`totag.network`)
+            {/* Interactive Subsidiary Portals Launchpad */}
+            <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border-b border-slate-200 dark:border-slate-800 pb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-xl font-extrabold flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      9 Operational Subsidiary Portals
+                    </CardTitle>
+                    <CardDescription className="text-xs font-medium">
+                      Click any subsidiary card below to launch its live public portal or operational dashboard.
+                    </CardDescription>
+                  </div>
+                  <Badge className="bg-emerald-600 text-white font-bold text-xs">
+                    Live Links
+                  </Badge>
                 </div>
+              </CardHeader>
 
-                {/* 8 Core Capabilities Row */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {sharedEnterpriseServices.slice(0, 8).map((srv, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-slate-900 border-2 border-slate-800 space-y-1 hover:border-emerald-500 transition-all">
-                      <span className="font-extrabold text-white text-sm block">{srv.name}</span>
-                      <span className="text-xs text-slate-300 font-medium block leading-tight">{srv.desc}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Enterprise Event Bus Banner */}
-                <div className="text-center text-xs font-black text-emerald-400 uppercase tracking-widest py-2 bg-slate-900 rounded-xl border border-emerald-500/40">
-                  ↓ ENTERPRISE EVENT BUS & SHARED MASTER DATA (`partyMaster`, `vendorMaster`, FIMS, HRMIS) ↓
-                </div>
-
-                {/* 9 Subsidiaries Grid */}
-                <div className="grid grid-cols-3 md:grid-cols-9 gap-2.5">
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {subsidiaries.map((sub) => (
                     <Link key={sub.id} href={sub.href}>
-                      <div className="p-3 rounded-xl bg-slate-900 border-2 border-slate-800 hover:border-emerald-400 hover:bg-slate-800 cursor-pointer transition-all text-center">
-                        <sub.icon className={`w-5 h-5 mx-auto mb-1.5 ${sub.color}`} />
-                        <span className="font-extrabold text-white text-xs block truncate">{sub.name.replace("TOTAG ", "")}</span>
+                      <div className={`p-4 rounded-2xl border ${sub.border} ${sub.bg} hover:shadow-md hover:scale-[1.02] cursor-pointer transition-all flex items-start gap-3.5 group`}>
+                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/10 shrink-0">
+                          <sub.icon className={`w-6 h-6 ${sub.color}`} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-extrabold text-sm text-slate-900 dark:text-white truncate group-hover:text-emerald-600 transition-colors">
+                              {sub.name}
+                            </h4>
+                            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-500 transition-colors shrink-0" />
+                          </div>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium">
+                            {sub.desc}
+                          </p>
+                          <div className="mt-2 flex items-center justify-between text-[11px]">
+                            <span className="text-slate-400 font-mono">{sub.email}</span>
+                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Launch Portal ➔</span>
+                          </div>
+                        </div>
                       </div>
                     </Link>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
 
-              </div>
-            </div>
+            {/* 11 Shared Core Capabilities Interactive Grid */}
+            <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl overflow-hidden">
+              <CardHeader className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 pb-4">
+                <CardTitle className="text-lg font-extrabold flex items-center gap-2">
+                  <Database className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                  11 Shared Enterprise Core Capabilities
+                </CardTitle>
+                <CardDescription className="text-xs font-medium">
+                  Unified enterprise capabilities consumed across all 9 business subsidiaries.
+                </CardDescription>
+              </CardHeader>
 
-          </TabsContent>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  {sharedEnterpriseServices.map((srv, idx) => (
+                    <Link key={idx} href={srv.route}>
+                      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between h-full">
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:bg-emerald-500/10 group-hover:text-emerald-600 transition-colors">
+                              <srv.icon className="w-4 h-4" />
+                            </div>
+                            <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20 font-semibold">
+                              {srv.status}
+                            </Badge>
+                          </div>
+                          <h5 className="font-extrabold text-xs text-slate-900 dark:text-white group-hover:text-emerald-600 transition-colors">
+                            {srv.name}
+                          </h5>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
+                            {srv.desc}
+                          </p>
+                        </div>
 
-          {/* 11 Shared Core Capabilities Tab */}
-          <TabsContent value="shared-core" className="space-y-6">
-            <div className="mb-4">
-              <h2 className="text-2xl font-black text-white">11 Shared Enterprise Core Services</h2>
-              <p className="text-sm text-slate-300 font-semibold mt-1">Common enterprise services consumed by all 9 operational subsidiary applications.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {sharedEnterpriseServices.map((service, i) => (
-                <div key={i} className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 hover:border-emerald-500 transition-all shadow-xl">
-                  <div className="flex justify-between items-center">
-                    <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                      <service.icon className="w-6 h-6" />
-                    </div>
-                    <Badge className="bg-emerald-500 text-slate-950 font-black text-xs px-2.5 py-0.5">
-                      {service.status}
-                    </Badge>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-black text-white">{service.name}</h3>
-                    <p className="text-xs text-slate-300 font-medium mt-1">{service.desc}</p>
-                  </div>
-
-                  <Link href={service.route}>
-                    <Button size="sm" className="w-full bg-slate-800 hover:bg-emerald-600 border border-slate-700 text-white font-bold text-xs py-5">
-                      Access Capability
-                      <ArrowUpRight className="w-4 h-4 ml-1.5" />
-                    </Button>
-                  </Link>
+                        <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                          <span>Open Module</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </CardContent>
+            </Card>
+
           </TabsContent>
 
-          {/* 9 Subsidiaries Operational Console Tab */}
+          {/* ===================== SUBSIDIARIES TAB ===================== */}
           <TabsContent value="subsidiaries" className="space-y-6">
-            <div className="mb-4 flex justify-between items-center">
-              <div>
-                <h2 className="text-2xl font-black text-white">9 Specialized Subsidiary Applications Console</h2>
-                <p className="text-sm text-slate-300 font-semibold mt-1">Operational status, telemetry metrics, and direct application portals for each business division.</p>
-              </div>
-              <Badge className="bg-emerald-500 text-slate-950 font-black text-sm px-3.5 py-1">
-                9 / 9 Operational
-              </Badge>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {subsidiaries.map((sub) => (
-                <div key={sub.id} className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 hover:border-emerald-500 transition-all shadow-xl">
-                  <div className="flex justify-between items-center">
-                    <div className="p-3 rounded-2xl bg-slate-800 border border-slate-700">
-                      <sub.icon className={`w-7 h-7 ${sub.color}`} />
+                <Card key={sub.id} className="border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+                  <CardHeader className="p-5 pb-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-3 rounded-2xl ${sub.bg} border ${sub.border}`}>
+                        <sub.icon className={`w-6 h-6 ${sub.color}`} />
+                      </div>
+                      <div>
+                        <CardTitle className="text-base font-extrabold">{sub.name}</CardTitle>
+                        <CardDescription className="text-xs">{sub.email}</CardDescription>
+                      </div>
                     </div>
-                    <Badge className="bg-emerald-500 text-slate-950 font-black text-xs">
-                      {sub.status}
-                    </Badge>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-black text-white">{sub.name}</h3>
-                    <p className="text-xs text-slate-300 font-semibold mt-0.5">{sub.email}</p>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-800 space-y-2">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-bold">Operational Status:</span>
-                      <span className="text-emerald-400 font-black">100% Online</span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-300 font-bold">Enterprise Integration:</span>
-                      <span className="text-sky-400 font-black">FIMS / HRMIS Linked</span>
-                    </div>
-                  </div>
-
-                  <Link href={sub.href}>
-                    <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-5 shadow-lg">
-                      Launch Application Portal
-                      <ArrowUpRight className="w-4 h-4 ml-1.5" />
-                    </Button>
-                  </Link>
-                </div>
+                  </CardHeader>
+                  <CardContent className="p-5 pt-0 space-y-4">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                      {sub.desc}
+                    </p>
+                    <Link href={sub.href}>
+                      <Button className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
+                        Open Subsidiary Portal ➔
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </TabsContent>
 
-          {/* Institutional Services Tab */}
+          {/* ===================== 11 SHARED CORE TAB ===================== */}
+          <TabsContent value="shared-core" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {sharedEnterpriseServices.map((srv, idx) => (
+                <Card key={idx} className="border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                      <srv.icon className="w-5 h-5" />
+                    </div>
+                    <Badge className="bg-emerald-600 text-white text-xs">{srv.status}</Badge>
+                  </div>
+                  <h4 className="font-extrabold text-sm">{srv.name}</h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{srv.desc}</p>
+                  <Link href={srv.route}>
+                    <Button variant="outline" size="sm" className="w-full rounded-xl mt-2 text-xs font-bold border-slate-300 dark:border-slate-700">
+                      Launch System
+                    </Button>
+                  </Link>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* ===================== INSTITUTIONAL SERVICES TAB ===================== */}
           <TabsContent value="institutional" className="space-y-6">
-            <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
-              <div className="flex justify-between items-center border-b border-slate-800 pb-4">
+            <Card className="border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+              <CardTitle className="text-lg font-extrabold mb-2">Institutional Operations & UNIDO Deliverables</CardTitle>
+              <CardDescription className="text-xs mb-4">Centralized management for public sector and multilateral development contracts.</CardDescription>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Link href="/catering/ops/dashboard">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 cursor-pointer transition-colors">
+                    <h5 className="font-extrabold text-sm text-emerald-600 dark:text-emerald-400">TOCEPS UNIDO Contract Portal</h5>
+                    <p className="text-xs text-slate-500 mt-1">Live document vault, milestone trackers, and invoice generator.</p>
+                  </div>
+                </Link>
+                <Link href="/executive-dashboard">
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 cursor-pointer transition-colors">
+                    <h5 className="font-extrabold text-sm text-sky-600 dark:text-sky-400">Executive Governance Tower</h5>
+                    <p className="text-xs text-slate-500 mt-1">Multi-subsidiary KPI aggregation and telemetry control.</p>
+                  </div>
+                </Link>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* ===================== COMMUNICATIONS TAB ===================== */}
+          <TabsContent value="communications" className="space-y-6">
+            <Card className="border-slate-200 dark:border-slate-800 rounded-3xl p-6">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-2xl font-black text-white">Institutional Services & Multi-Agency Contract Operations</h2>
-                  <p className="text-xs text-slate-300 font-semibold mt-1">Governance and milestone delivery for UNDP, World Bank, and Ministry contracts.</p>
+                  <CardTitle className="text-lg font-extrabold">Corporate Email & Communications</CardTitle>
+                  <CardDescription className="text-xs">Manage outbound corporate email notifications and transactional logs.</CardDescription>
                 </div>
-                <Link href="/institutional-services">
-                  <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs">
-                    Open Institutional Console
-                    <ArrowUpRight className="w-4 h-4 ml-1.5" />
+                <Link href="/email-management">
+                  <Button className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">
+                    Open Full Email Center ➔
                   </Button>
                 </Link>
               </div>
 
-              <div className="space-y-4">
-                <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 flex justify-between items-center">
-                  <div>
-                    <span className="text-xs font-black text-emerald-400">INC-2026-081 • Active Execution</span>
-                    <h3 className="text-base font-black text-white mt-1">United Nations Development Programme (UNDP)</h3>
-                    <p className="text-xs text-slate-300 font-medium">Rural Agribusiness & Renewable Energy Microgrid Turnkey Execution</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-2xl font-black text-emerald-400">$450,000 USD</span>
-                    <span className="text-xs text-slate-300 font-bold block">68% Completed</span>
-                  </div>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-slate-950 border-2 border-slate-800 flex justify-between items-center">
-                  <div>
-                    <span className="text-xs font-black text-amber-400">INC-2026-094 • Milestone Audit</span>
-                    <h3 className="text-base font-black text-white mt-1">Ministry of Public Works / World Bank LR</h3>
-                    <p className="text-xs text-slate-300 font-medium">Feeder Road Rehabilitation & Drainage Quality Control Supervision</p>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-2xl font-black text-emerald-400">$780,000 USD</span>
-                    <span className="text-xs text-slate-300 font-bold block">52% Completed</span>
-                  </div>
-                </div>
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+                Active Mailboxes: Corporate (`info@totaggroup.com`), IT (`tis@totaggroup.com`), and Catering (`toceps@totaggroup.com`).
               </div>
-            </div>
-          </TabsContent>
-
-          {/* Communications Tab */}
-          <TabsContent value="communications" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-black text-white">Corporate Notification & Messaging Console</h2>
-            </div>
-
-            <div className="bg-slate-900 border-2 border-slate-800 rounded-2xl p-6 space-y-4 shadow-2xl">
-              <p className="text-xs text-slate-300 font-semibold">Corporate email dispatch and history logs across all 9 TOTAG subsidiaries.</p>
-              {emails.length === 0 ? (
-                <div className="text-center py-10">
-                  <Mail className="h-14 w-14 mx-auto text-slate-600 mb-3" />
-                  <p className="text-slate-300 font-bold text-base">Notification system ready for corporate communications dispatch.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {emails.map((email) => (
-                    <div key={email.id} className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex justify-between items-center">
-                      <div>
-                        <h4 className="text-sm font-black text-white">{email.subject}</h4>
-                        <p className="text-xs text-slate-300 font-medium">To: {email.toEmail} | From: {email.fromEmail}</p>
-                      </div>
-                      <Badge className="bg-emerald-500 text-slate-950 font-black text-xs">
-                        {email.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            </Card>
           </TabsContent>
 
         </Tabs>
-      </div>
+
+      </main>
     </div>
   );
 }
