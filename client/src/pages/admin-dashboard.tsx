@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { 
   ArrowLeft, 
   Shield, 
@@ -43,7 +43,10 @@ import {
   CheckCircle2,
   FileSpreadsheet,
   ExternalLink,
-  Sparkles
+  Crown,
+  KeyRound,
+  Edit,
+  Trash2
 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -71,32 +74,122 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [emails, setEmails] = useState<Email[]>([]);
-  const [isComposeOpen, setIsComposeOpen] = useState(false);
-  const [isSending, setIsSending] = useState(false);
   const { toast } = useToast();
+  const [_, setLocation] = useLocation();
 
-  // Email form state
-  const [newEmail, setNewEmail] = useState({
-    to: "",
-    subject: "",
-    message: "",
-    type: "notification",
-    subsidiary: "corporate"
-  });
-
+  // 9 Operational Subsidiaries with DIRECT ADMIN / OPERATIONS DASHBOARD ROUTES
   const subsidiaries = [
-    { id: "cargo", name: "Cargo & Maritime Logistics", desc: "Freight forwarding, port ops & customs", email: "cargo@totaggroup.com", href: "/cargo", icon: Ship, color: "text-sky-600 dark:text-sky-400", bg: "bg-sky-500/10", border: "border-sky-500/30" },
-    { id: "farm", name: "TOTAG FARM & Agribusiness", desc: "Organic crops, poultry & agro-processing", email: "farm@totaggroup.com", href: "/farm", icon: Zap, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
-    { id: "petroleum", name: "Petroleum Haulage & Depots", desc: "Bulk fuel storage & retail distribution", email: "petroleum@totaggroup.com", href: "/petroleum", icon: Fuel, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
-    { id: "construction", name: "General Civil Construction", desc: "Infrastructure, commercial build & roads", email: "construction@totaggroup.com", href: "/construction", icon: HardHat, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/30" },
-    { id: "merchandise", name: "General Merchandise (TGM)", desc: "FMCG, retail & wholesale distribution", email: "merchandise@totaggroup.com", href: "/general-merchandise", icon: ShoppingBag, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/30" },
-    { id: "it", name: "IT Services & 14 SaaS Modules", desc: "FIMS, HRMIS, cloud & cybersecurity", email: "tis@totaggroup.com", href: "/it-services", icon: Laptop, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/30" },
-    { id: "catering", name: "TOCEPS Catering & Events", desc: "Corporate banquets & UNIDO contracts", email: "toceps@totaggroup.com", href: "/catering", icon: Utensils, color: "text-rose-600 dark:text-rose-400", bg: "bg-rose-500/10", border: "border-rose-500/30" },
-    { id: "stationery", name: "Stationery & Office Supplies", desc: "Bulk corporate paper & printing supplies", email: "stationery@totaggroup.com", href: "/stationery", icon: BookOpen, color: "text-teal-600 dark:text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500/30" },
-    { id: "solar", name: "Solar Smart Power & Deye", desc: "Commercial solar grids & hybrid inverters", email: "solar@totaggroup.com", href: "/solar", icon: Sun, color: "text-amber-500 dark:text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/30" }
+    { 
+      id: "farm", 
+      name: "TOTAG FARM ERP & Management", 
+      desc: "Full CRUD: Crop cycles, livestock batches, farm inventory & sales", 
+      email: "farm@totaggroup.com", 
+      adminRoute: "/farm/dashboard", 
+      icon: Zap, 
+      color: "text-emerald-600 dark:text-emerald-400", 
+      bg: "bg-emerald-500/10", 
+      border: "border-emerald-500/30",
+      badge: "Farm Admin Console"
+    },
+    { 
+      id: "catering", 
+      name: "TOCEPS Catering Operations & UNIDO", 
+      desc: "Full CRUD: UNIDO deliverables, banquet invoices, contracts & menus", 
+      email: "toceps@totaggroup.com", 
+      adminRoute: "/catering/ops/dashboard", 
+      icon: Utensils, 
+      color: "text-rose-600 dark:text-rose-400", 
+      bg: "bg-rose-500/10", 
+      border: "border-rose-500/30",
+      badge: "Catering Ops Console"
+    },
+    { 
+      id: "it", 
+      name: "IT Services & 14 SaaS Modules", 
+      desc: "Full CRUD: FIMS financial ledger, HRMIS, multi-tenant DB & access", 
+      email: "tis@totaggroup.com", 
+      adminRoute: "/saas/dashboard", 
+      icon: Laptop, 
+      color: "text-blue-600 dark:text-blue-400", 
+      bg: "bg-blue-500/10", 
+      border: "border-blue-500/30",
+      badge: "SaaS Admin Console"
+    },
+    { 
+      id: "merchandise", 
+      name: "General Merchandise (TGM)", 
+      desc: "Full CRUD: FMCG inventory, wholesale purchase orders & POS catalog", 
+      email: "merchandise@totaggroup.com", 
+      adminRoute: "/tgm-enterprise-dashboard", 
+      icon: ShoppingBag, 
+      color: "text-purple-600 dark:text-purple-400", 
+      bg: "bg-purple-500/10", 
+      border: "border-purple-500/30",
+      badge: "TGM Ops Console"
+    },
+    { 
+      id: "cargo", 
+      name: "Cargo Handling & Global Freight", 
+      desc: "Full CRUD: Port logistics, sea/air manifests & real-time tracking", 
+      email: "cargo@totaggroup.com", 
+      adminRoute: "/cargo", 
+      icon: Ship, 
+      color: "text-sky-600 dark:text-sky-400", 
+      bg: "bg-sky-500/10", 
+      border: "border-sky-500/30",
+      badge: "Logistics Dispatch"
+    },
+    { 
+      id: "solar", 
+      name: "Solar Smart Power & Deye Systems", 
+      desc: "Full CRUD: Deye hybrid telemetry, microgrid status & NOC telemetry", 
+      email: "solar@totaggroup.com", 
+      adminRoute: "/solar", 
+      icon: Sun, 
+      color: "text-amber-500 dark:text-amber-300", 
+      bg: "bg-amber-500/10", 
+      border: "border-amber-500/30",
+      badge: "Solar NOC Console"
+    },
+    { 
+      id: "petroleum", 
+      name: "Petroleum Services & Depot Haulage", 
+      desc: "Full CRUD: Bulk fuel depots, commercial haulage & distribution", 
+      email: "petroleum@totaggroup.com", 
+      adminRoute: "/petroleum", 
+      icon: Fuel, 
+      color: "text-amber-600 dark:text-amber-400", 
+      bg: "bg-amber-500/10", 
+      border: "border-amber-500/30",
+      badge: "Petroleum Ops"
+    },
+    { 
+      id: "construction", 
+      name: "General Civil Construction", 
+      desc: "Full CRUD: Structural projects, civil engineering & contractor ops", 
+      email: "construction@totaggroup.com", 
+      adminRoute: "/construction", 
+      icon: HardHat, 
+      color: "text-orange-600 dark:text-orange-400", 
+      bg: "bg-orange-500/10", 
+      border: "border-orange-500/30",
+      badge: "Construction Ops"
+    },
+    { 
+      id: "stationery", 
+      name: "Stationery & Office Supplies", 
+      desc: "Full CRUD: B2B scholastic supplies, procurement & bulk paper orders", 
+      email: "stationery@totaggroup.com", 
+      adminRoute: "/stationery", 
+      icon: BookOpen, 
+      color: "text-teal-600 dark:text-teal-400", 
+      bg: "bg-teal-500/10", 
+      border: "border-teal-500/30",
+      badge: "Procurement Ops"
+    }
   ];
 
-  // The 11 Shared Core Enterprise Capabilities
+  // The 11 Shared Core Enterprise Capabilities with DIRECT SYSTEM ROUTES
   const sharedEnterpriseServices = [
     { name: "Identity & Access (RBAC)", desc: "Role-based access control, tenant isolation & MFA", icon: Lock, status: "Active", route: "/saas/users" },
     { name: "Group CRM (Party Master)", desc: "Universal customer master shared across 9 divisions", icon: Users, status: "Active", route: "/api/party-master" },
@@ -121,7 +214,14 @@ export default function AdminDashboard() {
   const checkAdminAuth = () => {
     const adminData = localStorage.getItem("totagAdmin");
     if (!adminData) {
-      setUser({ username: "totag_admin", role: "Corporate Administrator", department: "Executive Management" });
+      const defaultAdmin = { 
+        username: "totag_master_admin", 
+        role: "Corporate Super-Administrator", 
+        department: "Executive Board",
+        permissions: ["ALL_READ", "ALL_WRITE", "ALL_DELETE", "ALL_CONFIG"]
+      };
+      localStorage.setItem("totagAdmin", JSON.stringify(defaultAdmin));
+      setUser(defaultAdmin);
       setLoading(false);
       return;
     }
@@ -130,10 +230,30 @@ export default function AdminDashboard() {
       const parsedUser = JSON.parse(adminData);
       setUser(parsedUser);
     } catch (error) {
-      setUser({ username: "totag_admin", role: "Corporate Administrator", department: "Executive Management" });
+      setUser({ username: "totag_master_admin", role: "Corporate Super-Administrator", department: "Executive Board" });
     } finally {
       setLoading(false);
     }
+  };
+
+  // Master SSO Redirector: Automatically equips super-admin credentials and routes directly into subsidiary admin console
+  const launchSubsidiaryAdmin = (adminRoute: string, name: string) => {
+    // Equip universal super-admin credentials across all sub-systems
+    localStorage.setItem("farm_user", JSON.stringify({ role: "admin", name: "Corporate Master Super-Admin", username: "master_admin" }));
+    localStorage.setItem("catering_user", JSON.stringify({ id: 1, name: "Corporate Super-Admin", role: "operations_supervisor", email: "info@totaggroup.com" }));
+    localStorage.setItem("catering_token", "corp_super_admin_master_token");
+    localStorage.setItem("tgm_user", JSON.stringify({ role: "admin", email: "info@totaggroup.com", name: "Corporate Master Super-Admin" }));
+    localStorage.setItem("saas_user", JSON.stringify({ id: "1", role: "super_admin", email: "info@totaggroup.com" }));
+
+    toast({
+      title: `Launching ${name} Admin Console`,
+      description: "Redirecting with Master Super-Admin CRUD privileges...",
+      duration: 1500
+    });
+
+    setTimeout(() => {
+      setLocation(adminRoute);
+    }, 200);
   };
 
   const fetchEmailHistory = async () => {
@@ -151,6 +271,10 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("totagAdmin");
+    localStorage.removeItem("farm_user");
+    localStorage.removeItem("catering_user");
+    localStorage.removeItem("catering_token");
+    localStorage.removeItem("tgm_user");
     window.location.href = "/";
   };
 
@@ -184,12 +308,13 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <h1 className="text-base sm:text-lg font-extrabold tracking-tight flex items-center gap-2">
-                    <span>TOTAG Enterprise Ecosystem</span>
-                    <Badge className="bg-emerald-600 text-white font-bold text-[10px] px-2 py-0.5">
-                      9 Subsidiaries Active
+                    <span>TOTAG Corporate Master Governance</span>
+                    <Badge className="bg-gradient-to-r from-amber-500 to-emerald-600 text-slate-950 font-black text-[10px] px-2 py-0.5 flex items-center gap-1 shadow-sm">
+                      <Crown className="w-3 h-3 text-slate-950" />
+                      Super-Admin Master Mode
                     </Badge>
                   </h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Corporate Governance & Operations Console</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Universal Edit, Update & Delete Authority Across All 9 Subsidiaries</p>
                 </div>
               </div>
             </div>
@@ -213,6 +338,26 @@ export default function AdminDashboard() {
       {/* Main Content Area */}
       <main className="container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
         
+        {/* Super-Admin Privileges Alert Banner */}
+        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-emerald-500/10 to-transparent border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-500 text-slate-950 font-black">
+              <Crown className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-extrabold text-slate-900 dark:text-white block text-sm">
+                Corporate Master Administrator Mode Active
+              </span>
+              <span className="text-slate-600 dark:text-slate-300 font-medium">
+                Click any subsidiary card below to be redirected directly to its internal Administrative Back-Office with full CRUD (Create, Read, Update, Delete) permissions.
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Badge className="bg-emerald-600 text-white font-bold text-[10px]">Universal SSO Active</Badge>
+          </div>
+        </div>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           
           {/* Responsive Navigation Tabs Bar */}
@@ -222,14 +367,14 @@ export default function AdminDashboard() {
               className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
             >
               <BarChart3 className="h-4 w-4" />
-              Overview
+              Overview & Admin Launchers
             </TabsTrigger>
             <TabsTrigger 
               value="subsidiaries" 
               className="flex items-center justify-center gap-2 text-xs font-bold py-2.5 rounded-xl data-[state=active]:bg-emerald-600 data-[state=active]:text-white shadow-none data-[state=active]:shadow-md"
             >
               <Building2 className="h-4 w-4" />
-              9 Subsidiaries
+              9 Subsidiary Admin Portals
             </TabsTrigger>
             <TabsTrigger 
               value="shared-core" 
@@ -262,11 +407,11 @@ export default function AdminDashboard() {
               <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
                 <CardContent className="p-5 space-y-2">
                   <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                    <span>Subsidiaries</span>
+                    <span>Subsidiary Admin Consoles</span>
                     <Building2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="text-3xl font-black text-slate-900 dark:text-white">9</div>
-                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">100% Operational & Live</div>
+                  <div className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">100% Direct Admin Access</div>
                 </CardContent>
               </Card>
 
@@ -295,30 +440,30 @@ export default function AdminDashboard() {
               <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-2xl">
                 <CardContent className="p-5 space-y-2">
                   <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                    <span>Total Workforce</span>
-                    <Users className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                    <span>Master Permissions</span>
+                    <Crown className="h-5 w-5 text-amber-500" />
                   </div>
-                  <div className="text-3xl font-black text-slate-900 dark:text-white">280+</div>
-                  <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold">Across all business units</div>
+                  <div className="text-3xl font-black text-amber-500">ROOT</div>
+                  <div className="text-xs text-amber-600 dark:text-amber-400 font-semibold">Full Read / Write / Delete</div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Interactive Subsidiary Portals Launchpad */}
+            {/* DIRECT SUBSIDIARY ADMIN DASHBOARDS LAUNCHPAD */}
             <Card className="border-slate-200 dark:border-slate-800 shadow-sm rounded-3xl overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-transparent border-b border-slate-200 dark:border-slate-800 pb-4">
+              <CardHeader className="bg-gradient-to-r from-emerald-500/10 via-amber-500/5 to-transparent border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-xl font-extrabold flex items-center gap-2">
-                      <Building2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                      9 Operational Subsidiary Portals
+                      <Crown className="w-5 h-5 text-amber-500" />
+                      9 Subsidiary Administrative Back-Offices
                     </CardTitle>
                     <CardDescription className="text-xs font-medium">
-                      Click any subsidiary card below to launch its live public portal or operational dashboard.
+                      Click any subsidiary card to open its internal management dashboard with automatic Super-Admin write, edit, and delete permissions.
                     </CardDescription>
                   </div>
-                  <Badge className="bg-emerald-600 text-white font-bold text-xs">
-                    Live Links
+                  <Badge className="bg-amber-500 text-slate-950 font-black text-xs">
+                    Admin SSO Ready
                   </Badge>
                 </div>
               </CardHeader>
@@ -326,8 +471,12 @@ export default function AdminDashboard() {
               <CardContent className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {subsidiaries.map((sub) => (
-                    <Link key={sub.id} href={sub.href}>
-                      <div className={`p-4 rounded-2xl border ${sub.border} ${sub.bg} hover:shadow-md hover:scale-[1.02] cursor-pointer transition-all flex items-start gap-3.5 group`}>
+                    <div
+                      key={sub.id}
+                      onClick={() => launchSubsidiaryAdmin(sub.adminRoute, sub.name)}
+                      className={`p-4 rounded-2xl border ${sub.border} ${sub.bg} hover:shadow-lg hover:scale-[1.02] cursor-pointer transition-all flex flex-col justify-between group`}
+                    >
+                      <div className="flex items-start gap-3.5">
                         <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-white/10 shrink-0">
                           <sub.icon className={`w-6 h-6 ${sub.color}`} />
                         </div>
@@ -338,16 +487,21 @@ export default function AdminDashboard() {
                             </h4>
                             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-500 transition-colors shrink-0" />
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">
                             {sub.desc}
                           </p>
-                          <div className="mt-2 flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400 font-mono">{sub.email}</span>
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400">Launch Portal ➔</span>
-                          </div>
                         </div>
                       </div>
-                    </Link>
+
+                      <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between text-[11px]">
+                        <span className="px-2 py-0.5 rounded-md bg-white/60 dark:bg-slate-900/60 font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/5">
+                          {sub.badge}
+                        </span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400 group-hover:underline flex items-center gap-1">
+                          Open Admin Console ➔
+                        </span>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </CardContent>
@@ -361,7 +515,7 @@ export default function AdminDashboard() {
                   11 Shared Enterprise Core Capabilities
                 </CardTitle>
                 <CardDescription className="text-xs font-medium">
-                  Unified enterprise capabilities consumed across all 9 business subsidiaries.
+                  Direct management consoles for cross-subsidiary enterprise systems.
                 </CardDescription>
               </CardHeader>
 
@@ -388,7 +542,7 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                          <span>Open Module</span>
+                          <span>Launch System</span>
                           <ExternalLink className="w-3 h-3" />
                         </div>
                       </div>
@@ -412,7 +566,7 @@ export default function AdminDashboard() {
                       </div>
                       <div>
                         <CardTitle className="text-base font-extrabold">{sub.name}</CardTitle>
-                        <CardDescription className="text-xs">{sub.email}</CardDescription>
+                        <CardDescription className="text-xs">{sub.badge}</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
@@ -420,11 +574,13 @@ export default function AdminDashboard() {
                     <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
                       {sub.desc}
                     </p>
-                    <Link href={sub.href}>
-                      <Button className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
-                        Open Subsidiary Portal ➔
-                      </Button>
-                    </Link>
+                    <Button 
+                      onClick={() => launchSubsidiaryAdmin(sub.adminRoute, sub.name)}
+                      className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                    >
+                      <Crown className="w-3.5 h-3.5 text-amber-300" />
+                      <span>Open Admin Back-Office (Full CRUD) ➔</span>
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
@@ -460,12 +616,13 @@ export default function AdminDashboard() {
               <CardTitle className="text-lg font-extrabold mb-2">Institutional Operations & UNIDO Deliverables</CardTitle>
               <CardDescription className="text-xs mb-4">Centralized management for public sector and multilateral development contracts.</CardDescription>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Link href="/catering/ops/dashboard">
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 cursor-pointer transition-colors">
-                    <h5 className="font-extrabold text-sm text-emerald-600 dark:text-emerald-400">TOCEPS UNIDO Contract Portal</h5>
-                    <p className="text-xs text-slate-500 mt-1">Live document vault, milestone trackers, and invoice generator.</p>
-                  </div>
-                </Link>
+                <div 
+                  onClick={() => launchSubsidiaryAdmin("/catering/ops/dashboard", "TOCEPS UNIDO")}
+                  className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 cursor-pointer transition-colors"
+                >
+                  <h5 className="font-extrabold text-sm text-emerald-600 dark:text-emerald-400">TOCEPS UNIDO Contract Admin Portal</h5>
+                  <p className="text-xs text-slate-500 mt-1">Live document vault, milestone trackers, and invoice generator with Super-Admin edit rights.</p>
+                </div>
                 <Link href="/executive-dashboard">
                   <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 cursor-pointer transition-colors">
                     <h5 className="font-extrabold text-sm text-sky-600 dark:text-sky-400">Executive Governance Tower</h5>
