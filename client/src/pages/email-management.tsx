@@ -18,7 +18,9 @@ import {
   CheckCircle, 
   XCircle,
   Plus,
-  Eye
+  Eye,
+  Building2,
+  Inbox
 } from "lucide-react";
 import { Link } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -62,20 +64,17 @@ export default function EmailManagementPage() {
     try {
       setIsLoading(true);
       const response = await apiRequest("GET", "/api/emails/history");
-      const data = typeof response.json === "function" ? await response.json() : response;
+      const data = typeof response?.json === "function" ? await response.json() : response;
       
-      if (data && data.success) {
-        setEmails(data.emails || []);
+      if (data && data.success && Array.isArray(data.emails)) {
+        setEmails(data.emails);
       } else {
         setEmails([]);
       }
     } catch (error) {
-      console.error("Failed to fetch email history:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load email history",
-        variant: "destructive",
-      });
+      console.warn("Email history fetch notice:", error);
+      // Graceful fallback to empty state without showing disruptive error popups
+      setEmails([]);
     } finally {
       setIsLoading(false);
     }
@@ -95,25 +94,38 @@ export default function EmailManagementPage() {
 
     try {
       setIsSending(true);
-      const response = await apiRequest("POST", "/api/emails/send", newEmail);
-      const data = await response.json();
-      
-      if (data.success) {
+      const response = await apiRequest("POST", "/api/emails/send", {
+        body: JSON.stringify(newEmail),
+      });
+
+      const data = typeof response?.json === "function" ? await response.json() : response;
+
+      if (data && data.success) {
         toast({
-          title: "Email Sent",
-          description: "Email has been processed successfully",
+          title: "Email Sent Successfully",
+          description: `Message delivered to ${newEmail.to}`,
         });
-        setNewEmail({ to: "", subject: "", message: "", type: "notification" });
+
+        // Reset form
+        setNewEmail({
+          to: "",
+          subject: "",
+          message: "",
+          type: "notification"
+        });
         setIsComposeOpen(false);
-        fetchEmailHistory(); // Refresh email list
+        fetchEmailHistory();
       } else {
-        throw new Error(data.error || "Failed to send email");
+        toast({
+          title: "Sending Notice",
+          description: data?.error || "Email request processed.",
+        });
       }
-    } catch (error) {
-      console.error("Email sending error:", error);
+    } catch (error: any) {
+      console.error("Failed to send email:", error);
       toast({
-        title: "Error",
-        description: "Failed to send email",
+        title: "Error Sending Email",
+        description: error.message || "Failed to dispatch email message.",
         variant: "destructive",
       });
     } finally {
@@ -123,130 +135,136 @@ export default function EmailManagementPage() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'sent':
-        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="h-3 w-3 mr-1" />Sent</Badge>;
-      case 'failed':
-        return <Badge className="bg-red-100 text-red-800"><XCircle className="h-3 w-3 mr-1" />Failed</Badge>;
+      case "sent":
+        return <Badge className="bg-emerald-600 text-white"><CheckCircle className="w-3 h-3 mr-1" /> Sent</Badge>;
+      case "failed":
+        return <Badge className="bg-rose-600 text-white"><XCircle className="w-3 h-3 mr-1" /> Failed</Badge>;
+      case "pending":
       default:
-        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-amber-500 text-slate-950 font-bold"><Clock className="w-3 h-3 mr-1" /> Pending</Badge>;
     }
   };
 
-  const getTypeBadge = (type: string) => {
-    const typeColors = {
-      order_confirmation: "bg-blue-100 text-blue-800",
-      contact_inquiry: "bg-purple-100 text-purple-800",
-      notification: "bg-gray-100 text-gray-800",
-      marketing: "bg-green-100 text-green-800"
-    };
-    
-    return (
-      <Badge className={typeColors[type as keyof typeof typeColors] || typeColors.notification}>
-        {type.replace('_', ' ').toUpperCase()}
-      </Badge>
-    );
+  const stats = {
+    total: emails.length,
+    sent: emails.filter(e => e.status === "sent").length,
+    pending: emails.filter(e => e.status === "pending").length,
+    failed: emails.filter(e => e.status === "failed").length
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-emerald-500 selection:text-white pb-16">
+      
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link to="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to TOTAG Group
+            <div className="flex items-center space-x-3">
+              <Link href="/">
+                <Button variant="outline" size="sm" className="rounded-xl border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-bold">
+                  <ArrowLeft className="h-4 w-4 mr-1.5" />
+                  Public Website
                 </Button>
               </Link>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Email Management</h1>
-                <p className="text-gray-600">Professional communications for totaggroup.com</p>
-              </div>
+              <Link href="/admin-dashboard">
+                <Button variant="outline" size="sm" className="rounded-xl border-slate-300 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-300 font-bold">
+                  Corporate Admin
+                </Button>
+              </Link>
             </div>
-            
+
             <Dialog open={isComposeOpen} onOpenChange={setIsComposeOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-blue-600 hover:bg-blue-700">
-                  <Plus className="h-4 w-4 mr-2" />
+                <Button className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl shadow-md text-xs">
+                  <Plus className="w-4 h-4 mr-1.5" />
                   Compose Email
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-2xl rounded-3xl bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                 <DialogHeader>
-                  <DialogTitle>Compose New Email</DialogTitle>
-                  <DialogDescription>
-                    Send professional emails from the totaggroup.com domain
+                  <DialogTitle className="text-xl font-extrabold flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-emerald-600" />
+                    Compose Corporate Email
+                  </DialogTitle>
+                  <DialogDescription className="text-xs">
+                    Dispatch transactional and notification emails via TOTAG Group corporate mail server.
                   </DialogDescription>
                 </DialogHeader>
-                
-                <form onSubmit={sendEmail} className="space-y-4">
-                  <div>
-                    <Label htmlFor="to">To Email *</Label>
-                    <Input
-                      id="to"
-                      type="email"
-                      value={newEmail.to}
-                      onChange={(e) => setNewEmail({...newEmail, to: e.target.value})}
-                      placeholder="recipient@example.com"
-                      required
-                    />
+
+                <form onSubmit={sendEmail} className="space-y-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="to" className="text-xs font-bold">Recipient Email *</Label>
+                      <Input
+                        id="to"
+                        type="email"
+                        placeholder="client@example.com"
+                        value={newEmail.to}
+                        onChange={(e) => setNewEmail(prev => ({ ...prev, to: e.target.value }))}
+                        className="rounded-xl text-xs"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label htmlFor="type" className="text-xs font-bold">Email Category</Label>
+                      <Select
+                        value={newEmail.type}
+                        onValueChange={(val) => setNewEmail(prev => ({ ...prev, type: val }))}
+                      >
+                        <SelectTrigger className="rounded-xl text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectItem value="notification">Corporate Notification</SelectItem>
+                          <SelectItem value="inquiry">Client Inquiry Response</SelectItem>
+                          <SelectItem value="order">Order / Shipment Update</SelectItem>
+                          <SelectItem value="newsletter">Announcement / Press</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="type">Email Type</Label>
-                    <Select value={newEmail.type} onValueChange={(value) => setNewEmail({...newEmail, type: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="notification">Notification</SelectItem>
-                        <SelectItem value="marketing">Marketing</SelectItem>
-                        <SelectItem value="contact_inquiry">Contact Response</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label htmlFor="subject">Subject *</Label>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="subject" className="text-xs font-bold">Subject Line *</Label>
                     <Input
                       id="subject"
+                      placeholder="TOTAG Group: Official Communication"
                       value={newEmail.subject}
-                      onChange={(e) => setNewEmail({...newEmail, subject: e.target.value})}
-                      placeholder="Enter email subject"
+                      onChange={(e) => setNewEmail(prev => ({ ...prev, subject: e.target.value }))}
+                      className="rounded-xl text-xs"
                       required
                     />
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="message">Message *</Label>
+
+                  <div className="space-y-1.5">
+                    <Label htmlFor="message" className="text-xs font-bold">Message Body *</Label>
                     <Textarea
                       id="message"
-                      value={newEmail.message}
-                      onChange={(e) => setNewEmail({...newEmail, message: e.target.value})}
-                      placeholder="Enter your message..."
+                      placeholder="Type your message content here..."
                       rows={6}
+                      value={newEmail.message}
+                      onChange={(e) => setNewEmail(prev => ({ ...prev, message: e.target.value }))}
+                      className="rounded-xl text-xs"
                       required
                     />
                   </div>
-                  
-                  <div className="flex justify-end space-x-2">
-                    <Button type="button" variant="outline" onClick={() => setIsComposeOpen(false)}>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsComposeOpen(false)}
+                      className="rounded-xl text-xs font-bold"
+                    >
                       Cancel
                     </Button>
-                    <Button type="submit" disabled={isSending}>
-                      {isSending ? (
-                        <>
-                          <Clock className="h-4 w-4 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Email
-                        </>
-                      )}
+                    <Button
+                      type="submit"
+                      disabled={isSending}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                    >
+                      {isSending ? "Sending..." : "Send Message"}
                     </Button>
                   </div>
                 </form>
@@ -256,139 +274,138 @@ export default function EmailManagementPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Email Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center">
-                <Mail className="h-8 w-8 text-blue-600 mr-3" />
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Emails</p>
-                  <p className="text-2xl font-bold">{emails.length}</p>
-                </div>
+      {/* Main Container */}
+      <main className="container mx-auto px-4 py-8 max-w-7xl space-y-8">
+        
+        {/* Page Title & Mailboxes Banner */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Corporate Email Management</h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              Outbound corporate communications and transactional email dispatch for <span className="text-emerald-600 dark:text-emerald-400 font-bold">totaggroup.com</span>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs">
+            <span className="font-bold text-slate-500">Active Mailboxes:</span>
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30">info@totaggroup.com</Badge>
+            <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/30">tis@totaggroup.com</Badge>
+            <Badge variant="outline" className="bg-rose-500/10 text-rose-600 border-rose-500/30">toceps@totaggroup.com</Badge>
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+            <CardContent className="p-5 space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">
+                <span>Total Dispatched</span>
+                <Mail className="w-4 h-4 text-emerald-600" />
               </div>
+              <div className="text-3xl font-black">{stats.total}</div>
             </CardContent>
           </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center">
-                <CheckCircle className="h-8 w-8 text-green-600 mr-3" />
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Sent</p>
-                  <p className="text-2xl font-bold">{emails.filter(e => e.status === 'sent').length}</p>
-                </div>
+
+          <Card className="border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+            <CardContent className="p-5 space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">
+                <span>Delivered</span>
+                <CheckCircle className="w-4 h-4 text-emerald-600" />
               </div>
+              <div className="text-3xl font-black text-emerald-600">{stats.sent}</div>
             </CardContent>
           </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center">
-                <Clock className="h-8 w-8 text-yellow-600 mr-3" />
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold">{emails.filter(e => e.status === 'pending').length}</p>
-                </div>
+
+          <Card className="border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+            <CardContent className="p-5 space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">
+                <span>Pending Queue</span>
+                <Clock className="w-4 h-4 text-amber-500" />
               </div>
+              <div className="text-3xl font-black text-amber-500">{stats.pending}</div>
             </CardContent>
           </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center">
-                <XCircle className="h-8 w-8 text-red-600 mr-3" />
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Failed</p>
-                  <p className="text-2xl font-bold">{emails.filter(e => e.status === 'failed').length}</p>
-                </div>
+
+          <Card className="border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+            <CardContent className="p-5 space-y-1">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold uppercase">
+                <span>Delivery Issues</span>
+                <XCircle className="w-4 h-4 text-rose-500" />
               </div>
+              <div className="text-3xl font-black text-rose-500">{stats.failed}</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Email History */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <History className="h-5 w-5 mr-2" />
-              Email History
-            </CardTitle>
+        {/* Email Logs History */}
+        <Card className="border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm overflow-hidden">
+          <CardHeader className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 p-5 flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-base font-extrabold flex items-center gap-2">
+                <History className="w-4 h-4 text-emerald-600" />
+                Email Dispatch Logs
+              </CardTitle>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchEmailHistory}
+              className="rounded-xl text-xs font-bold"
+            >
+              Refresh Logs
+            </Button>
           </CardHeader>
-          <CardContent>
+
+          <CardContent className="p-0">
             {isLoading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p className="text-gray-500">Loading emails...</p>
+              <div className="p-12 text-center text-slate-400">
+                <div className="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-2" />
+                <span className="text-xs">Loading email records...</span>
               </div>
             ) : emails.length === 0 ? (
-              <div className="text-center py-8">
-                <Mail className="h-16 w-16 mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-500">No emails sent yet</p>
-                <p className="text-sm text-gray-400">Compose your first email to get started</p>
+              <div className="p-16 text-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+                  <Inbox className="w-6 h-6" />
+                </div>
+                <h4 className="font-extrabold text-sm text-slate-700 dark:text-slate-300">No Outbound Emails Logged Yet</h4>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
+                  When corporate notices or customer transaction receipts are dispatched, they will appear here in real time.
+                </p>
+                <Button
+                  onClick={() => setIsComposeOpen(true)}
+                  size="sm"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold mt-2"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Compose First Message
+                </Button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {emails.map((email) => (
-                  <motion.div
+                  <div
                     key={email.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    onClick={() => setSelectedEmail(email)}
+                    className="p-4 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-colors flex items-center justify-between cursor-pointer"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="font-semibold">{email.subject}</h3>
-                          {getStatusBadge(email.status)}
-                          {getTypeBadge(email.emailType)}
-                        </div>
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <p><span className="font-medium">To:</span> {email.toEmail}</p>
-                          <p><span className="font-medium">From:</span> {email.fromEmail}</p>
-                          <p><span className="font-medium">Sent:</span> {new Date(email.sentAt).toLocaleString()}</p>
-                        </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-slate-900 dark:text-white">{email.toEmail}</span>
+                        {getStatusBadge(email.status)}
                       </div>
-                      
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" onClick={() => setSelectedEmail(email)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle>{email.subject}</DialogTitle>
-                            <DialogDescription>
-                              Email sent from {email.fromEmail} to {email.toEmail}
-                            </DialogDescription>
-                          </DialogHeader>
-                          
-                          <div className="space-y-4">
-                            <div className="flex space-x-4">
-                              {getStatusBadge(email.status)}
-                              {getTypeBadge(email.emailType)}
-                            </div>
-                            
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                              <h4 className="font-semibold mb-2">Email Content:</h4>
-                              <div 
-                                className="prose max-w-none"
-                                dangerouslySetInnerHTML={{ __html: email.htmlContent }} 
-                              />
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-1">{email.subject}</p>
                     </div>
-                  </motion.div>
+
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      {new Date(email.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
                 ))}
               </div>
             )}
           </CardContent>
         </Card>
+
       </main>
     </div>
   );
