@@ -62,10 +62,12 @@ export default function EmailManagementPage() {
     try {
       setIsLoading(true);
       const response = await apiRequest("GET", "/api/emails/history");
-      const data = await response.json();
+      const data = typeof response.json === "function" ? await response.json() : response;
       
-      if (data.success) {
-        setEmails(data.emails);
+      if (data && data.success) {
+        setEmails(data.emails || []);
+      } else {
+        setEmails([]);
       }
     } catch (error) {
       console.error("Failed to fetch email history:", error);
