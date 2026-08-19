@@ -16,7 +16,10 @@ import {
   PhoneCall,
   PhoneOff,
   Radio,
-  CheckCircle2
+  CheckCircle2,
+  Building2,
+  FileText,
+  DollarSign
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -28,96 +31,155 @@ interface Message {
   links?: { label: string; url: string }[];
 }
 
-const TOTAG_KNOWLEDGE_STANDARD = [
+const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
+  // FAREWELL
   {
     keywords: ["bye", "goodbye", "that is all", "that's all", "nothing else", "no more", "im done", "i am done", "no thanks", "no thank you", "thank you", "thanks"],
-    response: "Thank you for reaching out to TOTAG Group of Companies Ltd. It was a pleasure assisting you. We look forward to serving you again soon. Have a wonderful day!",
+    response: "Thank you for contacting TOTAG Group of Companies Ltd. It was our absolute pleasure assisting you. Remember our promise: 'Deliver the right solution, at the right standard, at the right time.' We look forward to serving you again. Have a wonderful day!",
     isFarewell: true
   },
+
+  // LEADERSHIP / CEO / FOUNDERS / MANAGEMENT
   {
-    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening"],
-    response: "Hello! Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. We deliver industry-leading enterprise solutions across our nine specialized subsidiaries, connecting West Africa to global markets worldwide. How may I assist you today?",
+    keywords: ["ceo", "chief executive officer", "founder", "co-founder", "leadership", "president", "owner", "tarwoyouberkowu", "gwoah", "tonieh", "deputy ceo", "who runs", "management"],
+    response: "TOTAG Group of Companies Ltd is led by Co-Founder & Chief Executive Officer (CEO) M. Tarwoyouberkowu Gwoah, who provides strategic leadership, technology vision, and procurement oversight with an extensive background in IT, agriculture, and field operations. The company is co-led by Co-Founder & Deputy CEO Mrs. Tonieh Alpha Gwoah, who oversees executive administration, procurement documentation, client engagement, and women's leadership initiatives.",
+    links: [
+      { label: "About TOTAG Leadership", url: "/#about" },
+      { label: "Corporate Contact Desk", url: "/#contact" }
+    ]
+  },
+
+  // HEADQUARTERS / LOCATION / CONTACT / PHONE NUMBERS
+  {
+    keywords: ["location", "address", "headquarters", "hq", "where are you", "where is totag", "phone", "number", "contact", "call", "office", "paynesville", "montserrado", "thinker's village"],
+    response: "TOTAG Group is headquartered at Guest House Road, Thinker's Village Community, Paynesville, Montserrado County, Liberia. You can reach us by phone at +231 777 511 391, +231 777 666 999, +231 886 511 391, or +231 887 666 999. Our corporate email is info@totaggroup.com.",
+    links: [
+      { label: "Contact Corporate Office", url: "/#contact" },
+      { label: "Corporate Email Management", url: "/email-management" }
+    ]
+  },
+
+  // QUOTE REQUESTS FOR ALL 9 SUBSIDIARIES
+  {
+    keywords: ["quote", "quotation", "price", "pricing", "cost", "how much", "estimate", "proposal", "tender", "bid", "invoice", "proforma"],
+    response: "We provide formal quotations, proforma invoices, technical proposals, and institutional tender responses across all 9 subsidiaries. To request an instant quote, please specify the subsidiary (e.g., Cargo Logistics, Farm Produce, Solar Microgrids, IT SaaS, TOCEPS Catering, Construction, Petroleum, Stationery, or Merchandise) or contact our procurement desk at info@totaggroup.com or call +231 777 511 391.",
+    links: [
+      { label: "Request a Corporate Quote", url: "/#contact" },
+      { label: "TOCEPS Catering Quote & Invoices", url: "/catering" },
+      { label: "Cargo Logistics Quote", url: "/cargo" },
+      { label: "Solar Energy Assessment", url: "/solar" }
+    ]
+  },
+
+  // GREETING / OVERVIEW / COMPANY SNAPSHOT
+  {
+    keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening", "company profile", "about"],
+    response: "Hello! Welcome to TOTAG Group of Companies Ltd. Our motto is 'Innovating Tomorrow, Empowering Today.' Headquartered in Paynesville, Liberia, we deliver integrated solutions across 9 business divisions spanning Cargo Logistics, Agriculture, IT & SaaS, Solar Smart Power, Catering, Petroleum, Construction, General Merchandise, and Stationery Supplies. How may I assist you today?",
     links: [
       { label: "Explore All 9 Subsidiaries", url: "/#services" },
-      { label: "Contact Corporate Office", url: "/#contact" }
+      { label: "Request a Formal Quote", url: "/#contact" }
     ]
   },
+
+  // 1. CARGO HANDLING & LOGISTICS
   {
-    keywords: ["cargo", "shipping", "freight", "logistics", "global", "port", "tracking", "container", "vessel", "ship", "customs", "international"],
-    response: "TOTAG Cargo Handling & Logistics provides comprehensive maritime freight, international air cargo, and customs clearance bridging Liberia's commercial ports with global trade centers worldwide. We offer real-time shipment tracking and secure bonded warehousing.",
+    keywords: ["cargo", "shipping", "freight", "logistics", "port", "tracking", "container", "vessel", "ship", "customs", "delivery", "field delivery"],
+    response: "TOTAG Cargo Handling & Logistics provides international maritime freight forwarding, air cargo, port customs clearance, and nationwide field delivery across Liberia's 15 counties. We ensure complete packaging review, real-time shipment tracking, and secure delivery confirmation.",
     links: [
       { label: "Cargo Logistics Portal", url: "/cargo" },
-      { label: "Track Shipment", url: "/order-tracking" }
+      { label: "Track Your Shipment", url: "/order-tracking" }
     ]
   },
+
+  // 2. TOTAG FARM & AGRIBUSINESS
   {
-    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "cybersecurity", "app", "custom software"],
-    response: "TOTAG IT Services & SaaS delivers enterprise managed IT infrastructure, cybersecurity, and our proprietary 14-module FIMS Financial & HRMIS Enterprise Suite. You can reach our IT department directly at tis@totaggroup.com.",
+    keywords: ["farm", "agriculture", "agribusiness", "crops", "produce", "livestock", "cassava", "poultry", "palm oil", "fertilizer", "seeds", "farming tools", "irrigation"],
+    response: "TOTAG FARM & Agribusiness leads sustainable agriculture, crop production, poultry, livestock, and post-harvest agro-processing in Liberia. We supply agricultural inputs, fertilizers, irrigation systems, and climate-smart farming solutions to strengthen food security.",
+    links: [
+      { label: "TOTAG Farm Hub", url: "/farm" },
+      { label: "Farm Management Console", url: "/farm/login" }
+    ]
+  },
+
+  // 3. SOLAR & SMART ENERGY
+  {
+    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "storage", "telemetry", "noc", "microgrid"],
+    response: "TOTAG Solar Smart Power engineers turnkey solar microgrids, Deye hybrid inverter systems, lithium battery storage, solar irrigation pumps, and 24/7 telemetry Network Operations Center monitoring for commercial, agricultural, and residential facilities.",
+    links: [
+      { label: "Solar Energy & Deye Systems", url: "/solar" }
+    ]
+  },
+
+  // 4. IT SERVICES & 14 SAAS MODULES
+  {
+    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "cybersecurity", "app", "custom software", "modules", "hrm"],
+    response: "TOTAG IT Services (TIS) delivers managed enterprise IT infrastructure, cybersecurity, and our proprietary 14-module FIMS Financial & HRMIS Enterprise Suite (General Ledger, Payroll, Biometrics, Leave, Procurement, and Compliance). You can reach IT directly at tis@totaggroup.com.",
     links: [
       { label: "IT Services Portal", url: "/it-services" },
-      { label: "Enterprise SaaS Modules", url: "/saas" }
+      { label: "Enterprise SaaS Suite", url: "/saas" }
     ]
   },
+
+  // 5. TOCEPS CATERING & EVENTS (UNIDO)
   {
-    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "invoice", "hospitality"],
-    response: "TOTAG Catering & Event Planning Services (TOCEPS) manages institutional catering, UNIDO contract deliverables, executive banquets, and social event hospitality. For billing, invoices, or event reservations, please email toceps@totaggroup.com.",
+    keywords: ["catering", "toceps", "food", "event", "unido", "buffet", "meal", "wedding", "banquet", "hospitality", "conference catering"],
+    response: "TOTAG Catering & Event Planning Services (TOCEPS) manages institutional catering, UNIDO contract deliverables, executive banquets, wedding receptions, and conference hospitality with certified food safety standards. Email toceps@totaggroup.com for bookings and event invoices.",
     links: [
       { label: "TOCEPS Catering Services", url: "/catering" },
       { label: "Document Vault & Dashboard", url: "/catering/ops/dashboard" }
     ]
   },
+
+  // 6. PETROLEUM SERVICES
   {
-    keywords: ["farm", "agriculture", "livestock", "crops", "produce", "food supply", "cassava", "poultry", "palm oil", "agribusiness"],
-    response: "TOTAG FARM & Agribusiness leads sustainable agriculture, organic crop production, poultry, and livestock farming in Liberia, strengthening food security and local commercial agro-processing.",
-    links: [
-      { label: "TOTAG Farm Hub", url: "/farm" }
-    ]
-  },
-  {
-    keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "telemetry", "noc"],
-    response: "TOTAG Solar Energy & Smart Power engineers turnkey commercial and residential solar microgrids, Deye hybrid inverter systems, lithium battery storage, and 24/7 telemetry Network Operations Center monitoring.",
-    links: [
-      { label: "Solar Energy & Deye Systems", url: "/solar" }
-    ]
-  },
-  {
-    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil", "haulage"],
-    response: "TOTAG Petroleum Services operates certified bulk fuel storage facilities, commercial petroleum supply depots, and reliable fuel haulage logistics across Liberia.",
+    keywords: ["petroleum", "fuel", "diesel", "gasoline", "depot", "oil", "haulage", "bulk fuel"],
+    response: "TOTAG Petroleum Services operates certified bulk fuel storage facilities, commercial petroleum supply depots, and reliable fuel haulage logistics across Liberia with an emphasis on safety and dependable supply.",
     links: [
       { label: "Petroleum Services", url: "/petroleum" }
     ]
   },
+
+  // 7. GENERAL CONSTRUCTION
   {
-    keywords: ["construction", "building", "civil", "roads", "infrastructure", "engineering"],
-    response: "TOTAG General Construction delivers civil engineering, structural construction, road rehabilitation, and modern commercial facilities built to international safety standards.",
+    keywords: ["construction", "building", "civil", "roads", "infrastructure", "engineering", "renovation", "rehabilitation"],
+    response: "TOTAG General Construction provides civil engineering, commercial building construction, road rehabilitation, facility improvement, and structural works delivered to international quality and safety standards.",
     links: [
       { label: "Construction Services", url: "/construction" }
     ]
   },
+
+  // 8. GENERAL MERCHANDISE (TGM)
   {
-    keywords: ["stationery", "office", "supplies", "printing", "paper", "procurement"],
-    response: "TOTAG Stationery Supplies provides bulk B2B office procurement, enterprise printing materials, and scholastic supplies for corporate and institutional clients.",
-    links: [
-      { label: "Stationery Supplies", url: "/stationery" }
-    ]
-  },
-  {
-    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods", "fmcg"],
-    response: "TOTAG General Merchandise (TGM) manages large-scale wholesale and retail distribution of quality consumer goods and commercial merchandise across regional markets.",
+    keywords: ["merchandise", "tgm", "retail", "wholesale", "goods", "fmcg", "consumer goods"],
+    response: "TOTAG General Merchandise (TGM) manages large-scale wholesale procurement, FMCG distribution, and retail supply of consumer and commercial goods across regional markets.",
     links: [
       { label: "General Merchandise Hub", url: "/general-merchandise" }
     ]
   },
+
+  // 9. STATIONERY & OFFICE SUPPLIES
   {
-    keywords: ["contact", "email", "phone", "address", "location", "office", "where", "headquarters", "monrovia"],
-    response: "TOTAG Group of Companies Ltd is headquartered in Monrovia, Liberia with global enterprise trade networks worldwide. You can contact our corporate desk at info@totaggroup.com, IT services at tis@totaggroup.com, or Catering at toceps@totaggroup.com.",
+    keywords: ["stationery", "office", "supplies", "printing", "paper", "procurement", "scholastic", "furniture"],
+    response: "TOTAG Stationery Supplies provides bulk B2B office procurement, executive furniture, computer consumables, and scholastic printing materials for corporate, government, and institutional clients.",
     links: [
-      { label: "Corporate Contact Form", url: "/#contact" }
+      { label: "Stationery Supplies", url: "/stationery" }
     ]
   },
+
+  // COMPLIANCE / UNGM / QUANTUM / PROCUREMENT READINESS
   {
-    keywords: ["subsidiary", "subsidiaries", "companies", "services", "all", "nine", "9"],
-    response: "TOTAG Group encompasses 9 specialized subsidiaries: 1. Cargo Handling & Logistics, 2. Farm & Agribusiness, 3. Petroleum Services, 4. General Construction, 5. General Merchandise, 6. TOCEPS Catering & Event Planning, 7. Managed IT Services & SaaS, 8. Stationery Supplies, and 9. Solar Smart Power.",
+    keywords: ["compliance", "ungm", "quantum", "tax", "registration", "documentation", "donor", "procurement readiness", "standards"],
+    response: "TOTAG Group maintains complete procurement readiness for institutional tenders, Quantum, UNGM, government, NGO, and multilateral donor formats. We provide formal quotations, certified tax documentation, technical proposals, and warranty commitments.",
+    links: [
+      { label: "Corporate Governance Console", url: "/admin-dashboard" },
+      { label: "Contact Procurement Desk", url: "/#contact" }
+    ]
+  },
+
+  // ALL 9 SUBSIDIARIES SUMMARY
+  {
+    keywords: ["subsidiary", "subsidiaries", "companies", "services", "all", "nine", "9", "divisions"],
+    response: "TOTAG Group encompasses 9 specialized subsidiaries: 1. Cargo Handling & Logistics, 2. TOTAG Farm & Agribusiness, 3. Solar Smart Power, 4. Managed IT Services & SaaS, 5. TOCEPS Catering & Events, 6. Petroleum Services, 7. General Construction, 8. General Merchandise, and 9. Stationery Supplies.",
     links: [
       { label: "View All 9 Subsidiaries", url: "/#services" }
     ]
@@ -127,17 +189,17 @@ const TOTAG_KNOWLEDGE_STANDARD = [
 function getBotResponse(userText: string): { response: string; links?: { label: string; url: string }[]; isFarewell?: boolean } {
   const lower = userText.toLowerCase().trim();
 
-  for (const item of TOTAG_KNOWLEDGE_STANDARD) {
+  for (const item of TOTAG_COMPREHENSIVE_KNOWLEDGE) {
     if (item.keywords.some((kw) => lower.includes(kw))) {
       return { response: item.response, links: item.links, isFarewell: (item as any).isFarewell };
     }
   }
 
   return {
-    response: `Thank you for your inquiry regarding "${userText}". TOTAG Group delivers enterprise solutions across Cargo Handling, IT & SaaS, TOCEPS Catering, Agribusiness, Solar Power, Petroleum, Construction, General Merchandise, and Stationery Supplies. Would you like to know more about a specific subsidiary?`,
+    response: `Thank you for asking about "${userText}". TOTAG Group of Companies Ltd provides solutions across our 9 subsidiaries under CEO M. Tarwoyouberkowu Gwoah. You can request a quote, speak directly with our team at +231 777 511 391, or email info@totaggroup.com. How else may I assist you?`,
     links: [
       { label: "Explore Our Subsidiaries", url: "/#services" },
-      { label: "Contact Us Directly", url: "/#contact" }
+      { label: "Request a Formal Quote", url: "/#contact" }
     ]
   };
 }
@@ -156,12 +218,12 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Welcome to TOTAG Group of Companies Ltd. I am your automated corporate voice assistant in Monrovia, Liberia. I am listening live to answer your questions!",
+      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. I can provide quotes, details on our 9 subsidiaries, leadership information, and contact numbers. How may I assist you?",
       timestamp: "Just now",
       links: [
+        { label: "Request a Formal Quote", url: "/#contact" },
         { label: "Explore 9 Subsidiaries", url: "/#services" },
-        { label: "Global Cargo Logistics", url: "/cargo" },
-        { label: "Contact Corporate Office", url: "/#contact" }
+        { label: "Leadership & Company Profile", url: "/#about" }
       ]
     }
   ]);
@@ -209,7 +271,7 @@ export default function VoiceChatWidget() {
     setIsListening(false);
     isAgentActiveRef.current = false;
 
-    const farewellText = customText || "Thank you for visiting TOTAG Group of Companies Ltd. We look forward to serving you again. Have a wonderful day!";
+    const farewellText = customText || "Thank you for reaching out to TOTAG Group of Companies Ltd. 'Deliver the right solution, at the right standard, at the right time.' Have a wonderful day!";
     
     const botMsg: Message = {
       id: `bot-${Date.now()}`,
@@ -221,7 +283,6 @@ export default function VoiceChatWidget() {
     setSessionStatus("Closing session...");
 
     speakText(farewellText, () => {
-      // Once voice completes speaking farewell, close widget smoothly
       setTimeout(() => {
         setIsOpen(false);
         setSessionStatus("Ready");
@@ -229,7 +290,7 @@ export default function VoiceChatWidget() {
     });
   };
 
-  // Text-To-Speech with Liberian/West African Vocal Cadence + callback on end
+  // Text-To-Speech with Liberian/West African Vocal Cadence
   const speakText = (text: string, onEndCallback?: () => void) => {
     if (!voiceEnabled || !window.speechSynthesis) {
       if (onEndCallback) onEndCallback();
@@ -273,7 +334,7 @@ export default function VoiceChatWidget() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Handle Query Submission and automatically continue conversational loop
+  // Handle Query Submission
   const handleUserQuery = (queryText: string) => {
     if (!queryText.trim()) return;
 
@@ -314,7 +375,6 @@ export default function VoiceChatWidget() {
 
       setMessages((prev) => [...prev, botMsg]);
 
-      // Speak response, and ON COMPLETION, automatically listen again for next question!
       speakText(response, () => {
         if (isAgentActiveRef.current) {
           startListeningLoop();
@@ -323,7 +383,7 @@ export default function VoiceChatWidget() {
     }, 350);
   };
 
-  // Autonomous Listening Loop with Auto-Close Silence Detection
+  // Autonomous Listening Loop
   const startListeningLoop = () => {
     clearSilenceTimers();
     stopSpeaking();
@@ -352,8 +412,7 @@ export default function VoiceChatWidget() {
         setIsListening(true);
         setSessionStatus("Listening... (Speak your question)");
 
-        // Start 8-second auto-close silence timer if customer doesn't speak further
-        let timeLeft = 8;
+        let timeLeft = 9;
         setSilenceCountdown(timeLeft);
         countdownIntervalRef.current = setInterval(() => {
           timeLeft -= 1;
@@ -368,7 +427,7 @@ export default function VoiceChatWidget() {
           if (isAgentActiveRef.current && !capturedText.trim()) {
             triggerFarewellAndClose();
           }
-        }, 8000);
+        }, 9000);
       };
 
       recognition.onspeechstart = () => {
@@ -399,9 +458,7 @@ export default function VoiceChatWidget() {
 
       recognition.onerror = (event: any) => {
         console.warn("Speech recognition notice:", event.error);
-        if (event.error === "no-speech") {
-          // If no speech was detected in this cycle, handle silence or retry
-        } else if (event.error === "not-allowed") {
+        if (event.error === "not-allowed") {
           setIsListening(false);
           setSessionStatus("Microphone access blocked");
         }
@@ -423,12 +480,9 @@ export default function VoiceChatWidget() {
     }
   };
 
-  // Start Autonomous Hands-Free Conversation when User Opens Widget
   const openConversationSession = () => {
     setIsOpen(true);
     isAgentActiveRef.current = true;
-    
-    // Automatically start listening immediately after welcoming
     setTimeout(() => {
       startListeningLoop();
     }, 400);
@@ -455,12 +509,12 @@ export default function VoiceChatWidget() {
   };
 
   const quickPrompts = [
-    "Tell me about the 9 Subsidiaries",
-    "Global Cargo & Freight routes",
-    "IT Services & SaaS modules",
-    "TOCEPS Catering & UNIDO contracts",
-    "Solar Power & Deye inverters",
-    "Contact Corporate Office"
+    "Who is the CEO of TOTAG Group?",
+    "How do I request a quote?",
+    "What are the 9 Subsidiaries?",
+    "What are your phone numbers & HQ?",
+    "Tell me about Cargo Logistics",
+    "TOCEPS Catering & UNIDO contracts"
   ];
 
   return (
@@ -474,9 +528,9 @@ export default function VoiceChatWidget() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="w-[380px] sm:w-[420px] max-w-[92vw] h-[610px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
+            className="w-[380px] sm:w-[420px] max-w-[92vw] h-[620px] max-h-[85vh] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col overflow-hidden mb-4"
           >
-            {/* Header with Live Conversation Badge */}
+            {/* Header */}
             <div className="p-4 bg-gradient-to-r from-slate-900 via-slate-950 to-emerald-950 text-white flex items-center justify-between border-b border-emerald-500/20">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -487,18 +541,17 @@ export default function VoiceChatWidget() {
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
-                    TOTAG Voice Assistant
+                    TOTAG Corporate Assistant
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 font-semibold flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                      Live Call
+                      Live AI
                     </span>
                   </h4>
-                  <p className="text-[11px] text-emerald-300/90 font-medium">Monrovia, Liberia ⟷ Global Reach</p>
+                  <p className="text-[11px] text-emerald-300/90 font-medium">Paynesville, Liberia ⟷ Global Reach</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1">
-                {/* Voice Output Mute Toggle */}
                 <button
                   onClick={() => {
                     if (isSpeaking) stopSpeaking();
@@ -512,18 +565,17 @@ export default function VoiceChatWidget() {
                   {voiceEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
                 </button>
 
-                {/* End Session Button */}
                 <button
                   onClick={closeConversationSession}
                   className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-                  title="End Conversation"
+                  title="Close Assistant"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* LIVE CONVERSATION STATUS BAR */}
+            {/* Status Bar */}
             <div className="bg-slate-950/80 border-b border-emerald-500/20 px-4 py-2.5 flex items-center justify-between text-xs text-white">
               <div className="flex items-center gap-2.5 flex-1 min-w-0">
                 {isListening ? (
@@ -555,7 +607,6 @@ export default function VoiceChatWidget() {
                 </div>
               </div>
 
-              {/* Silence countdown auto-close badge */}
               {isListening && silenceCountdown !== null && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/10 text-slate-300 font-mono shrink-0 ml-2">
                   Auto-closes in {silenceCountdown}s
@@ -563,14 +614,13 @@ export default function VoiceChatWidget() {
               )}
             </div>
 
-            {/* Message Chat Body */}
+            {/* Chat Body */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex items-start gap-2.5 ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
                 >
-                  {/* Avatar */}
                   <div
                     className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
                       msg.sender === "user"
@@ -581,9 +631,8 @@ export default function VoiceChatWidget() {
                     {msg.sender === "user" ? <User className="w-3.5 h-3.5" /> : <img src="/images/totag-logo.png" alt="TOTAG" className="w-4 h-4 object-contain" />}
                   </div>
 
-                  {/* Message Bubble */}
                   <div
-                    className={`max-w-[78%] rounded-2xl p-3 leading-relaxed ${
+                    className={`max-w-[80%] rounded-2xl p-3.5 leading-relaxed ${
                       msg.sender === "user"
                         ? "bg-sky-600 text-white rounded-tr-sm shadow-md font-medium"
                         : "bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-white/5 rounded-tl-sm font-normal"
@@ -591,7 +640,6 @@ export default function VoiceChatWidget() {
                   >
                     <p>{msg.text}</p>
 
-                    {/* Quick Action Navigation Links */}
                     {msg.links && msg.links.length > 0 && (
                       <div className="mt-2.5 pt-2 border-t border-slate-200/60 dark:border-white/10 space-y-1.5">
                         {msg.links.map((link, idx) => (
@@ -625,11 +673,11 @@ export default function VoiceChatWidget() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Topic Chips */}
+            {/* Quick Prompts */}
             <div className="px-4 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
               <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-emerald-500" />
-                Tap to Ask in Voice:
+                Tap to Ask in 1-Click:
               </p>
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {quickPrompts.map((prompt, idx) => (
@@ -647,7 +695,7 @@ export default function VoiceChatWidget() {
               </div>
             </div>
 
-            {/* Footer Input Bar with End Call button */}
+            {/* Input Bar */}
             <div className="p-3 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-white/10">
               <form onSubmit={handleTextSubmit} className="flex items-center gap-2">
                 <Button
@@ -669,14 +717,14 @@ export default function VoiceChatWidget() {
                       ? "bg-rose-600 hover:bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-600/40 ring-4 ring-rose-500/20"
                       : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-500/20"
                   }`}
-                  title={isListening ? "Pause Listening" : "Tap to Speak"}
+                  title={isListening ? "Pause Mic" : "Tap to Speak"}
                 >
                   {isListening ? <Mic className="w-5 h-5 animate-pulse" /> : <MicOff className="w-5 h-5 text-white/80" />}
                 </Button>
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening... or type message" : "Type your question..."}
+                  placeholder={isListening ? "Listening... or type message" : "Ask about CEO, quotes, or services..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
@@ -697,7 +745,7 @@ export default function VoiceChatWidget() {
                   size="sm"
                   variant="outline"
                   className="h-11 px-3 rounded-2xl border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 text-xs font-bold shrink-0"
-                  title="Say Goodbye & End Call"
+                  title="Say Goodbye"
                 >
                   <PhoneOff className="w-4 h-4 sm:mr-1" />
                   <span className="hidden sm:inline">End Call</span>
@@ -708,7 +756,7 @@ export default function VoiceChatWidget() {
         )}
       </AnimatePresence>
 
-      {/* FLOATING ACTION TRIGGER BUTTON WITH TOTAG LOGO */}
+      {/* FLOATING TRIGGER BUTTON */}
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -738,19 +786,14 @@ export default function VoiceChatWidget() {
               ? "bg-slate-900 text-white ring-4 ring-emerald-500/30"
               : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border-2 border-emerald-500 ring-4 ring-emerald-500/20 hover:ring-emerald-500/40"
           }`}
-          title="TOTAG Automated Conversational Voice Agent"
+          title="TOTAG Corporate AI Assistant"
         >
-          {/* Pulsing ring indicator */}
           <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping pointer-events-none" />
-
-          {/* TOTAG GROUP LOGO */}
           <img
             src="/images/totag-logo.png"
             alt="TOTAG Group Logo"
             className="w-full h-full object-contain relative z-10"
           />
-
-          {/* Small Microphone Indicator Badge */}
           <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-md border-2 border-white dark:border-slate-900 z-20">
             <Mic className="w-2.5 h-2.5" />
           </div>
