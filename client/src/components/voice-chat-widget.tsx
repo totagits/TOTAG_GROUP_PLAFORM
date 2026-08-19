@@ -46,6 +46,133 @@ interface Message {
   };
 }
 
+// DYNAMIC SOLAR BOQ GENERATOR (Parses exact requested capacity & exact application/place)
+function generateDynamicSolarBOQ(userText: string): { 
+  response: string; 
+  links: { label: string; url: string }[];
+  isQuote: boolean;
+  quoteData: any;
+} | null {
+  const lower = userText.toLowerCase();
+
+  // Check if query is about solar or power system
+  const isSolarQuery = lower.includes("solar") || lower.includes("inverter") || lower.includes("battery") || lower.includes("kva") || lower.includes("kw") || lower.includes("power system");
+  if (!isSolarQuery) return null;
+
+  // Extract Capacity (e.g., 3kva, 5kw, 10 kva, 15kw, 30kva, 50kw, etc.)
+  const capMatch = lower.match(/(\d+(?:\.\d+)?)\s*(?:kva|kw|kilo\s*watts?|kilovolt\s*amps?)/);
+  let cap = capMatch ? parseFloat(capMatch[1]) : 0;
+
+  // Fallback default capacity if not explicitly mentioned but asking for solar quote
+  if (cap === 0) {
+    if (lower.includes("quote") || lower.includes("cost") || lower.includes("price") || lower.includes("how much")) {
+      cap = 5; // standard baseline
+    } else {
+      return null;
+    }
+  }
+
+  // Extract Application / Location Context
+  let appType = "General Facility";
+  if (lower.includes("house") || lower.includes("home") || lower.includes("residence") || lower.includes("residential") || lower.includes("apartment") || lower.includes("compound")) {
+    appType = "Residential (House / Home)";
+  } else if (lower.includes("clinic") || lower.includes("phc") || lower.includes("health center") || lower.includes("dispensary")) {
+    appType = "Healthcare Clinic (PHC)";
+  } else if (lower.includes("hospital") || lower.includes("medical center") || lower.includes("surgical")) {
+    appType = "Hospital / Medical Center";
+  } else if (lower.includes("farm") || lower.includes("poultry") || lower.includes("irrigation") || lower.includes("agri")) {
+    appType = "Farm & Agribusiness Facility";
+  } else if (lower.includes("store") || lower.includes("shop") || lower.includes("supermarket") || lower.includes("retail")) {
+    appType = "Commercial Store / Retail";
+  } else if (lower.includes("office") || lower.includes("business") || lower.includes("corporate") || lower.includes("bank")) {
+    appType = "Commercial Office Building";
+  } else if (lower.includes("school") || lower.includes("university") || lower.includes("college")) {
+    appType = "Educational Institution";
+  } else if (lower.includes("factory") || lower.includes("warehouse") || lower.includes("industrial") || lower.includes("depot")) {
+    appType = "Industrial Facility / Warehouse";
+  }
+
+  // Engineering Calculations
+  const panelKwp = (cap * 1.1).toFixed(1);
+  const panelCount = Math.ceil((cap * 1100) / 550);
+  const batteryKwh = (cap * 1.8).toFixed(1);
+  const isThreePhase = cap >= 20;
+
+  // Sized Pricing Models
+  let inverterCost = Math.round(cap * 260 + 200);
+  let batteryCost = Math.round(cap * 420 + 250);
+  let panelCost = Math.round(panelCount * 165);
+  let bosCost = Math.round(cap * 80 + 120);
+  let switchgearCost = Math.round(cap * 60 + 100);
+  let telemetryCost = 140;
+  let installCost = Math.round(cap * 160 + 250);
+
+  let totalCost = inverterCost + batteryCost + panelCost + bosCost + switchgearCost + telemetryCost + installCost;
+
+  const quoteData = {
+    title: `${cap} kVA Turnkey Solar Power System`,
+    target: `${appType} — Complete Turnkey Package`,
+    totalPrice: `$${totalCost.toLocaleString()} USD (Turnkey Installed)`,
+    items: [
+      { 
+        desc: isThreePhase ? "3-Phase Hybrid Inverter" : "Hybrid Inverter", 
+        specs: `${cap}.0 kW Deye / Pure Sine Wave ${isThreePhase ? "3-Phase 380V" : "48V"} Inverter (Dual MPPT, Auto-Transfer)`, 
+        qty: "1 Unit", 
+        estCost: `$${inverterCost.toLocaleString()}` 
+      },
+      { 
+        desc: "LiFePO4 Lithium Battery Bank", 
+        specs: `${batteryKwh} kWh (${cap >= 15 ? "High-Voltage Rack" : "48V"}) LiFePO4 Lithium Iron Phosphate with Smart BMS`, 
+        qty: "1 Bank", 
+        estCost: `$${batteryCost.toLocaleString()}` 
+      },
+      { 
+        desc: "Solar PV Generation Array", 
+        specs: `${panelCount}x 550W Tier-1 Monocrystalline PERC Panels (${panelKwp} kWp Total Generation)`, 
+        qty: `${panelCount} Pcs`, 
+        estCost: `$${panelCost.toLocaleString()}` 
+      },
+      { 
+        desc: "Balance of System (BOS)", 
+        specs: `Anodized Aluminum Racking, 4mm²/6mm² UV DC Solar Cabling, MC4 Connectors`, 
+        qty: "1 Set", 
+        estCost: `$${bosCost.toLocaleString()}` 
+      },
+      { 
+        desc: "Protection Switchgear", 
+        specs: `Pre-wired AC/DC Distribution Box, Type II Surge Protection (SPD), DC Breakers & Earth Rod`, 
+        qty: "1 Set", 
+        estCost: `$${switchgearCost.toLocaleString()}` 
+      },
+      { 
+        desc: "24/7 Smart Telemetry", 
+        specs: `WiFi/GSM Datalogger with Real-Time NOC Cloud Dashboard & Mobile Battery App`, 
+        qty: "1 Unit", 
+        estCost: `$${telemetryCost.toLocaleString()}` 
+      },
+      { 
+        desc: "Turnkey Installation & Commissioning", 
+        specs: `Delivery to ${appType}, Mechanical/Electrical Labor, Load Testing & 5-Year Warranty`, 
+        qty: "Turnkey", 
+        estCost: `$${installCost.toLocaleString()}` 
+      }
+    ],
+    notes: `Custom-engineered for ${appType}. Compliant with international electrical standards, UNGM, and Ministry of Health/Energy regulations.`
+  };
+
+  const response = `Here is your itemized turnkey Bill of Quantities (BOQ) quotation for a ${cap} kVA Solar Power System for your ${appType.toLowerCase()}. The complete operational package includes a ${cap}kW Deye hybrid inverter, ${panelCount} Tier-1 monocrystalline solar panels (${panelKwp} kWp), a ${batteryKwh} kWh LiFePO4 lithium battery bank with smart BMS, aluminum mounting racks, pre-wired AC/DC protection switchgear, smart telemetry monitoring, and full turnkey installation with a 5-year warranty for approximately $${totalCost.toLocaleString()} USD.`;
+
+  return {
+    response,
+    isQuote: true,
+    quoteData,
+    links: [
+      { label: `Request Formal Proforma PDF for ${cap} kVA`, url: "/#contact" },
+      { label: "Explore TOTAG Solar Division", url: "/solar" }
+    ]
+  };
+}
+
 const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
   // FAREWELL
   {
@@ -74,70 +201,7 @@ const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
     ]
   },
 
-  // 1. 5 KVA SOLAR SYSTEM QUOTE (UNICEF CLINIC SPEC)
-  {
-    keywords: ["5 kva", "5kva", "5 kw", "5kw", "clinic", "phc", "health center", "clinic solar", "5kva solar"],
-    response: "Here is your turnkey Bill of Quantities (BOQ) quotation for a 5 kVA / 5.5 kWp Solar Power System for Primary Healthcare Clinics. This complete package includes Tier-1 Monocrystalline solar panels, a 5kW Deye hybrid inverter, a 48V 200Ah (9.6 kWh) LiFePO4 lithium battery bank with smart BMS, aluminum mounting racks, pre-wired AC/DC protection switchgear, smart telemetry datalogger, and turnkey installation with a 5-year warranty for approximately $7,400 USD per clinic unit.",
-    isQuote: true,
-    quoteData: {
-      title: "5 KVA Turnkey Solar Power System (PHC Clinics)",
-      target: "Primary Healthcare Clinics / UNICEF Schedule Specification",
-      totalPrice: "$7,400 USD (Per Clinic Unit)",
-      items: [
-        { desc: "Hybrid Inverter", specs: "5.0 kW Deye / Pure Sine Wave 48V Inverter (Dual MPPT, Auto-Transfer)", qty: "1 Unit", estCost: "$1,450" },
-        { desc: "LiFePO4 Battery Bank", specs: "48V 200Ah (9.6 kWh) Lithium Iron Phosphate with Smart Integrated BMS", qty: "1 Unit", estCost: "$2,350" },
-        { desc: "Solar PV Array", specs: "10x 550W Tier-1 Monocrystalline PERC Solar Panels (5.5 kWp Generation)", qty: "10 Pcs", estCost: "$1,650" },
-        { desc: "Balance of System (BOS)", specs: "Anodized Aluminum Racks, 4mm²/6mm² UV DC Cables, MC4 Connectors", qty: "1 Set", estCost: "$480" },
-        { desc: "Protection Switchgear", specs: "Pre-wired AC/DC Combiner Box, Type II SPD, DC Breakers, Earthing Rod", qty: "1 Set", estCost: "$380" },
-        { desc: "Smart Telemetry", specs: "WiFi/GSM Datalogger with 24/7 NOC Cloud Monitoring & Battery Health App", qty: "1 Unit", estCost: "$140" },
-        { desc: "Installation & Delivery", specs: "Field Delivery across Liberia, Mechanical & Electrical Labor, Testing & 5-Yr Warranty", qty: "Turnkey", estCost: "$950" }
-      ],
-      notes: "Turnkey operational standard compliant with UNICEF, UNGM, and Ministry of Health specifications."
-    },
-    links: [
-      { label: "Request Formal PDF Proforma", url: "/#contact" },
-      { label: "Explore TOTAG Solar Division", url: "/solar" }
-    ]
-  },
-
-  // 2. 30 KVA SOLAR SYSTEM QUOTE (UNICEF HOSPITAL SPEC)
-  {
-    keywords: ["30 kva", "30kva", "30 kw", "30kw", "hospital", "hospital solar", "30kva solar", "30 kva solar", "50kw battery", "50 kw battery"],
-    response: "Here is your turnkey Bill of Quantities (BOQ) quotation for a 30 kVA / 33 kWp Three-Phase Solar System for Hospitals. This complete system includes 60x 550W Tier-1 Mono PERC panels (33 kWp), a 30kW Deye 3-Phase Industrial Hybrid Inverter, a 50 kWh LiFePO4 rack-mounted lithium battery storage bank with master BMS, heavy-duty mounting, industrial 3-phase AC/DC protection switchgear, GSM remote telemetry, and turnkey hospital installation with 5-year warranty for approximately $38,800 USD.",
-    isQuote: true,
-    quoteData: {
-      title: "30 KVA Industrial Solar Power System (Hospitals)",
-      target: "Hospital / Medical Center 3-Phase Continuous Power",
-      totalPrice: "$38,800 USD (Turnkey Installed)",
-      items: [
-        { desc: "3-Phase Hybrid Inverter", specs: "30.0 kW Deye Industrial 3-Phase Hybrid Power Converter (High Voltage)", qty: "1 Unit", estCost: "$6,800" },
-        { desc: "High-Capacity LiFePO4 Bank", specs: "50 kWh - 60 kWh Rack-Mounted LiFePO4 Lithium Battery with Master BMS", qty: "1 Bank", estCost: "$12,500" },
-        { desc: "Solar PV Generation Array", specs: "60x 550W Tier-1 Monocrystalline PERC Panels (33 kWp Total Capacity)", qty: "60 Pcs", estCost: "$9,900" },
-        { desc: "Heavy-Duty BOS Racking", specs: "Structural Racking, Heavy-Duty DC Trays, Cabling & Cable Glands", qty: "1 Lot", estCost: "$2,400" },
-        { desc: "Industrial Switchgear", specs: "3-Phase AC/DC Distribution, Surge Protection, Lightning Arrestors, Earth Grid", qty: "1 Set", estCost: "$1,950" },
-        { desc: "Enterprise Telemetry NOC", specs: "Industrial GSM Cloud Datalogger with Automated Fault Alarms & Remote NOC", qty: "1 Unit", estCost: "$450" },
-        { desc: "Hospital Commissioning", specs: "Heavy Logistics, Phase Balancing, Medical Equipment Safety Testing & 5-Yr Warranty", qty: "Turnkey", estCost: "$4,800" }
-      ],
-      notes: "Engineered for 24/7 continuous hospital operations (surgical suites, vaccine cold chain, maternity, and diagnostics)."
-    },
-    links: [
-      { label: "Request Formal Hospital Tender Bid", url: "/#contact" },
-      { label: "Solar Telemetry & Systems", url: "/solar" }
-    ]
-  },
-
-  // 3. GENERAL SOLAR QUOTE
-  {
-    keywords: ["solar quote", "solar price", "solar quotation", "solar cost", "solar power price", "how much is solar"],
-    response: "TOTAG Solar Smart Power provides turnkey solar packages for residential, commercial, health clinics, and industrial facilities: 1. 3 kVA Residential/Office ($4,200 USD), 2. 5 kVA PHC Clinic System ($7,400 USD), 3. 10 kVA Commercial System ($14,800 USD), and 4. 30 kVA Hospital System ($38,800 USD). Every system is quoted with panels, Deye inverter, LiFePO4 battery, BOS, switchgear, smart telemetry, and full installation. Which capacity fits your project?",
-    links: [
-      { label: "View 5 kVA Clinic Quote", url: "/#contact" },
-      { label: "View 30 kVA Hospital Quote", url: "/#contact" },
-      { label: "Solar Division Page", url: "/solar" }
-    ]
-  },
-
-  // 4. TOCEPS CATERING QUOTE
+  // TOCEPS CATERING QUOTE
   {
     keywords: ["catering quote", "catering price", "food quote", "wedding quote", "buffet quote", "event quote", "conference quote"],
     response: "TOCEPS Catering provides standardized institutional & banquet packages: 1. Institutional / UNIDO Workshop ($22 - $35 / person for buffet lunch, 2 coffee breaks, juices & service staff), 2. Executive Corporate Banquet ($45 - $65 / person with multi-course menu & beverage bar), 3. Social Celebrations & Weddings ($30 - $55 / person). We generate official proforma invoices with tax clearance. How many guests are you expecting?",
@@ -147,17 +211,17 @@ const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
     ]
   },
 
-  // 5. CARGO & FREIGHT QUOTE
+  // CARGO & FREIGHT QUOTE
   {
     keywords: ["cargo quote", "freight quote", "shipping quote", "container price", "shipping price", "20ft container", "40ft container"],
-    response: "TOTAG Cargo Handling offers competitive international freight and local port clearance: 1. 20ft Full Container (FCL) Ocean Freight from USA/Europe to Monrovia Free Port ($3,800 - $4,800 USD), 2. 40ft High Cube Container ($6,200 - $7,800 USD), 3. Air Cargo Consolidated ($7.50 - $9.50 / kg), and 4. Port Customs Clearance & County Inland Trucking. What cargo and route do you need?",
+    response: "TOTAG Cargo Handling offers competitive international freight and local port clearance: 1. 20ft Full Container (FCL) Ocean Freight from USA/Europe to Monrovia Free Port ($3,800 - $4,800 USD), 2. 40ft High Cube Container ($6,200 - $7,800 USD), 3. Air Cargo Consolidated ($7.50 - $9.50 / kg), and 4. Port Customs Clearance & County Inland Trucking. What cargo and destination do you have in mind?",
     links: [
       { label: "Cargo Logistics Portal", url: "/cargo" },
       { label: "Track Active Manifest", url: "/order-tracking" }
     ]
   },
 
-  // 6. IT & SAAS ENTERPRISE SUITE QUOTE
+  // IT & SAAS ENTERPRISE SUITE QUOTE
   {
     keywords: ["it quote", "saas quote", "software quote", "hrmis quote", "fims quote", "app quote"],
     response: "TOTAG IT Services provides our 14-Module FIMS & HRMIS Enterprise Suite starting at $250 - $750 USD/month depending on user tiers, including payroll, biometrics, leave, and general ledger modules. Custom software and web application development packages range from $3,500 to $12,000 USD turnkey with full source code and hosting.",
@@ -167,10 +231,10 @@ const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
     ]
   },
 
-  // 7. GENERAL QUOTE FALLBACK
+  // GENERAL QUOTE FALLBACK
   {
     keywords: ["quote", "quotation", "price", "pricing", "cost", "how much", "estimate", "proposal", "tender", "bid", "invoice", "proforma"],
-    response: "TOTAG Group generates formal quotations, proforma invoices, technical proposals, and institutional tender responses across all 9 subsidiaries: 1. Solar Turnkey Systems (3kVA, 5kVA, 10kVA, 30kVA), 2. Cargo & Freight Forwarding, 3. TOCEPS Catering & Events, 4. IT & SaaS Enterprise Suite, 5. TOTAG Farm Produce & Inputs, 6. Petroleum Haulage, 7. Construction BOQs, 8. General Merchandise, and 9. Stationery Supplies. Which subsidiary would you like an itemized quote for?",
+    response: "TOTAG Group generates formal quotations, proforma invoices, technical proposals, and institutional tender responses across all 9 subsidiaries: 1. Solar Turnkey Systems (Custom sized from 3kVA to 100kVA for homes, clinics, businesses, or hospitals), 2. Cargo & Freight Forwarding, 3. TOCEPS Catering & Events, 4. IT & SaaS Enterprise Suite, 5. TOTAG Farm Produce & Inputs, 6. Petroleum Haulage, 7. Construction BOQs, 8. General Merchandise, and 9. Stationery Supplies. What specific service and capacity do you need?",
     links: [
       { label: "Request a Formal Quote", url: "/#contact" },
       { label: "View All 9 Subsidiaries", url: "/#services" }
@@ -180,7 +244,7 @@ const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
   // GREETING / OVERVIEW
   {
     keywords: ["hello", "hi", "hey", "who are you", "greeting", "start", "good morning", "good afternoon", "good evening", "company profile", "about"],
-    response: "Hello! Welcome to TOTAG Group of Companies Ltd. Our motto is 'Innovating Tomorrow, Empowering Today.' Headquartered in Paynesville, Liberia, we deliver integrated solutions across 9 business divisions. I can generate instant turnkey quotations, provide company details, or connect you with executive leadership. How may I assist you today?",
+    response: "Hello! Welcome to TOTAG Group of Companies Ltd. Our motto is 'Innovating Tomorrow, Empowering Today.' Headquartered in Paynesville, Liberia, we deliver integrated solutions across 9 business divisions. I can generate dynamic turnkey quotations (e.g. 5kVA, 10kVA, or 30kVA solar for your home, clinic, or business), answer company questions, or connect you with executive leadership. How may I assist you today?",
     links: [
       { label: "Request a Turnkey Quote", url: "/#contact" },
       { label: "Explore All 9 Subsidiaries", url: "/#services" }
@@ -210,7 +274,7 @@ const TOTAG_COMPREHENSIVE_KNOWLEDGE = [
   // SOLAR GENERAL
   {
     keywords: ["solar", "energy", "power", "deye", "inverter", "electricity", "renewable", "battery", "storage", "telemetry", "noc", "microgrid"],
-    response: "TOTAG Solar Smart Power engineers turnkey solar microgrids, Deye hybrid inverter systems, lithium battery storage, solar irrigation pumps, and 24/7 telemetry Network Operations Center monitoring for commercial, agricultural, health clinic, and hospital facilities.",
+    response: "TOTAG Solar Smart Power engineers turnkey solar microgrids, Deye hybrid inverter systems, lithium battery storage, solar irrigation pumps, and 24/7 telemetry Network Operations Center monitoring for residential homes, businesses, farms, clinics, and hospitals.",
     links: [
       { label: "Solar Energy & Deye Systems", url: "/solar" }
     ]
@@ -301,6 +365,22 @@ function getBotResponse(userText: string): {
 } {
   const lower = userText.toLowerCase().trim();
 
+  // 1. Check FAREWELL FIRST (Instant priority)
+  const farewellKeywords = ["thank you", "thanks", "bye", "goodbye", "that's all", "that is all", "nothing else", "no more", "im done", "i am done", "no thanks", "no thank you"];
+  if (farewellKeywords.some(kw => lower === kw || lower.startsWith(kw) || lower.endsWith(kw))) {
+    return {
+      response: "Thank you for contacting TOTAG Group of Companies Ltd. It was our absolute pleasure assisting you. Remember our promise: 'Deliver the right solution, at the right standard, at the right time.' We look forward to serving you again. Have a wonderful day!",
+      isFarewell: true
+    };
+  }
+
+  // 2. CHECK DYNAMIC SOLAR / POWER QUOTE ENGINE (Exact capacity & exact location)
+  const dynamicSolar = generateDynamicSolarBOQ(userText);
+  if (dynamicSolar) {
+    return dynamicSolar;
+  }
+
+  // 3. Check General Knowledge
   for (const item of TOTAG_COMPREHENSIVE_KNOWLEDGE) {
     if (item.keywords.some((kw) => lower.includes(kw))) {
       return { 
@@ -336,11 +416,11 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. I can generate complete Bill of Quantities (BOQ) quotations (such as 5 kVA Clinic or 30 kVA Hospital solar systems), explain our 9 subsidiaries, or provide executive contact details. How may I assist you?",
+      text: "Welcome to TOTAG Group of Companies Ltd. I am your corporate voice assistant in Monrovia, Liberia. Ask me for an exact quote (e.g. 10 kVA solar for my house, 5 kVA for my clinic, or 30 kVA for a hospital), or inquire about any of our 9 subsidiaries. How may I assist you?",
       timestamp: "Just now",
       links: [
-        { label: "5 kVA Clinic Solar Quote", url: "/#contact" },
-        { label: "30 kVA Hospital Solar Quote", url: "/#contact" },
+        { label: "Quote 10 kVA Solar for House", url: "/#contact" },
+        { label: "Quote 5 kVA Solar for Clinic", url: "/#contact" },
         { label: "TOCEPS Catering Quote", url: "/catering" }
       ]
     }
@@ -380,11 +460,14 @@ export default function VoiceChatWidget() {
     setSilenceCountdown(null);
   };
 
-  // Automated graceful farewell and widget close
+  // Instant Automated graceful farewell and widget close (Zero manual clicking required)
   const triggerFarewellAndClose = (customText?: string) => {
     clearSilenceTimers();
     if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch (_) {}
+      try { 
+        recognitionRef.current.abort(); 
+        recognitionRef.current = null;
+      } catch (_) {}
     }
     setIsListening(false);
     isAgentActiveRef.current = false;
@@ -398,14 +481,21 @@ export default function VoiceChatWidget() {
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
     };
     setMessages((prev) => [...prev, botMsg]);
-    setSessionStatus("Closing session...");
+    setSessionStatus("Farewell delivered. Closing session...");
 
     speakText(farewellText, () => {
+      // Auto-close widget window smoothly
       setTimeout(() => {
         setIsOpen(false);
         setSessionStatus("Ready");
-      }, 800);
+      }, 500);
     });
+
+    // Safety fallback auto-close in case speech synthesis is muted
+    setTimeout(() => {
+      setIsOpen(false);
+      setSessionStatus("Ready");
+    }, 4500);
   };
 
   // Text-To-Speech with Liberian/West African Vocal Cadence
@@ -458,12 +548,15 @@ export default function VoiceChatWidget() {
 
     clearSilenceTimers();
     if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch (_) {}
+      try { 
+        recognitionRef.current.abort(); 
+        recognitionRef.current = null;
+      } catch (_) {}
     }
 
     setIsListening(false);
     setLiveTranscript("");
-    setSessionStatus("Generating turnkey response...");
+    setSessionStatus("Generating specific response...");
 
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -500,7 +593,7 @@ export default function VoiceChatWidget() {
           startListeningLoop();
         }
       });
-    }, 350);
+    }, 300);
   };
 
   // Autonomous Listening Loop
@@ -517,7 +610,10 @@ export default function VoiceChatWidget() {
 
     try {
       if (recognitionRef.current) {
-        try { recognitionRef.current.abort(); } catch (_) {}
+        try { 
+          recognitionRef.current.abort(); 
+          recognitionRef.current = null;
+        } catch (_) {}
       }
 
       const recognition = new SpeechRecognitionClass();
@@ -530,7 +626,7 @@ export default function VoiceChatWidget() {
 
       recognition.onstart = () => {
         setIsListening(true);
-        setSessionStatus("Listening... (Speak your quote request or question)");
+        setSessionStatus("Listening... (Speak your exact quote or question)");
 
         let timeLeft = 9;
         setSilenceCountdown(timeLeft);
@@ -573,6 +669,13 @@ export default function VoiceChatWidget() {
           capturedText = spoken;
           setLiveTranscript(spoken);
           setInputText(spoken);
+
+          // Instant trigger if user says thank you or goodbye
+          const lowerSpoken = spoken.toLowerCase();
+          if (lowerSpoken === "thank you" || lowerSpoken === "thanks" || lowerSpoken === "bye" || lowerSpoken === "goodbye") {
+            try { recognition.abort(); } catch (_) {}
+            handleUserQuery(spoken);
+          }
         }
       };
 
@@ -613,7 +716,10 @@ export default function VoiceChatWidget() {
     clearSilenceTimers();
     stopSpeaking();
     if (recognitionRef.current) {
-      try { recognitionRef.current.abort(); } catch (_) {}
+      try { 
+        recognitionRef.current.abort(); 
+        recognitionRef.current = null;
+      } catch (_) {}
     }
     setIsListening(false);
     setIsOpen(false);
@@ -629,12 +735,12 @@ export default function VoiceChatWidget() {
   };
 
   const quickPrompts = [
-    "Quote 5 kVA Solar for PHC Clinics",
-    "Quote 30 kVA Solar for Hospitals",
+    "Quote 10 kVA solar for my house",
+    "Quote 5 kVA solar for my store",
+    "Quote 30 kVA solar for a hospital",
     "TOCEPS Catering Quote for 100 people",
     "20ft Container Cargo Shipping Quote",
-    "Who is the CEO of TOTAG Group?",
-    "What are your phone numbers & HQ?"
+    "Who is the CEO of TOTAG Group?"
   ];
 
   return (
@@ -667,7 +773,7 @@ export default function VoiceChatWidget() {
                       Live AI
                     </span>
                   </h4>
-                  <p className="text-[11px] text-emerald-300/90 font-medium">Turnkey BOQ & Instant Quotes</p>
+                  <p className="text-[11px] text-emerald-300/90 font-medium">Exact Quotations & BOQ Sizing</p>
                 </div>
               </div>
 
@@ -778,7 +884,7 @@ export default function VoiceChatWidget() {
                         </div>
 
                         <div className="space-y-1.5 text-[11px]">
-                          {msg.quoteData.items.map((item, idx) => (
+                          {msg.quoteData.items.map((item: any, idx: number) => (
                             <div key={idx} className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-white/5 flex flex-col gap-0.5">
                               <div className="flex items-center justify-between font-bold text-slate-800 dark:text-slate-200">
                                 <span>{item.desc} ({item.qty})</span>
@@ -834,7 +940,7 @@ export default function VoiceChatWidget() {
             <div className="px-4 py-2 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50">
               <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1 flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-emerald-500" />
-                Tap to Generate Quotes in 1-Click:
+                Tap for Exact Quotes in 1-Click:
               </p>
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
                 {quickPrompts.map((prompt, idx) => (
@@ -861,7 +967,10 @@ export default function VoiceChatWidget() {
                     if (isListening) {
                       clearSilenceTimers();
                       if (recognitionRef.current) {
-                        try { recognitionRef.current.stop(); } catch (_) {}
+                        try { 
+                          recognitionRef.current.stop(); 
+                          recognitionRef.current = null;
+                        } catch (_) {}
                       }
                       setIsListening(false);
                     } else {
@@ -881,7 +990,7 @@ export default function VoiceChatWidget() {
 
                 <Input
                   type="text"
-                  placeholder={isListening ? "Listening... or type quote request" : "e.g., Quote 5 kVA solar for clinic..."}
+                  placeholder={isListening ? "Listening... or type quote request" : "e.g., Quote 10 kVA solar for my house..."}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="text-xs rounded-xl bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-white/10"
