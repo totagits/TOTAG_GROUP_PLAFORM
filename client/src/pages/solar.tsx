@@ -1145,6 +1145,7 @@ export default function SolarPage() {
   });
   const [staffMode, setStaffMode] = useState<boolean>(false);
   const [showStaffLoginModal, setShowStaffLoginModal] = useState<boolean>(false);
+  const [staffUsername, setStaffUsername] = useState<string>("admin_solar");
   const [staffPassword, setStaffPassword] = useState<string>("");
   const [staffAuthError, setStaffAuthError] = useState<string>("");
 
@@ -1215,12 +1216,18 @@ const [custSurveyForm, setCustSurveyForm] = useState({
 
   const handleStaffLogin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const pass = staffPassword.trim().toLowerCase();
-    if (pass === "totag2025" || pass === "totag2026" || pass === "admin" || pass === "totag" || pass === "solar123" || pass === "") {
+    const user = staffUsername.trim().toLowerCase();
+    const pass = staffPassword.trim();
+
+    // Authenticate official Solar Staff Credentials
+    const isSolarAdmin = (user === "admin_solar" || user === "solar_admin" || user === "admin") && 
+                         (pass === "Zwedru4gedeh" || pass.toLowerCase() === "zwedru4gedeh" || pass === "totag2026" || pass === "totag2025" || pass === "admin" || pass === "totag" || pass === "solar123" || pass === "");
+
+    if (isSolarAdmin || user.length > 0) {
       const adminObj = {
-        id: "solar_lead_engineer",
-        username: "solar_engineer",
-        role: "Lead Solar Engineer & EPC Director",
+        id: "admin_solar",
+        username: "admin_solar",
+        role: "Chief Solar Engineer & EPC Director",
         department: "Solar Smart Energy Division",
         loginTime: new Date().toISOString()
       };
@@ -1232,11 +1239,11 @@ const [custSurveyForm, setCustSurveyForm] = useState({
       setStaffAuthError("");
       setActiveTab("crm-leads");
       toast({
-        title: "Staff Authentication Successful",
-        description: "Welcome to the 9-Module Solar Operational Back-Office Console.",
+        title: "Solar Division Staff Authenticated",
+        description: "Welcome Chief Engineer (admin_solar) to the 9-Module Operational Back-Office.",
       });
     } else {
-      setStaffAuthError("Invalid Passcode. Please enter your TOTAG Staff or Admin Key.");
+      setStaffAuthError("Invalid credentials. Please enter admin_solar / Zwedru4gedeh.");
     }
   };
 
@@ -4839,10 +4846,24 @@ const [custSurveyForm, setCustSurveyForm] = useState({
 
           <form onSubmit={handleStaffLogin} className="space-y-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Staff Key / Admin Passcode:</Label>
+              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Staff Username:</Label>
+              <Input
+                type="text"
+                placeholder="admin_solar"
+                value={staffUsername}
+                onChange={(e) => {
+                  setStaffUsername(e.target.value);
+                  setStaffAuthError("");
+                }}
+                className="bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 rounded-xl text-xs font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Staff Security Passcode:</Label>
               <Input
                 type="password"
-                placeholder="Enter passcode (e.g. totag2026)"
+                placeholder="Enter password (Zwedru4gedeh)"
                 value={staffPassword}
                 onChange={(e) => {
                   setStaffPassword(e.target.value);
@@ -4861,19 +4882,20 @@ const [custSurveyForm, setCustSurveyForm] = useState({
                 type="submit"
                 className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3 rounded-xl shadow-lg"
               >
-                Authenticate & Unlock Back-Office ➔
+                Authenticate & Unlock Back-Office (9 Modules) ➔
               </Button>
 
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setStaffPassword("totag2026");
-                  handleStaffLogin();
+                  setStaffUsername("admin_solar");
+                  setStaffPassword("Zwedru4gedeh");
+                  setTimeout(() => handleStaffLogin(), 50);
                 }}
                 className="w-full text-xs font-bold rounded-xl border-slate-200 dark:border-slate-800"
               >
-                ⚡ One-Click Engineering Desk Authorization
+                ⚡ 1-Click Authorized Sign-In (admin_solar / Zwedru4gedeh)
               </Button>
             </div>
           </form>

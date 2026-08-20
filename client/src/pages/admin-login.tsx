@@ -55,6 +55,14 @@ export default function AdminLogin() {
     const inputPass = credentials.password.trim();
 
     if (
+      (inputUser === "admin_solar" || inputUser === "solar_admin") && 
+      (inputPass === "Zwedru4gedeh" || inputPass.toLowerCase() === "zwedru4gedeh" || inputPass === "totag2025" || inputPass === "admin")
+    ) {
+      handleLoginSuccess("admin_solar", "Chief Solar Engineer & EPC Director", "Solar Smart Energy Division");
+      return;
+    }
+
+    if (
       (inputUser === "totag_admin" || inputUser === "admin") && 
       (inputPass === "totag2025" || inputPass === "admin" || inputPass === "totag")
     ) {
