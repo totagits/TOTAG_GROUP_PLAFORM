@@ -1393,37 +1393,7 @@ export default function SolarPage() {
           />
         </section>
 
-        {/* Full Operating Lifecycle Sequence Indicator */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <div className="p-4 rounded-2xl glass-card border-white/60 dark:border-white/10 space-y-3 shadow-xl">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
-                <Activity className="w-4 h-4 text-amber-400" />
-                End-to-End Enterprise Solar Operating Lifecycle
-              </span>
-              <span className="text-xs text-slate-400 font-bold">18 Integrated Stages</span>
-            </div>
-            <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-slate-300">
-              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Lead</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Site Assessment</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/40">Energy Audit</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">System Design</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">BOQ/Costing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Proposal</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Contract</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Procurement</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Installation</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">QA/QC</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Testing</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Commissioning</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Handover</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Remote Monitoring</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Preventive Maintenance</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Warranty/Service</span> →
-              <span className="px-2.5 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300">Asset Replacement/Expansion</span>
-            </div>
-          </div>
-        </section>
+
 
         {/* Main Application Module Tabs */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
