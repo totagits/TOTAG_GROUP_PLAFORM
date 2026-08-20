@@ -94,15 +94,26 @@ import FIMSFixedAssetsPage from "@/pages/saas/modules/fims-fixed-assets";
 import FIMSContractsPage from "@/pages/saas/modules/fims-contracts";
 import FIMSProjectsPage from "@/pages/saas/modules/fims-projects";
 
-// Hybrid Location Hook supporting both standard path URLs (/solar) and hash URLs (/#/solar) on GitHub Pages & VPS
+// Hybrid Location Hook supporting both standard path URLs (/solar), hash routes (/#/solar), and in-page anchor links (/#contact)
 const useHybridLocation = () => {
   const getPath = () => {
     if (typeof window === "undefined") return "/";
-    let hash = window.location.hash.replace(/^#/, "");
-    if (hash) {
-      if (!hash.startsWith("/")) hash = "/" + hash;
-      return hash;
+    const rawHash = window.location.hash;
+    
+    // Check if hash is an in-page anchor (e.g. #contact, #about, #services)
+    if (rawHash && !rawHash.startsWith("#/")) {
+      const sectionId = rawHash.replace(/^#/, "");
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+      return "/";
     }
+
+    if (rawHash.startsWith("#/")) {
+      return rawHash.replace(/^#/, "");
+    }
+
     const path = window.location.pathname;
     if (path && path !== "/index.html" && path !== "/TOTAG_GROUP_PLAFORM/") {
       return path;

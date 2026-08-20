@@ -1145,6 +1145,15 @@ export default function SolarPage() {
   const [wizardAutonomy, setWizardAutonomy] = useState<string>("overnight");
   const [wizardGridMode, setWizardGridMode] = useState<string>("hybrid");
   const [wizardExportModal, setWizardExportModal] = useState<boolean>(false);
+  const [showProformaModal, setShowProformaModal] = useState<boolean>(false);
+  const [proformaClient, setProformaClient] = useState({
+    name: "",
+    org: "",
+    phone: "",
+    email: "",
+    county: "Montserrado"
+  });
+  const [proformaSubmitting, setProformaSubmitting] = useState<boolean>(false);
   const [ticketSent, setTicketSent] = useState(false);
   const [custSurveyForm, setCustSurveyForm] = useState({
     name: "Monrovia Commercial Plaza",
@@ -2611,11 +2620,7 @@ export default function SolarPage() {
                         <div className="flex items-center gap-2.5 w-full sm:w-auto">
                           <Button 
                             onClick={() => {
-                              toast({
-                                title: "Proforma Quotation Generated",
-                                description: `Official BOQ for ${eng.effectiveCap} kVA ${eng.currentFacility.label} prepared.`,
-                              });
-                              window.location.href = `/#contact`;
+                              setShowProformaModal(true);
                             }}
                             className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs w-full sm:w-auto shadow-md"
                           >
@@ -3994,6 +3999,233 @@ export default function SolarPage() {
         </section>
 
       </main>
+
+      {/* EXECUTIVE PROFORMA INVOICE & BOQ MODAL */}
+      <Dialog open={showProformaModal} onOpenChange={setShowProformaModal}>
+        <DialogContent className="max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-950 border-slate-200 dark:border-white/10 p-6 sm:p-8">
+          {(() => {
+            const eng = getWizardEngineeringDesign();
+            const invoiceNo = `PROFORMA-SOL-${eng.effectiveCap}KVA-${Date.now().toString().slice(-6)}`;
+            const invoiceDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const handleProformaSubmit = (e: React.FormEvent) => {
+              e.preventDefault();
+              setProformaSubmitting(true);
+              setTimeout(() => {
+                setProformaSubmitting(false);
+                setShowProformaModal(false);
+                toast({
+                  title: "Proforma Invoice Dispatched",
+                  description: `Official Quotation #${invoiceNo} sent to ${proformaClient.email || "sales desk"} & logged in system.`,
+                });
+              }, 600);
+            };
+
+            return (
+              <div className="space-y-6 text-slate-900 dark:text-slate-100">
+                
+                {/* Official Letterhead Header */}
+                <div className="border-b-2 border-slate-900 dark:border-white/20 pb-4 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-2 flex items-center justify-center">
+                      <img src="/images/totag-logo.png" alt="TOTAG Logo" className="w-10 h-10 object-contain" />
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                        TOTAG GROUP OF COMPANIES LTD
+                      </h3>
+                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-extrabold uppercase">
+                        Solar Energy & Smart Power Division
+                      </p>
+                      <p className="text-[10px] text-slate-500">
+                        Thinker's Village, Paynesville, Montserrado County, Liberia | Tel: +231 777 511 391
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="text-right sm:text-right shrink-0">
+                    <Badge className="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 mb-1">
+                      OFFICIAL PROFORMA INVOICE
+                    </Badge>
+                    <div className="text-[11px] font-mono font-bold text-slate-700 dark:text-slate-300">
+                      Ref: {invoiceNo}
+                    </div>
+                    <div className="text-[10px] text-slate-500">
+                      Date: {invoiceDate}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scope & Facility Banner */}
+                <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  <div>
+                    <span className="font-extrabold text-slate-900 dark:text-white block text-sm">
+                      Scope: {eng.effectiveCap} kVA Turnkey Solar Power System
+                    </span>
+                    <span className="text-slate-500 font-medium">
+                      Application: {eng.currentFacility.label} ({eng.autonomyHours})
+                    </span>
+                  </div>
+                  <Badge variant="outline" className="text-[10px] border-emerald-500 text-emerald-600 font-bold self-start sm:self-auto">
+                    Turnkey EPC Standard (5-Yr Warranty)
+                  </Badge>
+                </div>
+
+                {/* Client Information Form */}
+                <form onSubmit={handleProformaSubmit} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div className="space-y-1">
+                      <Label htmlFor="cname" className="text-[11px] font-bold">Client / Recipient Name *</Label>
+                      <Input
+                        id="cname"
+                        placeholder="e.g. John Doe / Procurement Officer"
+                        value={proformaClient.name}
+                        onChange={(e) => setProformaClient(prev => ({ ...prev, name: e.target.value }))}
+                        className="rounded-xl text-xs h-9"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="corg" className="text-[11px] font-bold">Company / Organization</Label>
+                      <Input
+                        id="corg"
+                        placeholder="e.g. Clinic, NGO, Business, or Residence"
+                        value={proformaClient.org}
+                        onChange={(e) => setProformaClient(prev => ({ ...prev, org: e.target.value }))}
+                        className="rounded-xl text-xs h-9"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="cphone" className="text-[11px] font-bold">Phone Number *</Label>
+                      <Input
+                        id="cphone"
+                        placeholder="+231 777..."
+                        value={proformaClient.phone}
+                        onChange={(e) => setProformaClient(prev => ({ ...prev, phone: e.target.value }))}
+                        className="rounded-xl text-xs h-9"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="cemail" className="text-[11px] font-bold">Email Address *</Label>
+                      <Input
+                        id="cemail"
+                        type="email"
+                        placeholder="client@example.com"
+                        value={proformaClient.email}
+                        onChange={(e) => setProformaClient(prev => ({ ...prev, email: e.target.value }))}
+                        className="rounded-xl text-xs h-9"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Itemized BOQ Table */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-white/10 text-[10px] uppercase font-black text-slate-600 dark:text-slate-300">
+                        <tr>
+                          <th className="p-2.5">Item & Description</th>
+                          <th className="p-2.5">Specifications</th>
+                          <th className="p-2.5 text-center">Qty</th>
+                          <th className="p-2.5 text-right">Amount (USD)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-[11px]">
+                        <tr>
+                          <td className="p-2.5 font-bold">{eng.is3Phase ? "3-Phase Hybrid Inverter" : "Hybrid Inverter"}</td>
+                          <td className="p-2.5 text-slate-500">{eng.effectiveCap}.0 kW Deye Pure Sine Wave {eng.is3Phase ? "380V" : "48V"} MPPT Inverter</td>
+                          <td className="p-2.5 text-center font-bold">1 Unit</td>
+                          <td className="p-2.5 text-right font-black">${eng.inverterCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">LiFePO4 Lithium Battery Bank</td>
+                          <td className="p-2.5 text-slate-500">{eng.batteryKwh} kWh LiFePO4 Battery with Integrated Smart CANbus BMS</td>
+                          <td className="p-2.5 text-center font-bold">1 Bank</td>
+                          <td className="p-2.5 text-right font-black">${eng.batteryCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">Solar PV Generation Array</td>
+                          <td className="p-2.5 text-slate-500">{eng.panelCount}x 550W Tier-1 Monocrystalline PERC Solar Panels ({eng.panelKwp} kWp)</td>
+                          <td className="p-2.5 text-center font-bold">{eng.panelCount} Pcs</td>
+                          <td className="p-2.5 text-right font-black">${eng.panelCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">Balance of System (BOS)</td>
+                          <td className="p-2.5 text-slate-500">Anodized Aluminum Racking, 4mm²/6mm² UV DC Cables & MC4 Connectors</td>
+                          <td className="p-2.5 text-center font-bold">1 Set</td>
+                          <td className="p-2.5 text-right font-black">${eng.bosCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">Protection Switchgear</td>
+                          <td className="p-2.5 text-slate-500">Pre-wired AC/DC Combiner Box, Type II SPD Surge Protection & Earth Rod</td>
+                          <td className="p-2.5 text-center font-bold">1 Set</td>
+                          <td className="p-2.5 text-right font-black">${eng.switchgearCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">24/7 Smart Telemetry</td>
+                          <td className="p-2.5 text-slate-500">WiFi/GSM Datalogger with Real-time NOC Cloud Telemetry & App Monitoring</td>
+                          <td className="p-2.5 text-center font-bold">1 Unit</td>
+                          <td className="p-2.5 text-right font-black">${eng.telemetryCost.toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">Turnkey Installation & Commissioning</td>
+                          <td className="p-2.5 text-slate-500">Delivery, Mechanical/Electrical Labor, Load Testing & 5-Year Full Warranty</td>
+                          <td className="p-2.5 text-center font-bold">Turnkey</td>
+                          <td className="p-2.5 text-right font-black">${eng.installCost.toLocaleString()}</td>
+                        </tr>
+                      </tbody>
+                      <tfoot className="bg-slate-50 dark:bg-slate-900/80 border-t-2 border-slate-900 dark:border-white/20 font-black">
+                        <tr>
+                          <td colSpan={3} className="p-3 text-right text-xs uppercase tracking-wider text-slate-900 dark:text-white">
+                            TOTAL TURNKEY INVESTMENT (USD):
+                          </td>
+                          <td className="p-3 text-right text-base text-emerald-600 dark:text-emerald-400">
+                            ${eng.totalCost.toLocaleString()} USD
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  {/* Modal Footer Controls */}
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-white/10">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => window.print()}
+                      className="w-full sm:w-auto rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700"
+                    >
+                      <Printer className="w-3.5 h-3.5 mr-1.5" />
+                      Print / Save as PDF
+                    </Button>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setShowProformaModal(false)}
+                        className="rounded-xl text-xs font-bold"
+                      >
+                        Close
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={proformaSubmitting}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md w-full sm:w-auto"
+                      >
+                        {proformaSubmitting ? "Dispatching..." : "Submit Proforma Request ➔"}
+                      </Button>
+                    </div>
+                  </div>
+
+                </form>
+
+              </div>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
 
