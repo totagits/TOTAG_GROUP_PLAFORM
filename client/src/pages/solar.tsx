@@ -1179,6 +1179,7 @@ export default function SolarPage() {
   });
   const [surveySubmitting, setSurveySubmitting] = useState<boolean>(false);
   const [customerAccount, setCustomerAccount] = useState<string>("monrovia-plaza");
+  const [systemMode, setSystemMode] = useState<string>("self-consumption");
   const [ticketSent, setTicketSent] = useState<boolean>(false);
   const [surveySubmittedRef, setSurveySubmittedRef] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("system-sizing");
