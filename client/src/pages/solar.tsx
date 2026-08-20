@@ -1134,7 +1134,15 @@ export default function SolarPage() {
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
 
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("crm-leads");
+  // Default to Interactive Sizing Wizard for Customers; Support Staff Mode
+  const [activeTab, setActiveTab] = useState("system-sizing");
+  const [staffMode, setStaffMode] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get("staff") === "true" || localStorage.getItem("totagAdmin") === "true";
+    }
+    return false;
+  });
   const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
   const [systemMode, setSystemMode] = useState("self-consumption");
   
@@ -1398,44 +1406,96 @@ export default function SolarPage() {
         {/* Main Application Module Tabs */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
-              <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Building2 className="h-4 w-4" />
-                1. CRM
-              </TabsTrigger>
-              <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Compass className="h-4 w-4" />
-                2. Audit
-              </TabsTrigger>
-              <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Cpu className="h-4 w-4" />
-                3. Design
-              </TabsTrigger>
-              <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <FileSpreadsheet className="h-4 w-4" />
-                4. Catalogue
-              </TabsTrigger>
-              <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Calculator className="h-4 w-4" />
-                5. Auto-BOQ
-              </TabsTrigger>
-              <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Truck className="h-4 w-4" />
-                6. Procurement
-              </TabsTrigger>
-              <TabsTrigger value="serialized-inventory" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Warehouse className="h-4 w-4" />
-                7. Inventory
-              </TabsTrigger>
-              <TabsTrigger value="project-management" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <FolderKanban className="h-4 w-4" />
-                8. Projects
-              </TabsTrigger>
-              <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
-                <Sun className="h-4 w-4" />
-                9. NOC Portal
-              </TabsTrigger>
-            </TabsList>
+            {/* Dynamic Public Customer Tabs vs Internal Staff Back-Office Tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
+                  {staffMode ? "🔒 Staff & Engineering Back-Office (9 Operational Modules)" : "☀️ Customer Sizing & Solutions Portal"}
+                </span>
+                {staffMode && (
+                  <Badge className="bg-amber-500 text-slate-950 font-black text-[10px]">
+                    Internal Staff Console
+                  </Badge>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const next = !staffMode;
+                    setStaffMode(next);
+                    if (next) {
+                      setActiveTab("crm-leads");
+                    } else {
+                      setActiveTab("system-sizing");
+                    }
+                  }}
+                  className="rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700 h-8"
+                >
+                  {staffMode ? "Switch to Customer Portal View ➔" : "🔒 Staff Back-Office Login / Switch"}
+                </Button>
+              </div>
+            </div>
+
+            {staffMode ? (
+              /* FULL 9-MODULE STAFF OPERATIONAL TABS */
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
+                <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Building2 className="h-4 w-4" />
+                  1. CRM Leads
+                </TabsTrigger>
+                <TabsTrigger value="site-assessment" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Compass className="h-4 w-4" />
+                  2. Site Audits
+                </TabsTrigger>
+                <TabsTrigger value="system-sizing" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Cpu className="h-4 w-4" />
+                  3. Sizing Engine
+                </TabsTrigger>
+                <TabsTrigger value="catalogue-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <FileSpreadsheet className="h-4 w-4" />
+                  4. Catalogue
+                </TabsTrigger>
+                <TabsTrigger value="auto-boq" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Calculator className="h-4 w-4" />
+                  5. Auto-BOQ
+                </TabsTrigger>
+                <TabsTrigger value="procurement" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Truck className="h-4 w-4" />
+                  6. Procurement
+                </TabsTrigger>
+                <TabsTrigger value="serialized-inventory" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Warehouse className="h-4 w-4" />
+                  7. Inventory
+                </TabsTrigger>
+                <TabsTrigger value="project-management" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <FolderKanban className="h-4 w-4" />
+                  8. EPC Projects
+                </TabsTrigger>
+                <TabsTrigger value="customer-portal" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
+                  <Sun className="h-4 w-4" />
+                  9. NOC Telemetry
+                </TabsTrigger>
+              </TabsList>
+            ) : (
+              /* CLEAN 3-TAB CUSTOMER SOLUTIONS NAVIGATION */
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl">
+                <TabsTrigger value="system-sizing" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                  <Sparkles className="h-4 w-4" />
+                  1. Sizing Wizard & Instant Custom Design
+                </TabsTrigger>
+                <TabsTrigger value="catalogue-boq" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                  <FileSpreadsheet className="h-4 w-4" />
+                  2. Approved Deye Equipment Catalogue
+                </TabsTrigger>
+                <TabsTrigger value="customer-portal" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                  <Activity className="h-4 w-4" />
+                  3. 24/7 Smart Telemetry & NOC Monitoring
+                </TabsTrigger>
+              </TabsList>
+            )}
 
             
         {/* AUTHENTIC SOLAR EPC INSTALLATION PHOTOGRAPHY GALLERY SHOWCASE (HIGH DEFINITION CLARITY) */}
