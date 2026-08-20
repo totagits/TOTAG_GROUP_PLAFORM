@@ -1173,6 +1173,56 @@ export default function SolarPage() {
     roofType: "Corrugated Metal Sheet (South-West 15° Pitch)"
   });
 
+  // Unified Product Detail Formatter for Deye OEM Catalogue Items
+  const getUnifiedProductDetails = (item: any) => {
+    if (!item) return null;
+    const name = item.name || item.seriesCode || item.modelNo || "Deye Smart Inverter";
+    const modelNo = item.modelNo || item.seriesCode || item.id || "SUN-SERIES";
+    const brand = item.brand || "Deye Inverter Technology Co., Ltd. (TOTAG Approved OEM)";
+    const category = item.category || (item.phase ? `${item.phase} Hybrid Inverter` : "Solar Energy System");
+    const warranty = item.warranty || "5-Year Manufacturer Warranty (25-Year Life Expectancy)";
+    const powerRange = item.powerRange || item.specs?.split("•")[0]?.trim() || "Turnkey Sized";
+    const phase = item.phase || (item.specs?.includes("Three-Phase") || item.specs?.includes("3-Phase") ? "Three-Phase 380/400V" : "Single-Phase 120/240V Split-Phase");
+    const mppt = item.mppt || "2/3/4 MPPT High-Efficiency Trackers";
+    const batterySupport = item.batterySupport || (item.specs?.includes("HV") ? "High-Voltage (160V-800V) LiFePO4" : "48V Low-Voltage (40V-60V) LiFePO4 & Lead-Acid");
+    const dimensions = item.dimensions || "420 x 670 x 233 mm (32.0 kg Net Weight)";
+    const certifications = item.certifications || "IEC/EN 62109-1/2, IEC/EN 61000-6-1/2/3/4, UL1741, IEEE 1547, CSA C22.2, IP65, CE, ISO 9001";
+    const description = item.description || "State-of-the-art Deye hybrid inverter engineered for off-grid, grid-tied, and microgrid solar energy systems with seamless battery management and generator synchronization.";
+    
+    const photos = item.photos && item.photos.length > 0 
+      ? item.photos 
+      : [{ url: item.image || "/images/pv/jinko-550w-tiger-pro.png", caption: `${name} Official Render` }];
+
+    const features = item.features || [
+      "Colorful Touch LCD display with multi-language user-friendly graphical interface",
+      "6 programmable time periods for smart battery charging and discharging scheduling",
+      "Max. charging/discharging current up to 190A-250A with adaptive CAN/RS485 BMS communication",
+      "AC coupling capability to easily retrofit existing on-grid or generator-powered systems",
+      "Automatic generator start (ATS) support and smart load frequency droop control",
+      "Up to 16 inverters in parallel for utility-grade scalable microgrids (on-grid & off-grid)",
+      "Rugged IP65 weatherproof enclosure engineered for humid and tropical operating conditions",
+      "24/7 real-time remote monitoring and automated firmware updates via Deye Cloud Telemetry & App"
+    ];
+
+    return {
+      ...item,
+      name,
+      modelNo,
+      brand,
+      category,
+      warranty,
+      powerRange,
+      phase,
+      mppt,
+      batterySupport,
+      dimensions,
+      certifications,
+      description,
+      photos,
+      features
+    };
+  };
+
   // Interactive Solar Engineering Sizing Wizard Calculation
   const getWizardEngineeringDesign = () => {
     const effectiveCap = wizardCustomKva ? parseFloat(wizardCustomKva) || wizardCapacity : wizardCapacity;
@@ -4260,162 +4310,302 @@ export default function SolarPage() {
 
       <Footer />
 
-      {/* Interactive Component Photo Lightbox & Gallery Viewer Modal */}
-      {selectedComponentGallery && (
-        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
-            
-            {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs font-black uppercase tracking-wider">
-                    {selectedComponentGallery.category}
-                  </span>
-                  <span className="text-xs text-slate-400 font-mono">
-                    Model: {selectedComponentGallery.modelNo}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-black text-white">
-                  {selectedComponentGallery.name}
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  Manufacturer Brand: <span className="text-amber-400 font-bold">{selectedComponentGallery.brand}</span> | Warranty: <span className="text-emerald-400 font-bold">{selectedComponentGallery.warranty}</span>
-                </p>
-              </div>
-              <button 
-                onClick={() => setSelectedComponentGallery(null)} 
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white font-bold text-lg"
-              >
-                ✕
-              </button>
-            </div>
+      {/* Comprehensive Deye OEM Product Specification & Engineering Modal */}
+      {selectedComponentGallery && (() => {
+        const prod = getUnifiedProductDetails(selectedComponentGallery);
+        if (!prod) return null;
 
-            {/* Gallery Lightbox Content Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        return (
+          <div className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-3xl max-w-6xl w-full max-h-[94vh] overflow-y-auto p-5 sm:p-8 space-y-8 shadow-2xl my-auto">
               
-              {/* Left Column: Primary HD Photo Viewer & Selector */}
-              <div className="md:col-span-7 space-y-3">
-                
-                {/* Main Large Image View */}
-                <div className="relative h-72 sm:h-80 rounded-2xl overflow-hidden border-2 border-slate-800 bg-slate-950">
-                  <img 
-                    src={selectedComponentGallery.photos[activePhotoIdx]?.url} 
-                    alt={selectedComponentGallery.photos[activePhotoIdx]?.caption} 
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
-                    <span className="text-xs font-black text-amber-400 block">
-                      Photo {activePhotoIdx + 1} of {selectedComponentGallery.photos.length}:
-                    </span>
-                    <p className="text-xs text-slate-200 font-semibold">
-                      {selectedComponentGallery.photos[activePhotoIdx]?.caption}
-                    </p>
-                  </div>
+              {/* Top Navigation & Breadcrumbs Bar */}
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
+                <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  <span>TOTAG Solar Catalogue</span>
+                  <span>/</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">{prod.category}</span>
+                  <span>/</span>
+                  <span className="font-mono text-slate-700 dark:text-slate-200">{prod.modelNo}</span>
                 </div>
 
-                {/* Thumbnail Selector Strip */}
-                <div className="grid grid-cols-4 gap-2">
-                  {selectedComponentGallery.photos.map((photo: any, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActivePhotoIdx(idx)}
-                      className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${
-                        idx === activePhotoIdx 
-                          ? 'border-amber-500 ring-2 ring-amber-500/50 scale-[1.03]' 
-                          : 'border-slate-800 opacity-60 hover:opacity-100'
-                      }`}
-                    >
-                      <img src={photo.url} alt={photo.caption} className="w-full h-full object-cover" />
-                      <span className="absolute top-1 left-1 text-[9px] font-black text-white px-1 bg-black/70 rounded">
-                        #{idx + 1}
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                <button 
+                  onClick={() => setSelectedComponentGallery(null)} 
+                  className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-bold flex items-center justify-center transition-colors"
+                >
+                  ✕
+                </button>
               </div>
 
-              {/* Right Column: Full Engineering Data Sheet */}
-              <div className="md:col-span-5 space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800 text-xs">
-                <div className="bg-gradient-to-r from-amber-500/10 to-emerald-500/10 p-3.5 rounded-xl border border-amber-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider">PRICING UPON REQUEST</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">RFQ Enabled</span>
-                  </div>
-                  <Button
-                    onClick={() => {
-                      setRfqItem(selectedComponentGallery);
-                      setShowRfqModal(true);
-                    }}
-                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-2.5 rounded-xl shadow-lg flex items-center justify-center gap-2"
-                  >
-                    <FileText className="w-4 h-4 text-slate-950" />
-                    <span>Request Official Quotation (RFQ)</span>
-                  </Button>
-                </div>
-
-                <div className="space-y-2 border-t border-slate-800 pt-3">
-                  <span className="text-amber-400 font-bold block text-xs">Technical Description & Scope:</span>
-                  <p className="text-slate-300 leading-relaxed">
-                    {selectedComponentGallery.description}
-                  </p>
-                </div>
-
-                <div className="space-y-2 border-t border-slate-800 pt-3">
-                  <span className="text-amber-400 font-bold block text-xs">Electrical & Physical Specifications:</span>
-                  <div className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 font-semibold space-y-1 text-[11px]">
-                    <div>{selectedComponentGallery.specs}</div>
-                    <div className="text-slate-400 font-mono">Dimensions: {selectedComponentGallery.dimensions}</div>
-                    <div className="text-emerald-400 font-mono">Compliance: {selectedComponentGallery.certifications}</div>
-                  </div>
-                </div>
-
-                {selectedComponentGallery.features && (
-                  <div className="space-y-2 border-t border-slate-800 pt-3">
-                    <span className="text-amber-400 font-bold block text-xs">Key Product Features & Capabilities:</span>
-                    <ul className="space-y-1 text-slate-300 text-[11px] list-disc pl-4 max-h-40 overflow-y-auto">
-                      {selectedComponentGallery.features.map((feat: string, idx: number) => (
-                        <li key={idx} className="leading-relaxed">{feat}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {selectedComponentGallery.youtubeVideoUrl && (
-                  <div className="space-y-2 border-t border-slate-800 pt-3">
-                    <span className="text-amber-400 font-bold block text-xs flex items-center gap-1.5">
-                      <Video className="w-3.5 h-3.5 text-amber-400" />
-                      Official Product Walkthrough Video:
-                    </span>
-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-slate-700 shadow-xl bg-black">
-                      <iframe 
-                        src={selectedComponentGallery.youtubeVideoUrl} 
-                        title={selectedComponentGallery.name}
-                        className="w-full h-full border-0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowFullScreen
-                      />
+              {/* Main Product Hero Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                {/* Left: HD Photo Showcase & Multi-Angle Carousel */}
+                <div className="lg:col-span-6 space-y-4">
+                  <div className="relative h-72 sm:h-96 rounded-3xl overflow-hidden border-2 border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+                    <img 
+                      src={prod.photos[activePhotoIdx]?.url || prod.image} 
+                      alt={prod.photos[activePhotoIdx]?.caption || prod.name} 
+                      className="w-full h-full object-contain"
+                    />
+                    <div className="absolute top-4 left-4 flex items-center gap-1.5">
+                      <Badge className="bg-emerald-600 text-white font-black text-xs">
+                        Official Deye OEM Hardware
+                      </Badge>
+                      {prod.powerRange && (
+                        <Badge variant="outline" className="bg-white/80 dark:bg-slate-900/80 font-bold text-xs">
+                          {prod.powerRange}
+                        </Badge>
+                      )}
                     </div>
                   </div>
-                )}
 
-                <Button
-                  onClick={() => handleDownloadOemDatasheetPdf(selectedComponentGallery)}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3 rounded-xl shadow-lg mt-2 flex items-center justify-center gap-2"
-                >
-                  <FileText className="w-4 h-4 text-slate-950" />
-                  <span>Download Complete OEM Datasheet PDF</span>
-                </Button>
+                  {/* Thumbnail Strip */}
+                  {prod.photos && prod.photos.length > 1 && (
+                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                      {prod.photos.map((photo: any, idx: number) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActivePhotoIdx(idx)}
+                          className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all p-1 bg-slate-50 dark:bg-slate-900 ${
+                            idx === activePhotoIdx 
+                              ? 'border-emerald-500 ring-2 ring-emerald-500/50 scale-105' 
+                              : 'border-slate-200 dark:border-white/10 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={photo.url} alt={photo.caption} className="w-full h-full object-contain" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 text-xs text-slate-500 text-center font-medium">
+                    {prod.photos[activePhotoIdx]?.caption || `${prod.name} High-Resolution Specification Render`}
+                  </div>
+                </div>
+
+                {/* Right: Technical Overview & Procurement Card */}
+                <div className="lg:col-span-6 space-y-6">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-xs">
+                        {prod.category}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs">
+                        {prod.mppt}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-400 font-extrabold text-xs">
+                        {prod.batterySupport}
+                      </span>
+                    </div>
+
+                    <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                      {prod.name}
+                    </h1>
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+                      {prod.phase} • {prod.powerRange} • {prod.batterySupport}
+                    </p>
+                  </div>
+
+                  {/* Manufacturer & Warranty Pill Bar */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-xs">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Manufacturer</span>
+                      <span className="font-extrabold text-slate-900 dark:text-white">Deye OEM</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Warranty</span>
+                      <span className="font-extrabold text-emerald-600 dark:text-emerald-400">5-Yr Standard</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-slate-400 block">Protection</span>
+                      <span className="font-extrabold text-sky-600 dark:text-sky-400">IP65 Outdoor</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {prod.description}
+                  </p>
+
+                  {/* Core Deye Key Features */}
+                  <div className="space-y-2.5">
+                    <h4 className="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">
+                      Core Engineering Capabilities:
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      {prod.features.slice(0, 6).map((feat: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                          <span className="text-slate-700 dark:text-slate-300 font-medium leading-snug">{feat}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Procurement Action Bar */}
+                  <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                    <Button
+                      onClick={() => {
+                        setRfqItem(prod);
+                        setShowRfqModal(true);
+                      }}
+                      className="w-full sm:flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span>Request Official Quotation (RFQ)</span>
+                    </Button>
+                    <Button
+                      onClick={() => handleDownloadOemDatasheetPdf(prod)}
+                      variant="outline"
+                      className="w-full sm:w-auto border-slate-300 dark:border-slate-700 rounded-2xl text-xs font-bold py-3.5"
+                    >
+                      <FileSpreadsheet className="w-4 h-4 mr-1.5" />
+                      Download Datasheet PDF
+                    </Button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Comprehensive Technical Specifications Tables (Deye Inverter Benchmark) */}
+              <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-white/10">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <Cpu className="w-5 h-5 text-emerald-600" />
+                    <span>Complete Technical Specifications & Engineering Data</span>
+                  </h3>
+                  <Badge variant="outline" className="text-xs font-mono">
+                    Standard: IEC/EN 62109 • IP65
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                  
+                  {/* Table 1: Battery Input Data */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-slate-900/60">
+                    <div className="bg-slate-200/80 dark:bg-slate-800 p-3 font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <BatteryCharging className="w-4 h-4 text-emerald-500" />
+                      <span>Battery Input Data</span>
+                    </div>
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800 p-3 space-y-2 text-[11px]">
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Battery Chemistry:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">LiFePO4 Lithium / Lead-Acid</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Battery Voltage Range:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{prod.specs?.includes("HV") ? "160V - 800V DC (High Voltage)" : "40V - 60V DC (48V Low Voltage)"}</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Max Charge/Discharge:</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">120A - 250A Max Continuous</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Charging Strategy:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">Self-Adaption with Smart CANbus BMS</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Parallel Battery Support:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">Up to 32 Packs in Parallel</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Table 2: PV String Input Data */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-slate-900/60">
+                    <div className="bg-slate-200/80 dark:bg-slate-800 p-3 font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Sun className="w-4 h-4 text-amber-500" />
+                      <span>PV String Input Data</span>
+                    </div>
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800 p-3 space-y-2 text-[11px]">
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Max PV Input Voltage:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{prod.specs?.includes("HV") ? "1000V DC" : "500V DC"}</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">MPPT Voltage Range:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{prod.specs?.includes("HV") ? "200V - 850V DC" : "125V - 425V DC"}</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Start-Up Voltage:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">125V DC Fast Wake</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">MPPT Trackers / Strings:</span>
+                        <span className="font-bold text-amber-600 dark:text-amber-400">{prod.mppt} (High Density)</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Max Operating PV Current:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">13A + 13A / 26A + 26A</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Table 3: AC Output & Grid Specs */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-slate-900/60">
+                    <div className="bg-slate-200/80 dark:bg-slate-800 p-3 font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Zap className="w-4 h-4 text-sky-500" />
+                      <span>AC Output & Grid Integration</span>
+                    </div>
+                    <div className="divide-y divide-slate-200 dark:divide-slate-800 p-3 space-y-2 text-[11px]">
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Nominal AC Voltage:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{prod.phase}</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Grid Frequency:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">50Hz / 60Hz Auto-Detect</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">UPS Transfer Time:</span>
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400">&lt; 4ms (Seamless Zero-Flicker)</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Peak Surge Power:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">2.0x Rated Power (10s Overload)</span>
+                      </div>
+                      <div className="flex justify-between py-1">
+                        <span className="text-slate-500">Generator Synchronization:</span>
+                        <span className="font-bold text-purple-600 dark:text-purple-400">Integrated Auto-Start & ATS</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Table 4: Physical, Protection & Environmental */}
+                  <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-slate-900/60 lg:col-span-3">
+                    <div className="bg-slate-200/80 dark:bg-slate-800 p-3 font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                      <span>Dimensions, Protection & International Compliance</span>
+                    </div>
+                    <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px]">
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold">DIMENSIONS (WXHXD)</span>
+                        <span className="font-extrabold text-slate-900 dark:text-white font-mono">{prod.dimensions}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold">OPERATING TEMPERATURE</span>
+                        <span className="font-extrabold text-slate-900 dark:text-white">-40°C to +60°C (&gt;45°C Derating)</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold">INGRESS PROTECTION</span>
+                        <span className="font-extrabold text-emerald-600 dark:text-emerald-400">IP65 (Outdoor Certified)</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold">COMPLIANCE STANDARDS</span>
+                        <span className="font-extrabold text-slate-900 dark:text-white font-mono text-[10px]">{prod.certifications}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
 
             </div>
-
           </div>
-        </div>
-      )}
+        );
+      })()}
 
-
-      {/* Interactive Request for Quotation (RFQ) Form Modal */}
+{/* Interactive Request for Quotation (RFQ) Form Modal */}
       {showRfqModal && (
         <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-700 text-white rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
