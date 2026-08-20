@@ -1192,6 +1192,22 @@ const [custSurveyForm, setCustSurveyForm] = useState({
     roofType: "Corrugated Metal Sheet (South-West 15° Pitch)"
   });
 
+  // Interactive Solar Engineering Sizing Wizard State
+  const [wizardStep, setWizardStep] = useState<number>(1);
+  const [wizardFacility, setWizardFacility] = useState<string>("residential");
+  const [wizardCapacity, setWizardCapacity] = useState<number>(10);
+  const [wizardCustomKva, setWizardCustomKva] = useState<string>("");
+  const [wizardAutonomy, setWizardAutonomy] = useState<string>("full-night");
+  const [wizardGridGenset, setWizardGridGenset] = useState<string>("lec-hybrid");
+  const [showProformaModal, setShowProformaModal] = useState<boolean>(false);
+  const [proformaClient, setProformaClient] = useState({
+    clientName: "",
+    clientPhone: "",
+    clientEmail: "",
+    clientLocation: "Monrovia, Liberia",
+    notes: ""
+  });
+
   // Unified Product Detail Formatter for Deye OEM Catalogue Items
   const getUnifiedProductDetails = (item: any) => {
     if (!item) return null;
