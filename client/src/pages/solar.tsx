@@ -1136,6 +1136,15 @@ export default function SolarPage() {
   const [activeTab, setActiveTab] = useState("crm-leads");
   const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
   const [systemMode, setSystemMode] = useState("self-consumption");
+  
+  // Interactive Smart Solar Sizing Wizard State
+  const [wizardStep, setWizardStep] = useState<number>(1);
+  const [wizardFacility, setWizardFacility] = useState<string>("residential");
+  const [wizardCapacity, setWizardCapacity] = useState<number>(5);
+  const [wizardCustomKva, setWizardCustomKva] = useState<string>("");
+  const [wizardAutonomy, setWizardAutonomy] = useState<string>("overnight");
+  const [wizardGridMode, setWizardGridMode] = useState<string>("hybrid");
+  const [wizardExportModal, setWizardExportModal] = useState<boolean>(false);
   const [ticketSent, setTicketSent] = useState(false);
   const [custSurveyForm, setCustSurveyForm] = useState({
     name: "Monrovia Commercial Plaza",
@@ -1145,6 +1154,74 @@ export default function SolarPage() {
     autonomyHours: "12",
     roofType: "Corrugated Metal Sheet (South-West 15° Pitch)"
   });
+
+  // Interactive Solar Engineering Sizing Wizard Calculation
+  const getWizardEngineeringDesign = () => {
+    const effectiveCap = wizardCustomKva ? parseFloat(wizardCustomKva) || wizardCapacity : wizardCapacity;
+    const is3Phase = effectiveCap >= 20;
+
+    const facilityMap: Record<string, { label: string; icon: string; desc: string }> = {
+      residential: { label: "Residential (House / Villa)", icon: "🏠", desc: "Household lighting, refrigeration, inverter ACs, water pumping & security" },
+      commercial: { label: "Commercial Office / Retail Store", icon: "🏢", desc: "POS, refrigeration display, LED lights, computers, IT servers & ACs" },
+      clinic: { label: "Healthcare Clinic / PHC", icon: "🏥", desc: "Vaccine cold chain, laboratory analyzers, maternity ward lighting & medical tools" },
+      hospital: { label: "Hospital / Medical Center", icon: "🏥", desc: "24/7 Surgical theaters, ICU monitors, emergency diagnostics & 3-phase cooling" },
+      farm: { label: "Farm & Solar Irrigation", icon: "🌾", desc: "Solar deep-well pumping, poultry incubators, processing & farm quarters" },
+      industrial: { label: "Industrial Facility / Warehouse", icon: "🏭", desc: "Heavy machinery, cold storage warehouses, 3-phase motors & high bays" },
+      institution: { label: "School / Church / NGO Compound", icon: "🏛️", desc: "Classroom power, computer labs, staff quarters, water supply & offices" }
+    };
+
+    const currentFacility = facilityMap[wizardFacility] || facilityMap.residential;
+
+    let batteryMultiplier = 1.6;
+    let autonomyHours = "12 - 16 Hours (Full Night)";
+    if (wizardAutonomy === "essential") {
+      batteryMultiplier = 1.2;
+      autonomyHours = "4 - 6 Hours (Critical Loads)";
+    } else if (wizardAutonomy === "offgrid") {
+      batteryMultiplier = 2.5;
+      autonomyHours = "24+ Hours (100% Off-Grid Independence)";
+    }
+
+    const panelKwp = (effectiveCap * 1.1).toFixed(1);
+    const panelCount = Math.ceil((effectiveCap * 1100) / 550);
+    const batteryKwh = (effectiveCap * batteryMultiplier).toFixed(1);
+
+    const inverterCost = Math.round(effectiveCap * 260 + 200);
+    const batteryCost = Math.round(parseFloat(batteryKwh) * 235);
+    const panelCost = Math.round(panelCount * 165);
+    const bosCost = Math.round(effectiveCap * 80 + 120);
+    const switchgearCost = Math.round(effectiveCap * 60 + 100);
+    const telemetryCost = 140;
+    const installCost = Math.round(effectiveCap * 160 + 250);
+
+    const totalCost = inverterCost + batteryCost + panelCost + bosCost + switchgearCost + telemetryCost + installCost;
+    const annualKwh = Math.round(effectiveCap * 4.6 * 365 * 0.86);
+    const annualFuelOffsetUsd = Math.round(annualKwh * 0.32);
+    const paybackYears = (totalCost / Math.max(annualFuelOffsetUsd, 1000)).toFixed(1);
+    const co2Tons = (annualKwh * 0.00067).toFixed(1);
+
+    return {
+      effectiveCap,
+      is3Phase,
+      currentFacility,
+      autonomyHours,
+      panelKwp,
+      panelCount,
+      batteryKwh,
+      inverterCost,
+      batteryCost,
+      panelCost,
+      bosCost,
+      switchgearCost,
+      telemetryCost,
+      installCost,
+      totalCost,
+      annualKwh,
+      annualFuelOffsetUsd,
+      paybackYears,
+      co2Tons
+    };
+  };
 
   // Dynamic Persistent State
   const [auditsList, setAuditsList] = useState<SolarAuditItem[]>([]);
@@ -2207,295 +2284,359 @@ export default function SolarPage() {
 
             </TabsContent>
 
-            {/* MODULE 3: Solar System Sizing & Engineering Design */}
+            {/* MODULE 3: Interactive Smart Solar System Sizing & Custom Engineering Wizard */}
             <TabsContent value="system-sizing" className="space-y-8">
               
-              {/* Module Header */}
-              <div className="glass-card border-white/60 dark:border-white/10 rounded-2xl p-6 shadow-2xl space-y-6">
-                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              {/* Clean Sizing Wizard Container */}
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 bg-white/95 dark:bg-slate-950/95">
+                
+                {/* Header Banner */}
+                <div className="border-b border-slate-200 dark:border-white/10 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                        <Cpu className="w-3.5 h-3.5 text-amber-400" />
-                        Module 3: Engineering Design Engine
+                    <div className="flex items-center space-x-2 mb-1.5">
+                      <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                        Custom Solar Engineering Design Wizard
                       </span>
-                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">
-                        Multi-Scenario Consultative Generator
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 text-xs font-black">
+                        Dynamic Question Flow (Zero Clutter)
                       </span>
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white">Solar System Sizing & Multi-Scenario Engineering Design</h2>
-                    <p className="text-slate-600 dark:text-slate-300 text-xs mt-1">Determines optimal PV array, hybrid inverter, LiFePO4 battery storage, DC/AC protection, cables, earthing, and ATS generator integration.</p>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">Interactive Solar Power Sizing & Custom Design</h2>
+                    <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">Answer 4 quick questions below to generate an exact, custom-engineered Bill of Quantities (BOQ), equipment sizing, and turnkey investment.</p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      onClick={() => {
+                        setWizardFacility("residential");
+                        setWizardCapacity(5);
+                        setWizardCustomKva("");
+                        setWizardAutonomy("overnight");
+                        setWizardGridMode("hybrid");
+                        setWizardStep(1);
+                        toast({ title: "Wizard Reset", description: "Design parameters cleared." });
+                      }}
+                      variant="outline" 
+                      size="sm" 
+                      className="rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700"
+                    >
+                      Reset Questionnaire
+                    </Button>
                   </div>
                 </div>
 
-                {/* Sizing Parameters Engine Bar */}
-                <div className="bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-white/10 space-y-3">
-                  <h3 className="text-xs font-black uppercase text-amber-400 tracking-wider flex items-center gap-2">
-                    <Sliders className="w-4 h-4 text-amber-400" />
-                    Engineering Design Parameters & Environmental Coefficients
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs font-semibold">
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">SOLAR IRRADIANCE</span>
-                      <span className="text-white font-black text-sm">4.6 PSH / Day</span>
-                      <span className="text-slate-500 block text-[10px]">Liberian Radiance</span>
+                {/* 4-STEP INTERACTIVE QUESTIONNAIRE */}
+                <div className="space-y-6 bg-slate-50 dark:bg-slate-900/60 p-6 rounded-3xl border border-slate-200 dark:border-white/5">
+                  
+                  {/* STEP 1: Facility Type */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white">
+                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">1</span>
+                      <span>Where will this solar system be installed? (Facility Type)</span>
                     </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">BATTERY USABLE DOD</span>
-                      <span className="text-emerald-400 font-black text-sm">80% DoD</span>
-                      <span className="text-slate-500 block text-[10px]">LiFePO4 Cycle Safe</span>
-                    </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">INVERTER EFFICIENCY</span>
-                      <span className="text-sky-400 font-black text-sm">96.5% Max</span>
-                      <span className="text-slate-500 block text-[10px]">Dual MPPT Loss</span>
-                    </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">SYSTEM LOSSFACTOR</span>
-                      <span className="text-rose-400 font-black text-sm">14.0% Total</span>
-                      <span className="text-slate-500 block text-[10px]">Dirt, Temp & Cable</span>
-                    </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">TEMP DERATING</span>
-                      <span className="text-amber-400 font-black text-sm">-0.35% / °C</span>
-                      <span className="text-slate-500 block text-[10px]">Above 25°C Ambient</span>
-                    </div>
-                    <div className="bg-slate-900 p-2.5 rounded-lg border border-slate-200 dark:border-white/10">
-                      <span className="text-slate-400 block text-[10px] uppercase font-bold">RESERVE MARGIN</span>
-                      <span className="text-purple-400 font-black text-sm">+20% Reserve</span>
-                      <span className="text-slate-500 block text-[10px]">Future Expansion</span>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+                      {[
+                        { id: "residential", label: "House / Home", icon: "🏠" },
+                        { id: "commercial", label: "Store / Office", icon: "🏢" },
+                        { id: "clinic", label: "Health Clinic", icon: "🏥" },
+                        { id: "hospital", label: "Hospital", icon: "🏥" },
+                        { id: "farm", label: "Farm / Pump", icon: "🌾" },
+                        { id: "industrial", label: "Industrial", icon: "🏭" },
+                        { id: "institution", label: "School / NGO", icon: "🏛️" }
+                      ].map((fac) => (
+                        <div
+                          key={fac.id}
+                          onClick={() => setWizardFacility(fac.id)}
+                          className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col items-center justify-center text-center gap-1.5 ${
+                            wizardFacility === fac.id
+                              ? "bg-emerald-500/15 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-md scale-105"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10 hover:border-emerald-500/40 text-slate-700 dark:text-slate-300 font-semibold"
+                          }`}
+                        >
+                          <span className="text-2xl">{fac.icon}</span>
+                          <span className="text-xs">{fac.label}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
+
+                  {/* STEP 2: Desired Capacity / Load */}
+                  <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white">
+                        <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">2</span>
+                        <span>Select your target capacity (kVA / kW):</span>
+                      </div>
+                      {wizardCustomKva && (
+                        <Badge className="bg-amber-500 text-slate-950 font-bold text-xs">Custom {wizardCustomKva} kVA Active</Badge>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-3 sm:grid-cols-7 gap-2.5">
+                      {[3, 5, 10, 15, 30, 50, 100].map((capVal) => (
+                        <button
+                          key={capVal}
+                          type="button"
+                          onClick={() => {
+                            setWizardCapacity(capVal);
+                            setWizardCustomKva("");
+                          }}
+                          className={`py-3 px-2 rounded-2xl border text-xs transition-all flex flex-col items-center justify-center ${
+                            wizardCapacity === capVal && !wizardCustomKva
+                              ? "bg-emerald-600 text-white font-extrabold shadow-lg scale-105 border-emerald-600"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10 hover:border-emerald-500/40 text-slate-800 dark:text-slate-200 font-semibold"
+                          }`}
+                        >
+                          <span className="text-sm font-black">{capVal} kVA</span>
+                          <span className="text-[10px] opacity-80">{capVal} kW</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Custom Capacity Input */}
+                    <div className="flex items-center gap-3 pt-2">
+                      <span className="text-xs text-slate-500 font-bold whitespace-nowrap">Or specify custom capacity:</span>
+                      <Input
+                        type="number"
+                        placeholder="e.g. 8, 20, 45 kVA"
+                        value={wizardCustomKva}
+                        onChange={(e) => setWizardCustomKva(e.target.value)}
+                        className="max-w-[180px] rounded-xl text-xs bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700"
+                      />
+                      <span className="text-xs text-slate-400 font-medium">kVA</span>
+                    </div>
+                  </div>
+
+                  {/* STEP 3: Storage Autonomy */}
+                  <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white">
+                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">3</span>
+                      <span>What is your battery backup duration goal?</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: "essential", title: "🌙 Essential Evening Backup", desc: "4 to 6 hours for nighttime lighting, refrigeration & security", badge: "1.2x Battery" },
+                        { id: "overnight", title: "🔋 Full Overnight Autonomy", desc: "12 to 16 hours for continuous evening ACs, TV, pumps & refrigeration", badge: "1.6x Battery (Recommended)" },
+                        { id: "offgrid", title: "⚡ 24/7 100% Off-Grid Independence", desc: "24+ hours complete autonomy with zero generator reliance", badge: "2.5x Heavy Battery" }
+                      ].map((auto) => (
+                        <div
+                          key={auto.id}
+                          onClick={() => setWizardAutonomy(auto.id)}
+                          className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-1.5 ${
+                            wizardAutonomy === auto.id
+                              ? "bg-emerald-500/15 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md font-extrabold"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10 hover:border-emerald-500/40 text-slate-700 dark:text-slate-300 font-semibold"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <h5 className="text-xs font-black">{auto.title}</h5>
+                            <Badge variant="outline" className="text-[9px]">{auto.badge}</Badge>
+                          </div>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-relaxed">{auto.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* STEP 4: Power Source Integration */}
+                  <div className="space-y-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white">
+                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">4</span>
+                      <span>How should the system connect with grid or generator?</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        { id: "hybrid", title: "☀️ Hybrid Solar + LEC Grid Sync", desc: "Syncs with LEC grid, prioritizes solar first, exports or cuts bills" },
+                        { id: "generator", title: "⚙️ Solar + Auto-Generator Start (ATS)", desc: "Auto-starts generator only during prolonged rain storms when batteries reach 20%" },
+                        { id: "pure_offgrid", title: "🌿 100% Pure Off-Grid Solar", desc: "Completely standalone microgrid with zero grid or generator dependence" }
+                      ].map((grid) => (
+                        <div
+                          key={grid.id}
+                          onClick={() => setWizardGridMode(grid.id)}
+                          className={`p-4 rounded-2xl border cursor-pointer transition-all space-y-1.5 ${
+                            wizardGridMode === grid.id
+                              ? "bg-emerald-500/15 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md font-extrabold"
+                              : "bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10 hover:border-emerald-500/40 text-slate-700 dark:text-slate-300 font-semibold"
+                          }`}
+                        >
+                          <h5 className="text-xs font-black">{grid.title}</h5>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal leading-relaxed">{grid.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
-                {/* Consultative Sales Multi-Scenario Comparison Engine (Options A, B, C) */}
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-2">
-                    <h3 className="text-lg font-black text-white flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-amber-400" />
-                      <span>Consultative Sales Engineering Scenario Comparison</span>
-                    </h3>
-                    <span className="text-xs text-slate-400 font-bold">3 Tailored Financial & Technical Options</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    {/* OPTION A: Essential Backup */}
-                    <div className="bg-slate-950 border-2 border-slate-200 dark:border-white/10 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
-                        <div>
-                          <span className="px-2.5 py-0.5 rounded bg-sky-500/20 text-sky-400 text-[10px] font-black uppercase">OPTION A</span>
-                          <h4 className="text-lg font-black text-white mt-1">Essential Backup</h4>
-                        </div>
-                        <Badge className="bg-slate-900 text-sky-400 border-sky-500/40 text-xs">Critical Loads</Badge>
-                      </div>
-
-                      <p className="text-xs text-slate-400">Targeted backup for critical IT servers, security, LED lighting, and communications.</p>
-
-                      <div className="space-y-2 text-xs font-semibold text-slate-300">
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Inverter Capacity:</span>
-                          <span className="text-white font-bold">10 kVA Single-Phase</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>PV Array Capacity:</span>
-                          <span className="text-amber-400 font-bold">11.0 kWp (20x 550W)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Battery Storage:</span>
-                          <span className="text-emerald-400 font-bold">25.6 kWh LiFePO4</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Usable Energy (@80% DoD):</span>
-                          <span className="text-white font-bold">20.5 kWh</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Estimated Autonomy:</span>
-                          <span className="text-sky-400 font-bold">8.0 Hours</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Annual Energy Yield:</span>
-                          <span className="text-white font-bold">18,469 kWh / yr</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Generator Fuel Offset:</span>
-                          <span className="text-emerald-400 font-bold">4,100 L / yr ($5,535 USD)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Payback Period:</span>
-                          <span className="text-purple-400 font-bold">3.4 Years</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>CO₂ Avoided:</span>
-                          <span className="text-emerald-400 font-bold">12.5 Tons CO₂ / yr</span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] text-slate-500 block">CAPITAL INVESTMENT</span>
-                          <span className="text-xl font-black text-sky-400">$24,500 USD</span>
-                        </div>
-                        <Button size="sm" className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs">
-                          Select Option A
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* OPTION B: Recommended Hybrid (Highlight) */}
-                    <div className="bg-slate-950 border-2 border-amber-500 rounded-xl p-5 space-y-4 relative overflow-hidden shadow-2xl">
-                      <div className="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-                        RECOMMENDED SOLUTON
-                      </div>
+                {/* DYNAMICALLY GENERATED CUSTOM ENGINEERING DESIGN CARD */}
+                {(() => {
+                  const eng = getWizardEngineeringDesign();
+                  return (
+                    <div className="space-y-6 bg-white dark:bg-slate-900 p-6 sm:p-8 rounded-3xl border-2 border-emerald-500/40 shadow-2xl">
                       
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
+                      {/* Title & Investment Header */}
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-6">
                         <div>
-                          <span className="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-black uppercase">OPTION B</span>
-                          <h4 className="text-lg font-black text-white mt-1">Recommended Hybrid</h4>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-2xl">{eng.currentFacility.icon}</span>
+                            <Badge className="bg-emerald-600 text-white font-black text-xs">Custom Engineered Solution</Badge>
+                            <Badge variant="outline" className="text-xs">{eng.autonomyHours}</Badge>
+                          </div>
+                          <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                            {eng.effectiveCap} kVA Turnkey Solar Power System ({eng.currentFacility.label})
+                          </h3>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                            {eng.currentFacility.desc}
+                          </p>
+                        </div>
+
+                        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-right shrink-0">
+                          <span className="text-[10px] uppercase font-extrabold text-slate-500 dark:text-slate-400 block">
+                            ESTIMATED TURNKEY INVESTMENT
+                          </span>
+                          <span className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
+                            ${eng.totalCost.toLocaleString()} <span className="text-xs font-normal text-slate-400">USD</span>
+                          </span>
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block font-bold mt-0.5">
+                            All-Inclusive: Panels, Inverter, Battery, BOS & Labor
+                          </span>
                         </div>
                       </div>
 
-                      <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Optimal balance of solar PV generation, 16-hour LiFePO4 battery autonomy, and auto-genset start integration.</p>
+                      {/* Equipment Bill of Quantities (BOQ) Breakdown */}
+                      <div className="space-y-3">
+                        <h4 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                          <FileCheck className="w-4 h-4 text-emerald-600" />
+                          <span>Custom Sized Bill of Quantities & Engineering Components:</span>
+                        </h4>
 
-                      <div className="space-y-2 text-xs font-semibold text-slate-300">
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Inverter Capacity:</span>
-                          <span className="text-white font-bold">30 kVA Three-Phase Hybrid</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>PV Array Capacity:</span>
-                          <span className="text-amber-400 font-bold">33.0 kWp (60x 550W)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Battery Storage:</span>
-                          <span className="text-emerald-400 font-bold">76.8 kWh LiFePO4</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Usable Energy (@80% DoD):</span>
-                          <span className="text-white font-bold">61.4 kWh</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Estimated Autonomy:</span>
-                          <span className="text-amber-400 font-bold">16.0 Hours</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Annual Energy Yield:</span>
-                          <span className="text-white font-bold">55,407 kWh / yr</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Generator Fuel Offset:</span>
-                          <span className="text-emerald-400 font-bold">12,300 L / yr ($16,605 USD)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Payback Period:</span>
-                          <span className="text-purple-400 font-bold">3.2 Years</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>CO₂ Avoided:</span>
-                          <span className="text-emerald-400 font-bold">37.4 Tons CO₂ / yr</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs">
+                          
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>1. {eng.is3Phase ? "3-Phase Inverter" : "Hybrid Inverter"} (1 Unit)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${eng.inverterCost.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              {eng.effectiveCap}.0 kW Deye / Pure Sine Wave {eng.is3Phase ? "3-Phase 380V" : "48V"} Inverter (Dual MPPT, Auto-Transfer)
+                            </p>
+                          </div>
+
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>2. LiFePO4 Battery Bank (1 Bank)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${eng.batteryCost.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              {eng.batteryKwh} kWh LiFePO4 Lithium Iron Phosphate Storage with Smart Integrated BMS ({eng.autonomyHours})
+                            </p>
+                          </div>
+
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>3. Solar PV Array ({eng.panelCount} Pcs)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${eng.panelCost.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              {eng.panelCount}x 550W Tier-1 Monocrystalline PERC Solar Panels ({eng.panelKwp} kWp Total Generation)
+                            </p>
+                          </div>
+
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>4. Balance of System (1 Set)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${eng.bosCost.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              Anodized Aluminum Mounting Racks, 4mm²/6mm² UV DC Solar Cabling, MC4 Connectors & Cable Trays
+                            </p>
+                          </div>
+
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>5. Protection Switchgear (1 Set)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${eng.switchgearCost.toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              Pre-wired AC/DC Combiner Distribution Box, Type II Surge Protection (SPD), DC Breakers & Copper Ground Earthing
+                            </p>
+                          </div>
+
+                          <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 space-y-1">
+                            <div className="flex items-center justify-between font-extrabold text-slate-900 dark:text-white">
+                              <span>6. Telemetry & Labor (Turnkey)</span>
+                              <span className="text-emerald-600 dark:text-emerald-400 font-black">${(eng.telemetryCost + eng.installCost).toLocaleString()}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                              24/7 Deye WiFi/GSM NOC Telemetry, Delivery across Liberia, Installation, Testing & 5-Year Warranty
+                            </p>
+                          </div>
+
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] text-amber-400 block font-bold">CAPITAL INVESTMENT</span>
-                          <span className="text-2xl font-black text-amber-400">$62,000 USD</span>
+                      {/* Performance & Financial Metrics */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                        <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Annual Generation</span>
+                          <span className="text-base font-black text-slate-900 dark:text-white">{eng.annualKwh.toLocaleString()} kWh/yr</span>
                         </div>
-                        <Button size="sm" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs">
-                          Select Option B
-                        </Button>
+
+                        <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Annual Fuel Savings</span>
+                          <span className="text-base font-black text-emerald-600 dark:text-emerald-400">${eng.annualFuelOffsetUsd.toLocaleString()} USD/yr</span>
+                        </div>
+
+                        <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Estimated Payback</span>
+                          <span className="text-base font-black text-purple-600 dark:text-purple-400">{eng.paybackYears} Years</span>
+                        </div>
+
+                        <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block">Carbon Avoided</span>
+                          <span className="text-base font-black text-emerald-600 dark:text-emerald-400">{eng.co2Tons} Tons CO₂/yr</span>
+                        </div>
                       </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                        <p className="text-xs text-slate-500 font-medium text-center sm:text-left">
+                          Compliant with international IEC standards, UNGM, and Ministry of Energy regulations.
+                        </p>
+
+                        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+                          <Button 
+                            onClick={() => {
+                              toast({
+                                title: "Proforma Quotation Generated",
+                                description: `Official BOQ for ${eng.effectiveCap} kVA ${eng.currentFacility.label} prepared.`,
+                              });
+                              window.location.href = `/#contact`;
+                            }}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs w-full sm:w-auto shadow-md"
+                          >
+                            <FileText className="w-3.5 h-3.5 mr-1.5" />
+                            Request Official Proforma Invoice
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              window.location.href = `tel:+231777511391`;
+                            }}
+                            variant="outline" 
+                            className="border-slate-300 dark:border-slate-700 rounded-xl text-xs font-bold w-full sm:w-auto"
+                          >
+                            Call Solar Engineering Desk
+                          </Button>
+                        </div>
+                      </div>
+
                     </div>
-
-                    {/* OPTION C: Full Energy Independence */}
-                    <div className="bg-slate-950 border-2 border-slate-200 dark:border-white/10 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3">
-                        <div>
-                          <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase">OPTION C</span>
-                          <h4 className="text-lg font-black text-white mt-1">Full Independence</h4>
-                        </div>
-                        <Badge className="bg-slate-900 text-emerald-400 border-emerald-500/40 text-xs">100% Off-Grid</Badge>
-                      </div>
-
-                      <p className="text-xs text-slate-400">Complete 24/7 off-grid solar microgrid with zero generator reliance and maximum battery storage.</p>
-
-                      <div className="space-y-2 text-xs font-semibold text-slate-300">
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Inverter Capacity:</span>
-                          <span className="text-white font-bold">50 kVA Parallel Microgrid</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>PV Array Capacity:</span>
-                          <span className="text-amber-400 font-bold">55.0 kWp (100x 550W)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Battery Storage:</span>
-                          <span className="text-emerald-400 font-bold">128.0 kWh LiFePO4</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Usable Energy (@80% DoD):</span>
-                          <span className="text-white font-bold">102.4 kWh</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Estimated Autonomy:</span>
-                          <span className="text-emerald-400 font-bold">24.0 Hours</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Annual Energy Yield:</span>
-                          <span className="text-white font-bold">92,345 kWh / yr</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Generator Fuel Offset:</span>
-                          <span className="text-emerald-400 font-bold">20,500 L / yr ($27,675 USD)</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>Payback Period:</span>
-                          <span className="text-purple-400 font-bold">3.8 Years</span>
-                        </div>
-                        <div className="flex justify-between border-b border-slate-900 pb-1">
-                          <span>CO₂ Avoided:</span>
-                          <span className="text-emerald-400 font-bold">62.3 Tons CO₂ / yr</span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
-                        <div>
-                          <span className="text-[10px] text-slate-500 block">CAPITAL INVESTMENT</span>
-                          <span className="text-xl font-black text-emerald-400">$112,000 USD</span>
-                        </div>
-                        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs">
-                          Select Option C
-                        </Button>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-
-                {/* Sized Components Engineering Specification Breakdown */}
-                <div className="bg-slate-950 p-5 rounded-xl border border-slate-200 dark:border-white/10 space-y-4">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2">
-                    <FileCheck className="w-4 h-4 text-emerald-400" />
-                    <span>Sized Engineering Component Specifications (Option B Baseline)</span>
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-semibold">
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                      <span className="text-amber-400 font-bold block">1. PV Array & String Config</span>
-                      <p className="text-slate-700 dark:text-slate-300 font-semibold">60x Tier-1 Mono PERC 550W Panels. 4 Strings of 15 Modules (Voc: 747V DC, Vmp: 628V DC). Compliant with MPPT 1000V DC input ceiling.</p>
-                    </div>
-
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                      <span className="text-emerald-400 font-bold block">2. Inverter & Protection</span>
-                      <p className="text-slate-700 dark:text-slate-300 font-semibold">30 kVA Deye Three-Phase Hybrid Inverter (IP65 Outdoor). DC 1000V 32A Rotary Isolator, DC 15A Fuses, Type II DC & AC SPDs, 4-Pole 250A ATS.</p>
-                    </div>
-
-                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-white/10 space-y-1">
-                      <span className="text-purple-400 font-bold block">3. Battery Bank & Cabling</span>
-                      <p className="text-slate-700 dark:text-slate-300 font-semibold">15x LiFePO4 5.12kWh 48V Rack Modules (76.8 kWh total, Smart CANbus BMS). DC Cable: 10mm² UV-Resistant. AC Cable: 4-Core 35mm² XLPE Armored Copper. Earthing: &lt;3.2 Ω rod.</p>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })()}
 
               </div>
             </TabsContent>
