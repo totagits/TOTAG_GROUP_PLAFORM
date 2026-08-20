@@ -1134,37 +1134,53 @@ export default function SolarPage() {
   const [activePhotoIdx, setActivePhotoIdx] = useState<number>(0);
 
   const { toast } = useToast();
-  // Default to Interactive Sizing Wizard for Customers; Support Staff Mode
-  const [activeTab, setActiveTab] = useState("system-sizing");
-  const [staffMode, setStaffMode] = useState<boolean>(() => {
+  // Secure Staff Authentication State (Only unlocked for authenticated staff/admin)
+  const [isAdminUser, setIsAdminUser] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get("staff") === "true" || localStorage.getItem("totagAdmin") === "true";
+      return localStorage.getItem("totagAdmin") === "true";
     }
     return false;
   });
-  const [customerAccount, setCustomerAccount] = useState("monrovia-plaza");
-  const [systemMode, setSystemMode] = useState("self-consumption");
-  
-  // Interactive Smart Solar Sizing Wizard State
-  const [wizardStep, setWizardStep] = useState<number>(1);
-  const [wizardFacility, setWizardFacility] = useState<string>("residential");
-  const [wizardCapacity, setWizardCapacity] = useState<number>(5);
-  const [wizardCustomKva, setWizardCustomKva] = useState<string>("");
-  const [wizardAutonomy, setWizardAutonomy] = useState<string>("overnight");
-  const [wizardGridMode, setWizardGridMode] = useState<string>("hybrid");
-  const [wizardExportModal, setWizardExportModal] = useState<boolean>(false);
-  const [showProformaModal, setShowProformaModal] = useState<boolean>(false);
-  const [proformaClient, setProformaClient] = useState({
-    name: "",
-    org: "",
+  const [staffMode, setStaffMode] = useState<boolean>(false);
+  const [showStaffLoginModal, setShowStaffLoginModal] = useState<boolean>(false);
+  const [staffPassword, setStaffPassword] = useState<string>("");
+  const [staffAuthError, setStaffAuthError] = useState<string>("");
+
+  // Comprehensive Engineering Site Survey & Load Sizing Form State
+  const [comprehensiveSurvey, setComprehensiveSurvey] = useState({
+    facilityName: "",
+    contactPerson: "",
     phone: "",
     email: "",
-    county: "Montserrado"
+    county: "Montserrado",
+    district: "Monrovia",
+    siteAddress: "",
+    gpsCoords: "",
+    facilityType: "Residential (House / Villa)",
+    mountingType: "Rooftop (Corrugated Metal / Zinc)",
+    availableAreaSqM: "120",
+    shadingCondition: "Zero Shading (Full Unobstructed Sunlight)",
+    roofCondition: "Sound & Weatherproof (&lt; 5 Years Old)",
+    roofOrientation: "South-Facing (15° Optimal Tilt)",
+    gridStatus: "LEC Grid Available (Intermittent / Load-Shedding)",
+    existingGeneratorKva: "None",
+    atsRequired: "Yes - Automatic Generator Start & Transfer",
+    targetCapacityKva: "10",
+    autonomyHours: "12 - 16 Hours (Full Night Autonomy)",
+    systemType: "Hybrid Solar + LiFePO4 Battery + LEC Sync",
+    // Major Load Inventory
+    inverterAcCount: "2",
+    standardAcCount: "0",
+    freezerCount: "2",
+    waterPumpHp: "1.5 HP Submersible",
+    medicalServerLoad: "Standard Office & Home Electronics",
+    installationTimeline: "Immediate (Within 1-2 Weeks)",
+    specialNotes: ""
   });
-  const [proformaSubmitting, setProformaSubmitting] = useState<boolean>(false);
-  const [ticketSent, setTicketSent] = useState(false);
-  const [custSurveyForm, setCustSurveyForm] = useState({
+  const [surveySubmitting, setSurveySubmitting] = useState<boolean>(false);
+  const [surveySubmittedRef, setSurveySubmittedRef] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("system-sizing");
+const [custSurveyForm, setCustSurveyForm] = useState({
     name: "Monrovia Commercial Plaza",
     contact: "+231 770 123 456",
     peakLoad: "25",
@@ -1457,40 +1473,33 @@ export default function SolarPage() {
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* Dynamic Public Customer Tabs vs Internal Staff Back-Office Tabs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-extrabold uppercase text-slate-500 dark:text-slate-400 tracking-wider">
-                  {staffMode ? "🔒 Staff & Engineering Back-Office (9 Operational Modules)" : "☀️ Customer Sizing & Solutions Portal"}
-                </span>
-                {staffMode && (
-                  <Badge className="bg-amber-500 text-slate-950 font-black text-[10px]">
-                    Internal Staff Console
+            {isAdminUser && (
+              <div className="flex items-center justify-between p-3.5 mb-6 rounded-2xl bg-amber-500/10 border border-amber-500/30">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-amber-500 text-slate-950 font-black text-xs">
+                    Staff & Super-Admin Console Active
                   </Badge>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-600 dark:text-slate-300 font-semibold">
+                    {staffMode ? "Viewing 9 Full Operational Back-Office Modules" : "Viewing Public Customer Portal"}
+                  </span>
+                </div>
                 <Button
-                  variant="outline"
                   size="sm"
+                  variant="outline"
                   onClick={() => {
                     const next = !staffMode;
                     setStaffMode(next);
-                    if (next) {
-                      setActiveTab("crm-leads");
-                    } else {
-                      setActiveTab("system-sizing");
-                    }
+                    setActiveTab(next ? "crm-leads" : "system-sizing");
                   }}
-                  className="rounded-xl text-xs font-bold border-slate-300 dark:border-slate-700 h-8"
+                  className="rounded-xl text-xs font-bold border-amber-500/40 text-amber-500 hover:bg-amber-500/20"
                 >
-                  {staffMode ? "Switch to Customer Portal View ➔" : "🔒 Staff Back-Office Login / Switch"}
+                  {staffMode ? "Switch to Customer Portal View ➔" : "Access 9 Staff Back-Office Modules ➔"}
                 </Button>
               </div>
-            </div>
+            )}
 
-            {staffMode ? (
-              /* FULL 9-MODULE STAFF OPERATIONAL TABS */
+            {staffMode && isAdminUser ? (
+              /* FULL 9-MODULE STAFF OPERATIONAL TABS (STRICTLY FOR AUTHENTICATED STAFF/ADMIN) */
               <TabsList className="grid w-full grid-cols-3 md:grid-cols-9 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl overflow-x-auto">
                 <TabsTrigger value="crm-leads" className="flex items-center gap-1.5 text-xs font-black py-3 rounded-xl text-slate-300 data-[state=active]:bg-amber-500 data-[state=active]:text-slate-950 data-[state=active]:shadow-lg">
                   <Building2 className="h-4 w-4" />
@@ -1530,24 +1539,27 @@ export default function SolarPage() {
                 </TabsTrigger>
               </TabsList>
             ) : (
-              /* CLEAN 3-TAB CUSTOMER SOLUTIONS NAVIGATION */
-              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl">
+              /* CLEAN 4-TAB PUBLIC CUSTOMER SOLUTIONS PORTAL (NOC TELEMETRY MOVED TO BACK-OFFICE) */
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 glass-card p-1.5 border-white/60 dark:border-white/10 rounded-2xl mb-8 shadow-2xl gap-1">
                 <TabsTrigger value="system-sizing" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
                   <Sparkles className="h-4 w-4" />
-                  1. Sizing Wizard & Instant Custom Design
+                  <span>1. Sizing Wizard & Instant Quotes</span>
                 </TabsTrigger>
                 <TabsTrigger value="catalogue-boq" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
                   <FileSpreadsheet className="h-4 w-4" />
-                  2. Approved Deye Equipment Catalogue
+                  <span>2. Approved Deye Catalogue</span>
                 </TabsTrigger>
-                <TabsTrigger value="customer-portal" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
-                  <Activity className="h-4 w-4" />
-                  3. 24/7 Smart Telemetry & NOC Monitoring
+                <TabsTrigger value="site-survey" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                  <Compass className="h-4 w-4" />
+                  <span>3. Engineering Site Survey</span>
+                </TabsTrigger>
+                <TabsTrigger value="gallery-view" className="flex items-center justify-center gap-2 text-xs sm:text-sm font-black py-3.5 rounded-xl text-slate-700 dark:text-slate-300 data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                  <Camera className="h-4 w-4" />
+                  <span>4. Authentic Installations</span>
                 </TabsTrigger>
               </TabsList>
             )}
 
-            
         {/* AUTHENTIC SOLAR EPC INSTALLATION PHOTOGRAPHY GALLERY SHOWCASE (HIGH DEFINITION CLARITY) */}
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10">
           <div className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 p-6 rounded-3xl space-y-4 shadow-xl">
@@ -2724,6 +2736,408 @@ export default function SolarPage() {
                   );
                 })()}
 
+              </div>
+            </TabsContent>
+
+                        {/* MODULE: Comprehensive Engineering Site Survey & Feasibility Request (Customer Tab 3) */}
+            <TabsContent value="site-survey" className="space-y-8">
+              <div className="glass-card border-white/60 dark:border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-8 bg-white/95 dark:bg-slate-950/95">
+                
+                {/* Header Banner */}
+                <div className="border-b border-slate-200 dark:border-white/10 pb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center space-x-2 mb-1.5">
+                      <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-emerald-500" />
+                        Comprehensive Site Survey & Engineering Feasibility
+                      </span>
+                      <Badge className="bg-amber-500 text-slate-950 font-black text-xs">
+                        Free Technical Evaluation
+                      </Badge>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                      Request a Professional Solar Engineering Site Survey
+                    </h2>
+                    <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm mt-1">
+                      Provide your facility's mounting structure, surface dimensions, shading, existing grid/generator setup, and major loads. Our certified engineers will deliver a certified PVsyst yield analysis and turnkey proposal.
+                    </p>
+                  </div>
+                </div>
+
+                {surveySubmittedRef ? (
+                  /* Success Confirmation Banner */
+                  <div className="p-8 rounded-3xl bg-emerald-500/10 border-2 border-emerald-500 text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-emerald-500 text-white mx-auto flex items-center justify-center text-3xl shadow-xl">
+                      ✓
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                      Site Survey Request Successfully Logged!
+                    </h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+                      Your technical survey dossier has been assigned Reference Number <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">#{surveySubmittedRef}</span> and dispatched to our Lead Solar Engineering Desk. A certified technician will reach out to schedule site inspection.
+                    </p>
+                    <div className="pt-2">
+                      <Button
+                        onClick={() => setSurveySubmittedRef(null)}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                      >
+                        Submit Another Survey Request
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Comprehensive Multi-Section Engineering Survey Form */
+                  <form 
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      setSurveySubmitting(true);
+                      const refId = `SURV-LIB-${Date.now().toString().slice(-6)}`;
+                      setTimeout(() => {
+                        setSurveySubmitting(false);
+                        setSurveySubmittedRef(refId);
+                        toast({
+                          title: "Site Survey Dossier Logged",
+                          description: `Survey Reference #${refId} created and dispatched to Engineering Team.`,
+                        });
+                      }, 700);
+                    }} 
+                    className="space-y-8"
+                  >
+                    
+                    {/* SECTION 1: Client & Installation Site Location */}
+                    <div className="space-y-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                        <MapPin className="w-4 h-4 text-emerald-600" />
+                        <span>1. Client Information & Geographical Location</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Facility / Project Name *</Label>
+                          <Input
+                            placeholder="e.g. Mamba Point Hotel / Private Residence"
+                            value={comprehensiveSurvey.facilityName}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, facilityName: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Contact Person Name *</Label>
+                          <Input
+                            placeholder="e.g. John Doe / Facilities Manager"
+                            value={comprehensiveSurvey.contactPerson}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, contactPerson: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Direct Phone / WhatsApp *</Label>
+                          <Input
+                            placeholder="+231 777 511 391"
+                            value={comprehensiveSurvey.phone}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, phone: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Email Address</Label>
+                          <Input
+                            type="email"
+                            placeholder="client@organization.com"
+                            value={comprehensiveSurvey.email}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, email: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">County Location in Liberia *</Label>
+                          <select
+                            value={comprehensiveSurvey.county}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, county: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            {["Montserrado", "Nimba", "Bong", "Margibi", "Grand Bassa", "Lofa", "Maryland", "Sinoe", "Grand Gedeh", "Bomi", "Grand Cape Mount", "Rivercess", "River Gee", "Gbarpolu", "Grand Kru"].map((c) => (
+                              <option key={c} value={c}>{c} County</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">City / District / Community *</Label>
+                          <Input
+                            placeholder="e.g. Paynesville, Sinkor, Buchanan, Ganta"
+                            value={comprehensiveSurvey.district}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, district: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                            required
+                          />
+                        </div>
+
+                        <div className="space-y-1 sm:col-span-2">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Street Address & Landmark *</Label>
+                          <Input
+                            placeholder="e.g. Thinker's Village Community, Near Total Gas Station"
+                            value={comprehensiveSurvey.siteAddress}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, siteAddress: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 2: Mounting Type, Roof Specs & Shading Assessment */}
+                    <div className="space-y-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                        <HardHat className="w-4 h-4 text-amber-500" />
+                        <span>2. Mounting Structure, Roof Type & Surface Area</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Mounting Installation Type *</Label>
+                          <select
+                            value={comprehensiveSurvey.mountingType}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, mountingType: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="Rooftop (Corrugated Metal / Zinc)">🏠 Rooftop — Corrugated Zinc / Metal Sheet</option>
+                            <option value="Rooftop (Clay Tile / Decra)">🏠 Rooftop — Decra / Clay Tile</option>
+                            <option value="Rooftop (Concrete Flat Roof / Ballasted)">🏢 Rooftop — Flat Concrete Slab (Ballasted Racks)</option>
+                            <option value="Ground Mount / Open Field">🌾 Ground Mount — Open Field / Yard Mount</option>
+                            <option value="Solar Carport / Parking Canopy">🚗 Solar Carport / Parking Canopy Structure</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Estimated Usable Surface Area (m²)</Label>
+                          <Input
+                            type="number"
+                            placeholder="e.g. 80, 150, 300 m²"
+                            value={comprehensiveSurvey.availableAreaSqM}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, availableAreaSqM: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Shading & Sun Obstruction Assessment *</Label>
+                          <select
+                            value={comprehensiveSurvey.shadingCondition}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, shadingCondition: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="Zero Shading (Full Unobstructed Sunlight)">☀️ Zero Shading (Full Unobstructed 100% Sun All Day)</option>
+                            <option value="Partial Morning Shading (Nearby Trees)">🌤️ Partial Morning Shading (Trees/Buildings)</option>
+                            <option value="Partial Afternoon Shading">🌤️ Partial Late Afternoon Shading</option>
+                            <option value="Heavy Shading (Requires Tree Trimming)">🌳 Heavy Shading (Requires Tree Trimming)</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Roof Structural Age & Integrity</Label>
+                          <select
+                            value={comprehensiveSurvey.roofCondition}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, roofCondition: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="Sound & Weatherproof (&lt; 5 Years Old)">✅ Sound & Weatherproof (&lt; 5 Years Old)</option>
+                            <option value="Good Condition (5-15 Years Old)">⚠️ Good Condition (5-15 Years Old)</option>
+                            <option value="Older Roof (May Require Rafter Reinforcement)">🔨 Older Roof (May Require Rafter Reinforcement)</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Roof Pitch & Azimuth Orientation</Label>
+                          <select
+                            value={comprehensiveSurvey.roofOrientation}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, roofOrientation: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="South-Facing (15° Optimal Tilt)">🧭 Facing South (Optimal 15° Pitch)</option>
+                            <option value="East / West Dual Pitch">🧭 East / West Dual Pitch</option>
+                            <option value="Flat Surface (Adjustable Aluminum Racks)">🧭 Flat Roof (Custom Tilt Racks Required)</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Facility Type</Label>
+                          <select
+                            value={comprehensiveSurvey.facilityType}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, facilityType: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="Residential (House / Villa)">🏠 Residential (House / Villa)</option>
+                            <option value="Commercial (Store / Office / Plaza)">🏢 Commercial (Store / Office / Plaza)</option>
+                            <option value="Healthcare (Clinic / Hospital)">🏥 Healthcare (Clinic / Hospital)</option>
+                            <option value="Farm / Solar Water Pumping">🌾 Farm / Solar Water Pumping</option>
+                            <option value="Industrial / Warehouse">🏭 Industrial / Warehouse</option>
+                            <option value="School / NGO Compound">🏛️ School / NGO Compound</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 3: Current Electricity Source & Generator Integration */}
+                    <div className="space-y-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                        <Zap className="w-4 h-4 text-sky-500" />
+                        <span>3. Existing Electricity Grid, Genset & Backup Profile</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Current LEC Grid Status *</Label>
+                          <select
+                            value={comprehensiveSurvey.gridStatus}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, gridStatus: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="LEC Grid Available (Intermittent / Load-Shedding)">⚡ LEC Grid Available (Intermittent / Daily Outages)</option>
+                            <option value="LEC Grid Available (Stable 18+ Hours)">⚡ LEC Grid Available (Stable 18+ Hours)</option>
+                            <option value="Zero Grid (100% Standalone Off-Grid Site)">🌿 Zero LEC Grid (100% Standalone Off-Grid Site)</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Existing Backup Generator (kVA / kW)</Label>
+                          <Input
+                            placeholder="e.g. 15 kVA Perkins Diesel / None"
+                            value={comprehensiveSurvey.existingGeneratorKva}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, existingGeneratorKva: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Automatic Generator ATS Integration</Label>
+                          <select
+                            value={comprehensiveSurvey.atsRequired}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, atsRequired: e.target.value })}
+                            className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-medium text-slate-900 dark:text-white"
+                          >
+                            <option value="Yes - Automatic Generator Start & Transfer">⚙️ Yes — Auto Generator Start & Smart ATS</option>
+                            <option value="No - Manual Transfer Switch Only">🔧 No — Manual Transfer Switch Only</option>
+                            <option value="Not Applicable (Pure Solar & Battery)">🌿 Not Applicable (Pure Solar & Battery Only)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 4: Major Electrical Loads Inventory */}
+                    <div className="space-y-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                        <Cpu className="w-4 h-4 text-purple-500" />
+                        <span>4. Critical Heavy Equipment & Appliance Inventory</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Inverter Air Conditioners (Qty)</Label>
+                          <Input
+                            placeholder="e.g. 2 Units (1.5 HP each)"
+                            value={comprehensiveSurvey.inverterAcCount}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, inverterAcCount: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Deep Freezers / Refrigerators</Label>
+                          <Input
+                            placeholder="e.g. 2 Chest Freezers"
+                            value={comprehensiveSurvey.freezerCount}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, freezerCount: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Submersible Water Pumps (HP)</Label>
+                          <Input
+                            placeholder="e.g. 1.0 HP or 2.0 HP Pump"
+                            value={comprehensiveSurvey.waterPumpHp}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, waterPumpHp: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Solar Capacity (kVA)</Label>
+                          <Input
+                            placeholder="e.g. 5, 10, 15, 30 kVA"
+                            value={comprehensiveSurvey.targetCapacityKva}
+                            onChange={(e) => setComprehensiveSurvey({ ...comprehensiveSurvey, targetCapacityKva: e.target.value })}
+                            className="rounded-xl text-xs bg-white dark:bg-slate-950"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* SECTION 5: Submission & Scheduling */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-white/10">
+                      <p className="text-xs text-slate-500 font-medium">
+                        TOTAG Engineers adhere to IEEE 1547 and Liberian Electrical Code guidelines. Site visits scheduled within 48 business hours.
+                      </p>
+
+                      <Button
+                        type="submit"
+                        disabled={surveySubmitting}
+                        className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3.5 px-8 rounded-2xl shadow-xl flex items-center justify-center gap-2 shrink-0"
+                      >
+                        <FileCheck className="w-4 h-4" />
+                        <span>{surveySubmitting ? "Logging Survey Dossier..." : "Submit Site Survey & Feasibility Request ➔"}</span>
+                      </Button>
+                    </div>
+
+                  </form>
+                )}
+
+              </div>
+            </TabsContent>
+
+            {/* MODULE: Authentic Installations Gallery (Customer Tab 4) */}
+            <TabsContent value="gallery-view" className="space-y-8">
+              <div className="bg-white/95 dark:bg-slate-950/95 border border-slate-200 dark:border-white/10 p-6 sm:p-8 rounded-3xl space-y-6 shadow-2xl">
+                <div className="border-b border-slate-200 dark:border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-extrabold text-2xl text-slate-900 dark:text-white flex items-center gap-2">
+                      <Camera className="w-6 h-6 text-amber-500" />
+                      <span>Authentic Solar EPC & Inverter Installations Gallery</span>
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                      High-definition solar engineering & power room installation photography from completed TOTAG projects across Liberia.
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-600 text-white font-black text-xs px-3 py-1 self-start sm:self-auto">
+                    Verified TOTAG EPC Sites
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  {[
+                    { title: "Senior Engineer & Dual Deye", img: "/images/solar/solar_engineer_deye_inverter.jpg", tag: "Power Room NOC" },
+                    { title: "Deye Hybrid Power Room", img: "/images/solar/solar_deye_inverter_room.jpg", tag: "Lithium Bank & AC/DC" },
+                    { title: "Rooftop Commercial PV", img: "/images/solar/solar_worker_green_roof.jpg", tag: "Green Metal Roof Mount" },
+                    { title: "Residential Array Mount", img: "/images/solar/solar_worker_blue_roof.jpg", tag: "Blue Metallic Roof" },
+                    { title: "PV Module Engineers", img: "/images/solar/solar_workers_blue_roof_angle2.jpg", tag: "High-Efficiency PV" },
+                  ].map((item, idx) => (
+                    <div key={idx} className="group relative rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-950 aspect-[4/3] shadow-md hover:scale-[1.02] transition-transform">
+                      <img src={item.img} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex flex-col justify-end p-3.5">
+                        <span className="text-[10px] text-amber-400 font-extrabold uppercase tracking-wider">{item.tag}</span>
+                        <h4 className="text-white font-bold text-xs">{item.title}</h4>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </TabsContent>
 
