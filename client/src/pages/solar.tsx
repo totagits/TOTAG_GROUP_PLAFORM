@@ -1201,13 +1201,15 @@ const [custSurveyForm, setCustSurveyForm] = useState({
   const [wizardGridGenset, setWizardGridGenset] = useState<string>("lec-hybrid");
   const [wizardGridMode, setWizardGridMode] = useState<string>("hybrid");
   const [showProformaModal, setShowProformaModal] = useState<boolean>(false);
+  const [proformaSubmitting, setProformaSubmitting] = useState<boolean>(false);
   const [proformaClient, setProformaClient] = useState({
-    clientName: "",
-    clientPhone: "",
-    clientEmail: "",
-    clientLocation: "Monrovia, Liberia",
+    name: "",
+    org: "",
+    phone: "",
+    email: "",
     notes: ""
   });
+  
 
   // Unified Product Detail Formatter for Deye OEM Catalogue Items
   const getUnifiedProductDetails = (item: any) => {
