@@ -65,7 +65,8 @@ import {
   ShieldAlert,
   Compass,
   Camera,
-  Eye
+  Eye,
+  Lock
 } from "lucide-react";
 import { 
   EcosystemStateEngine, 
