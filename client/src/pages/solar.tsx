@@ -1199,6 +1199,7 @@ const [custSurveyForm, setCustSurveyForm] = useState({
   const [wizardCustomKva, setWizardCustomKva] = useState<string>("");
   const [wizardAutonomy, setWizardAutonomy] = useState<string>("full-night");
   const [wizardGridGenset, setWizardGridGenset] = useState<string>("lec-hybrid");
+  const [wizardGridMode, setWizardGridMode] = useState<string>("hybrid");
   const [showProformaModal, setShowProformaModal] = useState<boolean>(false);
   const [proformaClient, setProformaClient] = useState({
     clientName: "",
