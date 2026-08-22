@@ -928,7 +928,7 @@ export default function SolarPage() {
 
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
-      alert("Please allow popups for totag.network to download the PDF datasheet.");
+      alert("Please allow popups for totaggroup.com to download the PDF datasheet.");
       return;
     }
 
@@ -1096,7 +1096,7 @@ export default function SolarPage() {
   <div class="footer">
     <div>
       <div><strong>TOTAG Group of Companies Ltd — Solar EPC Division</strong></div>
-      <div>Monrovia Plaza, Montserrado, Liberia | Email: sales@totag.network | Web: www.totag.network</div>
+      <div>Monrovia Plaza, Montserrado, Liberia | Email: sales@totaggroup.com | Web: www.totaggroup.com</div>
     </div>
     <div class="stamp">
       ✔ TOTAG AUTHORIZED DATASHEET

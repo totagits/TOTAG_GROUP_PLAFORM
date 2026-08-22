@@ -2,7 +2,7 @@
 export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host.includes("github.io") || host === "totag.network" || host.includes("totag")) {
+    if (host.includes("github.io") || host === "totaggroup.com" || host.includes("totaggroup") || host === "totag.network" || host.includes("totag")) {
       return "https://srv1902704.hstgr.cloud";
     }
   }

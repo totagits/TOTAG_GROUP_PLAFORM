@@ -2814,7 +2814,7 @@ export default function CargoPage() {
                 {/* Email Content Box */}
                 <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-white/10 space-y-4 text-xs">
                   <div className="space-y-1 text-slate-500 dark:text-slate-400 font-mono text-[11px] border-b border-slate-200 dark:border-white/10 pb-3">
-                    <div><strong className="text-slate-900 dark:text-white">From:</strong> onboarding@totag.network (TOTAG Enterprise Portal)</div>
+                    <div><strong className="text-slate-900 dark:text-white">From:</strong> onboarding@totaggroup.com (TOTAG Enterprise Portal)</div>
                     <div><strong className="text-slate-900 dark:text-white">To:</strong> {onboardingEmail.recipientEmail}</div>
                     <div>
                       <strong className="text-slate-900 dark:text-white">Subject:</strong> {
@@ -2853,7 +2853,7 @@ export default function CargoPage() {
                       <p>Dear <strong>{onboardingEmail.signatory}</strong> ({onboardingEmail.companyName}),</p>
                       <p className="font-bold text-emerald-600 dark:text-emerald-400">Thank you for your continued business with TOTAG Group of Companies Ltd!</p>
                       <p>We have successfully received and registered your new C&F Clearing Service Contract (Ref: <strong>{onboardingEmail.contractId}</strong>) under your active TOTAG Enterprise account.</p>
-                      <p>Our licensed Customs Brokers (led by Officer J. Koffa) have initiated your LRA ASYCUDA single-window clearance declaration. You can log into your account anytime at <strong>totag.network/cargo</strong> to track progress.</p>
+                      <p>Our licensed Customs Brokers (led by Officer J. Koffa) have initiated your LRA ASYCUDA single-window clearance declaration. You can log into your account anytime at <strong>totaggroup.com/cargo</strong> to track progress.</p>
                     </div>
                   )}
                 </div>

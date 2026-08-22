@@ -10,9 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 
 // MOCK DEMO ACCOUNTS FOR INSTANT CLIENT & SERVER AUTHENTICATION
 const DEMO_ACCOUNTS: Record<string, { username: string; name: string; role: string; email: string }> = {
-  admin: { username: "admin", name: "Dr. K. Sannoh (Lead Farm Administrator)", role: "Farm Administrator", email: "admin@totag.network" },
-  manager: { username: "manager", name: "Emmanuel Kamara (Agronomy Operations Director)", role: "Department Manager", email: "manager@totag.network" },
-  staff: { username: "staff", name: "Samuel Tubman (Field Specialist)", role: "Farm Staff", email: "staff@totag.network" }
+  admin: { username: "admin", name: "Dr. K. Sannoh (Lead Farm Administrator)", role: "Farm Administrator", email: "admin@totaggroup.com" },
+  manager: { username: "manager", name: "Emmanuel Kamara (Agronomy Operations Director)", role: "Department Manager", email: "manager@totaggroup.com" },
+  staff: { username: "staff", name: "Samuel Tubman (Field Specialist)", role: "Farm Staff", email: "staff@totaggroup.com" }
 };
 
 export default function FarmLogin() {
@@ -79,7 +79,7 @@ export default function FarmLogin() {
       username: inputUser,
       name: `${inputUser.charAt(0).toUpperCase() + inputUser.slice(1)} (Authenticated User)`,
       role: "Farm Administrator",
-      email: `${inputUser}@totag.network`
+      email: `${inputUser}@totaggroup.com`
     };
 
     localStorage.setItem("farm_user", JSON.stringify(demoUser));

@@ -56,7 +56,7 @@ export default function Footer() {
             {/* Live Operational Status Indicator */}
             <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>Platform Active • totag.network</span>
+              <span>Platform Active • totaggroup.com</span>
             </div>
           </div>
 
@@ -156,7 +156,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <p>&copy; {currentYear} TOTAG Group of Companies Ltd. All rights reserved.</p>
           <div className="flex items-center space-x-6">
-            <span>Primary Portal: <strong className="text-emerald-400 font-semibold">totag.network</strong></span>
+            <span>Primary Portal: <strong className="text-emerald-400 font-semibold">totaggroup.com</strong></span>
             <span>Managed by <strong className="text-sky-400 font-semibold">TOTAG IT Services</strong></span>
           </div>
         </div>
