@@ -363,15 +363,100 @@ export default function FarmHome() {
   const calculatedMillingYieldRatio = (millingRunForm.outputFinishedKg / millingRunForm.inputRawKg) * 100;
   const isMillingYieldOutsideTolerance = calculatedMillingYieldRatio < 65 || calculatedMillingYieldRatio > 72;
 
-  // 7. OUTGROWER SCHEME REGISTRATION FORM STATE
+  // 7. COMPREHENSIVE OUTGROWER & SMALLHOLDER PORTAL STATE
+  const [outgrowerSubTab, setOutgrowerSubTab] = useState<"enrollment" | "calculator" | "mechanization" | "deliveries">("calculator");
+  
+  // Registration Form
   const [outgrowerForm, setOutgrowerForm] = useState({
-    farmerName: "Emmanuel Kamara",
-    locationCounty: "Lofa County (Voinjama Cluster)",
-    farmSizeAcres: 15,
-    cropFocus: "Paddy Rice & Soybeans",
+    cooperativeName: "Voinjama Progressive Rice Farmers Union",
+    leadFarmerName: "Emmanuel Kamara",
     phone: "+231 88 444 5566",
-    agreedFloorPrice: "$380 USD / Ton"
+    momoProvider: "Lonestar MTN MoMo",
+    momoNumber: "0884445566",
+    county: "Lofa",
+    district: "Voinjama District",
+    communityTown: "Konia Clan, Plot #12",
+    cropType: "NERICA Certified Paddy Rice",
+    farmSizeAcres: 15,
+    householdMembers: 8,
+    requestedServices: ["Certified Seeds", "Bio-Fertilizer", "Tractor Plowing", "Guaranteed Off-Take"],
+    preferredPayment: "Instant Mobile Money (USD/LRD Split)"
   });
+  const [enrolledReceipt, setEnrolledReceipt] = useState<{ id: string; date: string } | null>(null);
+
+  // Revenue & Floor Price Calculator State
+  const [calcCrop, setCalcCrop] = useState<string>("NERICA_RICE");
+  const [calcAcreage, setCalcAcreage] = useState<number>(10);
+  const [calcYieldTonsPerAcre, setCalcYieldTonsPerAcre] = useState<number>(2.2);
+
+  // Mechanization & Service Request State
+  const [mechanizationForm, setMechanizationForm] = useState({
+    farmerName: "Kollie Mulbah",
+    phone: "+231 77 655 4321",
+    county: "Bong",
+    serviceType: "Tractor Plowing & Harrowing (John Deere 4WD)",
+    targetAcres: 8,
+    requestedStartDate: "2026-09-01",
+    notes: "Wetland valley field preparation before heavy rains."
+  });
+  const [mechBookedRef, setMechBookedRef] = useState<string | null>(null);
+
+  // Live Cooperative Delivery Intake Ledger (Interactive)
+  const [outgrowerDeliveries, setOutgrowerDeliveries] = useState([
+    {
+      id: "DLV-2026-0941",
+      cooperative: "Voinjama Rice Growers Union",
+      county: "Lofa",
+      crop: "NERICA Paddy Rice",
+      tonnage: 142.5,
+      moisturePct: 13.8,
+      qualityGrade: "Grade A Premium",
+      unitPriceUsd: 380,
+      totalPayoutUsd: 54150,
+      paymentMethod: "Lonestar MTN MoMo (Settled)",
+      status: "COMPLETED_PAID"
+    },
+    {
+      id: "DLV-2026-0942",
+      cooperative: "Ganta Cassava Starch Alliance",
+      county: "Nimba",
+      crop: "High-Starch Cassava Tubers",
+      tonnage: 88.0,
+      moisturePct: 62.0,
+      qualityGrade: "Industrial Grade",
+      unitPriceUsd: 290,
+      totalPayoutUsd: 25520,
+      paymentMethod: "Orange Money (Settled)",
+      status: "COMPLETED_PAID"
+    },
+    {
+      id: "DLV-2026-0943",
+      cooperative: "Suakoko Maize & Feed Producers",
+      county: "Bong",
+      crop: "Yellow Feed Maize",
+      tonnage: 64.2,
+      moisturePct: 14.1,
+      qualityGrade: "Feed Mill Standard",
+      unitPriceUsd: 420,
+      totalPayoutUsd: 26964,
+      paymentMethod: "Ecobank Direct Transfer (Processing)",
+      status: "PROCESSING_INTAKE"
+    },
+    {
+      id: "DLV-2026-0944",
+      cooperative: "Tchien Sustainable Cocoa Cluster",
+      county: "Grand Gedeh",
+      crop: "Fermented Sun-Dried Cocoa",
+      tonnage: 35.0,
+      moisturePct: 7.2,
+      qualityGrade: "Export Grade 1",
+      unitPriceUsd: 1400,
+      totalPayoutUsd: 49000,
+      paymentMethod: "Lonestar MTN MoMo (Settled)",
+      status: "COMPLETED_PAID"
+    }
+  ]);
+  const [deliverySearchQuery, setDeliverySearchQuery] = useState("");
 
   // SEARCH PROVENANCE BATCH LOOKUP HANDLER
   const handleSearchProvenance = (e: React.FormEvent) => {
@@ -449,7 +534,7 @@ export default function FarmHome() {
         {/* Standardized Photo Carousel Hero Section */}
         <SubsidiaryHeroCarousel
           badge="TOTAG Subsidiary • Vertically Integrated Agribusiness, Solar & Precision Farming"
-          titleHighlight="TOTAG FARM & Agribusiness Ecosystem"
+          titleHighlight="FARM & Agribusiness Ecosystem"
           subtitle="Commercial grain cultivation, smart climate-controlled greenhouses, IoT livestock biometrics, solar microgrids, industrial milling, cold-chain logistics, and tamper-evident seed-to-shelf provenance."
           slides={[
             { url: "/images/hero/farm_agronomist_gis.jpg", caption: "Precision GIS Field Mapping & Digital Agronomy Operations" },
@@ -729,39 +814,674 @@ export default function FarmHome() {
 
               </div>
 
-              {/* OUTGROWER & SMALLHOLDER COMMUNITY ENGAGEMENT PORTAL */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
-                  <div className="flex items-center space-x-3">
-                    <Users className="w-6 h-6 text-emerald-500" />
+              {/* COMPREHENSIVE INTERACTIVE OUTGROWER & SMALLHOLDER COMMUNITY PORTAL */}
+              <div className="bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 text-slate-900 dark:text-white space-y-6 shadow-2xl backdrop-blur-xl">
+                
+                {/* Portal Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-5">
+                  <div className="flex items-start space-x-3">
+                    <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-500">
+                      <Users className="w-7 h-7" />
+                    </div>
                     <div>
-                      <h3 className="text-xl font-bold">Outgrower Scheme & Community Smallholder Portal</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Access seed inputs, extension agronomy services & guaranteed floor pricing</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Badge className="bg-emerald-600 text-white font-black text-xs">
+                          National Smallholder Outgrower Network
+                        </Badge>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                          15 Liberian Counties • 3,200+ Contracted Farmers
+                        </span>
+                      </div>
+                      <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Outgrower Scheme & Community Smallholder Portal
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1">
+                        Access certified seeds, tractor mechanization pooling, agronomy drone extension, and guaranteed off-take contracts with instant Mobile Money payouts.
+                      </p>
                     </div>
                   </div>
-                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
-                    Guaranteed Floor Price: $380/Ton Paddy Rice
-                  </Badge>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 space-y-2">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm block">1. Seed & Input Support</span>
-                    <p className="text-slate-600 dark:text-slate-300">Certified NERICA non-GMO seed distribution, bio-fertilizer supply, and tractor mechanization equipment pooling.</p>
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 space-y-2">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm block">2. Extension Agronomy</span>
-                    <p className="text-slate-600 dark:text-slate-300">On-farm drone scouting, soil testing analysis, and climate-smart irrigation training by TOTAG master agronomists.</p>
-                  </div>
-
-                  <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 space-y-2">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm block">3. Guaranteed Off-Take</span>
-                    <p className="text-slate-600 dark:text-slate-300">Contractual floor price guarantee with instant payment upon delivery at TOTAG grain elevators & processing mills.</p>
+                  <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-right">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Paddy Rice Floor Price</span>
+                      <span className="font-black text-emerald-600 dark:text-emerald-400 text-sm">$380 USD / Metric Ton</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-right">
+                      <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 block">Yellow Maize Floor Price</span>
+                      <span className="font-black text-amber-600 dark:text-amber-400 text-sm">$420 USD / Metric Ton</span>
+                    </div>
                   </div>
                 </div>
-              </Card>
 
+                {/* Sub-Navigation Tabs */}
+                <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-white/10 pb-3">
+                  <button
+                    onClick={() => setOutgrowerSubTab("calculator")}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                      outgrowerSubTab === "calculator"
+                        ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <Scale className="w-4 h-4" />
+                    <span>1. Guaranteed Floor Price & Revenue Calculator</span>
+                  </button>
+
+                  <button
+                    onClick={() => setOutgrowerSubTab("enrollment")}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                      outgrowerSubTab === "enrollment"
+                        ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <FileSignature className="w-4 h-4" />
+                    <span>2. Cooperative & Farmer Enrollment</span>
+                  </button>
+
+                  <button
+                    onClick={() => setOutgrowerSubTab("mechanization")}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                      outgrowerSubTab === "mechanization"
+                        ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <Truck className="w-4 h-4" />
+                    <span>3. Tractor Mechanization & Inputs Booking</span>
+                  </button>
+
+                  <button
+                    onClick={() => setOutgrowerSubTab("deliveries")}
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                      outgrowerSubTab === "deliveries"
+                        ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                    }`}
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                    <span>4. Active Deliveries & Weighbridge Ledger ({outgrowerDeliveries.length})</span>
+                  </button>
+                </div>
+
+                {/* TAB CONTENT 1: GUARANTEED REVENUE & PAYOUT CALCULATOR */}
+                {outgrowerSubTab === "calculator" && (() => {
+                  const cropPricingMap: Record<string, { name: string; pricePerTonUsd: number; defaultYield: number; unit: string; desc: string }> = {
+                    NERICA_RICE: { name: "NERICA Certified Paddy Rice", pricePerTonUsd: 380, defaultYield: 2.2, unit: "Metric Tons", desc: "Non-GMO high-yield certified paddy grain with 14% target moisture." },
+                    CASSAVA_TUBERS: { name: "High-Starch Cassava (TME 419)", pricePerTonUsd: 290, defaultYield: 8.5, unit: "Metric Tons", desc: "Industrial starch and fufu processing flour tubers." },
+                    YELLOW_MAIZE: { name: "Yellow Feed Maize Grain", pricePerTonUsd: 420, defaultYield: 3.0, unit: "Metric Tons", desc: "Commercial poultry feed & livestock meal grade grain." },
+                    ORGANIC_CHILI: { name: "Organic Chili Pepper & Horticulture", pricePerTonUsd: 850, defaultYield: 4.0, unit: "Metric Tons", desc: "Fresh harvest graded and vacuum packed for cold chain." },
+                    COCOA_BEANS: { name: "Fermented Premium Cocoa Beans", pricePerTonUsd: 1400, defaultYield: 0.8, unit: "Metric Tons", desc: "Traceable organic tree crop beans for international export." }
+                  };
+
+                  const selCrop = cropPricingMap[calcCrop] || cropPricingMap.NERICA_RICE;
+                  const estimatedTotalTons = calcAcreage * (calcYieldTonsPerAcre || selCrop.defaultYield);
+                  const grossRevenueUsd = estimatedTotalTons * selCrop.pricePerTonUsd;
+                  const inputAdvanceDeductionUsd = calcAcreage * 65; // $65/acre for seed & bio-fertilizer credit
+                  const netFarmerPayoutUsd = Math.max(0, grossRevenueUsd - inputAdvanceDeductionUsd);
+                  const lrdExchangeRate = 195; // 1 USD = 195 LRD
+                  const netFarmerPayoutLrd = netFarmerPayoutUsd * lrdExchangeRate;
+
+                  return (
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      
+                      {/* Left: Interactive Input Controls */}
+                      <div className="lg:col-span-6 space-y-5 bg-slate-50 dark:bg-slate-950 p-6 rounded-2xl border border-slate-200 dark:border-white/10">
+                        <div className="border-b border-slate-200 dark:border-white/10 pb-3">
+                          <h4 className="font-extrabold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                            <Scale className="w-5 h-5 text-emerald-500" />
+                            <span>Select Your Crop & Cultivated Acreage</span>
+                          </h4>
+                          <p className="text-xs text-slate-500">Calculate your guaranteed contract off-take revenue based on TOTAG floor prices.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Select Commodity Crop:</Label>
+                          <select
+                            value={calcCrop}
+                            onChange={(e) => {
+                              const c = e.target.value;
+                              setCalcCrop(c);
+                              if (cropPricingMap[c]) {
+                                setCalcYieldTonsPerAcre(cropPricingMap[c].defaultYield);
+                              }
+                            }}
+                            className="w-full h-11 px-3.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white"
+                          >
+                            <option value="NERICA_RICE">🌾 NERICA Certified Paddy Rice ($380 USD / Ton)</option>
+                            <option value="CASSAVA_TUBERS">🥔 High-Starch Cassava TME 419 ($290 USD / Ton)</option>
+                            <option value="YELLOW_MAIZE">🌽 Yellow Feed Maize Grain ($420 USD / Ton)</option>
+                            <option value="ORGANIC_CHILI">🌶️ Organic Hot Chili Pepper ($850 USD / Ton)</option>
+                            <option value="COCOA_BEANS">🍫 Fermented Premium Cocoa ($1,400 USD / Ton)</option>
+                          </select>
+                          <p className="text-[11px] text-slate-500 italic">{selCrop.desc}</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Cultivated Farm Size:</Label>
+                              <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-xs">{calcAcreage} Acres</span>
+                            </div>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="500"
+                              value={calcAcreage}
+                              onChange={(e) => setCalcAcreage(Math.max(1, Number(e.target.value)))}
+                              className="rounded-xl text-xs font-bold bg-white dark:bg-slate-900"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Expected Yield / Acre:</Label>
+                              <span className="font-mono font-bold text-amber-500 text-xs">{calcYieldTonsPerAcre} Tons/Acre</span>
+                            </div>
+                            <Input
+                              type="number"
+                              step="0.1"
+                              min="0.1"
+                              max="30"
+                              value={calcYieldTonsPerAcre}
+                              onChange={(e) => setCalcYieldTonsPerAcre(Math.max(0.1, parseFloat(e.target.value) || selCrop.defaultYield))}
+                              className="rounded-xl text-xs font-bold bg-white dark:bg-slate-900"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1.5">
+                          <div className="flex justify-between font-bold">
+                            <span className="text-slate-600 dark:text-slate-300">Estimated Harvest Output:</span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-mono">{estimatedTotalTons.toFixed(1)} Metric Tons</span>
+                          </div>
+                          <div className="flex justify-between font-bold">
+                            <span className="text-slate-600 dark:text-slate-300">Guaranteed Floor Price:</span>
+                            <span className="text-slate-900 dark:text-white font-mono">${selCrop.pricePerTonUsd} USD / Ton</span>
+                          </div>
+                          <div className="flex justify-between text-slate-500 text-[11px]">
+                            <span>Input Credit & Seed Advance ($65/Acre):</span>
+                            <span className="text-rose-500 font-mono">-${inputAdvanceDeductionUsd.toLocaleString()} USD</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Live Revenue Payout & MoMo Settlement Breakdown */}
+                      <div className="lg:col-span-6 space-y-5 bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-900/40 p-6 rounded-2xl border border-emerald-500/30">
+                        <div className="border-b border-slate-200 dark:border-white/10 pb-3 flex items-center justify-between">
+                          <span className="text-xs uppercase tracking-wider font-extrabold text-emerald-600 dark:text-emerald-400">
+                            Net Harvest Cash Settlement
+                          </span>
+                          <Badge className="bg-emerald-600 text-white font-bold text-[10px]">
+                            Guaranteed Contract Off-Take
+                          </Badge>
+                        </div>
+
+                        <div className="space-y-2">
+                          <span className="text-xs text-slate-500 dark:text-slate-400 block font-semibold">Total Projected Payout:</span>
+                          <div className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                            ${netFarmerPayoutUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">USD</span>
+                          </div>
+                          <div className="text-sm font-bold text-slate-600 dark:text-slate-300 font-mono">
+                            ≈ {netFarmerPayoutLrd.toLocaleString(undefined, { maximumFractionDigits: 0 })} LRD (Liberian Dollars @ 195 LRD/USD)
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 text-xs pt-2">
+                          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10">
+                            <span className="text-[10px] text-slate-400 font-bold block uppercase">Payment Timeline</span>
+                            <span className="font-extrabold text-slate-900 dark:text-white">Instant at Mill Weighbridge</span>
+                          </div>
+                          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10">
+                            <span className="text-[10px] text-slate-400 font-bold block uppercase">Disbursement Channel</span>
+                            <span className="font-extrabold text-emerald-600 dark:text-emerald-400">Lonestar MoMo / Orange</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 pt-2">
+                          <Button
+                            onClick={() => {
+                              setOutgrowerForm(prev => ({
+                                ...prev,
+                                cropType: selCrop.name,
+                                farmSizeAcres: calcAcreage
+                              }));
+                              setOutgrowerSubTab("enrollment");
+                            }}
+                            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3.5 rounded-xl shadow-lg flex items-center justify-center gap-2"
+                          >
+                            <FileSignature className="w-4 h-4" />
+                            <span>Lock This Floor Price & Enroll Cooperative ➔</span>
+                          </Button>
+                        </div>
+                      </div>
+
+                    </div>
+                  );
+                })()}
+
+                {/* TAB CONTENT 2: COOPERATIVE & FARMER ENROLLMENT FORM */}
+                {outgrowerSubTab === "enrollment" && (
+                  <div className="space-y-6">
+                    {enrolledReceipt ? (
+                      <div className="p-8 rounded-3xl bg-emerald-500/10 border-2 border-emerald-500 text-center space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500 text-white mx-auto flex items-center justify-center text-3xl shadow-xl">
+                          ✓
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                          Cooperative Enrolled in TOTAG Off-Take Program!
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+                          Membership Pass <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">#{enrolledReceipt.id}</span> issued for <span className="font-bold">{outgrowerForm.cooperativeName}</span> ({outgrowerForm.farmSizeAcres} Acres of {outgrowerForm.cropType}). Input allocation and agronomy team dispatched.
+                        </p>
+                        <div className="flex justify-center gap-3 pt-2">
+                          <Button
+                            onClick={() => setEnrolledReceipt(null)}
+                            variant="outline"
+                            className="rounded-xl text-xs font-bold"
+                          >
+                            Enroll Another Farmer Group
+                          </Button>
+                          <Button
+                            onClick={() => setOutgrowerSubTab("deliveries")}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                          >
+                            View Intake Deliveries Ledger ➔
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const passId = `OUTGROWER-LIB-${Math.floor(10000 + Math.random() * 90000)}`;
+                          setEnrolledReceipt({ id: passId, date: new Date().toLocaleDateString() });
+                          toast({
+                            title: "Outgrower Registration Confirmed",
+                            description: `Cooperative ${outgrowerForm.cooperativeName} assigned ID ${passId}.`
+                          });
+                        }}
+                        className="space-y-6"
+                      >
+                        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 space-y-4 text-xs">
+                          <div className="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                            <Building2 className="w-4 h-4 text-emerald-500" />
+                            <span>1. Farmer Group & Primary Contact</span>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Cooperative / Farm Name *</Label>
+                              <Input
+                                value={outgrowerForm.cooperativeName}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, cooperativeName: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Lead Farmer / Chair Person *</Label>
+                              <Input
+                                value={outgrowerForm.leadFarmerName}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, leadFarmerName: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Contact Phone / WhatsApp *</Label>
+                              <Input
+                                value={outgrowerForm.phone}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, phone: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 space-y-4 text-xs">
+                          <div className="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                            <MapPin className="w-4 h-4 text-amber-500" />
+                            <span>2. Farm Location & Crop Profile in Liberia</span>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">County in Liberia *</Label>
+                              <select
+                                value={outgrowerForm.county}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, county: e.target.value })}
+                                className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-white"
+                              >
+                                {["Lofa", "Nimba", "Bong", "Margibi", "Grand Bassa", "Grand Gedeh", "Maryland", "Sinoe", "Bomi", "Grand Cape Mount", "Rivercess", "River Gee", "Gbarpolu", "Grand Kru", "Montserrado"].map(c => (
+                                  <option key={c} value={c}>{c} County</option>
+                                ))}
+                              </select>
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">District / Clan *</Label>
+                              <Input
+                                value={outgrowerForm.district}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, district: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Primary Commodity Crop *</Label>
+                              <select
+                                value={outgrowerForm.cropType}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, cropType: e.target.value })}
+                                className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-white"
+                              >
+                                <option value="NERICA Certified Paddy Rice">NERICA Certified Paddy Rice</option>
+                                <option value="High-Starch Cassava (TME 419)">High-Starch Cassava (TME 419)</option>
+                                <option value="Yellow Feed Maize Grain">Yellow Feed Maize Grain</option>
+                                <option value="Organic Hot Chili Pepper">Organic Hot Chili Pepper</option>
+                                <option value="Fermented Premium Cocoa">Fermented Premium Cocoa</option>
+                              </select>
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Total Farm Size (Acres) *</Label>
+                              <Input
+                                type="number"
+                                min="1"
+                                value={outgrowerForm.farmSizeAcres}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, farmSizeAcres: Number(e.target.value) })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 space-y-4 text-xs">
+                          <div className="flex items-center gap-2 font-bold text-sm text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 pb-2">
+                            <CreditCard className="w-4 h-4 text-sky-500" />
+                            <span>3. Mobile Money Payout Account (Guaranteed Instant Payout)</span>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Mobile Money Provider *</Label>
+                              <select
+                                value={outgrowerForm.momoProvider}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, momoProvider: e.target.value })}
+                                className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-white"
+                              >
+                                <option value="Lonestar MTN MoMo">Lonestar MTN Mobile Money (MoMo)</option>
+                                <option value="Orange Money">Orange Money Liberia</option>
+                                <option value="Direct Bank Wire (Ecobank/UBA)">Direct Commercial Bank Wire</option>
+                              </select>
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Registered MoMo Number *</Label>
+                              <Input
+                                value={outgrowerForm.momoNumber}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, momoNumber: e.target.value })}
+                                placeholder="0884445566"
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900 font-mono"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Payment Currency Preference</Label>
+                              <select
+                                value={outgrowerForm.preferredPayment}
+                                onChange={(e) => setOutgrowerForm({ ...outgrowerForm, preferredPayment: e.target.value })}
+                                className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-white"
+                              >
+                                <option value="100% USD Cash/MoMo">100% United States Dollars (USD)</option>
+                                <option value="50% USD / 50% LRD Split">50% USD / 50% LRD Split</option>
+                                <option value="100% LRD (Liberian Dollars)">100% Liberian Dollars (LRD)</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end pt-2">
+                          <Button
+                            type="submit"
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs py-3.5 px-8 rounded-xl shadow-xl flex items-center gap-2"
+                          >
+                            <FileSignature className="w-4 h-4" />
+                            <span>Enroll Cooperative in Guaranteed Off-Take Scheme ➔</span>
+                          </Button>
+                        </div>
+                      </form>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB CONTENT 3: TRACTOR MECHANIZATION & INPUTS BOOKING */}
+                {outgrowerSubTab === "mechanization" && (
+                  <div className="space-y-6">
+                    {mechBookedRef ? (
+                      <div className="p-8 rounded-3xl bg-emerald-500/10 border-2 border-emerald-500 text-center space-y-4">
+                        <div className="w-16 h-16 rounded-full bg-emerald-500 text-white mx-auto flex items-center justify-center text-3xl shadow-xl">
+                          🚜
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white">
+                          Mechanization Equipment Booked!
+                        </h3>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+                          Booking reference <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">#{mechBookedRef}</span> logged for <span className="font-bold">{mechanizationForm.serviceType}</span> ({mechanizationForm.targetAcres} Acres in {mechanizationForm.county} County). The regional hub operator will arrive on schedule.
+                        </p>
+                        <div className="pt-2">
+                          <Button
+                            onClick={() => setMechBookedRef(null)}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold"
+                          >
+                            Book Another Service
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        
+                        {/* Booking Form */}
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const ref = `MECH-HUB-${Math.floor(1000 + Math.random() * 9000)}`;
+                            setMechBookedRef(ref);
+                            toast({
+                              title: "Equipment Scheduled",
+                              description: `Service scheduled under Booking #${ref}.`
+                            });
+                          }}
+                          className="lg:col-span-7 space-y-4 p-6 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 text-xs"
+                        >
+                          <div className="border-b border-slate-200 dark:border-white/10 pb-3">
+                            <h4 className="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
+                              <Truck className="w-5 h-5 text-amber-500" />
+                              <span>Book Regional Mechanization & Input Dispatch</span>
+                            </h4>
+                            <p className="text-xs text-slate-500">Shared equipment pooling program supporting smallholder farm productivity.</p>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Farmer / Cooperative Lead *</Label>
+                              <Input
+                                value={mechanizationForm.farmerName}
+                                onChange={(e) => setMechanizationForm({ ...mechanizationForm, farmerName: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Phone / WhatsApp *</Label>
+                              <Input
+                                value={mechanizationForm.phone}
+                                onChange={(e) => setMechanizationForm({ ...mechanizationForm, phone: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1 sm:col-span-2">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Select Mechanization Service *</Label>
+                              <select
+                                value={mechanizationForm.serviceType}
+                                onChange={(e) => setMechanizationForm({ ...mechanizationForm, serviceType: e.target.value })}
+                                className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-bold text-slate-900 dark:text-white"
+                              >
+                                <option value="Tractor Plowing & Harrowing (John Deere 4WD)">🚜 Tractor Heavy Plowing & Harrowing ($45/Acre)</option>
+                                <option value="Combine Harvester & Grain Threshing Unit">🌾 Combine Harvester & De-stoner Unit ($40/Acre)</option>
+                                <option value="Multi-Spectral Drone Soil & Canopy Scouting">🛰️ Drone Multi-Spectral Soil & Crop Scouting ($15/Acre)</option>
+                                <option value="Certified NERICA Seed Distribution & Bio-Fertilizer Delivery">🌱 Certified Seed & Bio-Fertilizer Direct Delivery</option>
+                              </select>
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Target Acreage to Plow/Harvest</Label>
+                              <Input
+                                type="number"
+                                min="1"
+                                value={mechanizationForm.targetAcres}
+                                onChange={(e) => setMechanizationForm({ ...mechanizationForm, targetAcres: Number(e.target.value) })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Requested Start Date</Label>
+                              <Input
+                                type="date"
+                                value={mechanizationForm.requestedStartDate}
+                                onChange={(e) => setMechanizationForm({ ...mechanizationForm, requestedStartDate: e.target.value })}
+                                className="rounded-xl text-xs bg-white dark:bg-slate-900"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <Button
+                            type="submit"
+                            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs py-3.5 rounded-xl shadow-lg mt-2 flex items-center justify-center gap-2"
+                          >
+                            <Truck className="w-4 h-4" />
+                            <span>Confirm Mechanization Equipment Booking ➔</span>
+                          </Button>
+                        </form>
+
+                        {/* Equipment Pool Live Status */}
+                        <div className="lg:col-span-5 space-y-4">
+                          <h5 className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                            Regional Hub Equipment Availability:
+                          </h5>
+                          <div className="space-y-2.5 text-xs">
+                            {[
+                              { name: "John Deere 5075E 4WD (Lofa Hub)", status: "AVAILABLE", eta: "Same Day Dispatch", icon: "🚜" },
+                              { name: "Yanmar Heavy Rice Combine (Bong Hub)", status: "AVAILABLE", eta: "24-Hr Booking", icon: "🌾" },
+                              { name: "DJI Agras T40 Spray & Scouting Drone", status: "ONLINE", eta: "Autonomous Mission", icon: "🛰️" },
+                              { name: "Mobile Grain Dryer & Moisture Tester", status: "DEPLOYED", eta: "Active at Ganta Mill", icon: "🔥" }
+                            ].map((eq, idx) => (
+                              <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <span className="text-2xl">{eq.icon}</span>
+                                  <div>
+                                    <h6 className="font-bold text-slate-900 dark:text-white text-xs">{eq.name}</h6>
+                                    <span className="text-[10px] text-slate-500">{eq.eta}</span>
+                                  </div>
+                                </div>
+                                <Badge className={eq.status === "AVAILABLE" || eq.status === "ONLINE" ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px]" : "bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px]"}>
+                                  {eq.status}
+                                </Badge>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* TAB CONTENT 4: ACTIVE DELIVERIES & WEIGHBRIDGE LEDGER */}
+                {outgrowerSubTab === "deliveries" && (
+                  <div className="space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-3">
+                      <div>
+                        <h4 className="font-black text-base text-slate-900 dark:text-white flex items-center gap-2">
+                          <BarChart3 className="w-5 h-5 text-emerald-500" />
+                          <span>Live Smallholder Grain Deliveries & Payout Settlement Ledger</span>
+                        </h4>
+                        <p className="text-xs text-slate-500">Real-time intake records from TOTAG central weighbridges and processing elevators.</p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Input
+                          placeholder="Search cooperative, county, crop..."
+                          value={deliverySearchQuery}
+                          onChange={(e) => setDeliverySearchQuery(e.target.value)}
+                          className="h-9 text-xs rounded-xl bg-slate-50 dark:bg-slate-950 w-60 font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-white/10">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 uppercase font-black text-[10px] border-b border-slate-200 dark:border-white/10">
+                          <tr>
+                            <th className="p-3.5">Intake Batch ID</th>
+                            <th className="p-3.5">Cooperative / Location</th>
+                            <th className="p-3.5">Commodity Crop</th>
+                            <th className="p-3.5">Weighbridge Tonnage</th>
+                            <th className="p-3.5">Moisture / Grade</th>
+                            <th className="p-3.5">Total Settlement</th>
+                            <th className="p-3.5">Payment Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-800 font-medium text-slate-900 dark:text-slate-200">
+                          {outgrowerDeliveries
+                            .filter(d => 
+                              d.cooperative.toLowerCase().includes(deliverySearchQuery.toLowerCase()) ||
+                              d.county.toLowerCase().includes(deliverySearchQuery.toLowerCase()) ||
+                              d.crop.toLowerCase().includes(deliverySearchQuery.toLowerCase())
+                            )
+                            .map((dlv) => (
+                              <tr key={dlv.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                                <td className="p-3.5 font-mono font-bold text-emerald-600 dark:text-emerald-400">{dlv.id}</td>
+                                <td className="p-3.5">
+                                  <div className="font-bold text-slate-900 dark:text-white">{dlv.cooperative}</div>
+                                  <span className="text-[10px] text-slate-500">{dlv.county} County, Liberia</span>
+                                </td>
+                                <td className="p-3.5 font-semibold">{dlv.crop}</td>
+                                <td className="p-3.5 font-mono font-extrabold">{dlv.tonnage} Metric Tons</td>
+                                <td className="p-3.5">
+                                  <span className="font-mono text-amber-500 font-bold">{dlv.moisturePct}% Moisture</span>
+                                  <span className="block text-[10px] text-slate-400">{dlv.qualityGrade}</span>
+                                </td>
+                                <td className="p-3.5 font-mono font-black text-slate-900 dark:text-white">
+                                  ${dlv.totalPayoutUsd.toLocaleString()} USD
+                                </td>
+                                <td className="p-3.5">
+                                  <Badge className={dlv.status === "COMPLETED_PAID" ? "bg-emerald-600 text-white text-[10px] font-bold" : "bg-amber-500 text-slate-950 text-[10px] font-bold"}>
+                                    {dlv.status === "COMPLETED_PAID" ? "✓ Paid via MoMo" : "Intake Verification"}
+                                  </Badge>
+                                  <span className="block text-[10px] text-slate-500 mt-0.5">{dlv.paymentMethod}</span>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+              </div>
             </TabsContent>
 
             {/* =================================================================== */}

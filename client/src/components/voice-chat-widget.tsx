@@ -1028,16 +1028,7 @@ export default function VoiceChatWidget() {
         whileTap={{ scale: 0.95 }}
         className="relative flex items-center justify-end"
       >
-        {!isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="absolute right-16 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/90 dark:bg-white/90 text-white dark:text-slate-900 font-bold text-xs shadow-xl border border-white/20 backdrop-blur-md whitespace-nowrap pointer-events-none"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            <span>Speak with TOTAG AI (Instant Quotes)</span>
-          </motion.div>
-        )}
+
 
         <button
           onClick={() => {
