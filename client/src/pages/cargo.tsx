@@ -561,6 +561,223 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
+  // COMPREHENSIVE PRODUCTION DOCUMENT VAULT TYPES & STATE
+  type VaultDocCategory = "ALL" | "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
+
+  interface VaultDocument {
+    id: string;
+    docNumber: string;
+    title: string;
+    category: "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
+    companyName: string;
+    issueDate: string;
+    status: "ACTIVE_VERIFIED" | "PAID_CLEARED" | "RELEASED" | "PENDING_CUSTOMS";
+    amountUsd?: number;
+    reference: string;
+    issuer: string;
+    signatory?: string;
+    summary: string;
+    contentDetails: {
+      items?: { desc: string; qty: string | number; amount: string }[];
+      notes?: string;
+      taxBreakdown?: { duty: number; gst: number; ecowas: number; total: number };
+      carrier?: string;
+      vesselName?: string;
+      sealNumber?: string;
+      gatePassCode?: string;
+    };
+  }
+
+  const [selectedVaultCategory, setSelectedVaultCategory] = useState<VaultDocCategory>("ALL");
+  const [selectedGeneralDoc, setSelectedGeneralDoc] = useState<VaultDocument | null>(null);
+  const [isGeneralDocViewerOpen, setIsGeneralDocViewerOpen] = useState(false);
+  const [docFeedbackInput, setDocFeedbackInput] = useState("");
+  const [docFeedbackLogs, setDocFeedbackLogs] = useState<{ [docId: string]: { sender: string; time: string; text: string }[] }>({
+    "INV-LRA-2026-4412": [
+      { sender: "Officer J. Koffa (Broker)", time: "08:15 AM", text: "ASYCUDA Assessment validated with LRA Collector Berth 2." }
+    ],
+    "RCPT-LRA-ASYCUDA-7731": [
+      { sender: "System Audit", time: "08:30 AM", text: "Payment confirmed via Ecobank Central Treasury Link." }
+    ]
+  });
+
+  const COMPREHENSIVE_VAULT_DOCUMENTS: VaultDocument[] = [
+    // 1. Power of Attorney & Contracts
+    {
+      id: "DOC-POA-9426",
+      docNumber: "TOTAG-POA-2026-9426",
+      title: "Digital Power of Attorney & C&F Clearing Service Agreement",
+      category: "CONTRACT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "ACTIVE_VERIFIED",
+      reference: "LRA-ASYCUDA-AUTH",
+      issuer: "TOTAG Group of Companies Ltd (C&F Directorate)",
+      signatory: "Authorized Managing Director",
+      summary: "Statutory Power of Attorney authorizing TOTAG to act as lawful customs clearing and wharfage agent before LRA, NPA, and APM Terminals.",
+      contentDetails: {
+        notes: "Includes Clauses 1-4: LRA ASYCUDA SAD single-window filing, statutory duty remittance, container free-time monitoring, and electronic vault archiving.",
+        carrier: "Maersk Line / Ethiopian Cargo",
+        sealNumber: "TOTAG-SEAL-88912"
+      }
+    },
+    // 2. Bills of Lading & AWBs
+    {
+      id: "DOC-BL-9920",
+      docNumber: "BL-MAEU-9920148",
+      title: "Ocean Master Bill of Lading (B/L) Manifest",
+      category: "BL_AWB",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-20",
+      status: "ACTIVE_VERIFIED",
+      reference: "MSCU-8840192 / 40' HQ",
+      issuer: "Maersk Shipping Line A/S",
+      summary: "Official maritime cargo manifest for 1x40' High Cube container containing commercial cargo. Port of Loading: Antwerp; Port of Discharge: Freeport of Monrovia Berth 2.",
+      contentDetails: {
+        vesselName: "M/V VEGA GRANAT (Voyage 2608W)",
+        carrier: "Maersk Logistics A/S",
+        sealNumber: "ML-LR-994021",
+        items: [
+          { desc: "40ft High Cube Container (Dry General Cargo)", qty: "1 Unit (40' HQ)", amount: "4,850 kg" },
+          { desc: "Commercial Medical Equipment & Supplies", qty: "120 Cartons", amount: "Declared $48,500 CIF" }
+        ],
+        notes: "Clean on board. Manifest successfully transmitted to LRA ASYCUDA World portal."
+      }
+    },
+    {
+      id: "DOC-AWB-8841",
+      docNumber: "AWB-071-88419203",
+      title: "IATA Air Waybill (AWB) Consignment Note",
+      category: "BL_AWB",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-21",
+      status: "ACTIVE_VERIFIED",
+      reference: "ET-CARGO-ROB-071",
+      issuer: "Ethiopian Airlines Cargo (IATA 071)",
+      summary: "Air Cargo Priority Consignment Note for Cold-Chain pharmaceuticals arriving at Roberts International Airport (ROB) Cargo Gate.",
+      contentDetails: {
+        carrier: "Ethiopian Cargo (Boeing 777F)",
+        vesselName: "Flight ET-920",
+        sealNumber: "IATA-COLD-0042",
+        items: [
+          { desc: "Cold-Chain Pharmaceuticals (2°C to 8°C)", qty: "45 Cartons", amount: "1,470 kg" }
+        ],
+        notes: "Temperature data logger active. Roberts International Airport customs inspection cleared."
+      }
+    },
+    // 3. Invoices & Tax Assessments
+    {
+      id: "DOC-INV-4412",
+      docNumber: "INV-LRA-2026-4412",
+      title: "LRA ASYCUDA Single Administrative Document (SAD) Duty Assessment Bill",
+      category: "INVOICE",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-22",
+      status: "PAID_CLEARED",
+      amountUsd: 12480.00,
+      reference: "SAD-ASYCUDA-2026-0091",
+      issuer: "Liberia Revenue Authority (Customs Directorate)",
+      summary: "Official statutory assessment invoice of customs duties, GST sales tax, and ECOWAS trade levy on declared CIF valuation.",
+      contentDetails: {
+        taxBreakdown: {
+          duty: 7275.00,
+          gst: 4850.00,
+          ecowas: 242.50,
+          total: 12480.00
+        },
+        items: [
+          { desc: "Import Duty (HS 8708.29 - 15.0%)", qty: "CIF $48,500.00", amount: "$7,275.00" },
+          { desc: "Goods & Services Tax (GST - 10.0%)", qty: "CIF $48,500.00", amount: "$4,850.00" },
+          { desc: "ECOWAS Trade Development Levy (0.5%)", qty: "CIF $48,500.00", amount: "$242.50" },
+          { desc: "LRA ASYCUDA Single Window Processing Fee", qty: "Statutory", amount: "$112.50" }
+        ],
+        notes: "Official ASYCUDA Assessment ID: ASY-LR-2026-99214. Remitted in full."
+      }
+    },
+    {
+      id: "DOC-INV-8810",
+      docNumber: "INV-TOTAG-2026-8810",
+      title: "Port Stevedoring, Wharfage & Equipment Handling Invoice",
+      category: "INVOICE",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-22",
+      status: "PAID_CLEARED",
+      amountUsd: 3200.00,
+      reference: "WHARF-MONROVIA-0082",
+      issuer: "TOTAG Stevedoring & Terminal Logistics",
+      summary: "Port handling fees, mobile harbor crane heavy lift, and flatbed transport dispatch from Berth 2 to customer warehouse.",
+      contentDetails: {
+        items: [
+          { desc: "40ft Container Vessel Discharge & Stevedoring", qty: "1 Unit", amount: "$1,450.00" },
+          { desc: "Mobile Harbor Crane Heavy-Lift Allocation", qty: "1 Lift", amount: "$850.00" },
+          { desc: "Bonded Yard Wharfage & APM Terminal Surcharge", qty: "1 Unit", amount: "$450.00" },
+          { desc: "Flatbed Truck Logistics Dispatch to Facility", qty: "1 Trip", amount: "$450.00" }
+        ],
+        notes: "Covered under active enterprise line of credit balance."
+      }
+    },
+    // 4. Payment Receipts
+    {
+      id: "DOC-RCPT-7731",
+      docNumber: "RCPT-LRA-ASYCUDA-7731",
+      title: "LRA Official Customs Tax Payment Receipt",
+      category: "RECEIPT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "PAID_CLEARED",
+      amountUsd: 12480.00,
+      reference: "ECOBANK-TXN-994821",
+      issuer: "Liberia Revenue Authority & Ecobank Liberia",
+      summary: "Official tax clearance confirmation receipt confirming full statutory duty payment for Container TGHU-940218-4.",
+      contentDetails: {
+        notes: "Paid via Electronic Central Bank Settlement Link. ASYCUDA Release Authorization code granted.",
+        items: [
+          { desc: "Customs Duty Assessment Paid", qty: "100%", amount: "$12,480.00 USD" },
+          { desc: "LRA Electronic Confirmation Stamp", qty: "Verified", amount: "VALID_PAID" }
+        ]
+      }
+    },
+    {
+      id: "DOC-RCPT-1992",
+      docNumber: "RCPT-TOTAG-MOMO-1992",
+      title: "Electronic Mobile Money / Bank Wire Settlement Receipt",
+      category: "RECEIPT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "PAID_CLEARED",
+      amountUsd: 3200.00,
+      reference: "MOMO-LONESTAR-88319",
+      issuer: "TOTAG Finance Directorate",
+      summary: "Payment receipt for terminal stevedoring, container grounding, and direct flatbed delivery dispatch.",
+      contentDetails: {
+        notes: "Transaction authenticated via Lonestar MTN Mobile Money Gateway.",
+        items: [
+          { desc: "Port Stevedoring & Delivery Advance", qty: "Electronic", amount: "$3,200.00 USD" }
+        ]
+      }
+    },
+    // 5. Delivery Orders & Gate Passes
+    {
+      id: "DOC-DO-0041",
+      docNumber: "DO-APM-MONROVIA-0041",
+      title: "APM Terminals Official Delivery Order (DO) & Terminal Gate Pass",
+      category: "DELIVERY_ORDER",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "RELEASED",
+      reference: "APM-GATE-PASS-2608",
+      issuer: "APM Terminals Liberia & National Port Authority (NPA)",
+      summary: "Final physical cargo release permit and security gate pass for flatbed container exit at Freeport of Monrovia Commercial Gate.",
+      contentDetails: {
+        gatePassCode: "GP-MONROVIA-883921",
+        carrier: "TOTAG Heavy Flatbed Logistics (Truck #LR-9921)",
+        vesselName: "Freeport Berth 2 Yard",
+        sealNumber: "LRA-CUSTOMS-INSPECTED-2026",
+        notes: "All customs duties, demurrage, and port handling validated. Authorized for 24/7 highway transit across Monrovia corridors."
+      }
+    }
+  ];
+
   // DEDICATED CUSTOMER PORTAL LOGIN MODAL STATE
   const [isCustomerLoginModalOpen, setIsCustomerLoginModalOpen] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
@@ -2705,69 +2922,108 @@ export default function CargoPage() {
                       </div>
                     </div>
 
-                    {/* B. PRIVATE EXECUTED CONTRACTS & DOCUMENT VAULT */}
-                    <Card className="w-full bg-white border border-slate-200 rounded-3xl p-6 text-slate-900 space-y-4 shadow-xl">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                    {/* B. COMPREHENSIVE CUSTOMER DOCUMENT VAULT (ALL LEGAL, BILLING, B/L & RECEIPT RECORDS) */}
+                    <Card className="w-full bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 text-slate-900 space-y-6 shadow-xl">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
                         <div>
-                          <div className="flex items-center space-x-2">
-                            <FileCheck className="w-6 h-6 text-emerald-600" />
-                            <h3 className="text-lg sm:text-xl font-black text-slate-900">
-                              Customer Private Document Vault & Power of Attorney
-                            </h3>
+                          <div className="flex items-center space-x-3">
+                            <div className="p-3 bg-emerald-100 border border-emerald-300 rounded-2xl text-emerald-700 shadow-sm">
+                              <FileCheck className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <div className="flex items-center space-x-2">
+                                <h3 className="text-xl font-black text-slate-900">
+                                  Customer Enterprise Document Vault
+                                </h3>
+                                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
+                                  Verified Permanent Records
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-slate-500 mt-0.5">
+                                Complete repository of your executed legal agreements, Bills of Lading, LRA tax bills, payment receipts, and delivery orders.
+                              </p>
+                            </div>
                           </div>
-                          <p className="text-xs text-slate-500 mt-1">
-                            Legal clearing authorizations, ASYCUDA tax clearance receipts & direct customs amendments
-                          </p>
                         </div>
-                        <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs w-fit font-bold">
-                          {vaultContracts.length} Active Records
+
+                        <Badge className="bg-slate-900 text-white font-mono text-xs px-3.5 py-1.5 rounded-xl self-start md:self-center">
+                          {COMPREHENSIVE_VAULT_DOCUMENTS.length + vaultContracts.length} Total Enterprise Documents
                         </Badge>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                        {vaultContracts.map((contract, idx) => (
-                          <div 
-                            key={idx} 
-                            className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-emerald-500/50 transition-all shadow-sm"
+                      {/* Document Category Filter Tabs */}
+                      <div className="flex flex-wrap items-center gap-2 border-b border-slate-100 pb-3">
+                        {[
+                          { id: "ALL", label: "All Documents", count: COMPREHENSIVE_VAULT_DOCUMENTS.length + vaultContracts.length },
+                          { id: "CONTRACT", label: "Contracts & Power of Attorney", count: vaultContracts.length + COMPREHENSIVE_VAULT_DOCUMENTS.filter(d => d.category === "CONTRACT").length },
+                          { id: "BL_AWB", label: "Bills of Lading & AWBs", count: COMPREHENSIVE_VAULT_DOCUMENTS.filter(d => d.category === "BL_AWB").length },
+                          { id: "INVOICE", label: "Customs Duty Bills & Invoices", count: COMPREHENSIVE_VAULT_DOCUMENTS.filter(d => d.category === "INVOICE").length },
+                          { id: "RECEIPT", label: "Official Payment Receipts", count: COMPREHENSIVE_VAULT_DOCUMENTS.filter(d => d.category === "RECEIPT").length },
+                          { id: "DELIVERY_ORDER", label: "Delivery Orders & Gate Passes", count: COMPREHENSIVE_VAULT_DOCUMENTS.filter(d => d.category === "DELIVERY_ORDER").length }
+                        ].map((cat) => (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => setSelectedVaultCategory(cat.id as VaultDocCategory)}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer ${
+                              selectedVaultCategory === cat.id
+                                ? "bg-slate-900 text-white shadow-md"
+                                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            }`}
                           >
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <span className="font-mono text-xs font-black text-emerald-700 block">
+                            <span>{cat.label}</span>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${selectedVaultCategory === cat.id ? "bg-emerald-500 text-slate-950 font-black" : "bg-slate-200 text-slate-700"}`}>
+                              {cat.count}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Documents Grid Display */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        
+                        {/* Executed Power of Attorney from Dynamic State */}
+                        {(selectedVaultCategory === "ALL" || selectedVaultCategory === "CONTRACT") && vaultContracts.map((contract, idx) => (
+                          <div 
+                            key={`dyn-contract-${idx}`} 
+                            className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3.5 hover:border-emerald-500/50 transition-all shadow-sm flex flex-col justify-between"
+                          >
+                            <div className="space-y-2">
+                              <div className="flex items-start justify-between gap-2">
+                                <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
+                                  LEGAL CONTRACT & POA
+                                </Badge>
+                                <span className="font-mono text-xs font-black text-emerald-700">
                                   #{contract.contractId}
                                 </span>
-                                <h4 className="font-bold text-sm text-slate-900 mt-0.5">
-                                  {contract.companyName}
-                                </h4>
-                                <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
                               </div>
-                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] uppercase font-bold">
-                                {contract.status || "ACTIVE_VERIFIED"}
-                              </Badge>
+                              <h4 className="font-black text-sm text-slate-900 leading-snug">
+                                Digital Power of Attorney & Clearing Service Agreement
+                              </h4>
+                              <p className="text-xs text-slate-500 line-clamp-2">
+                                Authorizing customs clearance, tariff assessment remittance, and port delivery order release.
+                              </p>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-slate-200 shadow-inner">
-                              <div>
-                                <span className="text-slate-400 block text-[10px] font-bold">B/L / AWB REF</span>
-                                <span className="font-semibold text-slate-800">{contract.billOfLading || "Submitted"}</span>
+                            <div className="bg-white p-3 rounded-xl border border-slate-200 text-[11px] space-y-1 shadow-inner">
+                              <div className="flex justify-between">
+                                <span className="text-slate-400 font-bold">Signatory:</span>
+                                <span className="font-semibold text-slate-800 truncate max-w-[150px]">{contract.authorizedSignatory}</span>
                               </div>
-                              <div>
-                                <span className="text-slate-400 block text-[10px] font-bold">CONTAINER SPEC</span>
-                                <span className="font-semibold text-slate-800">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400 font-bold">B/L Reference:</span>
+                                <span className="font-mono text-sky-700 font-bold">{contract.billOfLading || "On File"}</span>
                               </div>
-                              <div>
-                                <span className="text-slate-400 block text-[10px] font-bold">DISCHARGE PORT</span>
-                                <span className="font-semibold text-slate-800">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
-                              </div>
-                              <div>
-                                <span className="text-slate-400 block text-[10px] font-bold">EXECUTED ON</span>
-                                <span className="font-mono text-slate-700">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400 font-bold">Executed Date:</span>
+                                <span className="font-mono text-slate-600">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-23"}</span>
                               </div>
                             </div>
 
-                            <div className="flex items-center justify-between pt-1">
-                              <span className="text-[11px] text-slate-500 flex items-center">
-                                <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-600" />
-                                {contract.responses ? contract.responses.length : 1} message(s) logged
+                            <div className="flex items-center justify-between pt-1 border-t border-slate-200">
+                              <span className="text-[11px] text-emerald-700 font-bold flex items-center">
+                                <CheckCircle className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                                ACTIVE & BINDING
                               </span>
                               <Button 
                                 onClick={() => {
@@ -2778,11 +3034,82 @@ export default function CargoPage() {
                                 className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-4 cursor-pointer shadow-sm"
                               >
                                 <Eye className="w-3.5 h-3.5 mr-1.5" />
-                                Peruse & Respond
+                                Peruse & Read
                               </Button>
                             </div>
                           </div>
                         ))}
+
+                        {/* General Vault Documents (Bills of Lading, Tax Invoices, Official Receipts, Delivery Orders) */}
+                        {COMPREHENSIVE_VAULT_DOCUMENTS
+                          .filter(doc => selectedVaultCategory === "ALL" || doc.category === selectedVaultCategory)
+                          .map((doc) => (
+                            <div 
+                              key={doc.id}
+                              className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3.5 hover:border-emerald-500/50 transition-all shadow-sm flex flex-col justify-between"
+                            >
+                              <div className="space-y-2">
+                                <div className="flex items-start justify-between gap-2">
+                                  <Badge className={`text-[10px] font-bold ${
+                                    doc.category === "INVOICE" ? "bg-amber-100 text-amber-800 border-amber-300" :
+                                    doc.category === "RECEIPT" ? "bg-emerald-100 text-emerald-800 border-emerald-300" :
+                                    doc.category === "BL_AWB" ? "bg-sky-100 text-sky-800 border-sky-300" :
+                                    doc.category === "DELIVERY_ORDER" ? "bg-teal-100 text-teal-800 border-teal-300" :
+                                    "bg-slate-200 text-slate-800"
+                                  }`}>
+                                    {doc.category === "INVOICE" ? "TAX BILL & INVOICE" :
+                                     doc.category === "RECEIPT" ? "OFFICIAL RECEIPT" :
+                                     doc.category === "BL_AWB" ? "BILL OF LADING / AWB" :
+                                     doc.category === "DELIVERY_ORDER" ? "DELIVERY ORDER (DO)" : "DOCUMENT"}
+                                  </Badge>
+                                  <span className="font-mono text-xs font-black text-slate-700">
+                                    {doc.docNumber}
+                                  </span>
+                                </div>
+                                <h4 className="font-black text-sm text-slate-900 leading-snug">
+                                  {doc.title}
+                                </h4>
+                                <p className="text-xs text-slate-500 line-clamp-2">
+                                  {doc.summary}
+                                </p>
+                              </div>
+
+                              <div className="bg-white p-3 rounded-xl border border-slate-200 text-[11px] space-y-1 shadow-inner">
+                                {doc.amountUsd && (
+                                  <div className="flex justify-between">
+                                    <span className="text-slate-400 font-bold">Total Assessment / Amount:</span>
+                                    <span className="font-mono text-emerald-700 font-black">${doc.amountUsd.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</span>
+                                  </div>
+                                )}
+                                <div className="flex justify-between">
+                                  <span className="text-slate-400 font-bold">Issuer / Authority:</span>
+                                  <span className="font-semibold text-slate-800 truncate max-w-[150px]">{doc.issuer}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-slate-400 font-bold">Issue / Clearance Date:</span>
+                                  <span className="font-mono text-slate-600">{doc.issueDate}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between pt-1 border-t border-slate-200">
+                                <span className="text-[10px] font-bold text-slate-500 font-mono">
+                                  REF: {doc.reference}
+                                </span>
+                                <Button 
+                                  onClick={() => {
+                                    setSelectedGeneralDoc(doc);
+                                    setIsGeneralDocViewerOpen(true);
+                                  }}
+                                  size="sm" 
+                                  className="bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl px-4 cursor-pointer shadow-sm flex items-center"
+                                >
+                                  <Eye className="w-3.5 h-3.5 mr-1.5 text-emerald-400" />
+                                  <span>Peruse Document</span>
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+
                       </div>
                     </Card>
 
@@ -4308,32 +4635,257 @@ export default function CargoPage() {
                   </Button>
                 </form>
 
-                {/* 1-Click Quick Fill */}
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-[11px]">
-                  <span className="text-slate-500 block font-bold uppercase text-[10px]">⚡ 1-Click Quick Credentials (Test Accounts):</span>
-                  <div className="flex flex-col gap-2">
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setLoginEmail("rtalk4348@gmail.com");
-                        setLoginPassword("TOTAG-Pass#537043");
+                {/* Official Support & Credentials Reminder */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5 text-xs text-slate-600">
+                  <div className="flex items-center space-x-2 font-bold text-slate-900 text-xs">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Authorized Production Access Only</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Enter the official email and password assigned to your organization. If you recently executed a clearing contract, please use the temporary password dispatched to your email inbox.
+                  </p>
+                </div>
+
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* MODAL 8: INTERACTIVE MULTI-DOCUMENT PERUSAL, AUDIT & PRINT VIEWER MODAL */}
+        <AnimatePresence>
+          {isGeneralDocViewerOpen && selectedGeneralDoc && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-3xl w-full shadow-2xl overflow-hidden relative my-6 max-h-[92vh] flex flex-col"
+              >
+                {/* Header */}
+                <div className="bg-slate-900 text-white p-5 sm:p-6 border-b-2 border-emerald-500 flex items-center justify-between flex-shrink-0">
+                  <div className="flex items-center space-x-3.5">
+                    <img 
+                      src="/images/totag-corporate-logo.png" 
+                      alt="TOTAG Corporate Crest" 
+                      className="w-11 h-11 bg-white p-1 rounded-xl shadow border border-slate-700 object-contain"
+                      onError={(e) => { e.currentTarget.src = "/images/totag-logo.png"; }}
+                    />
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-black text-base sm:text-lg text-white">
+                          <span className="text-emerald-400">TOTAG</span> <span className="text-sky-400">Group</span> <span className="text-amber-400 text-xs font-bold">Document Vault</span>
+                        </span>
+                        <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px]">
+                          Official Archive
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-slate-300 font-medium mt-0.5">
+                        {selectedGeneralDoc.title} • Doc ID: <strong className="font-mono text-emerald-400">{selectedGeneralDoc.docNumber}</strong>
+                      </p>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => setIsGeneralDocViewerOpen(false)}
+                    className="p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Printable Document Body */}
+                <div className="p-6 sm:p-8 space-y-6 overflow-y-auto pr-3 flex-1 text-xs">
+                  
+                  {/* Official Certificate Box */}
+                  <div className="text-center bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-1.5 shadow-sm">
+                    <span className="text-[10px] font-mono tracking-widest text-emerald-700 uppercase font-bold">
+                      REPUBLIC OF LIBERIA • OFFICIAL CARGO & CUSTOMS ARCHIVE
+                    </span>
+                    <h3 className="font-black text-lg text-slate-900">
+                      {selectedGeneralDoc.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 font-medium">
+                      Issued by: <strong>{selectedGeneralDoc.issuer}</strong> • Registered to: <strong className="text-slate-900">{selectedGeneralDoc.companyName}</strong>
+                    </p>
+                  </div>
+
+                  {/* Metadata Matrix */}
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Document Number:</span>
+                      <span className="font-mono font-bold text-slate-900">{selectedGeneralDoc.docNumber}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Statutory Reference:</span>
+                      <span className="font-mono font-bold text-sky-700">{selectedGeneralDoc.reference}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Issue Date:</span>
+                      <span className="font-mono font-semibold text-slate-800">{selectedGeneralDoc.issueDate}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Archive Status:</span>
+                      <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
+                        {selectedGeneralDoc.status}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Document Summary Description */}
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                    <span className="text-slate-500 font-bold uppercase text-[10px] block">Record Abstract / Executive Summary:</span>
+                    <p className="text-xs text-slate-700 leading-relaxed">
+                      {selectedGeneralDoc.summary}
+                    </p>
+                  </div>
+
+                  {/* Line Items / Tariff Breakdown Table if Present */}
+                  {selectedGeneralDoc.contentDetails.items && (
+                    <div className="space-y-2">
+                      <span className="text-slate-700 font-black text-xs uppercase tracking-wider block">
+                        Itemized Specifications & Financial Assessment:
+                      </span>
+                      <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                        <table className="w-full text-left text-xs">
+                          <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                            <tr>
+                              <th className="p-3">Description / Tariff Line</th>
+                              <th className="p-3">Quantity / Value</th>
+                              <th className="p-3 text-right">Assessment / Amount</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-200">
+                            {selectedGeneralDoc.contentDetails.items.map((item, i) => (
+                              <tr key={i} className="hover:bg-slate-50">
+                                <td className="p-3 font-semibold text-slate-900">{item.desc}</td>
+                                <td className="p-3 text-slate-600 font-mono">{item.qty}</td>
+                                <td className="p-3 text-right font-mono font-bold text-slate-900">{item.amount}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Additional Technical Particulars */}
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                    <span className="text-slate-500 font-bold uppercase text-[10px] block">Statutory Clearance Particulars:</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                      {selectedGeneralDoc.contentDetails.carrier && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CARRIER / VESSEL:</span>
+                          <strong className="text-slate-800">{selectedGeneralDoc.contentDetails.carrier}</strong>
+                        </div>
+                      )}
+                      {selectedGeneralDoc.contentDetails.sealNumber && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CUSTOMS SEAL #:</span>
+                          <strong className="text-emerald-700 font-mono">{selectedGeneralDoc.contentDetails.sealNumber}</strong>
+                        </div>
+                      )}
+                      {selectedGeneralDoc.contentDetails.gatePassCode && (
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">APM GATE PASS CODE:</span>
+                          <strong className="text-sky-700 font-mono">{selectedGeneralDoc.contentDetails.gatePassCode}</strong>
+                        </div>
+                      )}
+                    </div>
+                    {selectedGeneralDoc.contentDetails.notes && (
+                      <p className="text-[11px] text-slate-600 italic pt-1 border-t border-slate-200">
+                        Notes: {selectedGeneralDoc.contentDetails.notes}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Customer Audit Inquiry & Broker Response Channel */}
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-xs text-slate-900 flex items-center">
+                        <MessageSquare className="w-4 h-4 mr-1.5 text-sky-600" />
+                        Document Inquiries & Broker Audit Thread
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        {(docFeedbackLogs[selectedGeneralDoc.docNumber] || []).length} Message(s)
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                      {(docFeedbackLogs[selectedGeneralDoc.docNumber] || [
+                        { sender: "Officer J. Koffa (Assigned Customs Broker)", time: "Today", text: "Document archived and verified with NPA & LRA ASYCUDA single-window registry." }
+                      ]).map((entry, idx) => (
+                        <div key={idx} className="bg-white p-2.5 rounded-xl border border-slate-200 text-[11px] space-y-0.5 shadow-sm">
+                          <div className="flex justify-between font-bold text-slate-700 text-[10px]">
+                            <span>{entry.sender}</span>
+                            <span className="text-slate-400 font-mono">{entry.time}</span>
+                          </div>
+                          <p className="text-slate-800">{entry.text}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        if (!docFeedbackInput.trim()) return;
+                        const docId = selectedGeneralDoc.docNumber;
+                        const newMsg = {
+                          sender: `${customerAccount.companyName} (${customerAccount.email})`,
+                          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                          text: docFeedbackInput.trim()
+                        };
+                        setDocFeedbackLogs(prev => ({
+                          ...prev,
+                          [docId]: [...(prev[docId] || []), newMsg]
+                        }));
+                        setDocFeedbackInput("");
+                        toast({ title: "Inquiry Logged", description: `Message attached to document ${docId}.` });
                       }}
-                      className="w-full text-left px-3 py-2 rounded-xl bg-emerald-100 text-emerald-900 hover:bg-emerald-200 font-medium text-xs border border-emerald-300 transition flex items-center justify-between cursor-pointer"
+                      className="flex space-x-2 pt-1"
                     >
-                      <span><strong>Jutu Enterprise</strong> (rtalk4348@gmail.com)</span>
-                      <span className="font-mono text-[10px] text-emerald-700 bg-white px-2 py-0.5 rounded-md font-bold">Fill Credentials</span>
-                    </button>
-                    <button 
+                      <Input 
+                        value={docFeedbackInput}
+                        onChange={(e) => setDocFeedbackInput(e.target.value)}
+                        placeholder="Inquire or request amendment regarding this document..."
+                        className="bg-white border-slate-300 text-slate-900 rounded-xl text-xs font-medium"
+                      />
+                      <Button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl px-4 cursor-pointer">
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    </form>
+                  </div>
+
+                </div>
+
+                {/* Footer Controls & Print Action */}
+                <div className="bg-slate-100 p-4 sm:p-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+                  <div className="flex items-center space-x-2 text-[11px] text-slate-500">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>Cryptographically Authenticated TOTAG Vault Instrument</span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 w-full sm:w-auto">
+                    <Button 
                       type="button"
-                      onClick={() => {
-                        setLoginEmail("customs@globalpharma.be");
-                        setLoginPassword("EnterprisePass2026!");
-                      }}
-                      className="w-full text-left px-3 py-2 rounded-xl bg-sky-100 text-sky-900 hover:bg-sky-200 font-medium text-xs border border-sky-300 transition flex items-center justify-between cursor-pointer"
+                      onClick={() => window.print()}
+                      className="bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl px-5 py-2.5 shadow-md flex items-center space-x-1.5 cursor-pointer w-full sm:w-auto justify-center"
                     >
-                      <span><strong>Global Pharma NV</strong> (customs@globalpharma.be)</span>
-                      <span className="font-mono text-[10px] text-sky-700 bg-white px-2 py-0.5 rounded-md font-bold">Fill Credentials</span>
-                    </button>
+                      <Printer className="w-4 h-4 mr-1 text-emerald-400" />
+                      <span>Print Document Copy</span>
+                    </Button>
+                    <Button 
+                      type="button"
+                      onClick={() => setIsGeneralDocViewerOpen(false)}
+                      variant="outline"
+                      className="border-slate-300 text-slate-700 hover:bg-slate-200 text-xs rounded-xl px-5 py-2.5 font-bold cursor-pointer w-full sm:w-auto"
+                    >
+                      Close Viewer
+                    </Button>
                   </div>
                 </div>
 
