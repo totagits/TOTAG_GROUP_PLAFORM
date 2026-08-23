@@ -1239,10 +1239,10 @@ function buildInvoiceEmailHtml(invoice: any): string {
                 <h4 style="margin:0 0 8px;font-size:12px;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;">🏦 Official Bank Settlement Details</h4>
                 <p style="margin:0;font-size:12px;color:#713f12;line-height:1.6;">
                   <strong>Bank Transfer:</strong> TOTAG Group of Companies Ltd<br/>
-                  <strong>Bank:</strong> Ecobank Liberia<br/>
-                  <strong>Account Number:</strong> 6100984712<br/>
-                  <strong>SWIFT Code:</strong> ECOCLRMM<br/>
-                  <strong>Branch:</strong> Monrovia Head Office<br/>
+                  <strong>Bank:</strong> Ecobank Liberia Limited<br/>
+                  <strong>Account Number:</strong> 6103394551<br/>
+                  <strong>SWIFT Code:</strong> ECOCLRLM<br/>
+                  <strong>Branch:</strong> 11th Street Sinkor, Monrovia, Liberia<br/>
                   <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN)<br/>
                   <em>Please include reference <strong>${invoice.invoiceNumber}</strong> with your transfer.</em>
                 </p>
@@ -1370,7 +1370,7 @@ Payment Due Date: ${invoice.dueDate}
 
 Bank Settlement Details:
 Bank Transfer: TOTAG Group of Companies Ltd
-Bank: Ecobank Liberia | Account: 6100984712 | SWIFT: ECOCLRMM
+Bank: Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM
 
 Thank you for choosing TOTAG Group.
 

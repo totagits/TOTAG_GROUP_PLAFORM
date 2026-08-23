@@ -149,8 +149,8 @@ export function generateInvoicePdf(invoice: InvoicePdfData): Promise<Buffer> {
       doc.fillColor('#854d0e').fontSize(8).font('Helvetica-Bold').text('OFFICIAL BANK SETTLEMENT DETAILS:', 50, y + 8);
       doc.fillColor('#713f12').fontSize(8).font('Helvetica')
         .text('Bank Transfer: TOTAG Group of Companies Ltd', 50, y + 22)
-        .text('Bank: Ecobank Liberia | Account: 6100984712', 50, y + 34)
-        .text('SWIFT Code: ECOCLRMM | Branch: Monrovia Head Office', 50, y + 46)
+        .text('Bank: Ecobank Liberia Limited | Account: 6103394551', 50, y + 34)
+        .text('SWIFT Code: ECOCLRLM | Branch: 11th Street Sinkor, Monrovia', 50, y + 46)
         .text(`Ref: Please state Invoice ${invoice.invoiceNumber} on transfer.`, 50, y + 58)
         .text('Mobile Money: +231-777-100-001 (Orange / MTN)', 50, y + 70);
 
@@ -274,7 +274,7 @@ export function generateQuotationPdf(quotation: QuotationPdfData): Promise<Buffe
       doc.fillColor('#86198f').fontSize(8).font('Helvetica-Bold').text('CONFIRMATION & DEPOSIT INSTRUCTIONS:', 50, y + 8);
       doc.fillColor('#701a75').fontSize(8).font('Helvetica')
         .text('Bank Transfer: TOTAG Group of Companies Ltd', 50, y + 22)
-        .text('Bank: Ecobank Liberia | Account: 6100984712 | SWIFT: ECOCLRMM', 50, y + 34)
+        .text('Bank: Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM', 50, y + 34)
         .text(`Terms: ${quotation.paymentTerms || '50% deposit upon confirmation'}`, 50, y + 46)
         .text(`Quote Ref: ${quotation.quotationNumber}`, 50, y + 58);
 

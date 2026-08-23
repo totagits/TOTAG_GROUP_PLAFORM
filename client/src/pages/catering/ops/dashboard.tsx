@@ -642,7 +642,7 @@ function InvoiceBuilder({
   const [taxAmount, setTaxAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(18125.00);
-  const [paymentDetails, setPaymentDetails] = useState("Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia | Account: 6100984712 | SWIFT: ECOCLRMM");
+  const [paymentDetails, setPaymentDetails] = useState("Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM | BBAN: 003011610339455101 | Branch: 11th Street Sinkor, Monrovia");
   const [notes, setNotes] = useState("Final invoice for UNIDO Article 4 Deliverable C. Dates of service, locations served, and quantities delivered confirmed.");
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
@@ -671,7 +671,7 @@ function InvoiceBuilder({
     setDatesOfService(inv.datesOfService || inv.dates_of_service || "");
     setLocationsServed(inv.locationsServed || inv.locations_served || "");
     setQuantitiesDelivered(inv.quantitiesDelivered || inv.quantities_delivered || "");
-    setPaymentDetails(inv.paymentDetails || inv.payment_details || "Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia");
+    setPaymentDetails(inv.paymentDetails || inv.payment_details || "Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM");
     setNotes(inv.notes || "");
     
     const items = Array.isArray(inv.lineItems) ? inv.lineItems : [];
