@@ -4091,6 +4091,111 @@ export default function CargoPage() {
           )}
         </AnimatePresence>
 
+        {/* MODAL 7: CUSTOMER CARGO PORTAL AUTHENTICATION MODAL */}
+        <AnimatePresence>
+          {isCustomerLoginModalOpen && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4"
+            >
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 relative"
+              >
+                <button 
+                  type="button"
+                  onClick={() => setIsCustomerLoginModalOpen(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                {/* Header */}
+                <div className="text-center space-y-2 border-b border-slate-200 pb-4">
+                  <div className="w-14 h-14 bg-emerald-100 border border-emerald-300 rounded-2xl flex items-center justify-center mx-auto text-emerald-700 shadow-sm">
+                    <LogIn className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900">
+                    Customer Cargo Portal Sign In
+                  </h3>
+                  <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                    Sign in with your official account email and password (or temporary credentials from email)
+                  </p>
+                </div>
+
+                {/* Login Form */}
+                <form onSubmit={handleCustomerLogin} className="space-y-4">
+                  <div>
+                    <Label className="text-slate-700 text-xs font-bold">Account Email / Username *</Label>
+                    <Input 
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="e.g. rtalk4348@gmail.com"
+                      className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-slate-700 text-xs font-bold">Password / Temporary Credentials *</Label>
+                    <Input 
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="Enter password (e.g. TOTAG-Pass#...)"
+                      className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-mono"
+                      required
+                    />
+                  </div>
+
+                  <Button 
+                    type="submit" 
+                    disabled={isLoggingIn}
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl py-3 shadow-lg cursor-pointer transition"
+                  >
+                    {isLoggingIn ? "Authenticating Account..." : "Sign In to Customer Dashboard →"}
+                  </Button>
+                </form>
+
+                {/* 1-Click Quick Fill */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-[11px]">
+                  <span className="text-slate-500 block font-bold uppercase text-[10px]">⚡ 1-Click Quick Credentials (Test Accounts):</span>
+                  <div className="flex flex-col gap-2">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setLoginEmail("rtalk4348@gmail.com");
+                        setLoginPassword("TOTAG-Pass#537043");
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl bg-emerald-100 text-emerald-900 hover:bg-emerald-200 font-medium text-xs border border-emerald-300 transition flex items-center justify-between cursor-pointer"
+                    >
+                      <span><strong>Jutu Enterprise</strong> (rtalk4348@gmail.com)</span>
+                      <span className="font-mono text-[10px] text-emerald-700 bg-white px-2 py-0.5 rounded-md font-bold">Fill Credentials</span>
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setLoginEmail("customs@globalpharma.be");
+                        setLoginPassword("EnterprisePass2026!");
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl bg-sky-100 text-sky-900 hover:bg-sky-200 font-medium text-xs border border-sky-300 transition flex items-center justify-between cursor-pointer"
+                    >
+                      <span><strong>Global Pharma NV</strong> (customs@globalpharma.be)</span>
+                      <span className="font-mono text-[10px] text-sky-700 bg-white px-2 py-0.5 rounded-md font-bold">Fill Credentials</span>
+                    </button>
+                  </div>
+                </div>
+
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </main>
 
       <Footer />
