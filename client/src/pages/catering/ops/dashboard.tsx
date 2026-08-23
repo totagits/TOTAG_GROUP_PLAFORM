@@ -100,8 +100,13 @@ function getCateringApiUrl(endpoint: string): string {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host.includes("github.io") || host === "totag.network" || host.includes("totag")) {
-      return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
+    // On totaggroup.com or localhost, use same-origin relative endpoint directly (no CORS preflight issues)
+    if (host.includes("totaggroup.com") || host === "localhost" || host === "127.0.0.1") {
+      return cleanEndpoint;
+    }
+    // On GitHub Pages or external hosts, route to official live domain
+    if (host.includes("github.io")) {
+      return `https://totaggroup.com${cleanEndpoint}`;
     }
   }
   return cleanEndpoint;

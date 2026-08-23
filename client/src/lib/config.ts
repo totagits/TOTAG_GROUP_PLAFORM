@@ -3,10 +3,10 @@ export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
     if (host.includes("github.io") || host === "totaggroup.com" || host.includes("totaggroup") || host === "totag.network" || host.includes("totag")) {
-      return "https://srv1902704.hstgr.cloud";
+      return "https://totaggroup.com";
     }
   }
-  return import.meta.env.VITE_API_BASE_URL || "https://srv1902704.hstgr.cloud";
+  return import.meta.env.VITE_API_BASE_URL || "https://totaggroup.com";
 }
 
 export function getApiUrl(endpoint: string): string {
