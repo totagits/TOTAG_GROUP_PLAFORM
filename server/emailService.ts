@@ -124,10 +124,14 @@ class ZohoEmailService {
       });
     }
 
+    const recipients = typeof options.to === 'string' && options.to.includes(',')
+      ? options.to.split(',').map(e => e.trim()).filter(Boolean)
+      : options.to;
+
     await transporter.sendMail({
       from: `"TOTAG Group of Companies" <${smtpUser}>`,
-      to: options.to,
-      replyTo: "toceps@totaggroup.com",
+      to: recipients,
+      replyTo: "info@totaggroup.com",
       subject: options.subject,
       html: htmlBody,
       text: options.text,

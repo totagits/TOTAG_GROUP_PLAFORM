@@ -76,7 +76,7 @@ import jwt from "jsonwebtoken";
 import { insertCateringRequestSchema, insertCateringEventSchema, insertCateringTaskSchema, insertCateringIncidentSchema } from "@shared/schema";
 import { EmailService } from "./emailService";
 
-const TOCEPS_EMAIL = "toceps@totaggroup.com";
+const TOCEPS_EMAIL = process.env.TOCEPS_NOTIFICATION_EMAIL || process.env.ZOHO_FROM_EMAIL || "info@totaggroup.com";
 const TOCEPS_FROM = "noreply@totaggroup.com";
 
 function buildRequestNotificationHtml(req: any): string {
