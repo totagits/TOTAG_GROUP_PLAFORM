@@ -179,7 +179,7 @@ function PortAutocompleteInput({
 
   return (
     <div ref={wrapperRef} className="relative">
-      <Label className="text-xs text-slate-600 dark:text-slate-300 font-semibold">{label}</Label>
+      <Label className="text-xs text-slate-600 dark:text-slate-700 font-semibold">{label}</Label>
       <div className="relative mt-1">
         <Input 
           value={value}
@@ -189,7 +189,7 @@ function PortAutocompleteInput({
           }}
           onFocus={() => setIsOpen(true)}
           placeholder="Type country (e.g. China, Belgium, Liberia)..."
-          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs pr-8 font-medium focus:ring-2 focus:ring-emerald-500/50 transition-all"
+          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs pr-8 font-medium focus:ring-2 focus:ring-emerald-500/50 transition-all"
         />
         <MapPin className="w-4 h-4 text-emerald-500 absolute right-2.5 top-2.5 pointer-events-none" />
       </div>
@@ -202,7 +202,7 @@ function PortAutocompleteInput({
             exit={{ opacity: 0, y: -5 }}
             className="absolute z-50 left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-2xl shadow-2xl overflow-hidden max-h-56 overflow-y-auto backdrop-blur-xl"
           >
-            <div className="p-2 bg-slate-100 dark:bg-slate-950/80 border-b border-slate-200 dark:border-white/10 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex justify-between items-center">
+            <div className="p-2 bg-slate-100 dark:bg-slate-950/80 border-b border-slate-200 dark:border-white/10 text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider flex justify-between items-center">
               <span>Matching Ports ({filteredPorts.length})</span>
               <span>Click to Select</span>
             </div>
@@ -222,16 +222,16 @@ function PortAutocompleteInput({
                       {port.type === "Air" ? <Plane className="w-3.5 h-3.5" /> : <Anchor className="w-3.5 h-3.5" />}
                     </div>
                     <div className="min-w-0">
-                      <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 dark:group-hover:text-emerald-400 block truncate">
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-900 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 block truncate">
                         {port.name}
                       </span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block">
                         {port.country} • {port.city}
                       </span>
                     </div>
                   </div>
 
-                  <Badge className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 font-mono text-[10px] ml-2 flex-shrink-0">
+                  <Badge className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-700 border-slate-200 dark:border-white/10 font-mono text-[10px] ml-2 flex-shrink-0">
                     {port.code}
                   </Badge>
                 </div>
@@ -559,6 +559,60 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
+  // INTERACTIVE CANVAS SIGNATURE PAD STATE & HANDLERS
+  const signatureCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasDrawnSignature, setHasDrawnSignature] = useState(false);
+  const [signatureMode, setSignatureMode] = useState<"draw" | "type">("draw");
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = signatureCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    setIsDrawing(true);
+    const rect = canvas.getBoundingClientRect();
+    const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    const canvas = signatureCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.strokeStyle = "#0f172a";
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    setHasDrawnSignature(true);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearSignatureCanvas = () => {
+    const canvas = signatureCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawnSignature(false);
+  };
+
   // DIGITAL CONTRACT REVIEW & ELECTRONIC SIGNATURE SUITE STATE
   const [isEsignModalOpen, setIsEsignModalOpen] = useState(false);
   const [typedSignatoryName, setTypedSignatoryName] = useState("");
@@ -650,6 +704,29 @@ export default function CargoPage() {
 
   // Active Main Workspace Tab
   const [activeTab, setActiveTab] = useState("public-discovery");
+  // URL PARAM & HASH ROUTER FOR CUSTOMER DASHBOARD
+  useEffect(() => {
+    const handleUrlRouting = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab");
+      const hash = window.location.hash.replace("#", "");
+
+      if (tabParam === "b2b-portal" || tabParam === "dashboard" || hash === "dashboard" || hash === "b2b-portal") {
+        setActiveTab("b2b-portal");
+        setTimeout(() => {
+          const el = document.getElementById("cargo-customer-dashboard");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 400);
+      } else if (tabParam === "cf-customs-hub" || hash === "cf-customs-hub" || hash === "vault") {
+        setActiveTab("cf-customs-hub");
+      }
+    };
+
+    handleUrlRouting();
+    window.addEventListener("hashchange", handleUrlRouting);
+    return () => window.removeEventListener("hashchange", handleUrlRouting);
+  }, []);
+
 
   // Hidden File Input References for OS Native File Pickers
   const blFileInputRef = useRef<HTMLInputElement>(null);
@@ -1163,7 +1240,7 @@ export default function CargoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-sans selection:bg-emerald-500 selection:text-slate-950 transition-colors">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-900 font-sans selection:bg-emerald-500 selection:text-slate-950 transition-colors">
       <Header />
 
       {/* Hidden File Input Elements for Native File Pickers */}
@@ -1223,7 +1300,7 @@ export default function CargoPage() {
               <TabsList className="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 p-1.5 rounded-2xl grid grid-cols-2 md:grid-cols-5 gap-2 w-full max-w-5xl shadow-xl backdrop-blur-xl">
                 <TabsTrigger 
                   value="public-discovery" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-700 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
                   <Globe className="w-4 h-4" />
                   <span>Public Discovery</span>
@@ -1231,7 +1308,7 @@ export default function CargoPage() {
 
                 <TabsTrigger 
                   value="cf-customs-hub" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-700 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>C&F & Customs Hub</span>
@@ -1239,7 +1316,7 @@ export default function CargoPage() {
                 
                 <TabsTrigger 
                   value="b2b-portal" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-700 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
                   <Users className="w-4 h-4" />
                   <span>B2B Client Portal</span>
@@ -1247,7 +1324,7 @@ export default function CargoPage() {
                 
                 <TabsTrigger 
                   value="operations-center" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-700 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
                   <HardHat className="w-4 h-4" />
                   <span>WMS & Ramp Command</span>
@@ -1255,7 +1332,7 @@ export default function CargoPage() {
                 
                 <TabsTrigger 
                   value="developer-console" 
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-300 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-slate-950 text-slate-700 dark:text-slate-700 font-bold rounded-xl py-3 text-xs transition-all flex items-center justify-center space-x-1.5"
                 >
                   <FileCode className="w-4 h-4" />
                   <span>OpenAPI & Kafka Logs</span>
@@ -1277,8 +1354,8 @@ export default function CargoPage() {
                       <Anchor className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">Authentic Port Operations & Cargo Gallery</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">High-definition maritime logistics photography from TOTAG port operations</p>
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-slate-900">Authentic Port Operations & Cargo Gallery</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">High-definition maritime logistics photography from TOTAG port operations</p>
                     </div>
                   </div>
                   <Badge className="bg-emerald-500/20 text-emerald-500 text-[10px] font-bold">
@@ -1306,8 +1383,8 @@ export default function CargoPage() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end opacity-90 group-hover:opacity-100 transition-opacity">
                         <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider block">{item.tag}</span>
-                        <span className="text-xs font-black text-white truncate block">{item.title}</span>
-                        <span className="text-[8px] text-slate-300 font-semibold block mt-0.5 group-hover:text-amber-400 transition-colors">Click for Full-Res HD ↗</span>
+                        <span className="text-xs font-black text-slate-900 truncate block">{item.title}</span>
+                        <span className="text-[8px] text-slate-700 font-semibold block mt-0.5 group-hover:text-amber-400 transition-colors">Click for Full-Res HD ↗</span>
                       </div>
                     </div>
                   ))}
@@ -1318,7 +1395,7 @@ export default function CargoPage() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 {/* IATA Freight Rate Engine */}
-                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl backdrop-blur-xl shadow-xl text-slate-900 dark:text-white">
+                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl backdrop-blur-xl shadow-xl text-slate-900 dark:text-slate-900">
                   <CardHeader className="border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
@@ -1327,12 +1404,12 @@ export default function CargoPage() {
                         </div>
                         <div>
                           <CardTitle className="text-xl font-bold">IATA Instant Freight Calculator</CardTitle>
-                          <CardDescription className="text-slate-500 dark:text-slate-400 text-xs">Volumetric Chargeable Weight Engine</CardDescription>
+                          <CardDescription className="text-slate-500 dark:text-slate-500 text-xs">Volumetric Chargeable Weight Engine</CardDescription>
                         </div>
                       </div>
                       <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-bold">
-                        <button onClick={() => setCalcMode("air")} className={`px-3 py-1 rounded-lg transition-all ${calcMode === "air" ? "bg-emerald-500 text-slate-950" : "text-slate-600 dark:text-slate-400"}`}>Air Cargo</button>
-                        <button onClick={() => setCalcMode("ocean")} className={`px-3 py-1 rounded-lg transition-all ${calcMode === "ocean" ? "bg-emerald-500 text-slate-950" : "text-slate-600 dark:text-slate-400"}`}>Maritime Ocean</button>
+                        <button onClick={() => setCalcMode("air")} className={`px-3 py-1 rounded-lg transition-all ${calcMode === "air" ? "bg-emerald-500 text-slate-950" : "text-slate-600 dark:text-slate-500"}`}>Air Cargo</button>
+                        <button onClick={() => setCalcMode("ocean")} className={`px-3 py-1 rounded-lg transition-all ${calcMode === "ocean" ? "bg-emerald-500 text-slate-950" : "text-slate-600 dark:text-slate-500"}`}>Maritime Ocean</button>
                       </div>
                     </div>
                   </CardHeader>
@@ -1354,20 +1431,20 @@ export default function CargoPage() {
 
                     <div className="grid grid-cols-4 gap-3">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">Gross (kg)</Label>
-                        <Input type="number" value={grossWeight} onChange={(e) => setGrossWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">Gross (kg)</Label>
+                        <Input type="number" value={grossWeight} onChange={(e) => setGrossWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">L (cm)</Label>
-                        <Input type="number" value={lengthCm} onChange={(e) => setLengthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">L (cm)</Label>
+                        <Input type="number" value={lengthCm} onChange={(e) => setLengthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">W (cm)</Label>
-                        <Input type="number" value={widthCm} onChange={(e) => setWidthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">W (cm)</Label>
+                        <Input type="number" value={widthCm} onChange={(e) => setWidthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">H (cm)</Label>
-                        <Input type="number" value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">H (cm)</Label>
+                        <Input type="number" value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                     </div>
 
@@ -1386,8 +1463,8 @@ export default function CargoPage() {
                       <div>
                         <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-wider block">IATA Volumetric Chargeable Weight</span>
                         <div className="flex items-baseline space-x-2">
-                          <span className="text-2xl font-black text-slate-900 dark:text-white">{chargeableWeight.toFixed(1)} kg</span>
-                          <span className="text-xs text-slate-500 dark:text-slate-400">(Volumetric: {volumetricWeight.toFixed(1)}kg)</span>
+                          <span className="text-2xl font-black text-slate-900 dark:text-slate-900">{chargeableWeight.toFixed(1)} kg</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-500">(Volumetric: {volumetricWeight.toFixed(1)}kg)</span>
                         </div>
                       </div>
                       <div className="text-right">
@@ -1407,7 +1484,7 @@ export default function CargoPage() {
                 </Card>
 
                 {/* Public AWB / Container Track-and-Trace */}
-                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl backdrop-blur-xl shadow-xl text-slate-900 dark:text-white">
+                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl backdrop-blur-xl shadow-xl text-slate-900 dark:text-slate-900">
                   <CardHeader className="border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
@@ -1416,7 +1493,7 @@ export default function CargoPage() {
                         </div>
                         <div>
                           <CardTitle className="text-xl font-bold">Public AWB & Container Tracking</CardTitle>
-                          <CardDescription className="text-slate-500 dark:text-slate-400 text-xs">Real-Time Telematics & Milestone Inspection</CardDescription>
+                          <CardDescription className="text-slate-500 dark:text-slate-500 text-xs">Real-Time Telematics & Milestone Inspection</CardDescription>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -1431,7 +1508,7 @@ export default function CargoPage() {
                         value={searchAwb}
                         onChange={(e) => setSearchAwb(e.target.value)}
                         placeholder="Enter Air AWB (e.g. 071-12345675, 176-94021832) or Sea Container (e.g. MSCU-928172-1, MAEU-102938-4)"
-                        className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-sm font-semibold"
+                        className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-sm font-semibold"
                       />
                       <Button type="submit" className="bg-sky-500 hover:bg-sky-400 text-slate-950 font-black rounded-xl px-6 cursor-pointer">
                         Track Cargo
@@ -1439,8 +1516,8 @@ export default function CargoPage() {
                     </form>
 
                     {/* Quick International Presets */}
-                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">Try International Carriers:</span>
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-500">
+                      <span className="font-semibold text-slate-700 dark:text-slate-700">Try International Carriers:</span>
                       <button type="button" onClick={() => { setSearchAwb("071-92817420"); setTrackedCargo(resolveInternationalCargo("071-92817420")); }} className="px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 font-mono">✈ Ethiopian (071)</button>
                       <button type="button" onClick={() => { setSearchAwb("176-44091823"); setTrackedCargo(resolveInternationalCargo("176-44091823")); }} className="px-2 py-0.5 rounded-lg bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 font-mono">✈ Emirates (176)</button>
                       <button type="button" onClick={() => { setSearchAwb("706-55102934"); setTrackedCargo(resolveInternationalCargo("706-55102934")); }} className="px-2 py-0.5 rounded-lg bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 hover:bg-amber-500/20 font-mono">✈ Kenya Airways (706)</button>
@@ -1453,15 +1530,15 @@ export default function CargoPage() {
                       <div className="space-y-4">
                         <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
                           <div>
-                            <span className="text-slate-500 dark:text-slate-400 block text-[10px]">AWB / CONTAINER</span>
+                            <span className="text-slate-500 dark:text-slate-500 block text-[10px]">AWB / CONTAINER</span>
                             <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{trackedCargo.awbNumber} / {trackedCargo.containerId}</span>
                           </div>
                           <div>
-                            <span className="text-slate-500 dark:text-slate-400 block text-[10px]">LIFECYCLE STATUS</span>
+                            <span className="text-slate-500 dark:text-slate-500 block text-[10px]">LIFECYCLE STATUS</span>
                             <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 font-bold">{trackedCargo.currentStatus}</Badge>
                           </div>
                           <div>
-                            <span className="text-slate-500 dark:text-slate-400 block text-[10px]">COLD CHAIN TELEMETRY</span>
+                            <span className="text-slate-500 dark:text-slate-500 block text-[10px]">COLD CHAIN TELEMETRY</span>
                             <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center space-x-1">
                               <Thermometer className="w-3.5 h-3.5" />
                               <span>{trackedCargo.temperatureCelsius}°C ({trackedCargo.humidityPercent}% RH)</span>
@@ -1470,18 +1547,18 @@ export default function CargoPage() {
                         </div>
 
                         <div className="space-y-3 pt-2">
-                          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">Milestone Audit Log</span>
+                          <span className="text-xs font-bold text-slate-700 dark:text-slate-700 block">Milestone Audit Log</span>
                           <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
                             {trackedCargo.history.map((item, idx) => (
                               <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5 text-xs">
                                 <div className="flex items-center space-x-3">
-                                  {item.completed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Clock className="w-4 h-4 text-slate-400" />}
+                                  {item.completed ? <CheckCircle className="w-4 h-4 text-emerald-500" /> : <Clock className="w-4 h-4 text-slate-500" />}
                                   <div>
-                                    <span className={`font-semibold block ${item.completed ? "text-slate-900 dark:text-white" : "text-slate-500"}`}>{item.step}</span>
-                                    <span className="text-[10px] text-slate-400">{item.location}</span>
+                                    <span className={`font-semibold block ${item.completed ? "text-slate-900 dark:text-slate-900" : "text-slate-500"}`}>{item.step}</span>
+                                    <span className="text-[10px] text-slate-500">{item.location}</span>
                                   </div>
                                 </div>
-                                <span className="text-[10px] font-mono text-slate-400">{item.time}</span>
+                                <span className="text-[10px] font-mono text-slate-500">{item.time}</span>
                               </div>
                             ))}
                           </div>
@@ -1495,30 +1572,30 @@ export default function CargoPage() {
 
               {/* Row 2: Port & Terminal Coverage Map & Regulatory Badges */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-3 shadow-lg">
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-3 shadow-lg">
                   <div className="flex items-center space-x-3">
                     <Anchor className="w-6 h-6 text-emerald-500" />
                     <h3 className="font-bold text-lg">Freeport of Monrovia Berth 2</h3>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">24/7 Deepwater stevedoring, gantry crane container handling, and bonded customs warehouse facility.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-700">24/7 Deepwater stevedoring, gantry crane container handling, and bonded customs warehouse facility.</p>
                   <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">ISO 9001 Certified</Badge>
                 </Card>
 
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-3 shadow-lg">
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-3 shadow-lg">
                   <div className="flex items-center space-x-3">
                     <Ship className="w-6 h-6 text-sky-500" />
                     <h3 className="font-bold text-lg">Port of Buchanan Terminal</h3>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">Heavy equipment, mining ore breakbulk handling, and maritime fuel bunkering infrastructure.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-700">Heavy equipment, mining ore breakbulk handling, and maritime fuel bunkering infrastructure.</p>
                   <Badge className="bg-sky-500/20 text-sky-600 dark:text-sky-400 border-sky-500/30 text-[10px]">FIATA Accredited</Badge>
                 </Card>
 
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-3 shadow-lg">
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-3 shadow-lg">
                   <div className="flex items-center space-x-3">
                     <ShieldCheck className="w-6 h-6 text-amber-500" />
                     <h3 className="font-bold text-lg">IATA Dangerous Goods (DGR)</h3>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">Class 1-9 Hazmat certified handling, specialized cold chain storage (2-8°C), and LRA single-window clearance.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-700">Class 1-9 Hazmat certified handling, specialized cold chain storage (2-8°C), and LRA single-window clearance.</p>
                   <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 text-[10px]">IATA Cargo Agent</Badge>
                 </Card>
               </div>
@@ -1531,19 +1608,19 @@ export default function CargoPage() {
             <TabsContent value="cf-customs-hub" className="space-y-8">
               
               {/* CLEAN PUBLIC HUB HEADER BANNER */}
-              <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/20 p-6 rounded-3xl text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border border-emerald-500/20 p-6 rounded-3xl text-slate-900 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center space-x-4">
                   <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl text-emerald-400">
                     <ShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h3 className="font-black text-xl text-white">TOTAG C&F Stevedoring & Customs Brokerage Hub</h3>
+                      <h3 className="font-black text-xl text-slate-900">TOTAG C&F Stevedoring & Customs Brokerage Hub</h3>
                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
                         LRA Licensed Customs Agent
                       </Badge>
                     </div>
-                    <p className="text-xs text-slate-300 mt-1 max-w-2xl">
+                    <p className="text-xs text-slate-700 mt-1 max-w-2xl">
                       Express interest to clear your containers (20ft, 40ft, HQ, Reefer) or cargo (Hazmat, Cold-Chain 2-8°C). The system automatically provisions your customer portal account upon contract execution.
                     </p>
                   </div>
@@ -1561,7 +1638,7 @@ export default function CargoPage() {
               </div>
 
               {/* SECTION: PUBLIC C&F CLEARING INTEREST & CONTRACT INTAKE FORM */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                   <div className="flex items-center space-x-3">
                     <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-600 dark:text-emerald-400">
@@ -1569,7 +1646,7 @@ export default function CargoPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold">Express Interest & Sign C&F Clearing Service Contract</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Provide contact details, container specifications & execute digital Power of Attorney</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">Provide contact details, container specifications & execute digital Power of Attorney</p>
                     </div>
                   </div>
                   <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
@@ -1581,7 +1658,7 @@ export default function CargoPage() {
 
                   {/* ACCOUNT STATUS RADIO SELECTOR */}
                   <div className="bg-slate-100 dark:bg-slate-950 p-3.5 rounded-2xl border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                    <span className="font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-2">
+                    <span className="font-bold text-slate-700 dark:text-slate-700 flex items-center space-x-2">
                       <Building2 className="w-4 h-4 text-emerald-500" />
                       <span>Are you a New or Returning TOTAG Enterprise Customer?</span>
                     </span>
@@ -1595,7 +1672,7 @@ export default function CargoPage() {
                           onChange={() => setContractForm({...contractForm, isExistingAccount: false})}
                           className="text-emerald-500 focus:ring-0" 
                         />
-                        <span className="text-slate-900 dark:text-white">New Customer (Auto-Create Account)</span>
+                        <span className="text-slate-900 dark:text-slate-900">New Customer (Auto-Create Account)</span>
                       </label>
 
                       <label className="flex items-center space-x-2 cursor-pointer">
@@ -1606,7 +1683,7 @@ export default function CargoPage() {
                           onChange={() => setContractForm({...contractForm, isExistingAccount: true})}
                           className="text-emerald-500 focus:ring-0" 
                         />
-                        <span className="text-slate-900 dark:text-white">Existing Account Holder</span>
+                        <span className="text-slate-900 dark:text-slate-900">Existing Account Holder</span>
                       </label>
                     </div>
                   </div>
@@ -1620,50 +1697,50 @@ export default function CargoPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Company / Enterprise Name *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Company / Enterprise Name *</Label>
                         <Input 
                           value={contractForm.companyName} 
                           onChange={(e) => setContractForm({...contractForm, companyName: e.target.value})} 
                           placeholder="e.g. Global Pharma Freight NV"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Official Contact Email *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Official Contact Email *</Label>
                         <div className="relative mt-1">
                           <Input 
                             type="email"
                             value={contractForm.email} 
                             onChange={(e) => setContractForm({...contractForm, email: e.target.value})} 
                             placeholder="e.g. customs@globalpharma.be"
-                            className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs pl-8 font-semibold" 
+                            className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs pl-8 font-semibold" 
                           />
                           <Mail className="w-3.5 h-3.5 text-emerald-500 absolute left-2.5 top-2.5" />
                         </div>
-                        <span className="text-[10px] text-slate-400 block mt-0.5">Onboarding instructions sent to this email</span>
+                        <span className="text-[10px] text-slate-500 block mt-0.5">Onboarding instructions sent to this email</span>
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Phone / WhatsApp Contact *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Phone / WhatsApp Contact *</Label>
                         <div className="relative mt-1">
                           <Input 
                             value={contractForm.phone} 
                             onChange={(e) => setContractForm({...contractForm, phone: e.target.value})} 
                             placeholder="e.g. +231 77 000 1122"
-                            className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs pl-8 font-semibold" 
+                            className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs pl-8 font-semibold" 
                           />
                           <Phone className="w-3.5 h-3.5 text-emerald-500 absolute left-2.5 top-2.5" />
                         </div>
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Company Tax ID / LRA TIN</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Company Tax ID / LRA TIN</Label>
                         <Input 
                           value={contractForm.tinNumber} 
                           onChange={(e) => setContractForm({...contractForm, tinNumber: e.target.value})} 
                           placeholder="e.g. LRA-TIN-9940218"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-mono" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-mono" 
                         />
                       </div>
                     </div>
@@ -1678,20 +1755,20 @@ export default function CargoPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Bill of Lading / AWB Reference #</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Bill of Lading / AWB Reference #</Label>
                         <Input 
                           value={contractForm.blNumber} 
                           onChange={(e) => setContractForm({...contractForm, blNumber: e.target.value})} 
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" 
                         />
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Container Type / Specification</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Container Type / Specification</Label>
                         <select 
                           value={contractForm.containerType}
                           onChange={(e) => setContractForm({...contractForm, containerType: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                         >
                           <option value="20ft Standard (20' GP)">20ft Standard Dry (20' GP)</option>
                           <option value="40ft Standard (40' GP)">40ft Standard Dry (40' GP)</option>
@@ -1703,11 +1780,11 @@ export default function CargoPage() {
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Cargo Handling Category</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Cargo Handling Category</Label>
                         <select 
                           value={contractForm.cargoCategory}
                           onChange={(e) => setContractForm({...contractForm, cargoCategory: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                         >
                           <option value="Standard Dry General Cargo">Standard Dry General Cargo</option>
                           <option value="Hazmat / Dangerous Goods (Class 1-9)">Hazmat / Dangerous Goods (Class 1-9)</option>
@@ -1717,21 +1794,21 @@ export default function CargoPage() {
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Number of Containers / TEUs</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Number of Containers / TEUs</Label>
                         <Input 
                           type="number" 
                           value={contractForm.containerCount} 
                           onChange={(e) => setContractForm({...contractForm, containerCount: Number(e.target.value)})} 
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" 
                         />
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Port of Discharge & Clearance</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Port of Discharge & Clearance</Label>
                         <select 
                           value={contractForm.dischargePort}
                           onChange={(e) => setContractForm({...contractForm, dischargePort: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                         >
                           <option value="Freeport of Monrovia (LRMLW)">Freeport of Monrovia (Berth 2)</option>
                           <option value="Port of Buchanan (LRUCN)">Port of Buchanan Terminal</option>
@@ -1740,12 +1817,12 @@ export default function CargoPage() {
                       </div>
 
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Authorized Signatory Name & Title *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Authorized Signatory Name & Title *</Label>
                         <Input 
                           value={contractForm.authorizedSignatory} 
                           onChange={(e) => setContractForm({...contractForm, authorizedSignatory: e.target.value})} 
                           placeholder="e.g. Jean-Paul Antwerp (Managing Director)"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                     </div>
@@ -1754,7 +1831,7 @@ export default function CargoPage() {
                   {/* 3. MANDATORY DOCUMENT ATTACHMENT VAULT DROPZONES */}
                   <div className="space-y-4 pt-2 border-t border-slate-200 dark:border-white/10">
                     <div className="flex items-center justify-between">
-                      <Label className="text-xs font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                      <Label className="text-xs font-bold text-slate-900 dark:text-slate-900 flex items-center space-x-1.5">
                         <FileCheck2 className="w-4 h-4 text-emerald-500" />
                         <span>Mandatory Document Proof Intake (Click to Open Local File Explorer)</span>
                       </Label>
@@ -1779,10 +1856,10 @@ export default function CargoPage() {
                               <FileText className="w-5 h-5" />
                             </div>
                             <div>
-                              <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                              <span className="text-xs font-bold text-slate-900 dark:text-slate-900 block">
                                 Proof of Bill of Lading (B/L Copy) *
                               </span>
-                              <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                              <span className="text-[10px] text-slate-500 dark:text-slate-500 block">
                                 Click to select Master B/L or Sea Waybill file
                               </span>
                             </div>
@@ -1832,7 +1909,7 @@ export default function CargoPage() {
                               e.stopPropagation();
                               handleTriggerBlUpload();
                             }} 
-                            className="w-full mt-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-500 hover:text-slate-950 text-xs font-bold rounded-xl py-2"
+                            className="w-full mt-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-900 hover:bg-emerald-500 hover:text-slate-950 text-xs font-bold rounded-xl py-2"
                           >
                             <Upload className="w-3.5 h-3.5 mr-1.5" />
                             <span>Browse & Upload Bill of Lading Copy</span>
@@ -1855,10 +1932,10 @@ export default function CargoPage() {
                               <FileSpreadsheet className="w-5 h-5" />
                             </div>
                             <div>
-                              <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                              <span className="text-xs font-bold text-slate-900 dark:text-slate-900 block">
                                 Copy of Packing List (For Declaration) *
                               </span>
-                              <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
+                              <span className="text-[10px] text-slate-500 dark:text-slate-500 block">
                                 Click to select packing list file
                               </span>
                             </div>
@@ -1908,7 +1985,7 @@ export default function CargoPage() {
                               e.stopPropagation();
                               handleTriggerPackingListUpload();
                             }} 
-                            className="w-full mt-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-emerald-500 hover:text-slate-950 text-xs font-bold rounded-xl py-2"
+                            className="w-full mt-3 bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-900 hover:bg-emerald-500 hover:text-slate-950 text-xs font-bold rounded-xl py-2"
                           >
                             <Upload className="w-3.5 h-3.5 mr-1.5" />
                             <span>Browse & Upload Packing List Copy</span>
@@ -1923,10 +2000,10 @@ export default function CargoPage() {
                     <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block uppercase tracking-wider">
                       TOTAG Customs Brokerage Power of Attorney (PoA) Terms
                     </span>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <p className="text-xs text-slate-600 dark:text-slate-700 leading-relaxed">
                       "By executing this digital contract, {contractForm.companyName || "the Shipper"} hereby authorizes TOTAG Group of Companies Ltd (Licensed Customs Clearing & Forwarding Agent) to act on our behalf with Liberia Revenue Authority (LRA), National Port Authority (NPA), APM Terminals, and Ministry of Commerce to file ASYCUDA entries, pay customs duties, inspect cargo, and execute container release orders."
                     </p>
-                    <label className="flex items-center space-x-2 text-xs font-bold text-slate-900 dark:text-white cursor-pointer pt-1">
+                    <label className="flex items-center space-x-2 text-xs font-bold text-slate-900 dark:text-slate-900 cursor-pointer pt-1">
                       <input 
                         type="checkbox" 
                         checked={contractForm.isPoaAgreed} 
@@ -1951,7 +2028,7 @@ export default function CargoPage() {
                       <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex items-center space-x-3 text-xs">
                         <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                         <div>
-                          <span className="font-bold text-slate-900 dark:text-white block">
+                          <span className="font-bold text-slate-900 dark:text-slate-900 block">
                             {signedContractReceipt.isNewCustomer ? "New Account Created & Onboarding Sent" : "Contract Receipt Dispatched to Email"}
                           </span>
                           <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
@@ -1966,14 +2043,14 @@ export default function CargoPage() {
 
                             {/* SECTION 3: EXECUTED CONTRACTS & DOCUMENT VAULT (DEDICATED FULL WIDTH) */}
               <div className="w-full space-y-6">
-                <Card className="w-full bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+                <Card className="w-full bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-4 backdrop-blur-xl shadow-xl">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
                     <div>
                       <div className="flex items-center space-x-2">
                         <FileCheck className="w-6 h-6 text-emerald-500" />
                         <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
                         Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
                       </p>
                     </div>
@@ -1993,7 +2070,7 @@ export default function CargoPage() {
                             <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
                               #{contract.contractId}
                             </span>
-                            <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-900 mt-0.5">
                               {contract.companyName}
                             </h4>
                             <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
@@ -2005,20 +2082,20 @@ export default function CargoPage() {
 
                         <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
                           <div>
-                            <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                            <span className="text-slate-500 block text-[10px]">B/L / AWB REF</span>
                             <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
                           </div>
                           <div>
-                            <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                            <span className="text-slate-500 block text-[10px]">CONTAINER SPEC</span>
                             <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
                           </div>
                           <div>
-                            <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                            <span className="text-slate-500 block text-[10px]">DISCHARGE PORT</span>
                             <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
                           </div>
                           <div>
-                            <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
-                            <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                            <span className="text-slate-500 block text-[10px]">EXECUTED ON</span>
+                            <span className="font-mono text-slate-600 dark:text-slate-700">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
                           </div>
                         </div>
 
@@ -2047,7 +2124,7 @@ export default function CargoPage() {
 
               {/* SECTION 4: LRA CUSTOMS DUTY ESTIMATOR & ASYCUDA PIPELINE (2-COLUMN GRID) */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
                       <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-600 dark:text-emerald-400">
@@ -2055,7 +2132,7 @@ export default function CargoPage() {
                       </div>
                       <div>
                         <h3 className="text-xl font-bold">LRA Customs Duty & Tariff Calculator</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Licensed Customs Brokerage & ASYCUDA Assessment</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500">Licensed Customs Brokerage & ASYCUDA Assessment</p>
                       </div>
                     </div>
                     <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">ASYCUDA Compliant</Badge>
@@ -2063,11 +2140,11 @@ export default function CargoPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Port of Clearance</Label>
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Port of Clearance</Label>
                       <select 
                         value={clearingPort} 
                         onChange={(e) => setClearingPort(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                       >
                         <option value="Freeport of Monrovia (Berth 2)">Freeport of Monrovia (LRMLW)</option>
                         <option value="Port of Buchanan Terminal">Port of Buchanan (LRUCN)</option>
@@ -2076,17 +2153,17 @@ export default function CargoPage() {
                     </div>
 
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Declared Invoice CIF Value ($ USD)</Label>
-                      <Input type="number" value={cifValueUsd} onChange={(e) => setCifValueUsd(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Declared Invoice CIF Value ($ USD)</Label>
+                      <Input type="number" value={cifValueUsd} onChange={(e) => setCifValueUsd(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
                   </div>
 
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300">Tariff HS Code Classification</Label>
+                    <Label className="text-xs text-slate-600 dark:text-slate-700">Tariff HS Code Classification</Label>
                     <select 
                       value={selectedHsCode.code}
                       onChange={(e) => setSelectedHsCode(TARIFF_HS_CODES.find(h => h.code === e.target.value) || TARIFF_HS_CODES[0])}
-                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                     >
                       {TARIFF_HS_CODES.map(h => (
                         <option key={h.code} value={h.code}>
@@ -2097,21 +2174,21 @@ export default function CargoPage() {
                   </div>
 
                   <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 space-y-2 text-xs">
-                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-500">
                       <span>Import Duty ({(selectedHsCode.dutyRate * 100).toFixed(1)}%):</span>
-                      <span className="font-bold text-slate-900 dark:text-white">${calculatedCustomsDuty.toLocaleString()} USD</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900">${calculatedCustomsDuty.toLocaleString()} USD</span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-500">
                       <span>GST Sales Tax ({(selectedHsCode.gstRate * 100).toFixed(1)}%):</span>
-                      <span className="font-bold text-slate-900 dark:text-white">${calculatedGstTax.toLocaleString()} USD</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900">${calculatedGstTax.toLocaleString()} USD</span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-500">
                       <span>ECOWAS Trade Levy (0.5%):</span>
-                      <span className="font-bold text-slate-900 dark:text-white">${calculatedEcowasLevy.toLocaleString()} USD</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900">${calculatedEcowasLevy.toLocaleString()} USD</span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                    <div className="flex justify-between items-center text-slate-600 dark:text-slate-500">
                       <span>Port Handling & Stevedoring Fee:</span>
-                      <span className="font-bold text-slate-900 dark:text-white">${portHandlingFee.toLocaleString()} USD</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900">${portHandlingFee.toLocaleString()} USD</span>
                     </div>
                     <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex justify-between items-center text-sm font-black">
                       <span className="text-emerald-600 dark:text-emerald-400">Total Payable LRA Customs Assessment:</span>
@@ -2129,7 +2206,7 @@ export default function CargoPage() {
                 </Card>
 
                 {/* 2. Real-Time Customer-Broker Live Interaction Console */}
-                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl flex flex-col justify-between">
                   <div>
                     <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                       <div className="flex items-center space-x-3">
@@ -2138,7 +2215,7 @@ export default function CargoPage() {
                         </div>
                         <div>
                           <h3 className="text-lg font-bold">Live Customs Broker Workspace</h3>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">Direct channel with assigned TOTAG Broker</p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-500">Direct channel with assigned TOTAG Broker</p>
                         </div>
                       </div>
                       <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] flex items-center space-x-1">
@@ -2152,9 +2229,9 @@ export default function CargoPage() {
                         <div key={idx} className={`p-3 rounded-2xl text-xs space-y-1 ${
                           msg.sender === "broker" 
                             ? "bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 mr-4" 
-                            : "bg-emerald-500/10 border border-emerald-500/20 text-slate-900 dark:text-white ml-4"
+                            : "bg-emerald-500/10 border border-emerald-500/20 text-slate-900 dark:text-slate-900 ml-4"
                         }`}>
-                          <div className="flex justify-between items-center font-bold text-[10px] text-slate-500 dark:text-slate-400">
+                          <div className="flex justify-between items-center font-bold text-[10px] text-slate-500 dark:text-slate-500">
                             <span>{msg.name}</span>
                             <span>{msg.time}</span>
                           </div>
@@ -2169,7 +2246,7 @@ export default function CargoPage() {
                       value={chatInput} 
                       onChange={(e) => setChatInput(e.target.value)}
                       placeholder="Ask your Customs Broker a question..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs font-medium"
+                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs font-medium"
                     />
                     <Button type="submit" className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl px-4">
                       <Send className="w-4 h-4" />
@@ -2184,22 +2261,22 @@ export default function CargoPage() {
             {/* =================================================================== */}
             {/* TAB 3: AUTHENTICATED B2B CLIENT PORTAL (SELF-SERVICE LIFECYCLE)     */}
             {/* =================================================================== */}
-            <TabsContent value="b2b-portal" className="space-y-8">
+            <TabsContent value="b2b-portal" id="cargo-customer-dashboard" className="space-y-8">
               
               {/* CLEAN B2B PORTAL BANNER & USER ACCOUNT CONTROL */}
-              <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 p-6 rounded-3xl text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 p-6 rounded-3xl text-slate-900 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex items-center space-x-4">
                   <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl text-emerald-400">
                     <Users className="w-8 h-8" />
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h3 className="font-black text-xl text-white">TOTAG Authenticated B2B Client Portal</h3>
+                      <h3 className="font-black text-xl text-slate-900">TOTAG Authenticated B2B Client Portal</h3>
                       <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
                         Multi-User RBAC & Telematics Enabled
                       </Badge>
                     </div>
-                    <p className="text-xs text-slate-300 mt-1 max-w-2xl">
+                    <p className="text-xs text-slate-700 mt-1 max-w-2xl">
                       Self-service lifecycle management: End-to-end cargo visibility, live telematics (temperature, shock, GPS), ASYCUDA customs clearance status, and credit e-billing.
                     </p>
                   </div>
@@ -2216,7 +2293,7 @@ export default function CargoPage() {
 
                   <Button 
                     onClick={() => setIsNewUserModalOpen(true)}
-                    className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
+                    className="bg-slate-800 hover:bg-slate-700 text-slate-900 text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
                   >
                     <UserPlus className="w-4 h-4 text-emerald-400" />
                     <span>Manage Org RBAC</span>
@@ -2224,7 +2301,7 @@ export default function CargoPage() {
 
                   <Button 
                     onClick={() => setIsDisputeModalOpen(true)}
-                    className="bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
+                    className="bg-slate-800 hover:bg-slate-700 text-slate-900 text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
                   >
                     <HelpCircle className="w-4 h-4 text-amber-400" />
                     <span>File Dispute Ticket</span>
@@ -2234,34 +2311,34 @@ export default function CargoPage() {
 
               {/* SECTION 1: FINANCIAL & CREDIT MANAGEMENT SUMMARY BAR */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-white space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">APPROVED CREDIT LINE</span>
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">APPROVED CREDIT LINE</span>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">${customerAccount.creditLimitUsd.toLocaleString()}</span>
-                    <span className="text-xs text-slate-400">USD</span>
+                    <span className="text-xs text-slate-500">USD</span>
                   </div>
                 </Card>
 
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-white space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">USED CREDIT BALANCE</span>
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">USED CREDIT BALANCE</span>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-2xl font-black text-amber-600 dark:text-amber-400">${customerAccount.creditUsedUsd.toLocaleString()}</span>
-                    <span className="text-xs text-slate-400">USD</span>
+                    <span className="text-xs text-slate-500">USD</span>
                   </div>
                 </Card>
 
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-white space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">AVAILABLE CREDIT</span>
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">AVAILABLE CREDIT</span>
                   <div className="flex items-baseline space-x-2">
                     <span className="text-2xl font-black text-sky-600 dark:text-sky-400">${(customerAccount.creditLimitUsd - customerAccount.creditUsedUsd).toLocaleString()}</span>
-                    <span className="text-xs text-slate-400">USD</span>
+                    <span className="text-xs text-slate-500">USD</span>
                   </div>
                 </Card>
 
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-white space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider block">ACTIVE ORG USERS</span>
+                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">ACTIVE ORG USERS</span>
                   <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-black text-slate-900 dark:text-white">{customerAccount.teamMembers.length} Team Members</span>
+                    <span className="text-2xl font-black text-slate-900 dark:text-slate-900">{customerAccount.teamMembers.length} Team Members</span>
                   </div>
                 </Card>
               </div>
@@ -2271,14 +2348,14 @@ export default function CargoPage() {
                 
                 {/* 1. Automated Booking Engine & Printable AWB Generator */}
                               {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-4 backdrop-blur-xl shadow-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <div className="flex items-center space-x-2">
                       <FileCheck className="w-6 h-6 text-emerald-500" />
                       <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
                       Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
                     </p>
                   </div>
@@ -2298,7 +2375,7 @@ export default function CargoPage() {
                           <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
                             #{contract.contractId}
                           </span>
-                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-slate-900 mt-0.5">
                             {contract.companyName}
                           </h4>
                           <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
@@ -2310,20 +2387,20 @@ export default function CargoPage() {
 
                       <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
                         <div>
-                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                          <span className="text-slate-500 block text-[10px]">B/L / AWB REF</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                          <span className="text-slate-500 block text-[10px]">CONTAINER SPEC</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                          <span className="text-slate-500 block text-[10px]">DISCHARGE PORT</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
-                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                          <span className="text-slate-500 block text-[10px]">EXECUTED ON</span>
+                          <span className="font-mono text-slate-600 dark:text-slate-700">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
                         </div>
                       </div>
 
@@ -2349,11 +2426,11 @@ export default function CargoPage() {
                 </div>
               </Card>
 
-                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div>
                       <h3 className="text-xl font-bold">B2B Cargo Booking & Document Vault</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Create new shipment booking, upload manifests & generate official printable AWB PDF</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">Create new shipment booking, upload manifests & generate official printable AWB PDF</p>
                     </div>
                     <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">Multi-User RBAC</Badge>
                   </div>
@@ -2361,50 +2438,50 @@ export default function CargoPage() {
                   <form onSubmit={handleGenerateAwbBooking} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Shipper Organization *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Shipper Organization *</Label>
                         <Input 
                           value={b2bBookingForm.shipper} 
                           onChange={(e) => setB2bBookingForm({...b2bBookingForm, shipper: e.target.value})}
                           placeholder="e.g. Global Pharma & Freight NV"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Consignee Entity *</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Consignee Entity *</Label>
                         <Input 
                           value={b2bBookingForm.consignee} 
                           onChange={(e) => setB2bBookingForm({...b2bBookingForm, consignee: e.target.value})}
                           placeholder="e.g. TOTAG General Merchandise Ltd"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Nature of Goods</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Nature of Goods</Label>
                         <Input 
                           value={b2bBookingForm.natureOfGoods} 
                           onChange={(e) => setB2bBookingForm({...b2bBookingForm, natureOfGoods: e.target.value})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Total Pieces</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Total Pieces</Label>
                         <Input 
                           type="number" 
                           value={b2bBookingForm.pieces} 
                           onChange={(e) => setB2bBookingForm({...b2bBookingForm, pieces: Number(e.target.value)})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Total Weight (kg)</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Total Weight (kg)</Label>
                         <Input 
                           type="number" 
                           value={b2bBookingForm.weightKg} 
                           onChange={(e) => setB2bBookingForm({...b2bBookingForm, weightKg: Number(e.target.value)})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-semibold" 
+                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
                     </div>
@@ -2414,8 +2491,8 @@ export default function CargoPage() {
                       className="border-2 border-dashed border-slate-300 dark:border-white/20 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-50 dark:bg-slate-950/50"
                     >
                       <Upload className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                      <span className="text-xs font-bold text-slate-900 dark:text-white block">Drop Commercial Invoice, Packing List & Customs Declarations</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-1">PDF, PNG, TIFF up to 25MB (Click to select local file)</span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-900 block">Drop Commercial Invoice, Packing List & Customs Declarations</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block mt-1">PDF, PNG, TIFF up to 25MB (Click to select local file)</span>
                     </div>
 
                     <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl py-3 text-xs shadow-lg flex items-center justify-center space-x-2">
@@ -2426,11 +2503,11 @@ export default function CargoPage() {
                 </Card>
 
                 {/* 2. Real-Time Telematics & Exception Alerts */}
-                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div>
                       <h3 className="text-xl font-bold">Live Sensor Telematics & Exception Alerts</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Proactive milestone & environmental risk monitoring</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">Proactive milestone & environmental risk monitoring</p>
                     </div>
                     <Radio className="w-6 h-6 text-sky-500 animate-pulse" />
                   </div>
@@ -2439,21 +2516,21 @@ export default function CargoPage() {
                     {/* Live Sensor Gauges */}
                     <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 grid grid-cols-3 gap-3 text-center text-xs">
                       <div>
-                        <span className="text-slate-400 block text-[10px]">TEMP (COLD-CHAIN)</span>
+                        <span className="text-slate-500 block text-[10px]">TEMP (COLD-CHAIN)</span>
                         <span className="font-bold text-sky-500 text-sm flex items-center justify-center space-x-1 mt-0.5">
                           <Thermometer className="w-3.5 h-3.5" />
                           <span>4.2 °C</span>
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">SHOCK G-FORCE</span>
+                        <span className="text-slate-500 block text-[10px]">SHOCK G-FORCE</span>
                         <span className="font-bold text-emerald-500 text-sm flex items-center justify-center space-x-1 mt-0.5">
                           <Activity className="w-3.5 h-3.5" />
                           <span>0.4 G</span>
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-400 block text-[10px]">HUMIDITY %</span>
+                        <span className="text-slate-500 block text-[10px]">HUMIDITY %</span>
                         <span className="font-bold text-teal-400 text-sm flex items-center justify-center space-x-1 mt-0.5">
                           <Compass className="w-3.5 h-3.5" />
                           <span>55 %</span>
@@ -2499,13 +2576,13 @@ export default function CargoPage() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 {/* WMS Barcode Scanner Terminal & Sequence Validator */}
-                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
                       <QrCode className="w-6 h-6 text-emerald-500" />
                       <div>
                         <h3 className="text-xl font-bold">WMS Scanner Ingest Terminal</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Offline-first barcode scan validator & bin assign</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500">Offline-first barcode scan validator & bin assign</p>
                       </div>
                     </div>
 
@@ -2523,15 +2600,15 @@ export default function CargoPage() {
                   <form onSubmit={handleScanSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">Cargo Piece Barcode</Label>
-                        <Input value={scanBarcode} onChange={(e) => setScanBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">Cargo Piece Barcode</Label>
+                        <Input value={scanBarcode} onChange={(e) => setScanBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">Operation Type</Label>
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">Operation Type</Label>
                         <select 
                           value={scanType} 
                           onChange={(e) => setScanType(e.target.value as any)}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                         >
                           <option value="RECEIVE">RECEIVE (Terminal Gate)</option>
                           <option value="BIN_ASSIGN">BIN_ASSIGN (Warehouse Rack)</option>
@@ -2543,12 +2620,12 @@ export default function CargoPage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">Warehouse Code</Label>
-                        <Input value={warehouseCode} onChange={(e) => setWarehouseCode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">Warehouse Code</Label>
+                        <Input value={warehouseCode} onChange={(e) => setWarehouseCode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                       <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-300">Location Barcode</Label>
-                        <Input value={locationBarcode} onChange={(e) => setLocationBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                        <Label className="text-xs text-slate-600 dark:text-slate-700">Location Barcode</Label>
+                        <Input value={locationBarcode} onChange={(e) => setLocationBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                       </div>
                     </div>
 
@@ -2558,16 +2635,16 @@ export default function CargoPage() {
                   </form>
 
                   <div className="space-y-2 pt-2">
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">Recent Handheld Scans</span>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-700 block">Recent Handheld Scans</span>
                     <div className="space-y-2 max-h-36 overflow-y-auto">
                       {scanLogs.map((log) => (
                         <div key={log.id} className="flex items-center justify-between p-2 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/5 text-xs">
                           <span className="font-mono text-emerald-600 dark:text-emerald-400">{log.id}</span>
-                          <span className="font-semibold text-slate-900 dark:text-white">{log.barcode}</span>
+                          <span className="font-semibold text-slate-900 dark:text-slate-900">{log.barcode}</span>
                           <Badge className={log.status === "ACCEPTED" ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400" : log.status === "QUEUED_OFFLINE" ? "bg-amber-500/20 text-amber-600 dark:text-amber-400" : "bg-rose-500/20 text-rose-600 dark:text-rose-400"}>
                             {log.status}
                           </Badge>
-                          <span className="text-[10px] text-slate-400">{log.time}</span>
+                          <span className="text-[10px] text-slate-500">{log.time}</span>
                         </div>
                       ))}
                     </div>
@@ -2575,13 +2652,13 @@ export default function CargoPage() {
                 </Card>
 
                 {/* ULD Staging Engine with Dynamic Color-Changing Progress Bar */}
-                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-6 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
                       <Container className="w-6 h-6 text-sky-500" />
                       <div>
                         <h3 className="text-xl font-bold">ULD Ramp Container Builder</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Structural tare & payload safety validation engine</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500">Structural tare & payload safety validation engine</p>
                       </div>
                     </div>
                     <Badge className="bg-sky-500/20 text-sky-600 dark:text-sky-400 border-sky-500/30">Safety Code Enforced</Badge>
@@ -2589,11 +2666,11 @@ export default function CargoPage() {
 
                   <div className="space-y-4">
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Select Target ULD Container</Label>
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Select Target ULD Container</Label>
                       <select 
                         value={selectedUld.uldNumber}
                         onChange={(e) => setSelectedUld(ULD_CONTAINERS.find(u => u.uldNumber === e.target.value) || ULD_CONTAINERS[0])}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                       >
                         {ULD_CONTAINERS.map(u => (
                           <option key={u.uldNumber} value={u.uldNumber}>{u.uldNumber} ({u.type}) - Max {u.maxPayloadKg}kg</option>
@@ -2603,32 +2680,32 @@ export default function CargoPage() {
 
                     <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 grid grid-cols-3 gap-3 text-xs text-center">
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px]">CURRENT WEIGHT</span>
-                        <span className="font-bold text-slate-900 dark:text-white text-sm">{selectedUld.currentWeightKg} kg</span>
+                        <span className="text-slate-500 dark:text-slate-500 block text-[10px]">CURRENT WEIGHT</span>
+                        <span className="font-bold text-slate-900 dark:text-slate-900 text-sm">{selectedUld.currentWeightKg} kg</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px]">TARE WEIGHT</span>
+                        <span className="text-slate-500 dark:text-slate-500 block text-[10px]">TARE WEIGHT</span>
                         <span className="font-bold text-sky-600 dark:text-sky-400 text-sm">{selectedUld.tareWeightKg} kg</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[10px]">MAX PAYLOAD</span>
+                        <span className="text-slate-500 dark:text-slate-500 block text-[10px]">MAX PAYLOAD</span>
                         <span className="font-bold text-amber-600 dark:text-amber-400 text-sm">{selectedUld.maxPayloadKg} kg</span>
                       </div>
                     </div>
 
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Incoming Cargo Piece Weight (kg)</Label>
-                      <Input type="number" value={newItemWeight} onChange={(e) => setNewItemWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Incoming Cargo Piece Weight (kg)</Label>
+                      <Input type="number" value={newItemWeight} onChange={(e) => setNewItemWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
 
                     <div className="space-y-2 pt-1 bg-slate-100 dark:bg-slate-950/80 p-3.5 rounded-2xl border border-slate-200 dark:border-white/10">
                       <div className="flex justify-between items-center text-xs font-bold">
-                        <span className="text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <span className="text-slate-700 dark:text-slate-700 flex items-center space-x-1.5">
                           <Scale className="w-4 h-4 text-emerald-500" />
                           <span>Total Calculated Gross: {totalPotentialWeight.toLocaleString()} kg / {selectedUld.maxPayloadKg.toLocaleString()} kg</span>
                         </span>
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black ${
-                          isUldOverload ? "bg-rose-500 text-white animate-pulse" : uldPercentage > 75 ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                          isUldOverload ? "bg-rose-500 text-slate-900 animate-pulse" : uldPercentage > 75 ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                         }`}>
                           {uldPercentage}% Capacity {isUldOverload ? "• OVERLOAD REJECTED" : ""}
                         </span>
@@ -2661,13 +2738,13 @@ export default function CargoPage() {
               </div>
 
               {/* Discrepancy & Photo Claims Incident Engine with Interactive Photo Dropzone */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                 <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                   <div className="flex items-center space-x-3">
                     <AlertCircle className="w-6 h-6 text-rose-500" />
                     <div>
                       <h3 className="text-xl font-bold">Discrepancy & Claims Damage Logging Engine</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">Timestamped incident reports & photo evidence dropzone</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-500">Timestamped incident reports & photo evidence dropzone</p>
                     </div>
                   </div>
                   <Badge className="bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30">
@@ -2678,15 +2755,15 @@ export default function CargoPage() {
                 <form onSubmit={handleDiscrepancySubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">AWB / Cargo Barcode</Label>
-                      <Input value={discrepancyForm.pieceBarcode} onChange={(e) => setDiscrepancyForm({...discrepancyForm, pieceBarcode: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">AWB / Cargo Barcode</Label>
+                      <Input value={discrepancyForm.pieceBarcode} onChange={(e) => setDiscrepancyForm({...discrepancyForm, pieceBarcode: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Discrepancy Category</Label>
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Discrepancy Category</Label>
                       <select 
                         value={discrepancyForm.type}
                         onChange={(e) => setDiscrepancyForm({...discrepancyForm, type: e.target.value})}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
                       >
                         <option value="DAMAGED_CARTON">DAMAGED_CARTON</option>
                         <option value="TEMPERATURE_EXCURSION">TEMPERATURE_EXCURSION</option>
@@ -2696,13 +2773,13 @@ export default function CargoPage() {
                       </select>
                     </div>
                     <div className="md:col-span-3">
-                      <Label className="text-xs text-slate-600 dark:text-slate-300">Detailed Description & Evidence Log</Label>
-                      <Input value={discrepancyForm.description} onChange={(e) => setDiscrepancyForm({...discrepancyForm, description: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700">Detailed Description & Evidence Log</Label>
+                      <Input value={discrepancyForm.description} onChange={(e) => setDiscrepancyForm({...discrepancyForm, description: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold flex items-center space-x-1.5">
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold flex items-center space-x-1.5">
                       <Camera className="w-4 h-4 text-rose-500" />
                       <span>Visual Evidence & Photo Capture Dropzone</span>
                     </Label>
@@ -2713,21 +2790,21 @@ export default function CargoPage() {
                         className="border-2 border-dashed border-rose-500/40 hover:border-rose-500 bg-rose-500/5 p-4 rounded-2xl text-center flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-[1.02] min-h-[110px]"
                       >
                         <Camera className="w-6 h-6 text-rose-500 mb-1" />
-                        <span className="text-xs font-bold text-slate-900 dark:text-white">Snap / Attach Photo</span>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400">Click to add evidence</span>
+                        <span className="text-xs font-bold text-slate-900 dark:text-slate-900">Snap / Attach Photo</span>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-500">Click to add evidence</span>
                       </div>
 
                       {attachedPhotos.map((photo) => (
                         <div key={photo.id} className="relative group bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-300 dark:border-white/10 p-2 flex items-center space-x-3 overflow-hidden min-h-[110px]">
                           <img src={photo.url} alt={photo.name} className="w-14 h-14 rounded-xl object-cover border border-white/20 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
-                            <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">{photo.name}</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-slate-900 block truncate">{photo.name}</span>
                             <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono block">GPS + Time Logged</span>
                           </div>
                           <button 
                             type="button" 
                             onClick={() => handleRemovePhoto(photo.id)}
-                            className="absolute top-2 right-2 p-1 rounded-full bg-rose-500 text-white opacity-90 hover:opacity-100 transition-opacity"
+                            className="absolute top-2 right-2 p-1 rounded-full bg-rose-500 text-slate-900 opacity-90 hover:opacity-100 transition-opacity"
                             title="Remove Photo"
                           >
                             <X className="w-3 h-3" />
@@ -2756,14 +2833,14 @@ export default function CargoPage() {
                 
                 {/* Live OpenAPI 3.0.3 Interactive Console */}
                               {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-4 backdrop-blur-xl shadow-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
                   <div>
                     <div className="flex items-center space-x-2">
                       <FileCheck className="w-6 h-6 text-emerald-500" />
                       <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">
                       Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
                     </p>
                   </div>
@@ -2783,7 +2860,7 @@ export default function CargoPage() {
                           <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
                             #{contract.contractId}
                           </span>
-                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-slate-900 mt-0.5">
                             {contract.companyName}
                           </h4>
                           <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
@@ -2795,20 +2872,20 @@ export default function CargoPage() {
 
                       <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
                         <div>
-                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                          <span className="text-slate-500 block text-[10px]">B/L / AWB REF</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                          <span className="text-slate-500 block text-[10px]">CONTAINER SPEC</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                          <span className="text-slate-500 block text-[10px]">DISCHARGE PORT</span>
                           <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
-                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                          <span className="text-slate-500 block text-[10px]">EXECUTED ON</span>
+                          <span className="font-mono text-slate-600 dark:text-slate-700">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
                         </div>
                       </div>
 
@@ -2834,13 +2911,13 @@ export default function CargoPage() {
                 </div>
               </Card>
 
-                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
                       <FileCode className="w-6 h-6 text-emerald-500" />
                       <div>
                         <h3 className="text-xl font-bold">OpenAPI 3.0.3 Live Endpoint Console</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">Interactive REST API testing interface</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500">Interactive REST API testing interface</p>
                       </div>
                     </div>
                     <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">v1.0.0 Spec</Badge>
@@ -2864,7 +2941,7 @@ export default function CargoPage() {
                             setApiResponse(JSON.stringify({ uldNumber: "AKE98231AA", currentWeightKg: 1470, maxPayloadKg: 1588, piecesCount: 43 }, null, 2));
                           }
                         }}
-                        className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 w-full"
+                        className="bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 w-full"
                       >
                         <option value="/tracking/020-12345675">GET /tracking/{'{awbNumber}'}</option>
                         <option value="/wms/scan">POST /wms/scan</option>
@@ -2878,7 +2955,7 @@ export default function CargoPage() {
                     </div>
 
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300 block mb-1">Live JSON Response Payload</Label>
+                      <Label className="text-xs text-slate-600 dark:text-slate-700 block mb-1">Live JSON Response Payload</Label>
                       <pre className="bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 p-4 rounded-2xl text-emerald-600 dark:text-emerald-400 font-mono text-xs overflow-x-auto max-h-64">
                         {apiResponse}
                       </pre>
@@ -2887,13 +2964,13 @@ export default function CargoPage() {
                 </Card>
 
                 {/* Kafka Event Stream Live Ingest Monitor */}
-                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
+                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
                       <Cpu className="w-6 h-6 text-amber-500" />
                       <div>
                         <h3 className="text-xl font-bold">Kafka Event Stream Monitor</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">High-throughput topic ingestion</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-500">High-throughput topic ingestion</p>
                       </div>
                     </div>
                     <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30">Topic: cargo.scans.raw</Badge>
@@ -2902,17 +2979,17 @@ export default function CargoPage() {
                   <div className="space-y-3 font-mono text-[11px]">
                     <div className="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold block">PARTITION 0 | OFFSET 409218</span>
-                      <p className="text-slate-700 dark:text-slate-300">{`{"barcode":"020-12345675-001","scanType":"BIN_ASSIGN","wh":"WH-JFK-01"}`}</p>
+                      <p className="text-slate-700 dark:text-slate-700">{`{"barcode":"020-12345675-001","scanType":"BIN_ASSIGN","wh":"WH-JFK-01"}`}</p>
                     </div>
 
                     <div className="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-sky-600 dark:text-sky-400 font-bold block">PARTITION 1 | OFFSET 409219</span>
-                      <p className="text-slate-700 dark:text-slate-300">{`{"uldNumber":"AKE98231AA","event":"ULD_CARGO_ATTACHED","weightKg":350}`}</p>
+                      <p className="text-slate-700 dark:text-slate-700">{`{"uldNumber":"AKE98231AA","event":"ULD_CARGO_ATTACHED","weightKg":350}`}</p>
                     </div>
 
                     <div className="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-white/10 space-y-1">
                       <span className="text-rose-600 dark:text-rose-400 font-bold block">PARTITION 2 | OFFSET 409220</span>
-                      <p className="text-slate-700 dark:text-slate-300">{`{"awbNumber":"020-88419203","event":"CUSTOMS_HOLD","reason":"CLASS_9_HAZMAT"}`}</p>
+                      <p className="text-slate-700 dark:text-slate-700">{`{"awbNumber":"020-88419203","event":"CUSTOMS_HOLD","reason":"CLASS_9_HAZMAT"}`}</p>
                     </div>
                   </div>
                 </Card>
@@ -2937,11 +3014,11 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/20 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-white relative my-8"
+                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/20 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative my-8"
               >
                 <button 
                   onClick={() => setIsBillingModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-900"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -2954,7 +3031,7 @@ export default function CargoPage() {
                     <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
                       Transparent E-Billing & Gateway Readiness
                     </Badge>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-0.5">TOTAG Electronic Billing & Payment Gateway Portal</h3>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 mt-0.5">TOTAG Electronic Billing & Payment Gateway Portal</h3>
                   </div>
                 </div>
 
@@ -2965,29 +3042,29 @@ export default function CargoPage() {
                   </span>
 
                   <div className="space-y-2">
-                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-700">
                       <span>Base Freight Rate ({chargeableWeight.toFixed(1)} kg @ ${baseRatePerKg}/kg):</span>
                       <span className="font-mono font-bold">${Math.round(chargeableWeight * baseRatePerKg).toLocaleString()} USD</span>
                     </div>
 
                     {(isHazmat || isColdChain) && (
-                      <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                      <div className="flex justify-between items-center text-slate-700 dark:text-slate-700">
                         <span>Special Handling Surcharges (Hazmat / Cold-Chain):</span>
                         <span className="font-mono font-bold">${(hazmatSurcharge + coldChainSurcharge).toLocaleString()} USD</span>
                       </div>
                     )}
 
-                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-700">
                       <span>LRA Import Customs Duty ({(selectedHsCode.dutyRate * 100).toFixed(1)}%):</span>
                       <span className="font-mono font-bold">${calculatedCustomsDuty.toLocaleString()} USD</span>
                     </div>
 
-                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-700">
                       <span>LRA Goods & Services Tax (GST 10%):</span>
                       <span className="font-mono font-bold">${calculatedGstTax.toLocaleString()} USD</span>
                     </div>
 
-                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                    <div className="flex justify-between items-center text-slate-700 dark:text-slate-700">
                       <span>ECOWAS Trade Levy & Port Handling Fee:</span>
                       <span className="font-mono font-bold">${(calculatedEcowasLevy + portHandlingFee).toLocaleString()} USD</span>
                     </div>
@@ -3001,7 +3078,7 @@ export default function CargoPage() {
 
                 {/* E-PAYMENT GATEWAY METHOD SELECTOR */}
                 <div className="space-y-3">
-                  <Label className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider block">
+                  <Label className="text-xs font-bold text-slate-900 dark:text-slate-900 uppercase tracking-wider block">
                     Select Electronic Payment Gateway Method
                   </Label>
 
@@ -3011,12 +3088,12 @@ export default function CargoPage() {
                       className={`p-3 rounded-2xl border cursor-pointer transition-all text-center space-y-1 ${
                         paymentMethod === "MOBILE_MONEY" 
                           ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md" 
-                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
+                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-500"
                       }`}
                     >
                       <Smartphone className="w-5 h-5 mx-auto text-emerald-500" />
                       <span className="text-xs font-bold block">Mobile Money</span>
-                      <span className="text-[9px] text-slate-400 block">MTN / Orange Liberia</span>
+                      <span className="text-[9px] text-slate-500 block">MTN / Orange Liberia</span>
                     </div>
 
                     <div 
@@ -3024,12 +3101,12 @@ export default function CargoPage() {
                       className={`p-3 rounded-2xl border cursor-pointer transition-all text-center space-y-1 ${
                         paymentMethod === "BANK_WIRE" 
                           ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md" 
-                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
+                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-500"
                       }`}
                     >
                       <Building2 className="w-5 h-5 mx-auto text-sky-500" />
                       <span className="text-xs font-bold block">Bank Wire</span>
-                      <span className="text-[9px] text-slate-400 block">Ecobank / UBA Swift</span>
+                      <span className="text-[9px] text-slate-500 block">Ecobank / UBA Swift</span>
                     </div>
 
                     <div 
@@ -3037,12 +3114,12 @@ export default function CargoPage() {
                       className={`p-3 rounded-2xl border cursor-pointer transition-all text-center space-y-1 ${
                         paymentMethod === "CREDIT_CARD" 
                           ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md" 
-                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
+                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-500"
                       }`}
                     >
                       <CreditCard className="w-5 h-5 mx-auto text-indigo-500" />
                       <span className="text-xs font-bold block">Credit Card</span>
-                      <span className="text-[9px] text-slate-400 block">Visa / Mastercard</span>
+                      <span className="text-[9px] text-slate-500 block">Visa / Mastercard</span>
                     </div>
 
                     <div 
@@ -3050,20 +3127,20 @@ export default function CargoPage() {
                       className={`p-3 rounded-2xl border cursor-pointer transition-all text-center space-y-1 ${
                         paymentMethod === "CREDIT_LINE" 
                           ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 shadow-md" 
-                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400"
+                          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-500"
                       }`}
                     >
                       <Wallet className="w-5 h-5 mx-auto text-amber-500" />
                       <span className="text-xs font-bold block">Credit Line</span>
-                      <span className="text-[9px] text-slate-400 block">Net 30/60 Days</span>
+                      <span className="text-[9px] text-slate-500 block">Net 30/60 Days</span>
                     </div>
                   </div>
 
                   {paymentMethod === "MOBILE_MONEY" && (
                     <div className="p-3 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-white/10 space-y-2">
-                      <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Lonestar MTN / Orange Money Number</Label>
-                      <Input value={mobileMoneyPhone} onChange={(e) => setMobileMoneyPhone(e.target.value)} className="bg-white dark:bg-slate-900 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs font-mono" />
-                      <span className="text-[10px] text-slate-400 block">Instant prompt will be sent to your phone to authorize payment.</span>
+                      <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Lonestar MTN / Orange Money Number</Label>
+                      <Input value={mobileMoneyPhone} onChange={(e) => setMobileMoneyPhone(e.target.value)} className="bg-white dark:bg-slate-900 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs font-mono" />
+                      <span className="text-[10px] text-slate-500 block">Instant prompt will be sent to your phone to authorize payment.</span>
                     </div>
                   )}
                 </div>
@@ -3091,7 +3168,7 @@ export default function CargoPage() {
                     onClick={() => {
                       toast({ title: "E-Invoice Downloaded", description: "Saved official tax breakdown invoice PDF." });
                     }}
-                    className="w-full sm:w-auto bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-300 font-bold rounded-xl px-4 py-3 text-xs flex items-center justify-center space-x-1.5"
+                    className="w-full sm:w-auto bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-900 hover:bg-slate-300 font-bold rounded-xl px-4 py-3 text-xs flex items-center justify-center space-x-1.5"
                   >
                     <FileDown className="w-4 h-4" />
                     <span>Download E-Invoice PDF</span>
@@ -3115,11 +3192,11 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/20 rounded-3xl max-w-4xl w-full p-8 shadow-2xl space-y-6 text-slate-900 dark:text-white relative my-8"
+                className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-white/20 rounded-3xl max-w-4xl w-full p-8 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative my-8"
               >
                 <button 
                   onClick={() => setIsAwbModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white print:hidden"
+                  className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-900 print:hidden"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -3129,9 +3206,9 @@ export default function CargoPage() {
                   <div className="flex items-center space-x-4">
                     <img src="/images/totag-logo.png" alt="TOTAG Group Logo" className="w-14 h-14 object-contain" />
                     <div>
-                      <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">TOTAG Group of Companies Ltd</h2>
+                      <h2 className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-900 uppercase">TOTAG Group of Companies Ltd</h2>
                       <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">Cargo Stevedoring, Port Operations & Customs Brokerage Division</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">Freeport of Monrovia Berth 2 • Roberts Int'l Airport Cargo Hub • Port of Buchanan</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block font-mono">Freeport of Monrovia Berth 2 • Roberts Int'l Airport Cargo Hub • Port of Buchanan</span>
                     </div>
                   </div>
 
@@ -3142,14 +3219,14 @@ export default function CargoPage() {
                     <div className="font-mono text-lg font-black text-emerald-600 dark:text-emerald-400 tracking-wider">
                       AWB #{generatedAwbData.awbNumber}
                     </div>
-                    <span className="text-[10px] text-slate-400 block">Booking Ref: {generatedAwbData.bookingRef}</span>
+                    <span className="text-[10px] text-slate-500 block">Booking Ref: {generatedAwbData.bookingRef}</span>
                   </div>
                 </div>
 
                 {/* BARCODE & TRACKING STAMP SECTION */}
                 <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold block">Code128 Machine Readable Barcode</span>
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold block">Code128 Machine Readable Barcode</span>
                     {/* Visual Barcode SVG */}
                     <div className="bg-white p-2.5 rounded-xl border border-slate-300 inline-block">
                       <div className="flex items-center space-x-1 h-10 px-2">
@@ -3174,11 +3251,11 @@ export default function CargoPage() {
 
                   <div className="grid grid-cols-2 gap-4 text-xs">
                     <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-white/10">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-bold">ISSUE DATE</span>
-                      <span className="font-bold text-slate-900 dark:text-white">{generatedAwbData.issueDate}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block font-bold">ISSUE DATE</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900">{generatedAwbData.issueDate}</span>
                     </div>
                     <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-slate-200 dark:border-white/10">
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-bold">DECLARED CIF VALUE</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block font-bold">DECLARED CIF VALUE</span>
                       <span className="font-bold text-emerald-600 dark:text-emerald-400">${generatedAwbData.declaredValueUsd.toLocaleString()} USD</span>
                     </div>
                   </div>
@@ -3193,9 +3270,9 @@ export default function CargoPage() {
                       1. Shipper / Consignor Name & Address
                     </span>
                     <div className="space-y-1 text-slate-800 dark:text-slate-200">
-                      <strong className="block text-slate-900 dark:text-white font-bold">{generatedAwbData.shipper}</strong>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Antwerp Maritime Logistics Terminal, Dock 404</p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Antwerp, Belgium</p>
+                      <strong className="block text-slate-900 dark:text-slate-900 font-bold">{generatedAwbData.shipper}</strong>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-500">Antwerp Maritime Logistics Terminal, Dock 404</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-500">Antwerp, Belgium</p>
                     </div>
                   </div>
 
@@ -3205,9 +3282,9 @@ export default function CargoPage() {
                       2. Consignee Name & Destination
                     </span>
                     <div className="space-y-1 text-slate-800 dark:text-slate-200">
-                      <strong className="block text-slate-900 dark:text-white font-bold">{generatedAwbData.consignee}</strong>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">TOTAG Central Logistics Depot, Freeport</p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Monrovia, Liberia</p>
+                      <strong className="block text-slate-900 dark:text-slate-900 font-bold">{generatedAwbData.consignee}</strong>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-500">TOTAG Central Logistics Depot, Freeport</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-500">Monrovia, Liberia</p>
                     </div>
                   </div>
 
@@ -3229,7 +3306,7 @@ export default function CargoPage() {
                 {/* ITEM SPECIFICATIONS TABLE */}
                 <div className="border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden text-xs">
                   <table className="w-full text-left">
-                    <thead className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-white/10">
+                    <thead className="bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200 dark:border-white/10">
                       <tr>
                         <th className="p-3">No. of Pieces</th>
                         <th className="p-3">Gross Weight</th>
@@ -3238,7 +3315,7 @@ export default function CargoPage() {
                         <th className="p-3">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-white/10 text-slate-900 dark:text-white">
+                    <tbody className="divide-y divide-slate-200 dark:divide-white/10 text-slate-900 dark:text-slate-900">
                       <tr>
                         <td className="p-3 font-bold">{generatedAwbData.pieces} Cartons</td>
                         <td className="p-3 font-bold">{generatedAwbData.weightKg} kg</td>
@@ -3261,8 +3338,8 @@ export default function CargoPage() {
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <span className="font-bold text-slate-900 dark:text-white block">Certified by TOTAG Port Stevedoring Authority</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400">Issuer: {generatedAwbData.issuer}</span>
+                      <span className="font-bold text-slate-900 dark:text-slate-900 block">Certified by TOTAG Port Stevedoring Authority</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500">Issuer: {generatedAwbData.issuer}</span>
                     </div>
                   </div>
 
@@ -3285,7 +3362,7 @@ export default function CargoPage() {
                         a.click();
                         toast({ title: "AWB Certificate Downloaded", description: `Saved TOTAG_AWB_${generatedAwbData.awbNumber}.json` });
                       }}
-                      className="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl px-4 py-2.5 text-xs flex items-center space-x-1.5"
+                      className="bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-slate-900 hover:bg-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl px-4 py-2.5 text-xs flex items-center space-x-1.5"
                     >
                       <FileDown className="w-4 h-4" />
                       <span>Download JSON</span>
@@ -3297,166 +3374,257 @@ export default function CargoPage() {
           )}
         </AnimatePresence>
 
-                {/* MODAL 3: FULL LEGAL TERMS, CONDITIONS & ELECTRONIC SIGNATURE REVIEW SUITE */}
+                        {/* MODAL 3: FULL LEGAL TERMS, CONDITIONS & INTERACTIVE CANVAS ELECTRONIC SIGNATURE SUITE (LIGHT THEME) */}
         <AnimatePresence>
           {isEsignModalOpen && (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+              className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
             >
               <motion.div 
-                initial={{ scale: 0.95, opacity: 0 }}
+                initial={{ scale: 0.96, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-slate-900 border border-white/15 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 text-white overflow-hidden relative my-8 max-h-[92vh] flex flex-col"
+                exit={{ scale: 0.96, opacity: 0 }}
+                className="bg-white border border-slate-200 rounded-3xl max-w-3xl w-full shadow-2xl text-slate-900 overflow-hidden relative my-6 max-h-[92vh] flex flex-col"
               >
-                {/* Close Button */}
-                <button 
-                  onClick={() => setIsEsignModalOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                {/* Header */}
-                <div className="flex items-center space-x-3 border-b border-white/10 pb-4 flex-shrink-0">
-                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400">
-                    <FileCheck className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="font-black text-base sm:text-lg text-white">TOTAG Group of Companies Ltd</span>
-                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
-                        LRA ASYCUDA Authorized
-                      </Badge>
+                {/* Slate Gray Corporate Header */}
+                <div className="bg-slate-900 text-slate-900 p-5 sm:p-6 border-b-2 border-emerald-500 flex items-center justify-between flex-shrink-0">
+                  <div className="flex items-center space-x-3.5">
+                    <img 
+                      src="/images/totag-corporate-logo.png" 
+                      alt="TOTAG Corporate Crest" 
+                      className="w-11 h-11 bg-white p-1 rounded-xl shadow border border-slate-700 object-contain"
+                      onError={(e) => { e.currentTarget.src = "/images/totag-logo.png"; }}
+                    />
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-black text-base sm:text-lg text-slate-900">
+                          <span className="text-emerald-400">TOTAG</span> <span className="text-sky-400">Group</span> <span className="text-amber-400 text-xs font-bold">of Companies Ltd</span>
+                        </span>
+                        <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px]">
+                          LRA ASYCUDA Authorized
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium mt-0.5">
+                        Licensed Customs Clearing & Forwarding (C&F) • Digital Power of Attorney & Agreement
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-400">
-                      Licensed Customs Clearing & Forwarding Services (C&F) • Digital Power of Attorney & Agreement
-                    </p>
                   </div>
+
+                  <button 
+                    onClick={() => setIsEsignModalOpen(false)}
+                    className="p-2 rounded-full bg-slate-800 text-slate-500 hover:text-slate-900 hover:bg-slate-700 transition cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
 
                 {!executedContractSuccess ? (
-                  /* REVIEW & ELECTRONIC SIGNATURE MODE */
-                  <div className="space-y-5 overflow-y-auto pr-2 flex-1 text-xs">
+                  /* REVIEW & INTERACTIVE SIGNATURE MODE */
+                  <div className="p-6 sm:p-8 space-y-6 overflow-y-auto pr-3 flex-1 text-xs">
                     
-                    {/* Legal Document Header */}
-                    <div className="text-center bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-1">
-                      <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-bold">
+                    {/* Document Header Box */}
+                    <div className="text-center bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                      <span className="text-[10px] font-mono tracking-widest text-emerald-700 uppercase font-bold">
                         LEGAL POWER OF ATTORNEY & CLEARING SERVICE CONTRACT
                       </span>
-                      <h4 className="font-bold text-sm text-white">
+                      <h4 className="font-black text-sm sm:text-base text-slate-900">
                         AUTHORIZATION FOR CUSTOMS CLEARANCE & WHARFAGE CARGO RELEASE
                       </h4>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-slate-500">
                         Executed under the Customs Code of the Republic of Liberia & National Port Authority Regulations
                       </p>
                     </div>
 
                     {/* Parties & Cargo Specification Matrix */}
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-3">
-                      <div className="font-bold text-slate-300 uppercase tracking-wider text-[11px] border-b border-white/10 pb-2">
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="font-bold text-slate-700 uppercase tracking-wider text-[11px] border-b border-slate-200 pb-2">
                         1. CONTRACTING PARTIES & SHIPMENT PARTICULARS
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-[11px]">
                         <div>
-                          <span className="text-slate-400 block text-[10px]">SHIPPER / COMPANY:</span>
-                          <strong className="text-white">{contractForm.companyName}</strong>
+                          <span className="text-slate-500 block text-[10px]">SHIPPER / COMPANY:</span>
+                          <strong className="text-slate-900 text-xs">{contractForm.companyName}</strong>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">OFFICIAL EMAIL:</span>
-                          <strong className="text-emerald-400 font-mono">{contractForm.email}</strong>
+                          <span className="text-slate-500 block text-[10px]">OFFICIAL EMAIL:</span>
+                          <strong className="text-emerald-700 font-mono text-xs">{contractForm.email}</strong>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">PHONE / WHATSAPP:</span>
-                          <strong className="text-white">{contractForm.phone}</strong>
+                          <span className="text-slate-500 block text-[10px]">PHONE / WHATSAPP:</span>
+                          <strong className="text-slate-900">{contractForm.phone}</strong>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF:</span>
-                          <strong className="text-sky-400 font-mono">{contractForm.billOfLading || "On File"}</strong>
+                          <span className="text-slate-500 block text-[10px]">BILL OF LADING / AWB:</span>
+                          <strong className="text-sky-700 font-mono text-xs">{contractForm.billOfLading || "On File"}</strong>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC:</span>
-                          <strong className="text-white">{contractForm.containerType} ({contractForm.containersCount} TEU)</strong>
+                          <span className="text-slate-500 block text-[10px]">CONTAINER SPEC:</span>
+                          <strong className="text-slate-900">{contractForm.containerType} ({contractForm.containersCount} TEU)</strong>
                         </div>
                         <div>
-                          <span className="text-slate-400 block text-[10px]">PORT OF CLEARANCE:</span>
-                          <strong className="text-white">{contractForm.portOfDischarge}</strong>
+                          <span className="text-slate-500 block text-[10px]">PORT OF CLEARANCE:</span>
+                          <strong className="text-slate-900">{contractForm.portOfDischarge}</strong>
                         </div>
                       </div>
                     </div>
 
                     {/* Complete Legal Clauses & Terms */}
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-3 text-slate-300 leading-relaxed text-[11px]">
-                      <div className="font-bold text-slate-300 uppercase tracking-wider text-[11px] border-b border-white/10 pb-2">
+                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 text-slate-700 leading-relaxed text-[11px]">
+                      <div className="font-bold text-slate-800 uppercase tracking-wider text-[11px] border-b border-slate-200 pb-2">
                         2. STATUTORY TERMS & CONDITIONS OF SERVICE
                       </div>
                       
                       <div>
-                        <strong className="text-white">Clause 1 — Appointment & Grant of Power of Attorney:</strong>
-                        <p className="text-slate-400 mt-0.5">
+                        <strong className="text-slate-900">Clause 1 — Appointment & Grant of Power of Attorney:</strong>
+                        <p className="text-slate-600 mt-0.5">
                           The Client hereby irrevocably appoints and authorizes <strong>TOTAG Group of Companies Ltd</strong> (Operating Licensed Customs Brokerage, Stevedoring & Freight Logistics) to act as its true and lawful agent before the Liberia Revenue Authority (LRA), National Port Authority (NPA), APM Terminals Monrovia, and shipping line agents.
                         </p>
                       </div>
 
                       <div>
-                        <strong className="text-white">Clause 2 — ASYCUDA Single Administrative Document (SAD) Filing:</strong>
-                        <p className="text-slate-400 mt-0.5">
+                        <strong className="text-slate-900">Clause 2 — ASYCUDA Single Administrative Document (SAD) Filing:</strong>
+                        <p className="text-slate-600 mt-0.5">
                           TOTAG is empowered to submit customs declarations into the LRA ASYCUDA World single-window system, pay statutory duties, process tariff exemptions, request joint container physical examinations, and secure official Delivery Orders.
                         </p>
                       </div>
 
                       <div>
-                        <strong className="text-white">Clause 3 — Demurrage, Storage & Free-Time Responsibilities:</strong>
-                        <p className="text-slate-400 mt-0.5">
+                        <strong className="text-slate-900">Clause 3 — Demurrage, Storage & Free-Time Responsibilities:</strong>
+                        <p className="text-slate-600 mt-0.5">
                           The Client agrees to provide necessary documentation (Commercial Invoice, Packing List, Certificate of Origin) in a timely manner to prevent terminal demurrage. TOTAG will actively monitor free-time thresholds and dispatch flatbeds upon release.
                         </p>
                       </div>
 
                       <div>
-                        <strong className="text-white">Clause 4 — Digital Audit & Document Vault Compliance:</strong>
-                        <p className="text-slate-400 mt-0.5">
+                        <strong className="text-slate-900">Clause 4 — Digital Audit & Document Vault Compliance:</strong>
+                        <p className="text-slate-600 mt-0.5">
                           This executed agreement and all associated cargo manifests, tax payment receipts, and delivery notes will be permanently archived in the secure TOTAG Document Vault for audit and compliance inspection.
                         </p>
                       </div>
                     </div>
 
-                    {/* Electronic Signature Box */}
-                    <div className="bg-slate-950 p-4 rounded-2xl border-2 border-emerald-500/40 space-y-4">
-                      <div className="font-bold text-emerald-400 uppercase tracking-wider text-[11px] flex items-center justify-between">
-                        <span>3. ELECTRONIC SIGNATURE & EXECUTION</span>
-                        <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[9px]">
-                          E-SIGN COMPLIANT
-                        </Badge>
+                    {/* Interactive Electronic Signature Suite */}
+                    <div className="bg-emerald-50/50 p-5 rounded-2xl border-2 border-emerald-500/40 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-500/20 pb-3">
+                        <div>
+                          <span className="font-black text-emerald-900 uppercase tracking-wider text-xs block">
+                            3. INTERACTIVE ELECTRONIC SIGNATURE PAD
+                          </span>
+                          <span className="text-[11px] text-slate-500">Sign with mouse, trackpad, touch screen, or type signature</span>
+                        </div>
+                        <div className="flex items-center space-x-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+                          <button
+                            type="button"
+                            onClick={() => setSignatureMode("draw")}
+                            className={`px-3 py-1 text-xs font-bold rounded-lg transition ${signatureMode === "draw" ? "bg-emerald-600 text-slate-900 shadow" : "text-slate-600 hover:bg-slate-100"}`}
+                          >
+                            Draw Signature
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setSignatureMode("type")}
+                            className={`px-3 py-1 text-xs font-bold rounded-lg transition ${signatureMode === "type" ? "bg-emerald-600 text-slate-900 shadow" : "text-slate-600 hover:bg-slate-100"}`}
+                          >
+                            Type Signature
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* Mode A: Interactive Drawing Canvas */}
+                      {signatureMode === "draw" && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-bold text-slate-700 flex items-center">
+                              <PenTool className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                              Draw your official signature inside the box below:
+                            </span>
+                            <button
+                              type="button"
+                              onClick={clearSignatureCanvas}
+                              className="text-rose-600 hover:underline font-bold text-xs flex items-center cursor-pointer"
+                            >
+                              <RotateCcw className="w-3 h-3 mr-1" />
+                              Clear Pad
+                            </button>
+                          </div>
+
+                          <div className="relative border-2 border-dashed border-slate-300 rounded-2xl bg-white overflow-hidden shadow-inner cursor-crosshair">
+                            <canvas
+                              ref={signatureCanvasRef}
+                              width={640}
+                              height={140}
+                              onMouseDown={startDrawing}
+                              onMouseMove={draw}
+                              onMouseUp={stopDrawing}
+                              onMouseLeave={stopDrawing}
+                              onTouchStart={startDrawing}
+                              onTouchMove={draw}
+                              onTouchEnd={stopDrawing}
+                              className="w-full h-36 touch-none block"
+                            />
+                            {!hasDrawnSignature && (
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-slate-500 font-medium text-xs">
+                                ✍️ Click or Touch here to draw signature
+                              </div>
+                            )}
+                            <div className="absolute bottom-2 left-4 right-4 border-b border-slate-300 flex justify-between text-[9px] text-slate-500 font-mono pointer-events-none pb-0.5">
+                              <span>Authorized Signatory Signature Line</span>
+                              <span>TOTAG SECURE E-SIGN</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Mode B: Type Signature with Cursive Preview */}
+                      {signatureMode === "type" && (
+                        <div className="space-y-3">
+                          <div>
+                            <Label className="text-slate-700 text-xs font-bold">Authorized Signatory Full Legal Name *</Label>
+                            <Input 
+                              value={typedSignatoryName}
+                              onChange={(e) => setTypedSignatoryName(e.target.value)}
+                              placeholder="e.g. James Doe, Managing Director"
+                              className="bg-white border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-bold shadow-sm"
+                            />
+                          </div>
+                          <div className="p-4 bg-white rounded-xl border border-slate-200 text-center space-y-1 shadow-inner">
+                            <span className="text-[10px] text-slate-500 uppercase font-mono block">Rendered Legal Signature Preview:</span>
+                            <span className="font-serif italic font-bold tracking-wider text-xl sm:text-2xl text-slate-900 block py-1">
+                              {typedSignatoryName || "James Doe"}
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-mono block">Digitally Verified Authorized Officer</span>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                         <div>
-                          <Label className="text-slate-300 text-[11px] font-bold">Authorized Signatory Full Legal Name *</Label>
+                          <Label className="text-slate-700 text-[11px] font-bold">Authorized Signatory Name & Title</Label>
                           <Input 
                             value={typedSignatoryName}
                             onChange={(e) => setTypedSignatoryName(e.target.value)}
-                            placeholder="e.g. James Doe, Managing Director"
-                            className="bg-slate-900 border-white/10 text-white rounded-xl text-xs mt-1 font-bold"
+                            placeholder="Full Name & Title"
+                            className="bg-white border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold"
                           />
                         </div>
                         <div>
-                          <Label className="text-slate-300 text-[11px] font-bold">Generated Digital Signature Hash</Label>
-                          <div className="bg-slate-900 border border-white/10 rounded-xl p-2 mt-1 text-[11px] font-mono text-emerald-400 flex items-center justify-between">
-                            <span>SIG-{contractForm.companyName.replace(/\s+/g, "").slice(0, 4).toUpperCase()}-{Date.now().toString().slice(-6)}</span>
-                            <span className="text-[9px] text-slate-500">256-BIT SHA</span>
+                          <Label className="text-slate-700 text-[11px] font-bold">Digital Signature Cryptographic Hash</Label>
+                          <div className="bg-white border border-slate-300 rounded-xl p-2.5 mt-1 text-[11px] font-mono text-emerald-700 flex items-center justify-between shadow-sm">
+                            <span className="font-bold">SIG-{contractForm.companyName.replace(/\s+/g, "").slice(0, 4).toUpperCase()}-{Date.now().toString().slice(-6)}</span>
+                            <span className="text-[9px] text-slate-500 font-sans">256-BIT SHA</span>
                           </div>
                         </div>
                       </div>
 
-                      <label className="flex items-start space-x-2 text-[11px] text-slate-200 cursor-pointer pt-1 bg-slate-900/60 p-3 rounded-xl border border-white/5">
+                      <label className="flex items-start space-x-2 text-[11px] text-slate-800 cursor-pointer pt-1 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                         <input 
                           type="checkbox"
                           checked={isLegalDeclarationChecked}
                           onChange={(e) => setIsLegalDeclarationChecked(e.target.checked)}
-                          className="mt-0.5 rounded text-emerald-500 focus:ring-0"
+                          className="mt-0.5 rounded text-emerald-600 focus:ring-0"
                         />
                         <span>
                           I confirm that I am the authorized legal representative of <strong>{contractForm.companyName}</strong>, that all information and attached documents are true and correct, and I hereby electronically execute this Power of Attorney and Service Agreement.
@@ -3470,7 +3638,7 @@ export default function CargoPage() {
                         type="button"
                         variant="outline"
                         onClick={() => setIsEsignModalOpen(false)}
-                        className="w-full sm:w-auto border-white/20 text-slate-300 hover:bg-white/10 text-xs rounded-xl px-5 cursor-pointer"
+                        className="w-full sm:w-auto border-slate-300 text-slate-700 hover:bg-slate-100 text-xs rounded-xl px-5 cursor-pointer font-bold"
                       >
                         Cancel / Edit Details
                       </Button>
@@ -3478,7 +3646,7 @@ export default function CargoPage() {
                         type="button"
                         onClick={handleFinalElectronicSignature}
                         disabled={isContractSigningInProgress}
-                        className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl px-8 py-3 text-xs shadow-lg cursor-pointer"
+                        className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-black rounded-xl px-8 py-3 text-xs shadow-lg cursor-pointer transition"
                       >
                         {isContractSigningInProgress ? (
                           <span>Digitally Signing & Dispatching...</span>
@@ -3493,37 +3661,37 @@ export default function CargoPage() {
 
                   </div>
                 ) : (
-                  /* EXECUTION SUCCESS & VAULT CONFIRMATION VIEW */
-                  <div className="space-y-5 text-xs text-center py-4">
-                    <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/40 rounded-3xl flex items-center justify-center mx-auto text-emerald-400">
+                  /* EXECUTION SUCCESS & VAULT CONFIRMATION VIEW (LIGHT THEME) */
+                  <div className="p-8 space-y-6 text-xs text-center">
+                    <div className="w-16 h-16 bg-emerald-100 border border-emerald-300 rounded-3xl flex items-center justify-center mx-auto text-emerald-600 shadow-md">
                       <CheckCircle className="w-10 h-10" />
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-black text-white">
+                      <h3 className="text-xl font-black text-slate-900">
                         Contract Electronically Executed & Archived in Document Vault!
                       </h3>
-                      <p className="text-xs text-slate-400 mt-1">
-                        Contract Ref: <strong className="text-emerald-400 font-mono">#{executedContractSuccess.contractId}</strong> • Clearing authorization is now legally active.
+                      <p className="text-xs text-slate-600 mt-1">
+                        Contract Ref: <strong className="text-emerald-700 font-mono font-bold text-sm">#{executedContractSuccess.contractId}</strong> • Clearing authorization is now legally active.
                       </p>
                     </div>
 
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 text-left max-w-md mx-auto space-y-2 text-[11px]">
-                      <div className="flex justify-between border-b border-white/10 pb-1.5">
-                        <span className="text-slate-400">Company:</span>
-                        <strong className="text-white">{executedContractSuccess.companyName}</strong>
+                    <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-left max-w-md mx-auto space-y-2.5 text-xs shadow-sm">
+                      <div className="flex justify-between border-b border-slate-200 pb-2">
+                        <span className="text-slate-500">Shipper / Company:</span>
+                        <strong className="text-slate-900">{executedContractSuccess.companyName}</strong>
                       </div>
-                      <div className="flex justify-between border-b border-white/10 pb-1.5">
-                        <span className="text-slate-400">Signatory:</span>
-                        <strong className="text-white">{executedContractSuccess.authorizedSignatory}</strong>
+                      <div className="flex justify-between border-b border-slate-200 pb-2">
+                        <span className="text-slate-500">Authorized Signatory:</span>
+                        <strong className="text-slate-900">{executedContractSuccess.authorizedSignatory}</strong>
                       </div>
-                      <div className="flex justify-between border-b border-white/10 pb-1.5">
-                        <span className="text-slate-400">Status:</span>
-                        <span className="text-emerald-400 font-bold">ACTIVE & ARCHIVED IN VAULT</span>
+                      <div className="flex justify-between border-b border-slate-200 pb-2">
+                        <span className="text-slate-500">Execution Status:</span>
+                        <span className="text-emerald-700 font-bold">ACTIVE & ARCHIVED IN VAULT</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-400">Confirmation Sent To:</span>
-                        <strong className="text-sky-400 font-mono">{contractForm.email}</strong>
+                        <span className="text-slate-500">Formal Confirmation Sent:</span>
+                        <strong className="text-sky-700 font-mono">{contractForm.email}</strong>
                       </div>
                     </div>
 
@@ -3534,17 +3702,20 @@ export default function CargoPage() {
                           setIsEsignModalOpen(false);
                           setIsContractModalOpen(true);
                         }}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl px-6 cursor-pointer"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-slate-900 font-black text-xs rounded-xl px-6 py-2.5 cursor-pointer shadow-md"
                       >
                         <Eye className="w-4 h-4 mr-1.5" />
                         View in Document Vault
                       </Button>
                       <Button 
-                        onClick={() => setIsEsignModalOpen(false)}
+                        onClick={() => {
+                          setIsEsignModalOpen(false);
+                          setActiveTab("b2b-portal");
+                        }}
                         variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10 text-xs rounded-xl px-6 cursor-pointer"
+                        className="border-slate-300 text-slate-700 hover:bg-slate-100 text-xs rounded-xl px-6 py-2.5 cursor-pointer font-bold"
                       >
-                        Done
+                        Go to Customer Dashboard
                       </Button>
                     </div>
                   </div>
@@ -3568,11 +3739,11 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-white relative"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
               >
                 <button 
                   onClick={() => setIsNewUserModalOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-900"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -3582,20 +3753,20 @@ export default function CargoPage() {
                     <UserPlus className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Organization Multi-User Access (RBAC)</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Add sub-account members & assign role permissions</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900">Organization Multi-User Access (RBAC)</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-500">Add sub-account members & assign role permissions</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block uppercase tracking-wider">Active Organization Team</span>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-700 block uppercase tracking-wider">Active Organization Team</span>
                     <div className="space-y-2 max-h-36 overflow-y-auto">
                       {customerAccount.teamMembers.map((member, idx) => (
                         <div key={idx} className="p-3 rounded-xl bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
                           <div>
-                            <span className="font-bold text-slate-900 dark:text-white block">{member.name}</span>
-                            <span className="text-[10px] text-slate-400">{member.email}</span>
+                            <span className="font-bold text-slate-900 dark:text-slate-900 block">{member.name}</span>
+                            <span className="text-[10px] text-slate-500">{member.email}</span>
                           </div>
                           <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">{member.role}</Badge>
                         </div>
@@ -3605,18 +3776,18 @@ export default function CargoPage() {
 
                   <form onSubmit={handleAddTeamUser} className="space-y-3 pt-2 border-t border-slate-200 dark:border-white/10">
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Team Member Full Name</Label>
-                      <Input value={newUserForm.name} onChange={(e) => setNewUserForm({...newUserForm, name: e.target.value})} placeholder="e.g. Samuel Tubman" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Team Member Full Name</Label>
+                      <Input value={newUserForm.name} onChange={(e) => setNewUserForm({...newUserForm, name: e.target.value})} placeholder="e.g. Samuel Tubman" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
 
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Official Email Address</Label>
-                      <Input type="email" value={newUserForm.email} onChange={(e) => setNewUserForm({...newUserForm, email: e.target.value})} placeholder="e.g. samuel@globalpharma.be" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                      <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Official Email Address</Label>
+                      <Input type="email" value={newUserForm.email} onChange={(e) => setNewUserForm({...newUserForm, email: e.target.value})} placeholder="e.g. samuel@globalpharma.be" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                     </div>
 
                     <div>
-                      <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">RBAC Role Assignment</Label>
-                      <select value={newUserForm.role} onChange={(e) => setNewUserForm({...newUserForm, role: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1">
+                      <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">RBAC Role Assignment</Label>
+                      <select value={newUserForm.role} onChange={(e) => setNewUserForm({...newUserForm, role: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1">
                         <option value="Logistics Manager (Full Access)">Logistics Manager (Full Access)</option>
                         <option value="Customs Officer (Docs Only)">Customs Officer (Docs Only)</option>
                         <option value="Finance & Accounts Payable">Finance & Accounts Payable</option>
@@ -3647,11 +3818,11 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-white relative"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
               >
                 <button 
                   onClick={() => setIsDisputeModalOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-900"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -3661,20 +3832,20 @@ export default function CargoPage() {
                     <HelpCircle className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">File Billing & Invoice Dispute</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Log an official inquiry for finance resolution</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900">File Billing & Invoice Dispute</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-500">Log an official inquiry for finance resolution</p>
                   </div>
                 </div>
 
                 <form onSubmit={handleRaiseDispute} className="space-y-4">
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Invoice / Charge Reference #</Label>
-                    <Input value={disputeForm.invoiceRef} onChange={(e) => setDisputeForm({...disputeForm, invoiceRef: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-mono" />
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Invoice / Charge Reference #</Label>
+                    <Input value={disputeForm.invoiceRef} onChange={(e) => setDisputeForm({...disputeForm, invoiceRef: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-mono" />
                   </div>
 
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Dispute Reason / Category</Label>
-                    <select value={disputeForm.category} onChange={(e) => setDisputeForm({...disputeForm, category: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs p-2.5 mt-1">
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Dispute Reason / Category</Label>
+                    <select value={disputeForm.category} onChange={(e) => setDisputeForm({...disputeForm, category: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1">
                       <option value="Demurrage Charge Penalty">Demurrage Charge Penalty Appeal</option>
                       <option value="Weight / Volumetric Rate Discrepancy">Weight / Volumetric Rate Discrepancy</option>
                       <option value="Unapplied Credit Note">Unapplied Credit Note / Payment</option>
@@ -3683,8 +3854,8 @@ export default function CargoPage() {
                   </div>
 
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Explanation & Claim Details</Label>
-                    <Input value={disputeForm.notes} onChange={(e) => setDisputeForm({...disputeForm, notes: e.target.value})} placeholder="Describe why this charge is being disputed..." className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1" />
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Explanation & Claim Details</Label>
+                    <Input value={disputeForm.notes} onChange={(e) => setDisputeForm({...disputeForm, notes: e.target.value})} placeholder="Describe why this charge is being disputed..." className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
                   </div>
 
                   <Button type="submit" className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl py-3 text-xs shadow-lg">
@@ -3709,11 +3880,11 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-white relative"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
               >
                 <button 
                   onClick={() => setIsPasswordModalOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-900"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -3723,41 +3894,41 @@ export default function CargoPage() {
                     <KeyRound className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">Customer Account Password Setup</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Set a new permanent password for {customerAccount.email || "your account"}</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900">Customer Account Password Setup</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-500">Set a new permanent password for {customerAccount.email || "your account"}</p>
                   </div>
                 </div>
 
                 <form onSubmit={handlePasswordResetSubmit} className="space-y-4">
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Temporary Password</Label>
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Temporary Password</Label>
                     <Input 
                       value={passwordForm.tempPasswordInput} 
                       onChange={(e) => setPasswordForm({...passwordForm, tempPasswordInput: e.target.value})}
                       placeholder="Enter temporary password received in onboarding email..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1 font-mono"
+                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-mono"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">New Permanent Password</Label>
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">New Permanent Password</Label>
                     <Input 
                       type="password"
                       value={passwordForm.newPassword} 
                       onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
                       placeholder="Enter new strong password..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1"
+                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1"
                     />
                   </div>
 
                   <div>
-                    <Label className="text-xs text-slate-600 dark:text-slate-300 font-bold">Confirm New Password</Label>
+                    <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Confirm New Password</Label>
                     <Input 
                       type="password"
                       value={passwordForm.confirmPassword} 
                       onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
                       placeholder="Re-enter new password..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-white rounded-xl text-xs mt-1"
+                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1"
                     />
                   </div>
 

@@ -308,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
               <!-- Action Link -->
               <div style="text-align:center;margin-bottom:24px;">
-                <a href="https://totaggroup.com/cargo" style="background:#0f172a;color:#34d399;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;border:1px solid #334155;">
+                <a href="https://totaggroup.com/cargo?tab=b2b-portal#dashboard" style="background:#0f172a;color:#34d399;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;border:1px solid #334155;">
                   Go to Customer Cargo Dashboard →
                 </a>
               </div>
@@ -343,7 +343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         to: email,
         subject: `Welcome to TOTAG Cargo Platform - Clearing Contract #${generatedContractId} Executed`,
         html: emailHtml,
-        text: `Dear ${authorizedSignatory || companyName},\n\nThank you for executing your C&F Clearing Service Contract #${generatedContractId} with TOTAG Cargo Handling & Logistics.\n\nYour Account Credentials:\nUsername: ${email}\nTemporary Password: ${generatedTempPass}\nLogin at: https://totaggroup.com/cargo\n\nBest regards,\nTOTAG Cargo Operations Desk\nTOTAG Group of Companies Ltd`,
+        text: `Dear ${authorizedSignatory || companyName},\n\nThank you for executing your C&F Clearing Service Contract #${generatedContractId} with TOTAG Cargo Handling & Logistics.\n\nYour Account Credentials:\nUsername: ${email}\nTemporary Password: ${generatedTempPass}\nLogin at: https://totaggroup.com/cargo?tab=b2b-portal#dashboard\n\nBest regards,\nTOTAG Cargo Operations Desk\nTOTAG Group of Companies Ltd`,
         type: "notification"
       });
       console.log(`📧 Cargo onboarding email dispatched to customer: ${email}`);
