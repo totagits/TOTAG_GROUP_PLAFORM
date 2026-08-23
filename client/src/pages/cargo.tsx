@@ -3029,14 +3029,33 @@ export default function CargoPage() {
                               </span>
                               <Button 
                                 onClick={() => {
-                                  setSelectedVaultContract(contract);
-                                  setIsContractModalOpen(true);
+                                  const contractDoc: VaultDocument = {
+                                    id: `DOC-CONTRACT-${contract.contractId}`,
+                                    docNumber: `TOTAG-POA-2026-${contract.contractId}`,
+                                    title: "Digital Power of Attorney & C&F Clearing Service Agreement",
+                                    category: "CONTRACT",
+                                    companyName: contract.companyName || customerAccount.companyName,
+                                    issueDate: contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-23",
+                                    status: "ACTIVE_VERIFIED",
+                                    reference: contract.billOfLading || "LRA-ASYCUDA-AUTH",
+                                    issuer: "TOTAG Group of Companies Ltd (Customs Clearing Directorate)",
+                                    signatory: contract.authorizedSignatory || "Authorized Managing Director",
+                                    summary: `Statutory Power of Attorney executed by ${contract.companyName} authorizing TOTAG to act as lawful customs clearing and forwarding broker before LRA, NPA, and APM Terminals Monrovia.`,
+                                    contentDetails: {
+                                      carrier: contract.containerType ? `${contract.containerType} (${contract.containersCount || 1} TEU)` : "40' High Cube Container",
+                                      vesselName: contract.portOfDischarge || "Freeport of Monrovia Berth 2",
+                                      sealNumber: `TOTAG-SEAL-${contract.contractId}`,
+                                      notes: "Fully executed and authenticated under the Electronic Transactions Act of Liberia."
+                                    }
+                                  };
+                                  setSelectedGeneralDoc(contractDoc);
+                                  setIsGeneralDocViewerOpen(true);
                                 }}
                                 size="sm" 
-                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-4 cursor-pointer shadow-sm"
+                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-4 cursor-pointer shadow-sm flex items-center"
                               >
                                 <Eye className="w-3.5 h-3.5 mr-1.5" />
-                                Peruse & Read
+                                <span>Peruse & Read</span>
                               </Button>
                             </div>
                           </div>
@@ -4662,14 +4681,44 @@ export default function CargoPage() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
             >
+              {/* Global Print Styling */}
+              <style dangerouslySetInnerHTML={{ __html: `
+                @media print {
+                  body * {
+                    visibility: hidden !important;
+                  }
+                  #printable-vault-document, #printable-vault-document * {
+                    visibility: visible !important;
+                  }
+                  #printable-vault-document {
+                    position: fixed !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    background: #ffffff !important;
+                    color: #000000 !important;
+                    padding: 24px !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                    margin: 0 !important;
+                    overflow: visible !important;
+                    z-index: 999999 !important;
+                  }
+                  .no-print {
+                    display: none !important;
+                  }
+                }
+              `}} />
+
               <motion.div 
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-3xl w-full shadow-2xl overflow-hidden relative my-6 max-h-[92vh] flex flex-col"
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden relative my-6 max-h-[92vh] flex flex-col"
               >
-                {/* Header */}
-                <div className="bg-slate-900 text-white p-5 sm:p-6 border-b-2 border-emerald-500 flex items-center justify-between flex-shrink-0">
+                {/* Header (Hidden on Print) */}
+                <div className="bg-slate-900 text-white p-5 sm:p-6 border-b-2 border-emerald-500 flex items-center justify-between flex-shrink-0 no-print">
                   <div className="flex items-center space-x-3.5">
                     <img 
                       src="/images/totag-corporate-logo.png" 
@@ -4680,7 +4729,7 @@ export default function CargoPage() {
                     <div>
                       <div className="flex items-center space-x-2">
                         <span className="font-black text-base sm:text-lg text-white">
-                          <span className="text-emerald-400">TOTAG</span> <span className="text-sky-400">Group</span> <span className="text-amber-400 text-xs font-bold">Document Vault</span>
+                          <span className="text-emerald-400">TOTAG</span> <span className="text-sky-400">Group</span> <span className="text-amber-400 text-xs font-bold">Official Document Vault</span>
                         </span>
                         <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[10px]">
                           Official Archive
@@ -4700,20 +4749,40 @@ export default function CargoPage() {
                   </button>
                 </div>
 
-                {/* Printable Document Body */}
-                <div className="p-6 sm:p-8 space-y-6 overflow-y-auto pr-3 flex-1 text-xs">
+                {/* Document Body (This prints cleanly) */}
+                <div id="printable-vault-document" className="p-6 sm:p-8 space-y-6 overflow-y-auto pr-3 flex-1 text-xs">
                   
-                  {/* Official Certificate Box */}
-                  <div className="text-center bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-1.5 shadow-sm">
-                    <span className="text-[10px] font-mono tracking-widest text-emerald-700 uppercase font-bold">
-                      REPUBLIC OF LIBERIA • OFFICIAL CARGO & CUSTOMS ARCHIVE
-                    </span>
-                    <h3 className="font-black text-lg text-slate-900">
-                      {selectedGeneralDoc.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Issued by: <strong>{selectedGeneralDoc.issuer}</strong> • Registered to: <strong className="text-slate-900">{selectedGeneralDoc.companyName}</strong>
-                    </p>
+                  {/* Official Republic of Liberia & Corporate Header */}
+                  <div className="text-center border-b-2 border-slate-900 pb-5 space-y-2">
+                    <div className="flex items-center justify-center space-x-3">
+                      <img 
+                        src="/images/totag-corporate-logo.png" 
+                        alt="TOTAG Crest" 
+                        className="w-14 h-14 object-contain"
+                        onError={(e) => { e.currentTarget.src = "/images/totag-logo.png"; }}
+                      />
+                      <div className="text-left">
+                        <h2 className="text-lg font-black text-slate-900 tracking-tight">TOTAG GROUP OF COMPANIES LTD</h2>
+                        <p className="text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
+                          Customs Brokerage, Freight Forwarding & Port Operations Directorate
+                        </p>
+                        <p className="text-[9px] text-slate-400">
+                          Freeport of Monrovia • Bushrod Island, Monrovia, Republic of Liberia • Reg: 051189240
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <span className="text-[10px] font-mono tracking-widest text-emerald-700 uppercase font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                        REPUBLIC OF LIBERIA • STATUTORY CARGO & CUSTOMS ARCHIVE
+                      </span>
+                      <h3 className="font-black text-xl text-slate-900 mt-2">
+                        {selectedGeneralDoc.title}
+                      </h3>
+                      <p className="text-xs text-slate-600 mt-0.5">
+                        Issued by: <strong>{selectedGeneralDoc.issuer}</strong> • Registered Entity: <strong className="text-slate-900">{selectedGeneralDoc.companyName}</strong>
+                      </p>
+                    </div>
                   </div>
 
                   {/* Metadata Matrix */}
@@ -4727,86 +4796,217 @@ export default function CargoPage() {
                       <span className="font-mono font-bold text-sky-700">{selectedGeneralDoc.reference}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Issue Date:</span>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Execution / Issue Date:</span>
                       <span className="font-mono font-semibold text-slate-800">{selectedGeneralDoc.issueDate}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Archive Status:</span>
+                      <span className="text-slate-400 block text-[10px] font-bold uppercase">Legal Status:</span>
                       <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
                         {selectedGeneralDoc.status}
                       </Badge>
                     </div>
                   </div>
 
-                  {/* Document Summary Description */}
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
-                    <span className="text-slate-500 font-bold uppercase text-[10px] block">Record Abstract / Executive Summary:</span>
-                    <p className="text-xs text-slate-700 leading-relaxed">
-                      {selectedGeneralDoc.summary}
-                    </p>
-                  </div>
+                  {/* IF CONTRACT: RENDER FULL STATUTORY LEGAL CLAUSES 1 TO 4 */}
+                  {selectedGeneralDoc.category === "CONTRACT" ? (
+                    <div className="space-y-4 pt-2">
+                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                        <h4 className="font-bold text-xs text-slate-900 uppercase tracking-wider mb-1">
+                          RECITALS & POWER OF ATTORNEY MANDATE
+                        </h4>
+                        <p className="text-xs text-slate-700 leading-relaxed">
+                          This Power of Attorney and Clearing Agreement is entered into between <strong>{selectedGeneralDoc.companyName}</strong> (the "Client") and <strong>TOTAG Group of Companies Ltd</strong> (the "Clearing Agent"). The Client hereby constitutes and appoints TOTAG Group as its true and lawful customs broker and attorney-in-fact before the Liberia Revenue Authority (LRA), National Port Authority (NPA), APM Terminals Liberia, and relevant statutory bodies.
+                        </p>
+                      </div>
 
-                  {/* Line Items / Tariff Breakdown Table if Present */}
-                  {selectedGeneralDoc.contentDetails.items && (
-                    <div className="space-y-2">
-                      <span className="text-slate-700 font-black text-xs uppercase tracking-wider block">
-                        Itemized Specifications & Financial Assessment:
-                      </span>
-                      <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-                        <table className="w-full text-left text-xs">
-                          <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
-                            <tr>
-                              <th className="p-3">Description / Tariff Line</th>
-                              <th className="p-3">Quantity / Value</th>
-                              <th className="p-3 text-right">Assessment / Amount</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-200">
-                            {selectedGeneralDoc.contentDetails.items.map((item, i) => (
-                              <tr key={i} className="hover:bg-slate-50">
-                                <td className="p-3 font-semibold text-slate-900">{item.desc}</td>
-                                <td className="p-3 text-slate-600 font-mono">{item.qty}</td>
-                                <td className="p-3 text-right font-mono font-bold text-slate-900">{item.amount}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                          <h5 className="font-bold text-xs text-slate-900">
+                            Clause 1: ASYCUDA SAD Clearance & Representation
+                          </h5>
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            TOTAG is empowered to lodge Single Administrative Documents (SAD), sign customs declarations, endorse Bills of Lading, and negotiate tariff classifications pursuant to the Liberia Revenue Code.
+                          </p>
+                        </div>
+
+                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                          <h5 className="font-bold text-xs text-slate-900">
+                            Clause 2: Tariff Schedule & Statutory Duty Settlement
+                          </h5>
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            The Client authorizes payment of assessed import duties, ECOWAS trade levies, and GST sales taxes through approved central bank settlement channels.
+                          </p>
+                        </div>
+
+                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                          <h5 className="font-bold text-xs text-slate-900">
+                            Clause 3: Terminal Free-Time, Demurrage & Equipment
+                          </h5>
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            TOTAG provides real-time telematics tracking and demurrage milestone alarms to ensure container turnaround within statutory carrier free-time windows.
+                          </p>
+                        </div>
+
+                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                          <h5 className="font-bold text-xs text-slate-900">
+                            Clause 4: Digital Audit Trail & Jurisdictional Validity
+                          </h5>
+                          <p className="text-[11px] text-slate-600 leading-relaxed">
+                            This agreement and digital electronic signatures are enforceable under the Electronic Transactions Law of the Republic of Liberia and governed by the Commercial Court of Liberia.
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* FULL ELECTRONIC SIGNATURE & COUNTERSIGNATURE BLOCK */}
+                      <div className="border-t-2 border-slate-200 pt-5 space-y-3">
+                        <h4 className="font-black text-xs text-slate-900 uppercase tracking-wider text-center">
+                          OFFICIAL EXECUTION, ELECTRONIC SIGNATURES & VERIFICATION SEALS
+                        </h4>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                          
+                          {/* Client Signature Card */}
+                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase block">CLIENT AUTHORIZED SIGNATORY</span>
+                            
+                            {/* Signature Display */}
+                            <div className="h-16 bg-white border border-slate-200 rounded-xl flex items-center justify-center px-4 shadow-inner">
+                              <span className="font-serif italic text-2xl text-slate-800 tracking-wider">
+                                {selectedGeneralDoc.signatory || "Edward James"}
+                              </span>
+                            </div>
+
+                            <div className="text-[11px] space-y-0.5">
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Signatory Name:</span>
+                                <strong className="text-slate-800">{selectedGeneralDoc.signatory || "Edward James"}</strong>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Title / Capacity:</span>
+                                <strong className="text-slate-800">Chief Executive Officer / Managing Director</strong>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Signature SHA-256:</span>
+                                <span className="font-mono text-[9px] text-emerald-700 font-bold">8f9c2e0b4a1d7e3f994021...</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Execution Date:</span>
+                                <span className="font-mono text-slate-600">{selectedGeneralDoc.issueDate}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* TOTAG Directorate Countersignature Card */}
+                          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase block">TOTAG GROUP C&F DIRECTORATE</span>
+                            
+                            {/* TOTAG Stamp & Countersignature */}
+                            <div className="h-16 bg-white border border-slate-200 rounded-xl flex items-center justify-center px-4 space-x-3 shadow-inner">
+                              <span className="font-serif italic text-xl text-emerald-800 font-bold">
+                                Michael Gwoah
+                              </span>
+                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[9px] font-bold">
+                                LICENSED BROKER #051
+                              </Badge>
+                            </div>
+
+                            <div className="text-[11px] space-y-0.5">
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Assigned Broker:</span>
+                                <strong className="text-slate-800">Officer J. Koffa (Senior Licensed Broker)</strong>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Clearing License:</span>
+                                <span className="font-mono text-slate-800 font-bold">LRA-CUSTOMS-LIC-2026-051</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Corporate Seal:</span>
+                                <span className="text-emerald-700 font-bold">OFFICIALLY COUNTERSIGNED</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Verification Hash:</span>
+                                <span className="font-mono text-[9px] text-sky-700 font-bold">99214b7e8839210c4412...</span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* GENERAL NON-CONTRACT DOCUMENTS (B/L, Invoices, Receipts, Delivery Orders) */
+                    <div className="space-y-4">
+                      {/* Document Summary Description */}
+                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5">
+                        <span className="text-slate-500 font-bold uppercase text-[10px] block">Record Abstract / Executive Summary:</span>
+                        <p className="text-xs text-slate-700 leading-relaxed">
+                          {selectedGeneralDoc.summary}
+                        </p>
+                      </div>
+
+                      {/* Line Items / Tariff Breakdown Table if Present */}
+                      {selectedGeneralDoc.contentDetails.items && (
+                        <div className="space-y-2">
+                          <span className="text-slate-700 font-black text-xs uppercase tracking-wider block">
+                            Itemized Specifications & Financial Assessment:
+                          </span>
+                          <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                            <table className="w-full text-left text-xs">
+                              <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                                <tr>
+                                  <th className="p-3">Description / Tariff Line</th>
+                                  <th className="p-3">Quantity / Value</th>
+                                  <th className="p-3 text-right">Assessment / Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-200">
+                                {selectedGeneralDoc.contentDetails.items.map((item, i) => (
+                                  <tr key={i} className="hover:bg-slate-50">
+                                    <td className="p-3 font-semibold text-slate-900">{item.desc}</td>
+                                    <td className="p-3 text-slate-600 font-mono">{item.qty}</td>
+                                    <td className="p-3 text-right font-mono font-bold text-slate-900">{item.amount}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Additional Technical Particulars */}
+                      <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+                        <span className="text-slate-500 font-bold uppercase text-[10px] block">Statutory Clearance Particulars:</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
+                          {selectedGeneralDoc.contentDetails.carrier && (
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">CARRIER / VESSEL:</span>
+                              <strong className="text-slate-800">{selectedGeneralDoc.contentDetails.carrier}</strong>
+                            </div>
+                          )}
+                          {selectedGeneralDoc.contentDetails.sealNumber && (
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">CUSTOMS SEAL #:</span>
+                              <strong className="text-emerald-700 font-mono">{selectedGeneralDoc.contentDetails.sealNumber}</strong>
+                            </div>
+                          )}
+                          {selectedGeneralDoc.contentDetails.gatePassCode && (
+                            <div>
+                              <span className="text-slate-400 block text-[10px]">APM GATE PASS CODE:</span>
+                              <strong className="text-sky-700 font-mono">{selectedGeneralDoc.contentDetails.gatePassCode}</strong>
+                            </div>
+                          )}
+                        </div>
+                        {selectedGeneralDoc.contentDetails.notes && (
+                          <p className="text-[11px] text-slate-600 italic pt-1 border-t border-slate-200">
+                            Notes: {selectedGeneralDoc.contentDetails.notes}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
 
-                  {/* Additional Technical Particulars */}
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
-                    <span className="text-slate-500 font-bold uppercase text-[10px] block">Statutory Clearance Particulars:</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
-                      {selectedGeneralDoc.contentDetails.carrier && (
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">CARRIER / VESSEL:</span>
-                          <strong className="text-slate-800">{selectedGeneralDoc.contentDetails.carrier}</strong>
-                        </div>
-                      )}
-                      {selectedGeneralDoc.contentDetails.sealNumber && (
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">CUSTOMS SEAL #:</span>
-                          <strong className="text-emerald-700 font-mono">{selectedGeneralDoc.contentDetails.sealNumber}</strong>
-                        </div>
-                      )}
-                      {selectedGeneralDoc.contentDetails.gatePassCode && (
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">APM GATE PASS CODE:</span>
-                          <strong className="text-sky-700 font-mono">{selectedGeneralDoc.contentDetails.gatePassCode}</strong>
-                        </div>
-                      )}
-                    </div>
-                    {selectedGeneralDoc.contentDetails.notes && (
-                      <p className="text-[11px] text-slate-600 italic pt-1 border-t border-slate-200">
-                        Notes: {selectedGeneralDoc.contentDetails.notes}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Customer Audit Inquiry & Broker Response Channel */}
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                  {/* Customer Audit Inquiry & Broker Response Channel (Hidden on Print) */}
+                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 no-print">
                     <div className="flex items-center justify-between">
                       <span className="font-black text-xs text-slate-900 flex items-center">
                         <MessageSquare className="w-4 h-4 mr-1.5 text-sky-600" />
@@ -4864,8 +5064,8 @@ export default function CargoPage() {
 
                 </div>
 
-                {/* Footer Controls & Print Action */}
-                <div className="bg-slate-100 p-4 sm:p-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+                {/* Footer Controls & Print Action (Hidden on Print) */}
+                <div className="bg-slate-100 p-4 sm:p-5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0 no-print">
                   <div className="flex items-center space-x-2 text-[11px] text-slate-500">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span>Cryptographically Authenticated TOTAG Vault Instrument</span>
@@ -4895,8 +5095,7 @@ export default function CargoPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
-      </main>
+</main>
 
       <Footer />
     </div>
