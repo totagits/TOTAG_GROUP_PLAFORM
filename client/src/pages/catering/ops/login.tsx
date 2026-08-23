@@ -138,26 +138,7 @@ export default function CateringOpsLogin() {
 
           <CardContent className="pt-6 space-y-6">
             
-            {/* 1-Click Seeded Credential Autofill Banner */}
-            <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-extrabold uppercase text-amber-500 flex items-center gap-1">
-                  <Key className="w-3.5 h-3.5" />
-                  Seeded Admin Credentials
-                </span>
-                <span className="text-[10px] text-slate-400 font-semibold">Click to Autofill</span>
-              </div>
-              <div className="grid grid-cols-1 gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => handleAutofill("admin_toceps", "Zwedru4gedeh")}
-                  className="w-full text-left px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all flex items-center justify-between"
-                >
-                  <span>admin_toceps</span>
-                  <span className="text-[10px] opacity-80">Pass: Zwedru4gedeh</span>
-                </button>
-              </div>
-            </div>
+
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>

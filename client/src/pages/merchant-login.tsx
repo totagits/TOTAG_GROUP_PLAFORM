@@ -214,16 +214,7 @@ export default function MerchantLogin() {
             </div>
           </div>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <h4 className="font-medium text-blue-900 mb-2">Demo Credentials</h4>
-            <div className="text-sm text-blue-800 space-y-1">
-              <p><strong>General Manager:</strong> admin / admin123</p>
-              <p><strong>Warehouse Staff:</strong> warehouse1 / warehouse123</p>
-              <p><strong>Delivery Staff:</strong> delivery1 / delivery123</p>
-              <p><strong>Sales Team:</strong> sales1 / sales123</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>

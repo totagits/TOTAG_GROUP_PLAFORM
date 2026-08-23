@@ -265,37 +265,7 @@ export default function SaaSLogin() {
             </CardContent>
           </Card>
 
-          {/* Demo Credentials */}
-          <Card className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-            <CardHeader>
-              <CardTitle className="text-sm text-green-800 dark:text-green-200">Demo Credentials (Acme Corp Tenant)</CardTitle>
-              <CardDescription className="text-xs text-green-700 dark:text-green-300">
-                Use these to explore the full platform functionality
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-xs">
-                <p className="font-medium">Email:</p>
-                <code className="bg-white dark:bg-gray-700 px-2 py-1 rounded text-xs">admin@acme-corp.com</code>
-              </div>
-              <div className="text-xs">
-                <p className="font-medium">Password:</p>
-                <code className="bg-white dark:bg-gray-700 px-2 py-1 rounded text-xs">password123</code>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full mt-2 border-green-300 text-green-700 hover:bg-green-100"
-                onClick={() => {
-                  form.setValue('email', 'admin@acme-corp.com');
-                  form.setValue('password', 'password123');
-                }}
-                data-testid="button-use-demo"
-              >
-                Use Demo Credentials
-              </Button>
-            </CardContent>
-          </Card>
+
 
           {/* Help Text */}
           <div className="text-center">

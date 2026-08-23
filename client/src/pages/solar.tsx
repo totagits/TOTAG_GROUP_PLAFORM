@@ -1243,7 +1243,7 @@ const [custSurveyForm, setCustSurveyForm] = useState({
         description: "Welcome Chief Engineer (admin_solar) to the 9-Module Operational Back-Office.",
       });
     } else {
-      setStaffAuthError("Invalid credentials. Please enter admin_solar / Zwedru4gedeh.");
+      setStaffAuthError("Invalid credentials. Please contact your Solar System Administrator.");
     }
   };
 
@@ -4863,7 +4863,7 @@ const [custSurveyForm, setCustSurveyForm] = useState({
               <Label className="text-xs font-bold text-slate-700 dark:text-slate-300">Staff Security Passcode:</Label>
               <Input
                 type="password"
-                placeholder="Enter password (Zwedru4gedeh)"
+                placeholder="Enter your security passcode"
                 value={staffPassword}
                 onChange={(e) => {
                   setStaffPassword(e.target.value);
@@ -4885,18 +4885,7 @@ const [custSurveyForm, setCustSurveyForm] = useState({
                 Authenticate & Unlock Back-Office (9 Modules) ➔
               </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  setStaffUsername("admin_solar");
-                  setStaffPassword("Zwedru4gedeh");
-                  setTimeout(() => handleStaffLogin(), 50);
-                }}
-                className="w-full text-xs font-bold rounded-xl border-slate-200 dark:border-slate-800"
-              >
-                ⚡ 1-Click Authorized Sign-In (admin_solar / Zwedru4gedeh)
-              </Button>
+
             </div>
           </form>
         </DialogContent>
