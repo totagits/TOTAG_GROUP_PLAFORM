@@ -79,6 +79,225 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+    // Cargo Clearing Contract Execution & Customer Onboarding Email Dispatch
+  app.post("/api/cargo/contracts", async (req, res) => {
+    try {
+      const {
+        companyName,
+        email,
+        phone,
+        tinNumber,
+        billOfLading,
+        containerType,
+        cargoCategory,
+        containersCount,
+        portOfDischarge,
+        authorizedSignatory,
+        isExistingAccount,
+        tempPassword,
+        contractId
+      } = req.body;
+
+      if (!email || !companyName) {
+        return res.status(400).json({ error: "Missing required fields: email and companyName" });
+      }
+
+      const generatedContractId = contractId || `TOTAG-POA-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const generatedTempPass = tempPassword || `TOTAG-Pass#${Math.floor(100000 + Math.random() * 900000)}`;
+
+      // Generate HTML Email
+      const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TOTAG Cargo Clearing Authorization Contract & Onboarding</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);border:1px solid #e2e8f0;">
+          
+          <!-- Slate Gray Header matching Website Navbar -->
+          <tr>
+            <td style="background-color:#1e293b;padding:22px 28px;border-bottom:3px solid #10b981;">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td width="64" style="vertical-align:middle;">
+                    <img src="cid:totag-logo" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+                  </td>
+                  <td style="vertical-align:middle;padding-left:14px;">
+                    <div style="font-size:19px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
+                      <span style="color:#34d399;">TOTAG</span> <span style="color:#38bdf8;">Group</span> <span style="color:#fbbf24;font-size:13px;font-weight:700;">of Companies Ltd</span>
+                    </div>
+                    <div style="font-size:11px;color:#cbd5e1;margin-top:2px;font-weight:500;">
+                      Innovating Tomorrow, Empowering Today
+                    </div>
+                    <div style="font-size:12px;color:#34d399;font-weight:bold;margin-top:4px;">
+                      TOTAG Cargo Handling & Logistics Services
+                    </div>
+                  </td>
+                  <td align="right" style="vertical-align:middle;">
+                    <span style="background:rgba(16,185,129,0.18);color:#34d399;font-size:11px;font-weight:bold;padding:5px 12px;border-radius:20px;border:1px solid rgba(52,211,153,0.4);display:inline-block;">
+                      ${isExistingAccount ? "CONTRACT CONFIRMATION" : "NEW ONBOARDING"}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding:32px 28px;">
+              <h2 style="color:#0f172a;font-size:18px;margin:0 0 16px;font-weight:800;">
+                ${isExistingAccount ? "C&F Clearing Service Contract Executed" : "Welcome to TOTAG Cargo Enterprise Platform"}
+              </h2>
+
+              <p style="font-size:14px;color:#334155;line-height:1.6;margin:0 0 16px;">
+                Dear <strong>${authorizedSignatory || "Valued Enterprise Shipper"}</strong> (${companyName}),
+              </p>
+
+              <p style="font-size:14px;color:#334155;line-height:1.6;margin:0 0 20px;">
+                Thank you for executing your <strong>Customs Clearing & Forwarding (C&F) Service Contract & Power of Attorney (PoA)</strong> with TOTAG Group of Companies Ltd. Your clearing authorization is now active with the <strong>Liberia Revenue Authority (LRA ASYCUDA)</strong>, <strong>National Port Authority (NPA)</strong>, and <strong>APM Terminals</strong>.
+              </p>
+
+              ${!isExistingAccount ? `
+              <!-- Automated Credentials Box -->
+              <div style="background-color:#f8fafc;border:2px solid #38bdf8;border-radius:10px;padding:20px;margin-bottom:24px;">
+                <div style="font-size:12px;font-weight:bold;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">
+                  🔑 YOUR AUTOMATICALLY PROVISIONED CUSTOMER PORTAL CREDENTIALS
+                </div>
+                <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:38%;">USERNAME / EMAIL:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#0f172a;font-family:monospace;font-size:14px;">${email}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">TEMPORARY PASSWORD:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#059669;font-family:monospace;font-size:15px;background:#ecfdf5;padding-left:8px;border-radius:4px;">${generatedTempPass}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">PORTAL ACCESS URL:</td>
+                    <td style="padding:6px 0;"><a href="https://totaggroup.com/cargo" style="color:#0284c7;font-weight:bold;text-decoration:underline;">https://totaggroup.com/cargo</a></td>
+                  </tr>
+                </table>
+                <div style="margin-top:14px;font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:10px;">
+                  * Please log in to your account and set a permanent password under your profile settings.
+                </div>
+              </div>` : ""}
+
+              <!-- Contract & Cargo Specifications Summary -->
+              <div style="background-color:#f0fdf4;border-left:4px solid #10b981;border-radius:6px;padding:18px;margin-bottom:24px;">
+                <div style="font-size:12px;font-weight:bold;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">
+                  📋 EXECUTED CONTRACT & CLEARING SPECIFICATIONS
+                </div>
+                <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:40%;">Contract Reference No:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#0f172a;font-family:monospace;">${generatedContractId}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Company / Shipper:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#0f172a;">${companyName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Bill of Lading / AWB:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#0f172a;">${billOfLading || "B/L Submitted on File"}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Container Specification:</td>
+                    <td style="padding:6px 0;color:#334155;">${containerType || "Standard Dry Container"} (${containersCount || 1} TEU/Units)</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Cargo Category:</td>
+                    <td style="padding:6px 0;color:#334155;">${cargoCategory || "General Commercial Merchandise"}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Port of Discharge & Clearance:</td>
+                    <td style="padding:6px 0;color:#334155;">${portOfDischarge || "Freeport of Monrovia (Berth 2)"}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Authorized Signatory:</td>
+                    <td style="padding:6px 0;color:#334155;">${authorizedSignatory || companyName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Execution Date & Status:</td>
+                    <td style="padding:6px 0;font-weight:bold;color:#059669;">${new Date().toISOString().slice(0, 10)} • ACTIVE & VERIFIED</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Power of Attorney Statement -->
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px 18px;margin-bottom:24px;font-size:12px;color:#64748b;line-height:1.5;">
+                <strong style="color:#334155;">Legal Authorization Notice:</strong> By submitting your digital contract, you have authorized TOTAG Group of Companies Ltd to act as your appointed licensed Customs Broker with LRA, NPA, and APM Terminals to process ASYCUDA entries, pay official duties, conduct terminal examinations, and deliver cargo.
+              </div>
+
+              <!-- Action Link -->
+              <div style="text-align:center;margin-bottom:24px;">
+                <a href="https://totaggroup.com/cargo" style="background:#0f172a;color:#34d399;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;border:1px solid #334155;">
+                  Go to Customer Cargo Dashboard →
+                </a>
+              </div>
+
+              <!-- Navy Blue Footer matching Website Footer -->
+              <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px 20px;text-align:center;">
+                <p style="color:#e2e8f0;margin:0;font-size:13px;font-weight:600;">For cargo status updates or container dispatch inquiries:</p>
+                <p style="margin:8px 0 0;font-size:13px;color:#94a3b8;">
+                  <strong style="color:#ffffff;">Email:</strong> 
+                  <a href="mailto:cargo@totaggroup.com" style="color:#38bdf8;font-weight:bold;text-decoration:underline;">cargo@totaggroup.com</a>
+                  <span style="color:#64748b;margin:0 8px;">|</span>
+                  <strong style="color:#ffffff;">Portal:</strong> 
+                  <a href="https://totaggroup.com/cargo" style="color:#34d399;font-weight:bold;text-decoration:underline;">totaggroup.com/cargo</a>
+                </p>
+              </div>
+
+              <p style="margin:20px 0 0;font-size:11px;color:#94a3b8;text-align:center;">
+                TOTAG Cargo Handling & Logistics | TOTAG Group of Companies Ltd | Freeport of Monrovia Berth 2, Liberia
+              </p>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+      // Send to customer
+      await EmailService.sendEmail({
+        to: email,
+        subject: `Welcome to TOTAG Cargo Platform - Clearing Contract #${generatedContractId} Executed`,
+        html: emailHtml,
+        text: `Dear ${authorizedSignatory || companyName},\n\nThank you for executing your C&F Clearing Service Contract #${generatedContractId} with TOTAG Cargo Handling & Logistics.\n\nYour Account Credentials:\nUsername: ${email}\nTemporary Password: ${generatedTempPass}\nLogin at: https://totaggroup.com/cargo\n\nBest regards,\nTOTAG Cargo Operations Desk\nTOTAG Group of Companies Ltd`,
+        type: "notification"
+      });
+      console.log(`📧 Cargo onboarding email dispatched to customer: ${email}`);
+
+      // Also send notification to Cargo Operations Desk
+      await EmailService.sendEmail({
+        to: "cargo@totaggroup.com",
+        subject: `[NEW C&F CONTRACT] #${generatedContractId} — ${companyName} (${billOfLading || "B/L Pending"})`,
+        html: emailHtml,
+        text: `New C&F Clearing Contract #${generatedContractId} signed by ${companyName} (${authorizedSignatory}). Contact: ${email} / ${phone}. Bill of Lading: ${billOfLading}. Containers: ${containersCount} (${containerType}). Port: ${portOfDischarge}.`,
+        type: "notification"
+      });
+      console.log(`📧 Cargo contract notification sent to cargo operations desk`);
+
+      res.status(201).json({
+        success: true,
+        contractId: generatedContractId,
+        tempPassword: generatedTempPass,
+        message: `Contract #${generatedContractId} executed successfully and onboarding email sent to ${email}.`
+      });
+    } catch (error: any) {
+      console.error("Error processing cargo contract:", error);
+      res.status(500).json({ success: false, error: error.message || "Failed to process contract" });
+    }
+  });
+
   app.post("/api/cargo/shipments", async (req, res) => {
     try {
       const shipment = await storage.createCargoShipment(req.body);

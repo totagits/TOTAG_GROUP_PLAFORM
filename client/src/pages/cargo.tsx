@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/config";
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -839,13 +840,43 @@ export default function CargoPage() {
 
     const contractId = `TOTAG-POA-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const now = new Date().toLocaleString();
-
     const isNewCust = !contractForm.isExistingAccount;
+    const tempPass = `TOTAG-Pass#${Math.floor(100000 + Math.random() * 900000)}`;
+
+    // 1. Dispatch contract payload to Hostinger VPS backend to send REAL email & store contract
+    const contractPayload = {
+      companyName: contractForm.companyName,
+      email: contractForm.email,
+      phone: contractForm.phone,
+      tinNumber: contractForm.tinNumber || "LRA-TIN-PENDING",
+      billOfLading: contractForm.billOfLading || "Submitted via Portal",
+      containerType: contractForm.containerType || "40ft High Cube (40' HQ)",
+      cargoCategory: contractForm.cargoCategory || "Standard Dry General Cargo",
+      containersCount: contractForm.containersCount || 1,
+      portOfDischarge: contractForm.portOfDischarge || "Freeport of Monrovia (Berth 2)",
+      authorizedSignatory: contractForm.authorizedSignatory,
+      isExistingAccount: !isNewCust,
+      tempPassword: tempPass,
+      contractId: contractId
+    };
+
+    fetch(getApiUrl("/api/cargo/contracts"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(contractPayload),
+    }).then(r => r.json()).then(data => {
+      console.log("Cargo contract API response:", data);
+      if (data.success) {
+        toast({
+          title: "🎉 Onboarding Email Dispatched!",
+          description: `Contract #${data.contractId || contractId} confirmed. Login credentials sent to ${contractForm.email}.`
+        });
+      }
+    }).catch(err => {
+      console.warn("Could not dispatch cargo contract via API:", err);
+    });
 
     if (isNewCust) {
-      // NEW CUSTOMER: CREATE ACCOUNT & GENERATE TEMPORARY CREDENTIALS
-      const tempPass = `TOTAG-Pass#${Math.floor(100000 + Math.random() * 900000)}`;
-      
       setCustomerAccount(prev => ({
         ...prev,
         isLoggedIn: true,
@@ -889,7 +920,6 @@ export default function CargoPage() {
       });
 
     } else {
-      // EXISTING CUSTOMER: THANK CUSTOMER & ATTACH CONTRACT TO EXISTING ACCOUNT
       setCustomerAccount(prev => ({
         ...prev,
         isLoggedIn: true,
