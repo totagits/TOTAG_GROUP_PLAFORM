@@ -1382,15 +1382,7 @@ TOCEPS Finance & Billing Desk`,
     // Mark invoice as sent and saved to vault
     await storage.updateCateringInvoice(invoice.id, { status: "sent", vaultSaved: true });
 
-    // Send copy to TOCEPS email for vault archiving
-    await EmailService.sendEmail({
-      to: TOCEPS_EMAIL,
-      from: TOCEPS_FROM,
-      subject: `[VAULT COPY] Invoice ${invoice.invoiceNumber} issued to ${invoice.clientName}`,
-      html: htmlContent,
-      text: `Invoice ${invoice.invoiceNumber} sent to ${invoice.clientEmail} and archived in Document Vault.`,
-      type: "notification" as const,
-    }).catch(() => {});
+    // Invoice is automatically preserved in Postgres Document Vault; no redundant email copy needed.
 
     res.json({
       success: true,
