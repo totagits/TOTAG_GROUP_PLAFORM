@@ -503,6 +503,7 @@ export default function CateringDashboard() {
         {user.role === "account_manager" && (
           <AccountManagerView invoices={invoices} refetchInvoices={refetchInvoices} requests={requests} events={events} staff={staff} allTasks={allTasks} quotations={quotations} loading={loadingRequests}
             onUpdateRequest={(id: number, updates: any) => updateRequestMutation.mutate({ id, updates })}
+            onDeleteRequest={(id: number) => deleteRequestMutation.mutate(id)}
             onCreateEvent={(data: any) => createEventMutation.mutate(data)}
             onCreateTask={(data: any) => createTaskMutation.mutate(data)}
             onCreateQuotation={(data: any) => createQuotationMutation.mutate(data)}
@@ -1404,7 +1405,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
   );
 }
 
-function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefetchInvoices, requests, events, staff, allTasks, quotations, loading, onUpdateRequest, onCreateEvent, onCreateTask, onCreateQuotation, onUpdateQuotation }: any) {
+function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefetchInvoices, requests, events, staff, allTasks, quotations, loading, onUpdateRequest, onDeleteRequest, onCreateEvent, onCreateTask, onCreateQuotation, onUpdateQuotation }: any) {
   const { data: invoicesData, refetch: refetchInvoices } = useQuery({
     queryKey: ["/api/catering/invoices"],
     queryFn: () => cateringFetch("/api/catering/invoices"),
@@ -1518,22 +1519,61 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
       <TabsContent value="requests">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-3">
-            <h3 className="font-semibold text-lg">Incoming Requests</h3>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-lg text-slate-900">Incoming Requests</h3>
+                <p className="text-xs text-slate-500">Manage customer catering bookings, build quotations, or delete test requests</p>
+              </div>
+              {requests.length > 0 && (
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  className="text-xs text-rose-600 border-rose-200 hover:bg-rose-50"
+                  onClick={() => {
+                    if (window.confirm(`Are you sure you want to delete all ${requests.length} incoming requests? This cannot be undone.`)) {
+                      requests.forEach((r: any) => onDeleteRequest && onDeleteRequest(r.id));
+                      setSelectedRequest(null);
+                    }
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5 mr-1 text-rose-600" />
+                  Delete All Test Requests ({requests.length})
+                </Button>
+              )}
+            </div>
+
             {loading ? <p className="text-gray-500">Loading...</p> : requests.length === 0 ? (
-              <Card><CardContent className="py-8 text-center text-gray-500">No service requests yet</CardContent></Card>
+              <Card><CardContent className="py-8 text-center text-gray-500">No service requests currently in queue</CardContent></Card>
             ) : requests.map((req: any) => (
-              <Card key={req.id} className={`cursor-pointer hover:shadow-md transition-shadow ${selectedRequest?.id === req.id ? 'ring-2 ring-green-500' : ''}`}
+              <Card key={req.id} className={`cursor-pointer hover:shadow-md transition-shadow relative group ${selectedRequest?.id === req.id ? 'ring-2 ring-emerald-500' : ''}`}
                 onClick={() => setSelectedRequest(req)}>
                 <CardContent className="py-3 px-4">
                   <div className="flex items-start justify-between">
                     <div>
-                      <p className="font-medium">{req.name} {req.company ? `(${req.company})` : ''}</p>
+                      <p className="font-medium text-slate-900">{req.name} {req.company ? `(${req.company})` : ''}</p>
                       <p className="text-sm text-gray-500">{req.eventType} - {req.guestCount || '?'} guests - {req.eventDate || 'TBD'}</p>
                       <p className="text-xs text-gray-400 mt-1">{new Date(req.createdAt).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge className={STATUS_COLORS[req.priority] || "bg-gray-100"}>{req.priority}</Badge>
                       <Badge className={STATUS_COLORS[req.status] || "bg-gray-100"}>{req.status}</Badge>
+                      
+                      {/* Direct Single Delete Button on Card */}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-8 w-8 rounded-lg cursor-pointer transition"
+                        title="Delete this request"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm(`Delete request #${req.id} from ${req.name}?`)) {
+                            onDeleteRequest && onDeleteRequest(req.id);
+                            if (selectedRequest?.id === req.id) setSelectedRequest(null);
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -1543,16 +1583,30 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
 
           <div>
             {selectedRequest ? (
-              <Card className="sticky top-20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Request #{selectedRequest.id}</CardTitle>
+              <Card className="sticky top-20 border border-slate-200 shadow-md">
+                <CardHeader className="pb-3 border-b border-slate-100 flex flex-row items-center justify-between">
+                  <CardTitle className="text-base font-bold">Request #{selectedRequest.id}</CardTitle>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-rose-600 hover:bg-rose-50 text-xs font-bold h-8 cursor-pointer"
+                    onClick={() => {
+                      if (window.confirm(`Delete request #${selectedRequest.id} from ${selectedRequest.name}? This cannot be undone.`)) {
+                        onDeleteRequest && onDeleteRequest(selectedRequest.id);
+                        setSelectedRequest(null);
+                      }
+                    }}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 mr-1" />
+                    Delete Request
+                  </Button>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  <div><span className="text-gray-500">Client:</span> <span className="font-medium">{selectedRequest.name}</span></div>
-                  <div><span className="text-gray-500">Email:</span> {selectedRequest.email}</div>
+                <CardContent className="space-y-3 text-sm pt-4">
+                  <div><span className="text-gray-500">Client:</span> <span className="font-medium text-slate-900">{selectedRequest.name}</span></div>
+                  <div><span className="text-gray-500">Email:</span> <span className="font-mono text-slate-800">{selectedRequest.email}</span></div>
                   <div><span className="text-gray-500">Phone:</span> {selectedRequest.phone || 'N/A'}</div>
                   <div><span className="text-gray-500">Company:</span> {selectedRequest.company || 'N/A'}</div>
-                  <div><span className="text-gray-500">Event Type:</span> {selectedRequest.eventType}</div>
+                  <div><span className="text-gray-500">Event Type:</span> <span className="font-semibold text-slate-900">{selectedRequest.eventType}</span></div>
                   <div><span className="text-gray-500">Date:</span> {selectedRequest.eventDate || 'TBD'}</div>
                   <div><span className="text-gray-500">Guests:</span> {selectedRequest.guestCount || 'TBD'}</div>
                   <div><span className="text-gray-500">Venue:</span> {selectedRequest.venue || 'TBD'}</div>
@@ -1562,7 +1616,7 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                   {selectedRequest.services?.length > 0 && <div><span className="text-gray-500">Services:</span> {selectedRequest.services.join(', ')}</div>}
 
                   <div className="border-t pt-3 space-y-2">
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => { setQuotationRequest(selectedRequest); setActiveTab("quotation-builder"); }}>
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold" onClick={() => { setQuotationRequest(selectedRequest); setActiveTab("quotation-builder"); }}>
                       <Receipt className="h-4 w-4 mr-1" /> Build Quotation for This Request
                     </Button>
 
@@ -1592,6 +1646,21 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                         <Plus className="h-3 w-3 mr-1" /> Create Event
                       </Button>
                     )}
+
+                    {/* Red Delete Button in action block */}
+                    <Button 
+                      variant="outline" 
+                      className="w-full border-rose-300 text-rose-600 hover:bg-rose-50 text-xs font-bold cursor-pointer"
+                      onClick={() => {
+                        if (window.confirm(`Permanently delete service request #${selectedRequest.id}?`)) {
+                          onDeleteRequest && onDeleteRequest(selectedRequest.id);
+                          setSelectedRequest(null);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 mr-1.5 text-rose-600" />
+                      Permanently Delete This Request
+                    </Button>
                   </div>
 
                   <div className="border-t pt-3 mt-3">
@@ -1611,10 +1680,10 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                 </CardContent>
               </Card>
             ) : (
-              <Card className="sticky top-20">
+              <Card className="sticky top-20 border border-slate-200">
                 <CardContent className="py-8 text-center text-gray-500">
                   <Eye className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  Select a request to view details
+                  Select a request to view details or delete
                 </CardContent>
               </Card>
             )}
