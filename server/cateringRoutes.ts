@@ -1095,15 +1095,23 @@ router.post("/quotations/:id/send", authenticateCateringStaff, requireCateringRo
       await storage.updateCateringRequest(quotation.requestId, { status: "quoted", quotationAmount: String(quotation.totalAmount), quotationNotes: `Quotation ${quotation.quotationNumber} sent to ${quotation.clientEmail}` });
     }
 
-    // Send a copy to TOCEPS company email for records
+    // Send internal audit copy to info@totaggroup.com with quotation PDF attachment
     await EmailService.sendEmail({
-      to: TOCEPS_EMAIL,
+      to: "info@totaggroup.com",
       from: TOCEPS_FROM,
-      subject: `[COPY] Quotation ${quotation.quotationNumber} sent to ${quotation.clientName}`,
+      subject: `[VAULT COPY] Quotation ${quotation.quotationNumber} sent to ${quotation.clientName}`,
       html: htmlContent,
-      text: `A quotation has been sent to ${quotation.clientName} (${quotation.clientEmail}).`,
+      attachments,
+      text: `[VAULT ARCHIVE COPY]
+Official Quotation ${quotation.quotationNumber} has been dispatched to ${quotation.clientEmail}.
+
+Client: ${quotation.clientName} (${quotation.clientCompany || "N/A"})
+Total Amount: ${quotation.currency} ${quotation.totalAmount}
+Valid Until: ${quotation.validUntil}
+
+This quotation is archived in the TOCEPS Executive Document Vault.`,
       type: "notification" as const,
-    }).catch(() => {}); // Silent fail for copy
+    }).catch((err) => console.warn("Failed to dispatch internal quotation copy:", err.message));
 
     console.log(`📧 Quotation ${quotation.quotationNumber} sent to customer: ${quotation.clientEmail} (email sent: ${sent})`);
     res.json({ success: true, sent, message: sent ? `Quotation emailed to ${quotation.clientEmail}` : "Quotation saved — email service not configured (check Zoho credentials)" });
@@ -1382,7 +1390,23 @@ TOCEPS Finance & Billing Desk`,
     // Mark invoice as sent and saved to vault
     await storage.updateCateringInvoice(invoice.id, { status: "sent", vaultSaved: true });
 
-    // Invoice is automatically preserved in Postgres Document Vault; no redundant email copy needed.
+    // Send internal audit vault copy directly to info@totaggroup.com with the attached PDF
+    await EmailService.sendEmail({
+      to: "info@totaggroup.com",
+      from: TOCEPS_FROM,
+      subject: `[VAULT COPY] Invoice ${invoice.invoiceNumber} issued to ${invoice.clientName}`,
+      html: htmlContent,
+      attachments,
+      text: `[VAULT ARCHIVE COPY]
+Official Invoice ${invoice.invoiceNumber} has been dispatched to ${invoice.clientEmail}.
+
+Client: ${invoice.clientName} (${invoice.clientCompany || "N/A"})
+Total Amount: ${invoice.currency} ${invoice.totalAmount}
+Due Date: ${invoice.dueDate}
+
+This document has been archived in the TOCEPS Executive Document Vault.`,
+      type: "notification" as const,
+    }).catch((err) => console.warn("Failed to dispatch internal vault copy:", err.message));
 
     res.json({
       success: true,
