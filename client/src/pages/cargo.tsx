@@ -561,222 +561,7 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
-  // COMPREHENSIVE PRODUCTION DOCUMENT VAULT TYPES & STATE
-  type VaultDocCategory = "ALL" | "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
 
-  interface VaultDocument {
-    id: string;
-    docNumber: string;
-    title: string;
-    category: "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
-    companyName: string;
-    issueDate: string;
-    status: "ACTIVE_VERIFIED" | "PAID_CLEARED" | "RELEASED" | "PENDING_CUSTOMS";
-    amountUsd?: number;
-    reference: string;
-    issuer: string;
-    signatory?: string;
-    summary: string;
-    contentDetails: {
-      items?: { desc: string; qty: string | number; amount: string }[];
-      notes?: string;
-      taxBreakdown?: { duty: number; gst: number; ecowas: number; total: number };
-      carrier?: string;
-      vesselName?: string;
-      sealNumber?: string;
-      gatePassCode?: string;
-    };
-  }
-
-  const [selectedVaultCategory, setSelectedVaultCategory] = useState<VaultDocCategory>("ALL");
-  const [selectedGeneralDoc, setSelectedGeneralDoc] = useState<VaultDocument | null>(null);
-  const [isGeneralDocViewerOpen, setIsGeneralDocViewerOpen] = useState(false);
-  const [docFeedbackInput, setDocFeedbackInput] = useState("");
-  const [docFeedbackLogs, setDocFeedbackLogs] = useState<{ [docId: string]: { sender: string; time: string; text: string }[] }>({
-    "INV-LRA-2026-4412": [
-      { sender: "Officer J. Koffa (Broker)", time: "08:15 AM", text: "ASYCUDA Assessment validated with LRA Collector Berth 2." }
-    ],
-    "RCPT-LRA-ASYCUDA-7731": [
-      { sender: "System Audit", time: "08:30 AM", text: "Payment confirmed via Ecobank Central Treasury Link." }
-    ]
-  });
-
-  const COMPREHENSIVE_VAULT_DOCUMENTS: VaultDocument[] = [
-    // 1. Power of Attorney & Contracts
-    {
-      id: "DOC-POA-9426",
-      docNumber: "TOTAG-POA-2026-9426",
-      title: "Digital Power of Attorney & C&F Clearing Service Agreement",
-      category: "CONTRACT",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-23",
-      status: "ACTIVE_VERIFIED",
-      reference: "LRA-ASYCUDA-AUTH",
-      issuer: "TOTAG Group of Companies Ltd (C&F Directorate)",
-      signatory: "Authorized Managing Director",
-      summary: "Statutory Power of Attorney authorizing TOTAG to act as lawful customs clearing and wharfage agent before LRA, NPA, and APM Terminals.",
-      contentDetails: {
-        notes: "Includes Clauses 1-4: LRA ASYCUDA SAD single-window filing, statutory duty remittance, container free-time monitoring, and electronic vault archiving.",
-        carrier: "Maersk Line / Ethiopian Cargo",
-        sealNumber: "TOTAG-SEAL-88912"
-      }
-    },
-    // 2. Bills of Lading & AWBs
-    {
-      id: "DOC-BL-9920",
-      docNumber: "BL-MAEU-9920148",
-      title: "Ocean Master Bill of Lading (B/L) Manifest",
-      category: "BL_AWB",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-20",
-      status: "ACTIVE_VERIFIED",
-      reference: "MSCU-8840192 / 40' HQ",
-      issuer: "Maersk Shipping Line A/S",
-      summary: "Official maritime cargo manifest for 1x40' High Cube container containing commercial cargo. Port of Loading: Antwerp; Port of Discharge: Freeport of Monrovia Berth 2.",
-      contentDetails: {
-        vesselName: "M/V VEGA GRANAT (Voyage 2608W)",
-        carrier: "Maersk Logistics A/S",
-        sealNumber: "ML-LR-994021",
-        items: [
-          { desc: "40ft High Cube Container (Dry General Cargo)", qty: "1 Unit (40' HQ)", amount: "4,850 kg" },
-          { desc: "Commercial Medical Equipment & Supplies", qty: "120 Cartons", amount: "Declared $48,500 CIF" }
-        ],
-        notes: "Clean on board. Manifest successfully transmitted to LRA ASYCUDA World portal."
-      }
-    },
-    {
-      id: "DOC-AWB-8841",
-      docNumber: "AWB-071-88419203",
-      title: "IATA Air Waybill (AWB) Consignment Note",
-      category: "BL_AWB",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-21",
-      status: "ACTIVE_VERIFIED",
-      reference: "ET-CARGO-ROB-071",
-      issuer: "Ethiopian Airlines Cargo (IATA 071)",
-      summary: "Air Cargo Priority Consignment Note for Cold-Chain pharmaceuticals arriving at Roberts International Airport (ROB) Cargo Gate.",
-      contentDetails: {
-        carrier: "Ethiopian Cargo (Boeing 777F)",
-        vesselName: "Flight ET-920",
-        sealNumber: "IATA-COLD-0042",
-        items: [
-          { desc: "Cold-Chain Pharmaceuticals (2°C to 8°C)", qty: "45 Cartons", amount: "1,470 kg" }
-        ],
-        notes: "Temperature data logger active. Roberts International Airport customs inspection cleared."
-      }
-    },
-    // 3. Invoices & Tax Assessments
-    {
-      id: "DOC-INV-4412",
-      docNumber: "INV-LRA-2026-4412",
-      title: "LRA ASYCUDA Single Administrative Document (SAD) Duty Assessment Bill",
-      category: "INVOICE",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-22",
-      status: "PAID_CLEARED",
-      amountUsd: 12480.00,
-      reference: "SAD-ASYCUDA-2026-0091",
-      issuer: "Liberia Revenue Authority (Customs Directorate)",
-      summary: "Official statutory assessment invoice of customs duties, GST sales tax, and ECOWAS trade levy on declared CIF valuation.",
-      contentDetails: {
-        taxBreakdown: {
-          duty: 7275.00,
-          gst: 4850.00,
-          ecowas: 242.50,
-          total: 12480.00
-        },
-        items: [
-          { desc: "Import Duty (HS 8708.29 - 15.0%)", qty: "CIF $48,500.00", amount: "$7,275.00" },
-          { desc: "Goods & Services Tax (GST - 10.0%)", qty: "CIF $48,500.00", amount: "$4,850.00" },
-          { desc: "ECOWAS Trade Development Levy (0.5%)", qty: "CIF $48,500.00", amount: "$242.50" },
-          { desc: "LRA ASYCUDA Single Window Processing Fee", qty: "Statutory", amount: "$112.50" }
-        ],
-        notes: "Official ASYCUDA Assessment ID: ASY-LR-2026-99214. Remitted in full."
-      }
-    },
-    {
-      id: "DOC-INV-8810",
-      docNumber: "INV-TOTAG-2026-8810",
-      title: "Port Stevedoring, Wharfage & Equipment Handling Invoice",
-      category: "INVOICE",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-22",
-      status: "PAID_CLEARED",
-      amountUsd: 3200.00,
-      reference: "WHARF-MONROVIA-0082",
-      issuer: "TOTAG Stevedoring & Terminal Logistics",
-      summary: "Port handling fees, mobile harbor crane heavy lift, and flatbed transport dispatch from Berth 2 to customer warehouse.",
-      contentDetails: {
-        items: [
-          { desc: "40ft Container Vessel Discharge & Stevedoring", qty: "1 Unit", amount: "$1,450.00" },
-          { desc: "Mobile Harbor Crane Heavy-Lift Allocation", qty: "1 Lift", amount: "$850.00" },
-          { desc: "Bonded Yard Wharfage & APM Terminal Surcharge", qty: "1 Unit", amount: "$450.00" },
-          { desc: "Flatbed Truck Logistics Dispatch to Facility", qty: "1 Trip", amount: "$450.00" }
-        ],
-        notes: "Covered under active enterprise line of credit balance."
-      }
-    },
-    // 4. Payment Receipts
-    {
-      id: "DOC-RCPT-7731",
-      docNumber: "RCPT-LRA-ASYCUDA-7731",
-      title: "LRA Official Customs Tax Payment Receipt",
-      category: "RECEIPT",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-23",
-      status: "PAID_CLEARED",
-      amountUsd: 12480.00,
-      reference: "ECOBANK-TXN-994821",
-      issuer: "Liberia Revenue Authority & Ecobank Liberia",
-      summary: "Official tax clearance confirmation receipt confirming full statutory duty payment for Container TGHU-940218-4.",
-      contentDetails: {
-        notes: "Paid via Electronic Central Bank Settlement Link. ASYCUDA Release Authorization code granted.",
-        items: [
-          { desc: "Customs Duty Assessment Paid", qty: "100%", amount: "$12,480.00 USD" },
-          { desc: "LRA Electronic Confirmation Stamp", qty: "Verified", amount: "VALID_PAID" }
-        ]
-      }
-    },
-    {
-      id: "DOC-RCPT-1992",
-      docNumber: "RCPT-TOTAG-MOMO-1992",
-      title: "Electronic Mobile Money / Bank Wire Settlement Receipt",
-      category: "RECEIPT",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-23",
-      status: "PAID_CLEARED",
-      amountUsd: 3200.00,
-      reference: "MOMO-LONESTAR-88319",
-      issuer: "TOTAG Finance Directorate",
-      summary: "Payment receipt for terminal stevedoring, container grounding, and direct flatbed delivery dispatch.",
-      contentDetails: {
-        notes: "Transaction authenticated via Lonestar MTN Mobile Money Gateway.",
-        items: [
-          { desc: "Port Stevedoring & Delivery Advance", qty: "Electronic", amount: "$3,200.00 USD" }
-        ]
-      }
-    },
-    // 5. Delivery Orders & Gate Passes
-    {
-      id: "DOC-DO-0041",
-      docNumber: "DO-APM-MONROVIA-0041",
-      title: "APM Terminals Official Delivery Order (DO) & Terminal Gate Pass",
-      category: "DELIVERY_ORDER",
-      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
-      issueDate: "2026-08-23",
-      status: "RELEASED",
-      reference: "APM-GATE-PASS-2608",
-      issuer: "APM Terminals Liberia & National Port Authority (NPA)",
-      summary: "Final physical cargo release permit and security gate pass for flatbed container exit at Freeport of Monrovia Commercial Gate.",
-      contentDetails: {
-        gatePassCode: "GP-MONROVIA-883921",
-        carrier: "TOTAG Heavy Flatbed Logistics (Truck #LR-9921)",
-        vesselName: "Freeport Berth 2 Yard",
-        sealNumber: "LRA-CUSTOMS-INSPECTED-2026",
-        notes: "All customs duties, demurrage, and port handling validated. Authorized for 24/7 highway transit across Monrovia corridors."
-      }
-    }
-  ];
 
   // DEDICATED CUSTOMER PORTAL LOGIN MODAL STATE
   const [isCustomerLoginModalOpen, setIsCustomerLoginModalOpen] = useState(false);
@@ -1088,6 +873,223 @@ export default function CargoPage() {
       { name: "Koffi Mensah", role: "Finance & Accounts Payable", email: "accounts@globalpharma.be" }
     ]
   });
+
+  // COMPREHENSIVE PRODUCTION DOCUMENT VAULT TYPES & STATE
+  type VaultDocCategory = "ALL" | "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
+
+  interface VaultDocument {
+    id: string;
+    docNumber: string;
+    title: string;
+    category: "CONTRACT" | "BL_AWB" | "INVOICE" | "RECEIPT" | "DELIVERY_ORDER";
+    companyName: string;
+    issueDate: string;
+    status: "ACTIVE_VERIFIED" | "PAID_CLEARED" | "RELEASED" | "PENDING_CUSTOMS";
+    amountUsd?: number;
+    reference: string;
+    issuer: string;
+    signatory?: string;
+    summary: string;
+    contentDetails: {
+      items?: { desc: string; qty: string | number; amount: string }[];
+      notes?: string;
+      taxBreakdown?: { duty: number; gst: number; ecowas: number; total: number };
+      carrier?: string;
+      vesselName?: string;
+      sealNumber?: string;
+      gatePassCode?: string;
+    };
+  }
+
+  const [selectedVaultCategory, setSelectedVaultCategory] = useState<VaultDocCategory>("ALL");
+  const [selectedGeneralDoc, setSelectedGeneralDoc] = useState<VaultDocument | null>(null);
+  const [isGeneralDocViewerOpen, setIsGeneralDocViewerOpen] = useState(false);
+  const [docFeedbackInput, setDocFeedbackInput] = useState("");
+  const [docFeedbackLogs, setDocFeedbackLogs] = useState<{ [docId: string]: { sender: string; time: string; text: string }[] }>({
+    "INV-LRA-2026-4412": [
+      { sender: "Officer J. Koffa (Broker)", time: "08:15 AM", text: "ASYCUDA Assessment validated with LRA Collector Berth 2." }
+    ],
+    "RCPT-LRA-ASYCUDA-7731": [
+      { sender: "System Audit", time: "08:30 AM", text: "Payment confirmed via Ecobank Central Treasury Link." }
+    ]
+  });
+
+  const COMPREHENSIVE_VAULT_DOCUMENTS: VaultDocument[] = [
+    // 1. Power of Attorney & Contracts
+    {
+      id: "DOC-POA-9426",
+      docNumber: "TOTAG-POA-2026-9426",
+      title: "Digital Power of Attorney & C&F Clearing Service Agreement",
+      category: "CONTRACT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "ACTIVE_VERIFIED",
+      reference: "LRA-ASYCUDA-AUTH",
+      issuer: "TOTAG Group of Companies Ltd (C&F Directorate)",
+      signatory: "Authorized Managing Director",
+      summary: "Statutory Power of Attorney authorizing TOTAG to act as lawful customs clearing and wharfage agent before LRA, NPA, and APM Terminals.",
+      contentDetails: {
+        notes: "Includes Clauses 1-4: LRA ASYCUDA SAD single-window filing, statutory duty remittance, container free-time monitoring, and electronic vault archiving.",
+        carrier: "Maersk Line / Ethiopian Cargo",
+        sealNumber: "TOTAG-SEAL-88912"
+      }
+    },
+    // 2. Bills of Lading & AWBs
+    {
+      id: "DOC-BL-9920",
+      docNumber: "BL-MAEU-9920148",
+      title: "Ocean Master Bill of Lading (B/L) Manifest",
+      category: "BL_AWB",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-20",
+      status: "ACTIVE_VERIFIED",
+      reference: "MSCU-8840192 / 40' HQ",
+      issuer: "Maersk Shipping Line A/S",
+      summary: "Official maritime cargo manifest for 1x40' High Cube container containing commercial cargo. Port of Loading: Antwerp; Port of Discharge: Freeport of Monrovia Berth 2.",
+      contentDetails: {
+        vesselName: "M/V VEGA GRANAT (Voyage 2608W)",
+        carrier: "Maersk Logistics A/S",
+        sealNumber: "ML-LR-994021",
+        items: [
+          { desc: "40ft High Cube Container (Dry General Cargo)", qty: "1 Unit (40' HQ)", amount: "4,850 kg" },
+          { desc: "Commercial Medical Equipment & Supplies", qty: "120 Cartons", amount: "Declared $48,500 CIF" }
+        ],
+        notes: "Clean on board. Manifest successfully transmitted to LRA ASYCUDA World portal."
+      }
+    },
+    {
+      id: "DOC-AWB-8841",
+      docNumber: "AWB-071-88419203",
+      title: "IATA Air Waybill (AWB) Consignment Note",
+      category: "BL_AWB",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-21",
+      status: "ACTIVE_VERIFIED",
+      reference: "ET-CARGO-ROB-071",
+      issuer: "Ethiopian Airlines Cargo (IATA 071)",
+      summary: "Air Cargo Priority Consignment Note for Cold-Chain pharmaceuticals arriving at Roberts International Airport (ROB) Cargo Gate.",
+      contentDetails: {
+        carrier: "Ethiopian Cargo (Boeing 777F)",
+        vesselName: "Flight ET-920",
+        sealNumber: "IATA-COLD-0042",
+        items: [
+          { desc: "Cold-Chain Pharmaceuticals (2°C to 8°C)", qty: "45 Cartons", amount: "1,470 kg" }
+        ],
+        notes: "Temperature data logger active. Roberts International Airport customs inspection cleared."
+      }
+    },
+    // 3. Invoices & Tax Assessments
+    {
+      id: "DOC-INV-4412",
+      docNumber: "INV-LRA-2026-4412",
+      title: "LRA ASYCUDA Single Administrative Document (SAD) Duty Assessment Bill",
+      category: "INVOICE",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-22",
+      status: "PAID_CLEARED",
+      amountUsd: 12480.00,
+      reference: "SAD-ASYCUDA-2026-0091",
+      issuer: "Liberia Revenue Authority (Customs Directorate)",
+      summary: "Official statutory assessment invoice of customs duties, GST sales tax, and ECOWAS trade levy on declared CIF valuation.",
+      contentDetails: {
+        taxBreakdown: {
+          duty: 7275.00,
+          gst: 4850.00,
+          ecowas: 242.50,
+          total: 12480.00
+        },
+        items: [
+          { desc: "Import Duty (HS 8708.29 - 15.0%)", qty: "CIF $48,500.00", amount: "$7,275.00" },
+          { desc: "Goods & Services Tax (GST - 10.0%)", qty: "CIF $48,500.00", amount: "$4,850.00" },
+          { desc: "ECOWAS Trade Development Levy (0.5%)", qty: "CIF $48,500.00", amount: "$242.50" },
+          { desc: "LRA ASYCUDA Single Window Processing Fee", qty: "Statutory", amount: "$112.50" }
+        ],
+        notes: "Official ASYCUDA Assessment ID: ASY-LR-2026-99214. Remitted in full."
+      }
+    },
+    {
+      id: "DOC-INV-8810",
+      docNumber: "INV-TOTAG-2026-8810",
+      title: "Port Stevedoring, Wharfage & Equipment Handling Invoice",
+      category: "INVOICE",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-22",
+      status: "PAID_CLEARED",
+      amountUsd: 3200.00,
+      reference: "WHARF-MONROVIA-0082",
+      issuer: "TOTAG Stevedoring & Terminal Logistics",
+      summary: "Port handling fees, mobile harbor crane heavy lift, and flatbed transport dispatch from Berth 2 to customer warehouse.",
+      contentDetails: {
+        items: [
+          { desc: "40ft Container Vessel Discharge & Stevedoring", qty: "1 Unit", amount: "$1,450.00" },
+          { desc: "Mobile Harbor Crane Heavy-Lift Allocation", qty: "1 Lift", amount: "$850.00" },
+          { desc: "Bonded Yard Wharfage & APM Terminal Surcharge", qty: "1 Unit", amount: "$450.00" },
+          { desc: "Flatbed Truck Logistics Dispatch to Facility", qty: "1 Trip", amount: "$450.00" }
+        ],
+        notes: "Covered under active enterprise line of credit balance."
+      }
+    },
+    // 4. Payment Receipts
+    {
+      id: "DOC-RCPT-7731",
+      docNumber: "RCPT-LRA-ASYCUDA-7731",
+      title: "LRA Official Customs Tax Payment Receipt",
+      category: "RECEIPT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "PAID_CLEARED",
+      amountUsd: 12480.00,
+      reference: "ECOBANK-TXN-994821",
+      issuer: "Liberia Revenue Authority & Ecobank Liberia",
+      summary: "Official tax clearance confirmation receipt confirming full statutory duty payment for Container TGHU-940218-4.",
+      contentDetails: {
+        notes: "Paid via Electronic Central Bank Settlement Link. ASYCUDA Release Authorization code granted.",
+        items: [
+          { desc: "Customs Duty Assessment Paid", qty: "100%", amount: "$12,480.00 USD" },
+          { desc: "LRA Electronic Confirmation Stamp", qty: "Verified", amount: "VALID_PAID" }
+        ]
+      }
+    },
+    {
+      id: "DOC-RCPT-1992",
+      docNumber: "RCPT-TOTAG-MOMO-1992",
+      title: "Electronic Mobile Money / Bank Wire Settlement Receipt",
+      category: "RECEIPT",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "PAID_CLEARED",
+      amountUsd: 3200.00,
+      reference: "MOMO-LONESTAR-88319",
+      issuer: "TOTAG Finance Directorate",
+      summary: "Payment receipt for terminal stevedoring, container grounding, and direct flatbed delivery dispatch.",
+      contentDetails: {
+        notes: "Transaction authenticated via Lonestar MTN Mobile Money Gateway.",
+        items: [
+          { desc: "Port Stevedoring & Delivery Advance", qty: "Electronic", amount: "$3,200.00 USD" }
+        ]
+      }
+    },
+    // 5. Delivery Orders & Gate Passes
+    {
+      id: "DOC-DO-0041",
+      docNumber: "DO-APM-MONROVIA-0041",
+      title: "APM Terminals Official Delivery Order (DO) & Terminal Gate Pass",
+      category: "DELIVERY_ORDER",
+      companyName: customerAccount.companyName || "Jutu Enterprise Ltd",
+      issueDate: "2026-08-23",
+      status: "RELEASED",
+      reference: "APM-GATE-PASS-2608",
+      issuer: "APM Terminals Liberia & National Port Authority (NPA)",
+      summary: "Final physical cargo release permit and security gate pass for flatbed container exit at Freeport of Monrovia Commercial Gate.",
+      contentDetails: {
+        gatePassCode: "GP-MONROVIA-883921",
+        carrier: "TOTAG Heavy Flatbed Logistics (Truck #LR-9921)",
+        vesselName: "Freeport Berth 2 Yard",
+        sealNumber: "LRA-CUSTOMS-INSPECTED-2026",
+        notes: "All customs duties, demurrage, and port handling validated. Authorized for 24/7 highway transit across Monrovia corridors."
+      }
+    }
+  ];
 
   // 2. ELECTRONIC BILLING & PAYMENT GATEWAY MODAL STATE
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
