@@ -48,7 +48,7 @@ export default function Header() {
     { name: "TOTAG General Construction", href: "/construction", tag: "Civil & Infrastructure", icon: HardHat },
     { name: "TOTAG General Merchandise", href: "/general-merchandise", tag: "FMCG Wholesale & Retail", icon: ShoppingBag },
     { name: "TOTAG IT Services & SaaS", href: "/it-services", tag: "Enterprise Managed IT & FIMS", icon: Laptop },
-    { name: "TOTAG Catering & Events (TOCEPS)", href: "/catering", tag: "Executive Banquets & UNIDO", icon: Utensils },
+    { name: "TOTAG Catering & Event Planning Services (TOCEPS)", href: "/catering", tag: "Executive Banquets, Conferences & UNIDO", icon: Utensils },
     { name: "TOTAG Stationery Supplies", href: "/stationery", tag: "Office & Scholastic Procurement", icon: BookOpen },
     { name: "TOTAG Solar Smart Power", href: "/solar", tag: "Microgrids & Deye Inverters", icon: Sun },
   ];
@@ -218,7 +218,7 @@ export default function Header() {
                 <span>FARM Staff Portal</span>
               </button>
             ) : location.startsWith("/catering") ? (
-              // Dedicated TOCEPS Catering Operations Login
+              // Dedicated TOCEPS Operations Portal
               <button 
                 onClick={() => handleNavClick("/catering/ops/login")}
                 className="bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-white text-xs font-black rounded-xl px-4 py-2 shadow-lg cursor-pointer transition-all flex items-center space-x-1.5"

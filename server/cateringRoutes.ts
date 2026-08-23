@@ -88,7 +88,7 @@ function buildRequestNotificationHtml(req: any): string {
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;">
       <div style="background:linear-gradient(135deg,#166534,#16a34a);padding:24px 30px;">
         <h2 style="color:#fff;margin:0;">New Service Request Received</h2>
-        <p style="color:#bbf7d0;margin:6px 0 0;">TOCEPS Catering & Events Planning Services</p>
+        <p style="color:#bbf7d0;margin:6px 0 0;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
       </div>
       <div style="padding:28px 30px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -127,12 +127,12 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
       <div style="background:linear-gradient(135deg,#166534,#16a34a);padding:24px 30px;">
         <h2 style="color:#fff;margin:0;">Service Request Received</h2>
-        <p style="color:#bbf7d0;margin:6px 0 0;">TOCEPS Catering & Events Planning Services</p>
+        <p style="color:#bbf7d0;margin:6px 0 0;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
       </div>
       <div style="padding:28px 30px;">
         <p style="font-size:15px;margin:0 0 18px;">Dear <strong>${req.name}</strong>,</p>
         <p style="font-size:14px;color:#374151;margin:0 0 18px;">
-          Thank you for contacting TOCEPS Catering & Events Planning Services. We have received your service request and our Service Desk team will respond with a <strong>confirmed resource plan and quotation within 24 hours</strong> for routine requests, or within 6–12 hours for urgent requests.
+          Thank you for contacting TOTAG Catering & Event Planning Services (TOCEPS). We have received your service request and our Service Desk team will respond with a <strong>confirmed resource plan and quotation within 24 hours</strong> for routine requests, or within 6–12 hours for urgent requests.
         </p>
         <div style="background:#f0fdf4;border-radius:6px;padding:16px;margin-bottom:18px;">
           <h4 style="margin:0 0 10px;font-size:13px;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;">Your Request Summary</h4>
@@ -154,7 +154,7 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
           <p style="color:#fff;margin:0;font-size:14px;font-weight:500;">For urgent inquiries, contact us directly:</p>
           <p style="color:#bbf7d0;margin:6px 0 0;font-size:14px;"><strong>Email:</strong> toceps@totaggroup.com</p>
         </div>
-        <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">TOCEPS Catering & Events Planning Services | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
+        <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">TOTAG Catering & Event Planning Services (TOCEPS) | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
       </div>
     </div></body></html>
   `;
@@ -177,7 +177,7 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
       <div style="background:linear-gradient(135deg,#166534,#15803d);padding:28px 32px;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
-            <h1 style="color:#fff;margin:0;font-size:24px;">TOCEPS Quotation</h1>
+            <h1 style="color:#fff;margin:0;font-size:24px;">TOTAG Catering (TOCEPS) Official Quotation</h1>
             <p style="color:#bbf7d0;margin:4px 0 0;font-size:14px;">Catering & Events Planning Services</p>
             <p style="color:#86efac;margin:6px 0 0;font-size:13px;">TOTAG Group of Companies Ltd</p>
           </div>
@@ -246,7 +246,7 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
         </div>
 
         <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">This quotation is valid for ${quotation.validUntil ? `until ${quotation.validUntil}` : "30 days"} from the date of issue. Prices are subject to change after expiry.</p>
-        <p style="margin:6px 0 0;font-size:12px;color:#9ca3af;text-align:center;">TOCEPS Catering & Events Planning Services | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
+        <p style="margin:6px 0 0;font-size:12px;color:#9ca3af;text-align:center;">TOTAG Catering & Event Planning Services (TOCEPS) | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
       </div>
     </div></body></html>
   `;
@@ -374,7 +374,7 @@ router.post("/requests", async (req: Request, res: Response) => {
         const emailPayload = {
           to: TOCEPS_EMAIL,
           from: TOCEPS_FROM,
-          subject: `[TOCEPS] New Service Request #${request.id} — ${request.name} (${request.eventType})`,
+          subject: `[TOTAG Catering (TOCEPS)] New Service Request #${request.id} — ${request.name} (${request.eventType})`,
           html: htmlContent,
           text: `New service request received from ${request.name} (${request.email}). Event: ${request.eventType} on ${request.eventDate || "TBD"}. Login to the operations portal to process this request.`,
           type: "notification" as const,
@@ -394,7 +394,7 @@ router.post("/requests", async (req: Request, res: Response) => {
         if (request.email) {
           await EmailService.sendEmail({
             to: request.email,
-            subject: `[TOCEPS] Your Service Request #${request.id} Has Been Received`,
+            subject: `[TOTAG Catering (TOCEPS)] Your Service Request #${request.id} Has Been Received`,
             html: buildCustomerAcknowledgmentHtml(request),
             text: `Dear ${request.name}, thank you for your service request #${request.id}. Our Service Desk will respond with a confirmed resource plan and quotation within 24 hours. For urgent inquiries, contact us at toceps@totaggroup.com.`,
           });
@@ -547,7 +547,7 @@ router.post("/requests/:id/resource-plan", authenticateCateringStaff, requireCat
       <div style="max-width:680px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
         <div style="background:linear-gradient(135deg,#166534,#15803d);padding:28px 32px;">
           <h1 style="color:#fff;margin:0;font-size:22px;">Confirmed Resource Plan</h1>
-          <p style="color:#bbf7d0;margin:4px 0 0;font-size:14px;">TOCEPS Catering & Events Planning Services</p>
+          <p style="color:#bbf7d0;margin:4px 0 0;font-size:14px;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
           <p style="color:#86efac;margin:4px 0 0;font-size:13px;">Reference: Service Request #${request.id}</p>
         </div>
         <div style="padding:28px 32px;">
@@ -590,7 +590,7 @@ router.post("/requests/:id/resource-plan", authenticateCateringStaff, requireCat
             <p style="color:#fff;margin:0;font-size:14px;font-weight:500;">Questions or changes? Contact our Service Desk:</p>
             <p style="color:#bbf7d0;margin:6px 0 0;font-size:14px;"><strong>Email:</strong> toceps@totaggroup.com &nbsp;|&nbsp; <strong>Website:</strong> totaggroup.com</p>
           </div>
-          <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">TOCEPS Catering & Events Planning Services | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
+          <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">TOTAG Catering & Event Planning Services (TOCEPS) | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
         </div>
       </div></body></html>
     `;
@@ -847,7 +847,7 @@ router.post("/staff", authenticateCateringStaff, requireCateringRole("account_ma
         html: emailHtml,
         text: `Dear ${firstName} ${lastName},
 
-Welcome to TOCEPS Catering & Events Services (TOTAG Group of Companies Ltd).
+Welcome to TOTAG Catering & Event Planning Services (TOCEPS) (TOTAG Group of Companies Ltd).
 
 Your staff account has been created:
 Username: ${username}
@@ -1000,7 +1000,7 @@ router.post("/quotations/:id/send", authenticateCateringStaff, requireCateringRo
       from: TOCEPS_FROM,
       subject: `Quotation ${quotation.quotationNumber} from TOCEPS — ${quotation.eventType} on ${quotation.eventDate || "TBD"}`,
       html: htmlContent,
-      text: `Dear ${quotation.clientName},\n\nPlease find your quotation ${quotation.quotationNumber} from TOCEPS Catering & Events Planning Services.\n\nTotal Amount: ${quotation.currency} ${quotation.totalAmount}\nValid Until: ${quotation.validUntil}\n\nFor acceptance or queries, contact us at toceps@totaggroup.com.\n\nBest regards,\nTOCEPS Operations Team\nTOTAG Group of Companies Ltd`,
+      text: `Dear ${quotation.clientName},\n\nPlease find your quotation ${quotation.quotationNumber} from TOTAG Catering & Event Planning Services (TOCEPS).\n\nTotal Amount: ${quotation.currency} ${quotation.totalAmount}\nValid Until: ${quotation.validUntil}\n\nFor acceptance or queries, contact us at toceps@totaggroup.com.\n\nBest regards,\nTOCEPS Operations Team\nTOTAG Group of Companies Ltd`,
       type: "notification" as const,
     });
 
@@ -1058,7 +1058,7 @@ function buildInvoiceEmailHtml(invoice: any): string {
             <table style="border-collapse:collapse;">
               <tr>
                 <td style="padding-right:14px;vertical-align:middle;">
-                  <img src="https://totag.network/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
+                  <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
                 </td>
                 <td style="vertical-align:middle;">
                   <h1 style="margin:0;font-size:20px;letter-spacing:-0.3px;color:#ffffff;">TOTAG Group of Companies Ltd</h1>
@@ -1158,7 +1158,7 @@ function buildInvoiceEmailHtml(invoice: any): string {
 
         <!-- FOOTER & AUDIT VAULT NOTICE -->
         <div style="border-top:1px solid #e2e8f0;padding-top:20px;text-align:center;">
-          <p style="margin:0;font-size:12px;color:#64748b;font-weight:bold;">TOTAG Group of Companies Ltd | TOCEPS Catering & Events Services</p>
+          <p style="margin:0;font-size:12px;color:#64748b;font-weight:bold;">TOTAG Group of Companies Ltd | TOTAG Catering & Event Planning Services (TOCEPS)</p>
           <p style="margin:4px 0 0;font-size:11px;color:#94a3b8;">This official invoice has been automatically archived in the TOCEPS Executive Document Vault. Invoice ID: #${invoice.id}</p>
         </div>
 

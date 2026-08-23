@@ -1309,7 +1309,7 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
               {/* Header */}
               <div className="flex justify-between items-start border-b pb-6">
                 <div className="flex items-center gap-3">
-                  <img src="/images/totag-logo.png" alt="TOTAG Group" className="h-14 w-auto object-contain bg-white p-1 rounded-xl border border-slate-200" />
+                  <img src="/images/totag-logo.png" alt="TOTAG Group" className="h-14 w-auto object-contain bg-white p-1 rounded-xl border border-slate-200" onError={(e) => { e.currentTarget.src = "https://totaggroup.com/images/totag-logo.png"; }} />
                   <div>
                     <h2 className="text-xl font-black text-slate-900">TOTAG Group of Companies Ltd</h2>
                     <p className="text-xs text-emerald-600 font-bold">TOTAG Catering & Event Planning Services (TOCEPS)</p>
@@ -2047,7 +2047,7 @@ Email: toceps@totaggroup.com`;
 
     return `Dear ${clientName},
 
-Thank you for your interest in TOCEPS Catering & Events Planning Services. Please find attached your quotation for the upcoming ${eventType}${eventDate}${daysLine}.
+Thank you for your interest in TOTAG Catering & Event Planning Services (TOCEPS). Please find attached your quotation for the upcoming ${eventType}${eventDate}${daysLine}.
 
 This quotation outlines all services, pricing, and applicable terms. It is valid for ${validDays} days from the date of issue.
 
