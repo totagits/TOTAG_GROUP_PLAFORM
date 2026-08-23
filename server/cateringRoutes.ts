@@ -87,11 +87,11 @@ function buildRequestNotificationHtml(req: any): string {
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;">
       <!-- Unified Corporate Header Matching Website Header -->
-      <div style="background:#0f172a;padding:20px 24px;border-bottom:3px solid #10b981;">
+      <div style="background:#1e293b;padding:20px 24px;border-bottom:3px solid #10b981;">
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -131,8 +131,8 @@ function buildRequestNotificationHtml(req: any): string {
         </div>
         ${req.dietaryRequirements ? `<div style="margin-top:12px;padding:12px;background:#fef2f2;border-left:4px solid #dc2626;border-radius:4px;font-size:14px;"><strong>Dietary / Special Requirements:</strong> ${req.dietaryRequirements}</div>` : ""}
         ${req.details ? `<div style="margin-top:12px;padding:12px;background:#f0f9ff;border-left:4px solid #0284c7;border-radius:4px;font-size:14px;"><strong>Additional Details:</strong> ${req.details}</div>` : ""}
-        <div style="margin-top:24px;padding:14px;background:#166534;border-radius:6px;text-align:center;">
-          <a href="https://totaggroup.com/catering/ops/login" style="color:#fff;font-weight:bold;text-decoration:none;font-size:15px;">Login to Operations Portal → Process Request</a>
+        <div style="margin-top:24px;padding:14px;background:#0f172a;border:1px solid #334155;border-radius:6px;text-align:center;">
+          <a href="https://totaggroup.com/catering/ops/login" style="color:#34d399;font-weight:bold;text-decoration:none;font-size:15px;">Login to Operations Portal → Process Request</a>
         </div>
         <p style="margin-top:20px;font-size:12px;color:#6b7280;">This is an automated notification from the TOCEPS Service Desk system. Request ID: #${req.id}</p>
       </div>
@@ -148,11 +148,11 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
       <!-- Unified Corporate Header Matching Website Header -->
-      <div style="background:#0f172a;padding:20px 24px;border-bottom:3px solid #10b981;">
+      <div style="background:#1e293b;padding:20px 24px;border-bottom:3px solid #10b981;">
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -194,9 +194,15 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
         </div>
         ${req.dietaryRequirements ? `<div style="margin-bottom:14px;padding:12px;background:#fef2f2;border-left:4px solid #dc2626;border-radius:4px;font-size:14px;"><strong>Dietary / Special Requirements:</strong> ${req.dietaryRequirements}</div>` : ""}
         <p style="font-size:14px;color:#374151;margin:0 0 18px;">Our team will review your requirements and contact you at <strong>${req.email}</strong>${req.phone ? ` or ${req.phone}` : ""} to discuss details and share your resource plan and quotation.</p>
-        <div style="background:#166534;border-radius:6px;padding:16px;text-align:center;margin-bottom:18px;">
-          <p style="color:#fff;margin:0;font-size:14px;font-weight:500;">For urgent inquiries, contact us directly:</p>
-          <p style="color:#bbf7d0;margin:6px 0 0;font-size:14px;"><strong>Email:</strong> toceps@totaggroup.com</p>
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:8px;padding:16px 20px;text-align:center;margin-bottom:18px;">
+          <p style="color:#e2e8f0;margin:0;font-size:14px;font-weight:600;">For urgent inquiries or booking modifications, contact us directly:</p>
+          <p style="margin:8px 0 0;font-size:14px;color:#94a3b8;">
+            <strong style="color:#ffffff;">Email:</strong> 
+            <a href="mailto:toceps@totaggroup.com" style="color:#38bdf8;font-weight:bold;text-decoration:underline;">toceps@totaggroup.com</a>
+            <span style="color:#64748b;margin:0 8px;">|</span>
+            <strong style="color:#ffffff;">Portal:</strong> 
+            <a href="https://totaggroup.com/catering" style="color:#34d399;font-weight:bold;text-decoration:underline;">totaggroup.com/catering</a>
+          </p>
         </div>
         <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center;">TOTAG Catering & Event Planning Services (TOCEPS) | TOTAG Group of Companies Ltd | Monrovia, Liberia</p>
       </div>
@@ -219,11 +225,11 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:700px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
       <!-- Unified Corporate Header Matching Website Header -->
-      <div style="background:#0f172a;padding:22px 26px;border-bottom:3px solid #10b981;">
+      <div style="background:#1e293b;padding:22px 26px;border-bottom:3px solid #10b981;">
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -1114,7 +1120,7 @@ function buildInvoiceEmailHtml(invoice: any): string {
             <table style="border-collapse:collapse;">
               <tr>
                 <td style="padding-right:14px;vertical-align:middle;">
-                  <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
+                  <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
                 </td>
                 <td style="vertical-align:middle;">
                   <h1 style="margin:0;font-size:20px;letter-spacing:-0.3px;color:#ffffff;">TOTAG Group of Companies Ltd</h1>
