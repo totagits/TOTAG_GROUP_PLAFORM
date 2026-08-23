@@ -5,16 +5,12 @@ function getCateringApiUrl(endpoint: string): string {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    // On totaggroup.com or localhost, use same-origin relative endpoint directly (no CORS preflight issues)
-    if (host.includes("totaggroup.com") || host === "localhost" || host === "127.0.0.1") {
+    if (host === "localhost" || host === "127.0.0.1") {
       return cleanEndpoint;
     }
-    // On GitHub Pages or external hosts, route to official live domain
-    if (host.includes("github.io")) {
-      return `https://totaggroup.com${cleanEndpoint}`;
-    }
+    return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
   }
-  return cleanEndpoint;
+  return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
 }
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

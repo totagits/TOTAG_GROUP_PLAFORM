@@ -100,16 +100,12 @@ function getCateringApiUrl(endpoint: string): string {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    // On totaggroup.com or localhost, use same-origin relative endpoint directly (no CORS preflight issues)
-    if (host.includes("totaggroup.com") || host === "localhost" || host === "127.0.0.1") {
+    if (host === "localhost" || host === "127.0.0.1") {
       return cleanEndpoint;
     }
-    // On GitHub Pages or external hosts, route to official live domain
-    if (host.includes("github.io")) {
-      return `https://totaggroup.com${cleanEndpoint}`;
-    }
+    return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
   }
-  return cleanEndpoint;
+  return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
 }
 
 async function cateringFetch(url: string, options?: RequestInit) {
@@ -606,7 +602,9 @@ function QuickActionCard({ icon: Icon, title, description, color, onClick }: { i
 // ===== ACCOUNT MANAGER VIEW =====
 
 // ===== INVOICE BUILDER & DOCUMENT VAULT =====
-function InvoiceBuilder({ requests, quotations, onSaveInvoice, onSendInvoice }: any) {
+function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendInvoice }: any) {
+  const [selectedReqId, setSelectedReqId] = useState("");
+  const [selectedQuotId, setSelectedQuotId] = useState("");
   const [clientName, setClientName] = useState("UNIDO Project Management Office");
   const [clientEmail, setClientEmail] = useState("unido-procurement@unido.org");
   const [clientPhone, setClientPhone] = useState("+231-777-900-100");
@@ -667,6 +665,52 @@ function InvoiceBuilder({ requests, quotations, onSaveInvoice, onSendInvoice }: 
     setSubtotal(sub);
     setTaxAmount(taxAmt);
     setTotalAmount(tot > 0 ? tot : 0);
+  };
+
+  const handleImportRequest = (requestId: string) => {
+    setSelectedReqId(requestId);
+    if (!requestId) return;
+    const req = requests.find((r: any) => String(r.id) === String(requestId));
+    if (!req) return;
+    setClientName(req.name || "");
+    setClientEmail(req.email || "");
+    setClientPhone(req.phone || "");
+    setClientCompany(req.company || "");
+    setContractRef(`${req.eventType?.toUpperCase() || 'CATERING'} Contract #${req.id}`);
+    setDatesOfService(req.eventDate || new Date().toISOString().split("T")[0]);
+    setLocationsServed(req.venue || "Monrovia");
+    setQuantitiesDelivered(`${req.guestCount || 100} Guest Portions`);
+    
+    const count = parseInt(req.guestCount as any) || 50;
+    const items = [
+      {
+        description: `${req.eventType || 'Corporate Catering'} Package Service (${req.dietaryRequirements ? `Dietary: ${req.dietaryRequirements}` : 'Full Buffet Service'})`,
+        datesOfService: req.eventDate || 'Scheduled Event Date',
+        location: req.venue || 'Designated Venue',
+        quantity: count,
+        unitPrice: 18.50,
+        total: count * 18.50
+      }
+    ];
+    setLineItems(items);
+    recalculateTotals(items, taxRate, discount);
+    toast({ title: "Loaded Request Data", description: `Pre-filled invoice from request #${req.id} (${req.name})` });
+  };
+
+  const handleImportQuotation = (quotId: string) => {
+    setSelectedQuotId(quotId);
+    if (!quotId) return;
+    const q = quotations.find((quot: any) => String(quot.id) === String(quotId));
+    if (!q) return;
+    setClientName(q.clientName || q.client_name || "");
+    setClientEmail(q.clientEmail || q.client_email || "");
+    setClientCompany(q.clientCompany || q.client_company || "");
+    setContractRef(`Quotation Reference ${q.quotationNumber || q.quotation_number || q.id}`);
+    if (q.lineItems && Array.isArray(q.lineItems)) {
+      setLineItems(q.lineItems);
+      recalculateTotals(q.lineItems, taxRate, discount);
+    }
+    toast({ title: "Loaded Quotation Data", description: `Pre-filled invoice from quotation ${q.quotationNumber || q.id}` });
   };
 
   const handleCreateInvoice = async (sendImmediately: boolean = false) => {
@@ -752,6 +796,50 @@ function InvoiceBuilder({ requests, quotations, onSaveInvoice, onSendInvoice }: 
 
         <CardContent className="pt-6 space-y-6">
           
+          {/* Pre-fill from Customer Bookings or Quotations Toolbar */}
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
+                <ClipboardList className="w-4 h-4 text-emerald-500" />
+                Quick Auto-Fill from Existing Client Records
+              </span>
+              <span className="text-[11px] text-slate-400">Select booking or quotation to load details</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <Label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Load from Customer Request:</Label>
+                <Select value={selectedReqId} onValueChange={handleImportRequest}>
+                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900"><SelectValue placeholder="-- Select Customer Booking --" /></SelectTrigger>
+                  <SelectContent>
+                    {requests.length === 0 ? (
+                      <SelectItem value="none" disabled>No customer bookings in queue</SelectItem>
+                    ) : requests.map((r: any) => (
+                      <SelectItem key={r.id} value={String(r.id)}>
+                        #{r.id} · {r.name} ({r.eventType || "Event"} - {r.guestCount || 0} guests)
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Load from Approved Quotation:</Label>
+                <Select value={selectedQuotId} onValueChange={handleImportQuotation}>
+                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900"><SelectValue placeholder="-- Select Quotation --" /></SelectTrigger>
+                  <SelectContent>
+                    {quotations.length === 0 ? (
+                      <SelectItem value="none" disabled>No quotations available</SelectItem>
+                    ) : quotations.map((q: any) => (
+                      <SelectItem key={q.id} value={String(q.id)}>
+                        {q.quotationNumber || `QUOT-${q.id}`} · {q.clientName || q.client_name || "Client"} (${q.totalAmount ? `$${q.totalAmount}` : ""})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
           {/* Client & Contract Metadata */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
