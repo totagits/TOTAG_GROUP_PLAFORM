@@ -567,6 +567,47 @@ export default function CargoPage() {
   const [loginPassword, setLoginPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
+  // TEAM MEMBER RBAC, DISPUTE & PASSWORD HANDLERS
+  const handleAddTeamUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUserForm.name.trim() || !newUserForm.email.trim()) {
+      toast({ title: "Fields Required", description: "Please enter full name and official email.", variant: "destructive" });
+      return;
+    }
+    setCustomerAccount(prev => ({
+      ...prev,
+      teamMembers: [...prev.teamMembers, { name: newUserForm.name.trim(), role: newUserForm.role, email: newUserForm.email.trim() }]
+    }));
+    setNewUserForm({ name: "", email: "", role: "Logistics Manager (Full Access)" });
+    setIsNewUserModalOpen(false);
+    toast({ title: "Sub-Account Provisioned", description: `Added ${newUserForm.name} to organization access list.` });
+  };
+
+  const handleRaiseDispute = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!disputeForm.notes.trim()) {
+      toast({ title: "Explanation Required", description: "Please enter details explaining this charge dispute.", variant: "destructive" });
+      return;
+    }
+    setIsDisputeModalOpen(false);
+    toast({ title: "Dispute Ticket Logged", description: `Ticket for invoice ${disputeForm.invoiceRef} submitted to TOTAG Finance & Accounts.` });
+  };
+
+  const handlePasswordResetSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!passwordForm.newPassword) {
+      toast({ title: "Password Required", description: "Please enter your new permanent password.", variant: "destructive" });
+      return;
+    }
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast({ title: "Password Mismatch", description: "New password and confirmation do not match.", variant: "destructive" });
+      return;
+    }
+    setCustomerAccount(prev => ({ ...prev, isPasswordChanged: true }));
+    setIsPasswordModalOpen(false);
+    toast({ title: "Password Updated Successfully", description: "Your permanent password has been updated." });
+  };
+
   const handleCustomerLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginEmail.trim() || !loginPassword.trim()) {
@@ -1513,19 +1554,19 @@ export default function CargoPage() {
                     <div className="grid grid-cols-4 gap-3">
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">Gross (kg)</Label>
-                        <Input type="number" value={grossWeight} onChange={(e) => setGrossWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input type="number" value={grossWeight} onChange={(e) => setGrossWeight(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">L (cm)</Label>
-                        <Input type="number" value={lengthCm} onChange={(e) => setLengthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input type="number" value={lengthCm} onChange={(e) => setLengthCm(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">W (cm)</Label>
-                        <Input type="number" value={widthCm} onChange={(e) => setWidthCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input type="number" value={widthCm} onChange={(e) => setWidthCm(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">H (cm)</Label>
-                        <Input type="number" value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input type="number" value={heightCm} onChange={(e) => setHeightCm(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                     </div>
 
@@ -1840,7 +1881,7 @@ export default function CargoPage() {
                         <Input 
                           value={contractForm.blNumber} 
                           onChange={(e) => setContractForm({...contractForm, blNumber: e.target.value})} 
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" 
+                          className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
 
@@ -1849,7 +1890,7 @@ export default function CargoPage() {
                         <select 
                           value={contractForm.containerType}
                           onChange={(e) => setContractForm({...contractForm, containerType: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                         >
                           <option value="20ft Standard (20' GP)">20ft Standard Dry (20' GP)</option>
                           <option value="40ft Standard (40' GP)">40ft Standard Dry (40' GP)</option>
@@ -1865,7 +1906,7 @@ export default function CargoPage() {
                         <select 
                           value={contractForm.cargoCategory}
                           onChange={(e) => setContractForm({...contractForm, cargoCategory: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                         >
                           <option value="Standard Dry General Cargo">Standard Dry General Cargo</option>
                           <option value="Hazmat / Dangerous Goods (Class 1-9)">Hazmat / Dangerous Goods (Class 1-9)</option>
@@ -1880,7 +1921,7 @@ export default function CargoPage() {
                           type="number" 
                           value={contractForm.containerCount} 
                           onChange={(e) => setContractForm({...contractForm, containerCount: Number(e.target.value)})} 
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" 
+                          className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
                         />
                       </div>
 
@@ -1889,7 +1930,7 @@ export default function CargoPage() {
                         <select 
                           value={contractForm.dischargePort}
                           onChange={(e) => setContractForm({...contractForm, dischargePort: e.target.value})}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                         >
                           <option value="Freeport of Monrovia (LRMLW)">Freeport of Monrovia (Berth 2)</option>
                           <option value="Port of Buchanan (LRUCN)">Port of Buchanan Terminal</option>
@@ -2225,7 +2266,7 @@ export default function CargoPage() {
                       <select 
                         value={clearingPort} 
                         onChange={(e) => setClearingPort(e.target.value)}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                       >
                         <option value="Freeport of Monrovia (Berth 2)">Freeport of Monrovia (LRMLW)</option>
                         <option value="Port of Buchanan Terminal">Port of Buchanan (LRUCN)</option>
@@ -2235,7 +2276,7 @@ export default function CargoPage() {
 
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700">Declared Invoice CIF Value ($ USD)</Label>
-                      <Input type="number" value={cifValueUsd} onChange={(e) => setCifValueUsd(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input type="number" value={cifValueUsd} onChange={(e) => setCifValueUsd(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
                   </div>
 
@@ -2244,7 +2285,7 @@ export default function CargoPage() {
                     <select 
                       value={selectedHsCode.code}
                       onChange={(e) => setSelectedHsCode(TARIFF_HS_CODES.find(h => h.code === e.target.value) || TARIFF_HS_CODES[0])}
-                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                     >
                       {TARIFF_HS_CODES.map(h => (
                         <option key={h.code} value={h.code}>
@@ -2710,14 +2751,14 @@ export default function CargoPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">Cargo Piece Barcode</Label>
-                        <Input value={scanBarcode} onChange={(e) => setScanBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input value={scanBarcode} onChange={(e) => setScanBarcode(e.target.value)} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">Operation Type</Label>
                         <select 
                           value={scanType} 
                           onChange={(e) => setScanType(e.target.value as any)}
-                          className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                          className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                         >
                           <option value="RECEIVE">RECEIVE (Terminal Gate)</option>
                           <option value="BIN_ASSIGN">BIN_ASSIGN (Warehouse Rack)</option>
@@ -2730,11 +2771,11 @@ export default function CargoPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">Warehouse Code</Label>
-                        <Input value={warehouseCode} onChange={(e) => setWarehouseCode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input value={warehouseCode} onChange={(e) => setWarehouseCode(e.target.value)} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                       <div>
                         <Label className="text-xs text-slate-600 dark:text-slate-700">Location Barcode</Label>
-                        <Input value={locationBarcode} onChange={(e) => setLocationBarcode(e.target.value)} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                        <Input value={locationBarcode} onChange={(e) => setLocationBarcode(e.target.value)} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                       </div>
                     </div>
 
@@ -2779,7 +2820,7 @@ export default function CargoPage() {
                       <select 
                         value={selectedUld.uldNumber}
                         onChange={(e) => setSelectedUld(ULD_CONTAINERS.find(u => u.uldNumber === e.target.value) || ULD_CONTAINERS[0])}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                       >
                         {ULD_CONTAINERS.map(u => (
                           <option key={u.uldNumber} value={u.uldNumber}>{u.uldNumber} ({u.type}) - Max {u.maxPayloadKg}kg</option>
@@ -2804,7 +2845,7 @@ export default function CargoPage() {
 
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700">Incoming Cargo Piece Weight (kg)</Label>
-                      <Input type="number" value={newItemWeight} onChange={(e) => setNewItemWeight(Number(e.target.value))} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input type="number" value={newItemWeight} onChange={(e) => setNewItemWeight(Number(e.target.value))} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
 
                     <div className="space-y-2 pt-1 bg-slate-100 dark:bg-slate-950/80 p-3.5 rounded-2xl border border-slate-200 dark:border-white/10">
@@ -2865,14 +2906,14 @@ export default function CargoPage() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700">AWB / Cargo Barcode</Label>
-                      <Input value={discrepancyForm.pieceBarcode} onChange={(e) => setDiscrepancyForm({...discrepancyForm, pieceBarcode: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input value={discrepancyForm.pieceBarcode} onChange={(e) => setDiscrepancyForm({...discrepancyForm, pieceBarcode: e.target.value})} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700">Discrepancy Category</Label>
                       <select 
                         value={discrepancyForm.type}
                         onChange={(e) => setDiscrepancyForm({...discrepancyForm, type: e.target.value})}
-                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1"
+                        className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold"
                       >
                         <option value="DAMAGED_CARTON">DAMAGED_CARTON</option>
                         <option value="TEMPERATURE_EXCURSION">TEMPERATURE_EXCURSION</option>
@@ -2883,7 +2924,7 @@ export default function CargoPage() {
                     </div>
                     <div className="md:col-span-3">
                       <Label className="text-xs text-slate-600 dark:text-slate-700">Detailed Description & Evidence Log</Label>
-                      <Input value={discrepancyForm.description} onChange={(e) => setDiscrepancyForm({...discrepancyForm, description: e.target.value})} className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input value={discrepancyForm.description} onChange={(e) => setDiscrepancyForm({...discrepancyForm, description: e.target.value})} className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
                   </div>
 
@@ -3848,7 +3889,7 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 relative"
               >
                 <button 
                   onClick={() => setIsNewUserModalOpen(false)}
@@ -3886,17 +3927,17 @@ export default function CargoPage() {
                   <form onSubmit={handleAddTeamUser} className="space-y-3 pt-2 border-t border-slate-200 dark:border-white/10">
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Team Member Full Name</Label>
-                      <Input value={newUserForm.name} onChange={(e) => setNewUserForm({...newUserForm, name: e.target.value})} placeholder="e.g. Samuel Tubman" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input value={newUserForm.name} onChange={(e) => setNewUserForm({...newUserForm, name: e.target.value})} placeholder="e.g. Samuel Tubman" className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
 
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Official Email Address</Label>
-                      <Input type="email" value={newUserForm.email} onChange={(e) => setNewUserForm({...newUserForm, email: e.target.value})} placeholder="e.g. samuel@globalpharma.be" className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                      <Input type="email" value={newUserForm.email} onChange={(e) => setNewUserForm({...newUserForm, email: e.target.value})} placeholder="e.g. samuel@globalpharma.be" className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                     </div>
 
                     <div>
                       <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">RBAC Role Assignment</Label>
-                      <select value={newUserForm.role} onChange={(e) => setNewUserForm({...newUserForm, role: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1">
+                      <select value={newUserForm.role} onChange={(e) => setNewUserForm({...newUserForm, role: e.target.value})} className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold">
                         <option value="Logistics Manager (Full Access)">Logistics Manager (Full Access)</option>
                         <option value="Customs Officer (Docs Only)">Customs Officer (Docs Only)</option>
                         <option value="Finance & Accounts Payable">Finance & Accounts Payable</option>
@@ -3904,7 +3945,7 @@ export default function CargoPage() {
                       </select>
                     </div>
 
-                    <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl py-3 text-xs">
+                    <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl py-3 text-xs shadow-md cursor-pointer">
                       Send Invitation & Provision Sub-Account
                     </Button>
                   </form>
@@ -3927,7 +3968,7 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 relative"
               >
                 <button 
                   onClick={() => setIsDisputeModalOpen(false)}
@@ -3954,7 +3995,7 @@ export default function CargoPage() {
 
                   <div>
                     <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Dispute Reason / Category</Label>
-                    <select value={disputeForm.category} onChange={(e) => setDisputeForm({...disputeForm, category: e.target.value})} className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs p-2.5 mt-1">
+                    <select value={disputeForm.category} onChange={(e) => setDisputeForm({...disputeForm, category: e.target.value})} className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-xl text-xs p-2.5 mt-1 font-semibold">
                       <option value="Demurrage Charge Penalty">Demurrage Charge Penalty Appeal</option>
                       <option value="Weight / Volumetric Rate Discrepancy">Weight / Volumetric Rate Discrepancy</option>
                       <option value="Unapplied Credit Note">Unapplied Credit Note / Payment</option>
@@ -3964,10 +4005,10 @@ export default function CargoPage() {
 
                   <div>
                     <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Explanation & Claim Details</Label>
-                    <Input value={disputeForm.notes} onChange={(e) => setDisputeForm({...disputeForm, notes: e.target.value})} placeholder="Describe why this charge is being disputed..." className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1" />
+                    <Input value={disputeForm.notes} onChange={(e) => setDisputeForm({...disputeForm, notes: e.target.value})} placeholder="Describe why this charge is being disputed..." className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" />
                   </div>
 
-                  <Button type="submit" className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl py-3 text-xs shadow-lg">
+                  <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black rounded-xl py-3 text-xs shadow-md cursor-pointer">
                     Submit Formal Dispute Ticket
                   </Button>
                 </form>
@@ -3989,7 +4030,7 @@ export default function CargoPage() {
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-slate-900 relative"
+                className="bg-white text-slate-900 border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6 relative"
               >
                 <button 
                   onClick={() => setIsPasswordModalOpen(false)}
@@ -4026,7 +4067,7 @@ export default function CargoPage() {
                       value={passwordForm.newPassword} 
                       onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
                       placeholder="Enter new strong password..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1"
+                      className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold"
                     />
                   </div>
 
@@ -4037,7 +4078,7 @@ export default function CargoPage() {
                       value={passwordForm.confirmPassword} 
                       onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
                       placeholder="Re-enter new password..."
-                      className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1"
+                      className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold"
                     />
                   </div>
 
