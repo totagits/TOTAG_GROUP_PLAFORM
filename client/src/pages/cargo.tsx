@@ -893,6 +893,37 @@ export default function CargoPage() {
     });
   };
 
+  // FILE UPLOAD TRIGGERS & SELECTION HANDLERS
+  const handleTriggerBlUpload = () => {
+    blFileInputRef.current?.click();
+  };
+
+  const handleTriggerPackingListUpload = () => {
+    packingListFileInputRef.current?.click();
+  };
+
+  const handleBlFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formattedSize = file.size > 1024 * 1024 
+        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
+        : `${Math.round(file.size / 1024)} KB`;
+      setUploadedBlCopy({ name: file.name, size: formattedSize, status: "VERIFIED" });
+      toast({ title: "Bill of Lading Selected!", description: `Attached ${file.name} (${formattedSize}) to digital contract.` });
+    }
+  };
+
+  const handlePackingListFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formattedSize = file.size > 1024 * 1024 
+        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
+        : `${Math.round(file.size / 1024)} KB`;
+      setUploadedPackingList({ name: file.name, size: formattedSize, status: "VERIFIED" });
+      toast({ title: "Packing List File Selected!", description: `Attached ${file.name} (${formattedSize}) for LRA declaration.` });
+    }
+  };
+
   // AUTOMATED CONTRACT EXECUTION & DUAL ACCOUNT DISPATCH LOGIC
   // 1. STAGE INTAKE & OPEN FULL CONTRACT TERMS & E-SIGNATURE REVIEW MODAL
   const handleExecuteContract = (e: React.FormEvent) => {
