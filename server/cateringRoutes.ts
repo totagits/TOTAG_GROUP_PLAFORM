@@ -86,9 +86,31 @@ function buildRequestNotificationHtml(req: any): string {
   return `
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;">
-      <div style="background:linear-gradient(135deg,#166534,#16a34a);padding:24px 30px;">
-        <h2 style="color:#fff;margin:0;">New Service Request Received</h2>
-        <p style="color:#bbf7d0;margin:6px 0 0;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
+      <!-- Unified Corporate Header Matching Website Header -->
+      <div style="background:#0f172a;padding:20px 24px;border-bottom:3px solid #10b981;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="width:68px;vertical-align:middle;">
+              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+            </td>
+            <td style="vertical-align:middle;padding-left:14px;">
+              <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
+                <span style="color:#34d399;">TOTAG</span> <span style="color:#38bdf8;">Group</span> <span style="color:#fbbf24;font-size:13px;font-weight:700;">of Companies Ltd</span>
+              </div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;font-weight:500;">
+                Innovating Tomorrow, Empowering Today
+              </div>
+              <div style="font-size:12px;color:#34d399;font-weight:bold;margin-top:4px;">
+                TOTAG Catering & Event Planning Services (TOCEPS)
+              </div>
+            </td>
+            <td style="text-align:right;vertical-align:middle;">
+              <span style="background:rgba(16,185,129,0.18);color:#34d399;font-size:11px;font-weight:bold;padding:5px 12px;border-radius:20px;border:1px solid rgba(52,211,153,0.4);display:inline-block;">
+                SERVICE REQUEST
+              </span>
+            </td>
+          </tr>
+        </table>
       </div>
       <div style="padding:28px 30px;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -125,9 +147,31 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
   return `
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-      <div style="background:linear-gradient(135deg,#166534,#16a34a);padding:24px 30px;">
-        <h2 style="color:#fff;margin:0;">Service Request Received</h2>
-        <p style="color:#bbf7d0;margin:6px 0 0;">TOTAG Catering & Event Planning Services (TOCEPS)</p>
+      <!-- Unified Corporate Header Matching Website Header -->
+      <div style="background:#0f172a;padding:20px 24px;border-bottom:3px solid #10b981;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="width:68px;vertical-align:middle;">
+              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+            </td>
+            <td style="vertical-align:middle;padding-left:14px;">
+              <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
+                <span style="color:#34d399;">TOTAG</span> <span style="color:#38bdf8;">Group</span> <span style="color:#fbbf24;font-size:13px;font-weight:700;">of Companies Ltd</span>
+              </div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;font-weight:500;">
+                Innovating Tomorrow, Empowering Today
+              </div>
+              <div style="font-size:12px;color:#34d399;font-weight:bold;margin-top:4px;">
+                TOTAG Catering & Event Planning Services (TOCEPS)
+              </div>
+            </td>
+            <td style="text-align:right;vertical-align:middle;">
+              <span style="background:rgba(16,185,129,0.18);color:#34d399;font-size:11px;font-weight:bold;padding:5px 12px;border-radius:20px;border:1px solid rgba(52,211,153,0.4);display:inline-block;">
+                OFFICIAL ACKNOWLEDGMENT
+              </span>
+            </td>
+          </tr>
+        </table>
       </div>
       <div style="padding:28px 30px;">
         <p style="font-size:15px;margin:0 0 18px;">Dear <strong>${req.name}</strong>,</p>
@@ -174,18 +218,30 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
   return `
     <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px;">
     <div style="max-width:700px;margin:auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-      <div style="background:linear-gradient(135deg,#166534,#15803d);padding:28px 32px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <h1 style="color:#fff;margin:0;font-size:24px;">TOTAG Catering (TOCEPS) Official Quotation</h1>
-            <p style="color:#bbf7d0;margin:4px 0 0;font-size:14px;">Catering & Events Planning Services</p>
-            <p style="color:#86efac;margin:6px 0 0;font-size:13px;">TOTAG Group of Companies Ltd</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="color:#fff;font-weight:bold;font-size:18px;margin:0;">${quotation.quotationNumber}</p>
-            <p style="color:#bbf7d0;font-size:13px;margin:4px 0 0;">Valid until: ${quotation.validUntil || "30 days"}</p>
-          </div>
-        </div>
+      <!-- Unified Corporate Header Matching Website Header -->
+      <div style="background:#0f172a;padding:22px 26px;border-bottom:3px solid #10b981;">
+        <table style="width:100%;border-collapse:collapse;">
+          <tr>
+            <td style="width:68px;vertical-align:middle;">
+              <img src="https://totaggroup.com/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+            </td>
+            <td style="vertical-align:middle;padding-left:14px;">
+              <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
+                <span style="color:#34d399;">TOTAG</span> <span style="color:#38bdf8;">Group</span> <span style="color:#fbbf24;font-size:13px;font-weight:700;">of Companies Ltd</span>
+              </div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:2px;font-weight:500;">
+                Innovating Tomorrow, Empowering Today
+              </div>
+              <div style="font-size:12px;color:#34d399;font-weight:bold;margin-top:4px;">
+                TOTAG Catering & Event Planning Services (TOCEPS)
+              </div>
+            </td>
+            <td style="text-align:right;vertical-align:middle;">
+              <div style="color:#ffffff;font-weight:bold;font-size:16px;margin:0;">${quotation.quotationNumber}</div>
+              <div style="color:#34d399;font-size:12px;margin-top:2px;">Valid until: ${quotation.validUntil || "30 days"}</div>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <div style="padding:28px 32px;">
