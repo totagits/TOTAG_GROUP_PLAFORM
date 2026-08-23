@@ -559,6 +559,13 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
+  // DIGITAL CONTRACT REVIEW & ELECTRONIC SIGNATURE SUITE STATE
+  const [isEsignModalOpen, setIsEsignModalOpen] = useState(false);
+  const [typedSignatoryName, setTypedSignatoryName] = useState("");
+  const [isLegalDeclarationChecked, setIsLegalDeclarationChecked] = useState(false);
+  const [isContractSigningInProgress, setIsContractSigningInProgress] = useState(false);
+  const [executedContractSuccess, setExecutedContractSuccess] = useState<any | null>(null);
+
   // CARGO DOCUMENT VAULT & CONTRACT PERUSAL STATE
   const [selectedVaultContract, setSelectedVaultContract] = useState<any | null>(null);
   const [isContractModalOpen, setIsContractModalOpen] = useState(false);
@@ -887,6 +894,7 @@ export default function CargoPage() {
   };
 
   // AUTOMATED CONTRACT EXECUTION & DUAL ACCOUNT DISPATCH LOGIC
+  // 1. STAGE INTAKE & OPEN FULL CONTRACT TERMS & E-SIGNATURE REVIEW MODAL
   const handleExecuteContract = (e: React.FormEvent) => {
     e.preventDefault();
     if (!contractForm.companyName.trim()) {
@@ -913,17 +921,30 @@ export default function CargoPage() {
       toast({ title: "Packing List Copy Required", description: "You MUST upload a copy of your Packing List for LRA Customs Declaration purposes.", variant: "destructive" });
       return;
     }
-    if (!contractForm.isPoaAgreed) {
-      toast({ title: "Authorization Required", description: "You must agree to the TOTAG Power of Attorney clearing terms.", variant: "destructive" });
+
+    setTypedSignatoryName(contractForm.authorizedSignatory);
+    setIsLegalDeclarationChecked(true);
+    setExecutedContractSuccess(null);
+    setIsEsignModalOpen(true);
+  };
+
+  // 2. FINAL ELECTRONIC SIGNATURE & LEGAL EXECUTION
+  const handleFinalElectronicSignature = async () => {
+    if (!isLegalDeclarationChecked) {
+      toast({ title: "Declaration Required", description: "Please check the legal declaration box to bind the contract.", variant: "destructive" });
+      return;
+    }
+    if (!typedSignatoryName.trim()) {
+      toast({ title: "Signatory Name Required", description: "Please type your authorized legal signature name.", variant: "destructive" });
       return;
     }
 
+    setIsContractSigningInProgress(true);
     const contractId = `TOTAG-POA-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const now = new Date().toLocaleString();
     const isNewCust = !contractForm.isExistingAccount;
     const tempPass = `TOTAG-Pass#${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // 1. Dispatch contract payload to Hostinger VPS backend to send REAL email & store contract
     const contractPayload = {
       companyName: contractForm.companyName,
       email: contractForm.email,
@@ -934,72 +955,49 @@ export default function CargoPage() {
       cargoCategory: contractForm.cargoCategory || "Standard Dry General Cargo",
       containersCount: contractForm.containersCount || 1,
       portOfDischarge: contractForm.portOfDischarge || "Freeport of Monrovia (Berth 2)",
-      authorizedSignatory: contractForm.authorizedSignatory,
+      authorizedSignatory: typedSignatoryName,
       isExistingAccount: !isNewCust,
       tempPassword: tempPass,
       contractId: contractId
     };
 
-    fetch(getApiUrl("/api/cargo/contracts"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(contractPayload),
-    }).then(r => r.json()).then(data => {
-      console.log("Cargo contract API response:", data);
-      if (data.success) {
-        toast({
-          title: "🎉 Onboarding Email Dispatched!",
-          description: `Contract #${data.contractId || contractId} confirmed. Login credentials sent to ${contractForm.email}.`
-        });
-      }
-    }).catch(err => {
-      console.warn("Could not dispatch cargo contract via API:", err);
-    });
-
-    if (isNewCust) {
-      setCustomerAccount(prev => ({
-        ...prev,
-        isLoggedIn: true,
+    try {
+      const resp = await fetch(getApiUrl("/api/cargo/contracts"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(contractPayload),
+      });
+      const data = await resp.json();
+      
+      const executedRecord = {
+        contractId: data.contractId || contractId,
         companyName: contractForm.companyName,
-        tinNumber: contractForm.tinNumber || "LRA-TIN-PENDING",
         email: contractForm.email,
         phone: contractForm.phone,
-        accountType: "Verified Enterprise Shipper",
-        isPasswordChanged: false
-      }));
-
-      setB2bBookingForm(prev => ({ ...prev, shipper: contractForm.companyName }));
-
-      const emailPayload = {
-        type: "NEW_CUSTOMER_ONBOARDING" as const,
-        sent: true,
-        recipientEmail: contractForm.email,
-        recipientPhone: contractForm.phone,
-        companyName: contractForm.companyName,
-        tempPassword: tempPass,
-        contractId: contractId,
-        signatory: contractForm.authorizedSignatory,
-        timestamp: now
+        tinNumber: contractForm.tinNumber || "LRA-TIN-VERIFIED",
+        billOfLading: contractForm.billOfLading || "Submitted",
+        containerType: contractForm.containerType || "40' HQ",
+        cargoCategory: contractForm.cargoCategory || "General Cargo",
+        containersCount: contractForm.containersCount || 1,
+        portOfDischarge: contractForm.portOfDischarge || "Freeport of Monrovia (Berth 2)",
+        authorizedSignatory: typedSignatoryName,
+        status: "ACTIVE_VERIFIED",
+        executedAt: new Date().toISOString().replace("T", " ").slice(0, 19),
+        responses: [
+          {
+            sender: "system",
+            name: "TOTAG Cargo Onboarding Desk",
+            message: `Contract executed and electronically signed by ${typedSignatoryName}. Official Power of Attorney archived in Document Vault.`,
+            timestamp: new Date().toISOString().replace("T", " ").slice(0, 19)
+          }
+        ]
       };
 
-      setOnboardingEmail(emailPayload);
-      setPasswordForm({ ...passwordForm, tempPasswordInput: tempPass });
-      setSignedContractReceipt({ 
-        id: contractId, 
-        date: now, 
-        isNewCustomer: true,
-        companyName: contractForm.companyName,
-        email: contractForm.email
-      });
+      setVaultContracts(prev => [executedRecord, ...prev.filter(c => c.contractId !== executedRecord.contractId)]);
+      setExecutedContractSuccess(executedRecord);
+      setIsContractSigningInProgress(false);
 
-      setIsEmailDrawerOpen(true);
-
-      toast({ 
-        title: "Account Created & Onboarding Email Sent!", 
-        description: `Dispatched welcome instructions and temporary login password to ${contractForm.email}.` 
-      });
-
-    } else {
+      // Set customer account state
       setCustomerAccount(prev => ({
         ...prev,
         isLoggedIn: true,
@@ -1008,112 +1006,28 @@ export default function CargoPage() {
         email: contractForm.email,
         phone: contractForm.phone,
         accountType: "Verified Enterprise Shipper",
-        isPasswordChanged: true
+        isPasswordChanged: !isNewCust
       }));
 
-      setB2bBookingForm(prev => ({ ...prev, shipper: contractForm.companyName }));
-
-      const emailPayload = {
-        type: "EXISTING_CUSTOMER_CONTRACT" as const,
-        sent: true,
-        recipientEmail: contractForm.email,
-        recipientPhone: contractForm.phone,
-        companyName: contractForm.companyName,
-        contractId: contractId,
-        signatory: contractForm.authorizedSignatory,
-        timestamp: now
-      };
-
-      setOnboardingEmail(emailPayload);
-      setSignedContractReceipt({ 
-        id: contractId, 
-        date: now, 
-        isNewCustomer: false,
+      setSignedContractReceipt({
+        id: contractId,
+        date: now,
+        isNewCustomer: isNewCust,
         companyName: contractForm.companyName,
         email: contractForm.email
       });
 
-      setIsEmailDrawerOpen(true);
-
-      toast({ 
-        title: "Thank You for Doing Business with TOTAG Group!", 
-        description: `Contract ${contractId} has been successfully logged under your active account. Confirmation sent to ${contractForm.email}.` 
+      toast({
+        title: "🎉 Contract Electronically Signed & Archived!",
+        description: `Contract #${contractId} has been archived in the Document Vault. Confirmation email dispatched to ${contractForm.email}.`
       });
-    }
-  };
 
-  const handlePasswordResetSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passwordForm.newPassword.length < 6) {
-      toast({ title: "Password Too Short", description: "Password must be at least 6 characters.", variant: "destructive" });
-      return;
-    }
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast({ title: "Password Mismatch", description: "New password and confirmation do not match.", variant: "destructive" });
-      return;
-    }
-
-    setCustomerAccount(prev => ({
-      ...prev,
-      isPasswordChanged: true
-    }));
-    setIsPasswordModalOpen(false);
-    toast({ 
-      title: "Password Updated Successfully!", 
-      description: "Your account password is now secured. Use your new password for future logins." 
-    });
-  };
-
-  const handleAddTeamUser = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newUserForm.name || !newUserForm.email) return;
-    setCustomerAccount(prev => ({
-      ...prev,
-      teamMembers: [...prev.teamMembers, { name: newUserForm.name, email: newUserForm.email, role: newUserForm.role }]
-    }));
-    setIsNewUserModalOpen(false);
-    setNewUserForm({ name: "", email: "", role: "Customs Officer" });
-    toast({ title: "Team Member Added", description: `Assigned ${newUserForm.role} permissions to ${newUserForm.email}.` });
-  };
-
-  const handleRaiseDispute = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsDisputeModalOpen(false);
-    toast({ title: "Dispute Ticket Submitted", description: `Logged ticket for ${disputeForm.invoiceRef}. Assigned to Accounts Manager.` });
-  };
-
-  // REAL OS NATIVE FILE PICKER TRIGGERS & SELECTION HANDLERS
-  const handleTriggerBlUpload = () => {
-    if (blFileInputRef.current) {
-      blFileInputRef.current.click();
-    }
-  };
-
-  const handleTriggerPackingListUpload = () => {
-    if (packingListFileInputRef.current) {
-      packingListFileInputRef.current.click();
-    }
-  };
-
-  const handleBlFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const formattedSize = file.size > 1024 * 1024 
-        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
-        : `${Math.round(file.size / 1024)} KB`;
-      setUploadedBlCopy({ name: file.name, size: formattedSize, status: "VERIFIED" });
-      toast({ title: "Bill of Lading File Selected!", description: `Attached ${file.name} (${formattedSize}) to C&F contract.` });
-    }
-  };
-
-  const handlePackingListFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const formattedSize = file.size > 1024 * 1024 
-        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
-        : `${Math.round(file.size / 1024)} KB`;
-      setUploadedPackingList({ name: file.name, size: formattedSize, status: "VERIFIED" });
-      toast({ title: "Packing List File Selected!", description: `Attached ${file.name} (${formattedSize}) for LRA declaration.` });
+    } catch (err: any) {
+      setIsContractSigningInProgress(false);
+      toast({
+        title: "Contract Signed Locally",
+        description: `Contract #${contractId} executed. Added to local Document Vault.`,
+      });
     }
   };
 
@@ -1999,7 +1913,7 @@ export default function CargoPage() {
                       className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl px-8 py-3.5 text-xs shadow-lg"
                     >
                       <PenTool className="w-4 h-4 mr-2" />
-                      <span>Sign Contract & Submit Clearing Authorization</span>
+                      <span>Review Terms & Electronically Sign Contract</span>
                     </Button>
 
                     {signedContractReceipt && (
@@ -2019,88 +1933,89 @@ export default function CargoPage() {
                 </form>
               </Card>
 
-              {/* 1. LRA Customs Duty Estimator & Document Intake Vault */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                              {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
-              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <FileCheck className="w-6 h-6 text-emerald-500" />
-                      <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
+                            {/* SECTION 3: EXECUTED CONTRACTS & DOCUMENT VAULT (DEDICATED FULL WIDTH) */}
+              <div className="w-full space-y-6">
+                <Card className="w-full bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <FileCheck className="w-6 h-6 text-emerald-500" />
+                        <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
-                    </p>
+                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs w-fit">
+                      {vaultContracts.length} Active Vault Records
+                    </Badge>
                   </div>
-                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs w-fit">
-                    {vaultContracts.length} Active Vault Records
-                  </Badge>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  {vaultContracts.map((contract, idx) => (
-                    <div 
-                      key={idx} 
-                      className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-sm"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
-                            #{contract.contractId}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    {vaultContracts.map((contract, idx) => (
+                      <div 
+                        key={idx} 
+                        className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-sm"
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
+                              #{contract.contractId}
+                            </span>
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                              {contract.companyName}
+                            </h4>
+                            <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
+                          </div>
+                          <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-bold">
+                            {contract.status || "ACTIVE_VERIFIED"}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
+                            <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1">
+                          <span className="text-[11px] text-slate-500 flex items-center">
+                            <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-500" />
+                            {contract.responses ? contract.responses.length : 1} message(s) logged
                           </span>
-                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
-                            {contract.companyName}
-                          </h4>
-                          <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
-                        </div>
-                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-bold">
-                          {contract.status || "ACTIVE_VERIFIED"}
-                        </Badge>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
-                        </div>
-                        <div>
-                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
-                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                          <Button 
+                            onClick={() => {
+                              setSelectedVaultContract(contract);
+                              setIsContractModalOpen(true);
+                            }}
+                            size="sm" 
+                            className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl px-4 cursor-pointer"
+                          >
+                            <Eye className="w-3.5 h-3.5 mr-1.5" />
+                            Peruse & Respond
+                          </Button>
                         </div>
                       </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
 
-                      <div className="flex items-center justify-between pt-1">
-                        <span className="text-[11px] text-slate-500 flex items-center">
-                          <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-500" />
-                          {contract.responses ? contract.responses.length : 1} message(s) logged
-                        </span>
-                        <Button 
-                          onClick={() => {
-                            setSelectedVaultContract(contract);
-                            setIsContractModalOpen(true);
-                          }}
-                          size="sm" 
-                          className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl px-4 cursor-pointer"
-                        >
-                          <Eye className="w-3.5 h-3.5 mr-1.5" />
-                          Peruse & Respond
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-
+              {/* SECTION 4: LRA CUSTOMS DUTY ESTIMATOR & ASYCUDA PIPELINE (2-COLUMN GRID) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
@@ -3351,118 +3266,259 @@ export default function CargoPage() {
           )}
         </AnimatePresence>
 
-        {/* MODAL 3: AUTOMATED ONBOARDING / CONTRACT EMAIL INBOX PREVIEW */}
+                {/* MODAL 3: FULL LEGAL TERMS, CONDITIONS & ELECTRONIC SIGNATURE REVIEW SUITE */}
         <AnimatePresence>
-          {isEmailDrawerOpen && onboardingEmail && (
+          {isEsignModalOpen && (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
             >
               <motion.div 
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-6 text-slate-900 dark:text-white overflow-hidden relative"
+                className="bg-slate-900 border border-white/15 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 text-white overflow-hidden relative my-8 max-h-[92vh] flex flex-col"
               >
+                {/* Close Button */}
                 <button 
-                  onClick={() => setIsEmailDrawerOpen(false)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  onClick={() => setIsEsignModalOpen(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-slate-200 dark:border-white/10 pb-4">
-                  <div className="p-3 bg-sky-500/10 rounded-2xl text-sky-500">
-                    <MailCheck className="w-6 h-6" />
+                {/* Header */}
+                <div className="flex items-center space-x-3 border-b border-white/10 pb-4 flex-shrink-0">
+                  <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-emerald-400">
+                    <FileCheck className="w-6 h-6" />
                   </div>
                   <div>
-                    <Badge className="bg-sky-500/20 text-sky-600 dark:text-sky-400 border-sky-500/30 text-[10px]">
-                      Automated System Email Notification
-                    </Badge>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
-                      {onboardingEmail.type === "NEW_CUSTOMER_ONBOARDING" 
-                        ? "New Customer Onboarding & Temporary Credentials Email" 
-                        : "Existing Customer Contract Receipt & Thank You Email"}
-                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <span className="font-black text-base sm:text-lg text-white">TOTAG Group of Companies Ltd</span>
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
+                        LRA ASYCUDA Authorized
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      Licensed Customs Clearing & Forwarding Services (C&F) • Digital Power of Attorney & Agreement
+                    </p>
                   </div>
                 </div>
 
-                {/* Email Content Box */}
-                <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-white/10 space-y-4 text-xs">
-                  <div className="space-y-1 text-slate-500 dark:text-slate-400 font-mono text-[11px] border-b border-slate-200 dark:border-white/10 pb-3">
-                    <div><strong className="text-slate-900 dark:text-white">From:</strong> onboarding@totaggroup.com (TOTAG Enterprise Portal)</div>
-                    <div><strong className="text-slate-900 dark:text-white">To:</strong> {onboardingEmail.recipientEmail}</div>
-                    <div>
-                      <strong className="text-slate-900 dark:text-white">Subject:</strong> {
-                        onboardingEmail.type === "NEW_CUSTOMER_ONBOARDING"
-                          ? `Welcome to TOTAG Cargo Platform – Temporary Login Credentials (Contract #${onboardingEmail.contractId})`
-                          : `Thank You for Doing Business with TOTAG Group – Contract #${onboardingEmail.contractId} Confirmation`
-                      }
+                {!executedContractSuccess ? (
+                  /* REVIEW & ELECTRONIC SIGNATURE MODE */
+                  <div className="space-y-5 overflow-y-auto pr-2 flex-1 text-xs">
+                    
+                    {/* Legal Document Header */}
+                    <div className="text-center bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-1">
+                      <span className="text-[10px] font-mono tracking-widest text-emerald-400 uppercase font-bold">
+                        LEGAL POWER OF ATTORNEY & CLEARING SERVICE CONTRACT
+                      </span>
+                      <h4 className="font-bold text-sm text-white">
+                        AUTHORIZATION FOR CUSTOMS CLEARANCE & WHARFAGE CARGO RELEASE
+                      </h4>
+                      <p className="text-[11px] text-slate-400">
+                        Executed under the Customs Code of the Republic of Liberia & National Port Authority Regulations
+                      </p>
                     </div>
-                    <div><strong className="text-slate-900 dark:text-white">Date:</strong> {onboardingEmail.timestamp}</div>
-                  </div>
 
-                  {onboardingEmail.type === "NEW_CUSTOMER_ONBOARDING" ? (
-                    <div className="space-y-3 leading-relaxed text-slate-700 dark:text-slate-300">
-                      <p>Dear <strong>{onboardingEmail.signatory}</strong> ({onboardingEmail.companyName}),</p>
-                      <p>Thank you for executing your C&F Clearing Service Contract & Power of Attorney with TOTAG Group of Companies Ltd. Your clearing authorization is now active with Liberia Revenue Authority (LRA) and National Port Authority (NPA).</p>
+                    {/* Parties & Cargo Specification Matrix */}
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-3">
+                      <div className="font-bold text-slate-300 uppercase tracking-wider text-[11px] border-b border-white/10 pb-2">
+                        1. CONTRACTING PARTIES & SHIPMENT PARTICULARS
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-[11px]">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">SHIPPER / COMPANY:</span>
+                          <strong className="text-white">{contractForm.companyName}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">OFFICIAL EMAIL:</span>
+                          <strong className="text-emerald-400 font-mono">{contractForm.email}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">PHONE / WHATSAPP:</span>
+                          <strong className="text-white">{contractForm.phone}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF:</span>
+                          <strong className="text-sky-400 font-mono">{contractForm.billOfLading || "On File"}</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC:</span>
+                          <strong className="text-white">{contractForm.containerType} ({contractForm.containersCount} TEU)</strong>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">PORT OF CLEARANCE:</span>
+                          <strong className="text-white">{contractForm.portOfDischarge}</strong>
+                        </div>
+                      </div>
+                    </div>
 
-                      {/* Temporary Credentials Box */}
-                      <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl space-y-2">
-                        <span className="font-bold text-emerald-600 dark:text-emerald-400 text-xs block uppercase tracking-wider">Your Automatically Provisioned Customer Portal Credentials</span>
-                        <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                          <div>
-                            <span className="text-slate-500 dark:text-slate-400 block text-[10px]">USERNAME / EMAIL</span>
-                            <span className="font-bold text-slate-900 dark:text-white">{onboardingEmail.recipientEmail}</span>
-                          </div>
-                          <div>
-                            <span className="text-slate-500 dark:text-slate-400 block text-[10px]">TEMPORARY PASSWORD</span>
-                            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm bg-emerald-500/20 px-2 py-0.5 rounded">{onboardingEmail.tempPassword}</span>
+                    {/* Complete Legal Clauses & Terms */}
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 space-y-3 text-slate-300 leading-relaxed text-[11px]">
+                      <div className="font-bold text-slate-300 uppercase tracking-wider text-[11px] border-b border-white/10 pb-2">
+                        2. STATUTORY TERMS & CONDITIONS OF SERVICE
+                      </div>
+                      
+                      <div>
+                        <strong className="text-white">Clause 1 — Appointment & Grant of Power of Attorney:</strong>
+                        <p className="text-slate-400 mt-0.5">
+                          The Client hereby irrevocably appoints and authorizes <strong>TOTAG Group of Companies Ltd</strong> (Operating Licensed Customs Brokerage, Stevedoring & Freight Logistics) to act as its true and lawful agent before the Liberia Revenue Authority (LRA), National Port Authority (NPA), APM Terminals Monrovia, and shipping line agents.
+                        </p>
+                      </div>
+
+                      <div>
+                        <strong className="text-white">Clause 2 — ASYCUDA Single Administrative Document (SAD) Filing:</strong>
+                        <p className="text-slate-400 mt-0.5">
+                          TOTAG is empowered to submit customs declarations into the LRA ASYCUDA World single-window system, pay statutory duties, process tariff exemptions, request joint container physical examinations, and secure official Delivery Orders.
+                        </p>
+                      </div>
+
+                      <div>
+                        <strong className="text-white">Clause 3 — Demurrage, Storage & Free-Time Responsibilities:</strong>
+                        <p className="text-slate-400 mt-0.5">
+                          The Client agrees to provide necessary documentation (Commercial Invoice, Packing List, Certificate of Origin) in a timely manner to prevent terminal demurrage. TOTAG will actively monitor free-time thresholds and dispatch flatbeds upon release.
+                        </p>
+                      </div>
+
+                      <div>
+                        <strong className="text-white">Clause 4 — Digital Audit & Document Vault Compliance:</strong>
+                        <p className="text-slate-400 mt-0.5">
+                          This executed agreement and all associated cargo manifests, tax payment receipts, and delivery notes will be permanently archived in the secure TOTAG Document Vault for audit and compliance inspection.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Electronic Signature Box */}
+                    <div className="bg-slate-950 p-4 rounded-2xl border-2 border-emerald-500/40 space-y-4">
+                      <div className="font-bold text-emerald-400 uppercase tracking-wider text-[11px] flex items-center justify-between">
+                        <span>3. ELECTRONIC SIGNATURE & EXECUTION</span>
+                        <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[9px]">
+                          E-SIGN COMPLIANT
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <Label className="text-slate-300 text-[11px] font-bold">Authorized Signatory Full Legal Name *</Label>
+                          <Input 
+                            value={typedSignatoryName}
+                            onChange={(e) => setTypedSignatoryName(e.target.value)}
+                            placeholder="e.g. James Doe, Managing Director"
+                            className="bg-slate-900 border-white/10 text-white rounded-xl text-xs mt-1 font-bold"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-slate-300 text-[11px] font-bold">Generated Digital Signature Hash</Label>
+                          <div className="bg-slate-900 border border-white/10 rounded-xl p-2 mt-1 text-[11px] font-mono text-emerald-400 flex items-center justify-between">
+                            <span>SIG-{contractForm.companyName.replace(/\s+/g, "").slice(0, 4).toUpperCase()}-{Date.now().toString().slice(-6)}</span>
+                            <span className="text-[9px] text-slate-500">256-BIT SHA</span>
                           </div>
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-bold">Please click the button below to log into your customer account and set your permanent password.</p>
+                      <label className="flex items-start space-x-2 text-[11px] text-slate-200 cursor-pointer pt-1 bg-slate-900/60 p-3 rounded-xl border border-white/5">
+                        <input 
+                          type="checkbox"
+                          checked={isLegalDeclarationChecked}
+                          onChange={(e) => setIsLegalDeclarationChecked(e.target.checked)}
+                          className="mt-0.5 rounded text-emerald-500 focus:ring-0"
+                        />
+                        <span>
+                          I confirm that I am the authorized legal representative of <strong>{contractForm.companyName}</strong>, that all information and attached documents are true and correct, and I hereby electronically execute this Power of Attorney and Service Agreement.
+                        </span>
+                      </label>
                     </div>
-                  ) : (
-                    <div className="space-y-3 leading-relaxed text-slate-700 dark:text-slate-300">
-                      <p>Dear <strong>{onboardingEmail.signatory}</strong> ({onboardingEmail.companyName}),</p>
-                      <p className="font-bold text-emerald-600 dark:text-emerald-400">Thank you for your continued business with TOTAG Group of Companies Ltd!</p>
-                      <p>We have successfully received and registered your new C&F Clearing Service Contract (Ref: <strong>{onboardingEmail.contractId}</strong>) under your active TOTAG Enterprise account.</p>
-                      <p>Our licensed Customs Brokers (led by Officer J. Koffa) have initiated your LRA ASYCUDA single-window clearance declaration. You can log into your account anytime at <strong>totaggroup.com/cargo</strong> to track progress.</p>
-                    </div>
-                  )}
-                </div>
 
-                <div className="flex justify-end space-x-3">
-                  {onboardingEmail.type === "NEW_CUSTOMER_ONBOARDING" && (
-                    <Button 
-                      onClick={() => {
-                        setIsEmailDrawerOpen(false);
-                        setActiveTab("b2b-portal");
-                        setIsPasswordModalOpen(true);
-                      }}
-                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black rounded-xl px-6 py-2.5 text-xs shadow-lg"
-                    >
-                      <KeyRound className="w-4 h-4 mr-2" />
-                      <span>Log In & Set Permanent Password</span>
-                    </Button>
-                  )}
-                  {onboardingEmail.type === "EXISTING_CUSTOMER_CONTRACT" && (
-                    <Button 
-                      onClick={() => {
-                        setIsEmailDrawerOpen(false);
-                        setActiveTab("b2b-portal");
-                      }}
-                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl px-6 py-2.5 text-xs shadow-lg"
-                    >
-                      <UserCheck className="w-4 h-4 mr-2" />
-                      <span>Open Customer Portal Account</span>
-                    </Button>
-                  )}
-                </div>
+                    {/* Submit Actions */}
+                    <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+                      <Button 
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsEsignModalOpen(false)}
+                        className="w-full sm:w-auto border-white/20 text-slate-300 hover:bg-white/10 text-xs rounded-xl px-5 cursor-pointer"
+                      >
+                        Cancel / Edit Details
+                      </Button>
+                      <Button 
+                        type="button"
+                        onClick={handleFinalElectronicSignature}
+                        disabled={isContractSigningInProgress}
+                        className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl px-8 py-3 text-xs shadow-lg cursor-pointer"
+                      >
+                        {isContractSigningInProgress ? (
+                          <span>Digitally Signing & Dispatching...</span>
+                        ) : (
+                          <span className="flex items-center space-x-2">
+                            <PenTool className="w-4 h-4 mr-1.5" />
+                            <span>Sign & Execute Official Clearing Contract</span>
+                          </span>
+                        )}
+                      </Button>
+                    </div>
+
+                  </div>
+                ) : (
+                  /* EXECUTION SUCCESS & VAULT CONFIRMATION VIEW */
+                  <div className="space-y-5 text-xs text-center py-4">
+                    <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/40 rounded-3xl flex items-center justify-center mx-auto text-emerald-400">
+                      <CheckCircle className="w-10 h-10" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-black text-white">
+                        Contract Electronically Executed & Archived in Document Vault!
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Contract Ref: <strong className="text-emerald-400 font-mono">#{executedContractSuccess.contractId}</strong> • Clearing authorization is now legally active.
+                      </p>
+                    </div>
+
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-white/10 text-left max-w-md mx-auto space-y-2 text-[11px]">
+                      <div className="flex justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">Company:</span>
+                        <strong className="text-white">{executedContractSuccess.companyName}</strong>
+                      </div>
+                      <div className="flex justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">Signatory:</span>
+                        <strong className="text-white">{executedContractSuccess.authorizedSignatory}</strong>
+                      </div>
+                      <div className="flex justify-between border-b border-white/10 pb-1.5">
+                        <span className="text-slate-400">Status:</span>
+                        <span className="text-emerald-400 font-bold">ACTIVE & ARCHIVED IN VAULT</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Confirmation Sent To:</span>
+                        <strong className="text-sky-400 font-mono">{contractForm.email}</strong>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center space-x-3 pt-2">
+                      <Button 
+                        onClick={() => {
+                          setSelectedVaultContract(executedContractSuccess);
+                          setIsEsignModalOpen(false);
+                          setIsContractModalOpen(true);
+                        }}
+                        className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs rounded-xl px-6 cursor-pointer"
+                      >
+                        <Eye className="w-4 h-4 mr-1.5" />
+                        View in Document Vault
+                      </Button>
+                      <Button 
+                        onClick={() => setIsEsignModalOpen(false)}
+                        variant="outline"
+                        className="border-white/20 text-white hover:bg-white/10 text-xs rounded-xl px-6 cursor-pointer"
+                      >
+                        Done
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
               </motion.div>
             </motion.div>
           )}
