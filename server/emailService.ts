@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
 
@@ -97,6 +99,22 @@ class ZohoEmailService {
 
     const htmlBody = options.htmlContent || options.html;
 
+    // Attach official TOTAG Logo as inline CID attachment for guaranteed inbox rendering
+    const logoPaths = [
+      path.join(process.cwd(), 'public/images/totag-logo.png'),
+      path.join(process.cwd(), 'client/public/images/totag-logo.png'),
+      path.join(process.cwd(), 'dist/public/images/totag-logo.png'),
+    ];
+    const validLogoPath = logoPaths.find(p => fs.existsSync(p));
+    const attachments: any[] = [];
+    if (validLogoPath) {
+      attachments.push({
+        filename: 'totag-logo.png',
+        path: validLogoPath,
+        cid: 'totag-logo',
+      });
+    }
+
     await transporter.sendMail({
       from: `"TOTAG Group of Companies" <${smtpUser}>`,
       to: options.to,
@@ -104,6 +122,7 @@ class ZohoEmailService {
       subject: options.subject,
       html: htmlBody,
       text: options.text,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     console.log(`✅ Email sent via SMTP to ${options.to}: ${options.subject}`);

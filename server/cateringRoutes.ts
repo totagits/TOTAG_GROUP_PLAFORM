@@ -91,7 +91,7 @@ function buildRequestNotificationHtml(req: any): string {
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="cid:totag-logo" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -152,7 +152,7 @@ function buildCustomerAcknowledgmentHtml(req: any): string {
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="cid:totag-logo" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -229,7 +229,7 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
         <table style="width:100%;border-collapse:collapse;">
           <tr>
             <td style="width:68px;vertical-align:middle;">
-              <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
+              <img src="cid:totag-logo" alt="TOTAG Group" width="56" height="56" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:10px;display:block;border:1px solid #334155;" />
             </td>
             <td style="vertical-align:middle;padding-left:14px;">
               <div style="font-size:18px;font-weight:900;color:#ffffff;line-height:1.2;letter-spacing:-0.3px;">
@@ -1120,7 +1120,7 @@ function buildInvoiceEmailHtml(invoice: any): string {
             <table style="border-collapse:collapse;">
               <tr>
                 <td style="padding-right:14px;vertical-align:middle;">
-                  <img src="https://raw.githubusercontent.com/totagits/TOTAG_GROUP_PLAFORM/master/public/images/totag-logo.png" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
+                  <img src="cid:totag-logo" alt="TOTAG Group" width="60" style="height:52px;width:auto;background:#ffffff;padding:4px;border-radius:8px;display:block;border:1px solid #334155;" />
                 </td>
                 <td style="vertical-align:middle;">
                   <h1 style="margin:0;font-size:20px;letter-spacing:-0.3px;color:#ffffff;">TOTAG Group of Companies Ltd</h1>
