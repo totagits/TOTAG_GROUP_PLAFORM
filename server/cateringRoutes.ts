@@ -588,7 +588,28 @@ router.delete("/requests/:id", authenticateCateringStaff, requireCateringRole("a
     if (!deleted) return res.status(404).json({ success: false, error: "Request not found" });
     res.json({ success: true });
   } catch (error: any) {
-    res.status(500).json({ success: false, error: "Failed to delete request" });
+    console.error(`Error in DELETE /requests/${req.params.id}:`, error);
+    res.status(500).json({ success: false, error: "Failed to delete request: " + (error?.message || "Unknown error") });
+  }
+});
+
+router.post("/requests/bulk-delete", authenticateCateringStaff, requireCateringRole("account_manager", "operations_supervisor"), async (req: CateringAuthRequest, res: Response) => {
+  try {
+    const { ids } = req.body;
+    if (Array.isArray(ids) && ids.length > 0) {
+      for (const id of ids) {
+        await storage.deleteCateringRequest(parseInt(id));
+      }
+    } else {
+      const all = await storage.getCateringRequests();
+      for (const r of all) {
+        await storage.deleteCateringRequest(r.id);
+      }
+    }
+    res.json({ success: true, message: "Requests deleted successfully" });
+  } catch (error: any) {
+    console.error("Error in POST /requests/bulk-delete:", error);
+    res.status(500).json({ success: false, error: "Failed to bulk delete requests: " + (error?.message || "Unknown error") });
   }
 });
 

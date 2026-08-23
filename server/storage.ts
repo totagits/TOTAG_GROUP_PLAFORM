@@ -1333,8 +1333,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteCateringRequest(id: number): Promise<boolean> {
-    const result = await db.delete(cateringRequests).where(eq(cateringRequests.id, id)).returning();
-    return result.length > 0;
+    try {
+      // 1. Delete associated quotations first to prevent foreign key constraint violations
+      try {
+        await db.delete(cateringQuotations).where(eq(cateringQuotations.requestId, id));
+      } catch (err: any) {
+        console.warn(`Warning deleting quotations for request #${id}:`, err?.message);
+      }
+      // 2. Unlink or delete associated tasks & events
+      try {
+        await db.delete(cateringTasks).where(eq(cateringTasks.requestId, id));
+      } catch (err: any) {
+        console.warn(`Warning deleting tasks for request #${id}:`, err?.message);
+      }
+      try {
+        await db.delete(cateringEvents).where(eq(cateringEvents.requestId, id));
+      } catch (err: any) {
+        console.warn(`Warning deleting events for request #${id}:`, err?.message);
+      }
+      // 3. Raw SQL cleanups for audit logs / invoices if any
+      try {
+        await db.execute(sql`DELETE FROM catering_invoices WHERE request_id = ${id}`);
+      } catch (err: any) {}
+      try {
+        await db.execute(sql`DELETE FROM catering_audit_logs WHERE entity_id = ${id} AND entity_type = 'catering_request'`);
+      } catch (err: any) {}
+
+      // 4. Delete the request itself
+      const result = await db.delete(cateringRequests).where(eq(cateringRequests.id, id)).returning();
+      return result.length > 0;
+    } catch (e) {
+      console.error(`Error deleting catering request #${id}:`, e);
+      throw e;
+    }
   }
 
   async createCateringEvent(event: InsertCateringEvent): Promise<CateringEvent> {

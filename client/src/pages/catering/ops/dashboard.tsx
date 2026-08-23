@@ -1528,11 +1528,22 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                 <Button 
                   size="sm" 
                   variant="outline"
-                  className="text-xs text-rose-600 border-rose-200 hover:bg-rose-50"
-                  onClick={() => {
-                    if (window.confirm(`Are you sure you want to delete all ${requests.length} incoming requests? This cannot be undone.`)) {
-                      requests.forEach((r: any) => onDeleteRequest && onDeleteRequest(r.id));
-                      setSelectedRequest(null);
+                  className="text-xs text-rose-600 border-rose-200 hover:bg-rose-50 cursor-pointer font-bold shadow-sm"
+                  onClick={async () => {
+                    if (window.confirm(`Are you sure you want to permanently delete all ${requests.length} incoming requests? This cannot be undone.`)) {
+                      try {
+                        const targetIds = requests.map((r: any) => r.id);
+                        await cateringFetch("/api/catering/requests/bulk-delete", {
+                          method: "POST",
+                          body: JSON.stringify({ ids: targetIds }),
+                        });
+                        queryClient.invalidateQueries({ queryKey: ["/api/catering/requests"] });
+                        queryClient.invalidateQueries({ queryKey: ["/api/catering/stats"] });
+                        setSelectedRequest(null);
+                        toast({ title: "Purged", description: "All test requests successfully deleted" });
+                      } catch (err: any) {
+                        toast({ title: "Error", description: "Failed to purge requests", variant: "destructive" });
+                      }
                     }
                   }}
                 >
@@ -1564,11 +1575,18 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                         variant="ghost"
                         className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 h-8 w-8 rounded-lg cursor-pointer transition"
                         title="Delete this request"
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.stopPropagation();
                           if (window.confirm(`Delete request #${req.id} from ${req.name}?`)) {
-                            onDeleteRequest && onDeleteRequest(req.id);
-                            if (selectedRequest?.id === req.id) setSelectedRequest(null);
+                            try {
+                              await cateringFetch(`/api/catering/requests/${req.id}`, { method: "DELETE" });
+                              queryClient.invalidateQueries({ queryKey: ["/api/catering/requests"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/catering/stats"] });
+                              if (selectedRequest?.id === req.id) setSelectedRequest(null);
+                              toast({ title: "Deleted", description: `Request #${req.id} removed successfully` });
+                            } catch (err: any) {
+                              toast({ title: "Error", description: "Failed to delete request", variant: "destructive" });
+                            }
                           }
                         }}
                       >
@@ -1590,10 +1608,17 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                     size="sm"
                     variant="ghost"
                     className="text-rose-600 hover:bg-rose-50 text-xs font-bold h-8 cursor-pointer"
-                    onClick={() => {
+                    onClick={async () => {
                       if (window.confirm(`Delete request #${selectedRequest.id} from ${selectedRequest.name}? This cannot be undone.`)) {
-                        onDeleteRequest && onDeleteRequest(selectedRequest.id);
-                        setSelectedRequest(null);
+                        try {
+                          await cateringFetch(`/api/catering/requests/${selectedRequest.id}`, { method: "DELETE" });
+                          queryClient.invalidateQueries({ queryKey: ["/api/catering/requests"] });
+                          queryClient.invalidateQueries({ queryKey: ["/api/catering/stats"] });
+                          setSelectedRequest(null);
+                          toast({ title: "Deleted", description: "Request removed successfully" });
+                        } catch (err: any) {
+                          toast({ title: "Error", description: "Failed to delete request", variant: "destructive" });
+                        }
                       }
                     }}
                   >
@@ -1651,10 +1676,17 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
                     <Button 
                       variant="outline" 
                       className="w-full border-rose-300 text-rose-600 hover:bg-rose-50 text-xs font-bold cursor-pointer"
-                      onClick={() => {
+                      onClick={async () => {
                         if (window.confirm(`Permanently delete service request #${selectedRequest.id}?`)) {
-                          onDeleteRequest && onDeleteRequest(selectedRequest.id);
-                          setSelectedRequest(null);
+                          try {
+                            await cateringFetch(`/api/catering/requests/${selectedRequest.id}`, { method: "DELETE" });
+                            queryClient.invalidateQueries({ queryKey: ["/api/catering/requests"] });
+                            queryClient.invalidateQueries({ queryKey: ["/api/catering/stats"] });
+                            setSelectedRequest(null);
+                            toast({ title: "Deleted", description: "Request removed successfully" });
+                          } catch (err: any) {
+                            toast({ title: "Error", description: "Failed to delete request", variant: "destructive" });
+                          }
                         }
                       }}
                     >
