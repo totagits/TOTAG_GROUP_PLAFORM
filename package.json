@@ -7,13 +7,10 @@
     "dev": "tsx server/index.ts",
     "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "build:pages": "vite build && node -e \"const fs=require('fs'); const path=require('path'); fs.writeFileSync('dist/public/.nojekyll', ''); fs.copyFileSync('dist/public/index.html', 'dist/public/404.html'); if(fs.existsSync('public/CNAME')) fs.copyFileSync('public/CNAME', 'dist/public/CNAME'); ['solar','farm','cargo','cargo/dashboard','cargo-dashboard','petroleum','catering','catering/ops/dashboard','catering/ops/login','saas','stationery','merchandise','construction','admin','email-management','executive-dashboard','tgm-enterprise-dashboard'].forEach(r => { const d = path.join('dist/public', r); if(!fs.existsSync(d)) fs.mkdirSync(d, {recursive:true}); fs.copyFileSync('dist/public/index.html', path.join(d, 'index.html')); });\"",
-
     "start": "node dist/index.js",
     "check": "tsc",
     "db:push": "drizzle-kit push"
   },
-
-
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@jridgewell/trace-mapping": "^0.3.25",
@@ -65,7 +62,6 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.39.1",
-
     "drizzle-zod": "^0.7.0",
     "embla-carousel-react": "^8.6.0",
     "express": "^4.21.2",
@@ -82,6 +78,7 @@
     "openid-client": "^6.6.2",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "pdfkit": "^0.20.1",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -114,6 +111,7 @@
     "@types/node": "20.16.11",
     "@types/passport": "^1.0.16",
     "@types/passport-local": "^1.0.38",
+    "@types/pdfkit": "^0.17.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@types/ws": "^8.5.13",

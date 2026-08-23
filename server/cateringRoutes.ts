@@ -1158,7 +1158,26 @@ function buildInvoiceEmailHtml(invoice: any): string {
         </tr>
       </table>
 
-      <div style="padding:32px;">
+      <!-- EXECUTIVE INTRODUCTORY NARRATION / FORMAL LETTER -->
+      <div style="padding:24px 32px 16px; font-size:14px; color:#1e293b; line-height:1.6; border-bottom:1px solid #e2e8f0; background:#ffffff;">
+        <p style="margin:0 0 12px; font-weight:bold; font-size:15px; color:#0f172a;">
+          Dear ${invoice.clientName}${invoice.clientCompany ? ` (${invoice.clientCompany})` : ''},
+        </p>
+        <p style="margin:0 0 12px; color:#334155;">
+          We are pleased to submit the official settlement invoice for the catering and event management services rendered by <strong>TOTAG Catering & Event Planning Services (TOCEPS)</strong>${invoice.contractRef ? ` under contract <em>${invoice.contractRef}</em>` : ''}.
+        </p>
+        <p style="margin:0 0 12px; color:#334155;">
+          A full itemized breakdown of services, quantities delivered, and audited deliverable milestones is detailed below. For your administrative records and financial audit trail, the official signed document is also attached to this email as a PDF (<strong>${invoice.invoiceNumber}.pdf</strong>).
+        </p>
+        <div style="background:#ecfdf5; border-left:4px solid #10b981; padding:12px 16px; border-radius:6px; margin:16px 0;">
+          <p style="margin:0; font-size:13px; color:#065f46;">
+            <strong>Total Amount Due:</strong> ${invoice.currency || 'USD'} ${parseFloat(invoice.totalAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}<br/>
+            <strong>Payment Due Date:</strong> ${invoice.dueDate} (${invoice.paymentTerms || 'Net 30'})
+          </p>
+        </div>
+      </div>
+
+      <div style="padding:28px 32px 32px;">
         
         <!-- INVOICE META GRID -->
         <table style="width:100%;margin-bottom:24px;border-collapse:collapse;">
@@ -1217,12 +1236,15 @@ function buildInvoiceEmailHtml(invoice: any): string {
           <tr>
             <td style="width:55%;vertical-align:top;padding-right:20px;">
               <div style="background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:16px;">
-                <h4 style="margin:0 0 8px;font-size:12px;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;">🏦 Settlement & Payment Instructions</h4>
-                <p style="margin:0;font-size:12px;color:#713f12;line-height:1.5;">
+                <h4 style="margin:0 0 8px;font-size:12px;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;">🏦 Official Bank Settlement Details</h4>
+                <p style="margin:0;font-size:12px;color:#713f12;line-height:1.6;">
                   <strong>Bank Transfer:</strong> TOTAG Group of Companies Ltd<br/>
-                  <strong>Bank:</strong> Ecobank Liberia / GTBank Liberia<br/>
+                  <strong>Bank:</strong> Ecobank Liberia<br/>
+                  <strong>Account Number:</strong> 6100984712<br/>
+                  <strong>SWIFT Code:</strong> ECOCLRMM<br/>
+                  <strong>Branch:</strong> Monrovia Head Office<br/>
                   <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN)<br/>
-                  Please reference <strong>${invoice.invoiceNumber}</strong> upon payment settlement.
+                  <em>Please include reference <strong>${invoice.invoiceNumber}</strong> with your transfer.</em>
                 </p>
               </div>
             </td>
@@ -1239,10 +1261,24 @@ function buildInvoiceEmailHtml(invoice: any): string {
           </tr>
         </table>
 
+        <!-- FORMAL CLOSING & SIGN OFF -->
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #e2e8f0; font-size:13px; color:#334155; line-height:1.5;">
+          <p style="margin:0 0 8px;">
+            Should you have any inquiries regarding this invoice, please do not hesitate to contact our finance department at <a href="mailto:toceps@totaggroup.com" style="color:#0284c7; text-decoration:none;">toceps@totaggroup.com</a>.
+          </p>
+          <p style="margin:16px 0 0; font-weight:bold; color:#0f172a;">
+            Warm regards,<br/>
+            <span style="font-weight:normal; color:#475569;">
+              TOCEPS Finance & Billing Desk<br/>
+              TOTAG Group of Companies Ltd<br/>
+              Monrovia, Liberia | www.totaggroup.com
+            </span>
+          </p>
+        </div>
+
         <!-- FOOTER & AUDIT VAULT NOTICE -->
-        <div style="border-top:1px solid #e2e8f0;padding-top:20px;text-align:center;">
-          <p style="margin:0;font-size:12px;color:#64748b;font-weight:bold;">TOTAG Group of Companies Ltd | TOTAG Catering & Event Planning Services (TOCEPS)</p>
-          <p style="margin:4px 0 0;font-size:11px;color:#94a3b8;">This official invoice has been automatically archived in the TOCEPS Executive Document Vault. Invoice ID: #${invoice.id}</p>
+        <div style="border-top:1px solid #e2e8f0;margin-top:24px;padding-top:16px;text-align:center;">
+          <p style="margin:0;font-size:11px;color:#94a3b8;">This official invoice is archived in the TOCEPS Executive Document Vault. Invoice Ref: #${invoice.id}</p>
         </div>
 
       </div>
@@ -1302,17 +1338,39 @@ router.post("/invoices/:id/send", authenticateCateringStaff, requireCateringRole
     if (!invoice.clientEmail) return res.status(400).json({ success: false, error: "No client email on this invoice" });
 
     const htmlContent = buildInvoiceEmailHtml(invoice);
+    let pdfBuffer: Buffer | null = null;
+    try {
+      pdfBuffer = await generateInvoicePdf(invoice);
+    } catch (pdfErr: any) {
+      console.warn("Could not generate PDF attachment:", pdfErr.message);
+    }
+
+    const attachments: any[] = [];
+    if (pdfBuffer) {
+      attachments.push({
+        filename: `${invoice.invoiceNumber}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf',
+      });
+    }
+
     const sent = await EmailService.sendEmail({
       to: invoice.clientEmail,
       from: TOCEPS_FROM,
       subject: `[OFFICIAL INVOICE ${invoice.invoiceNumber}] TOTAG Group — ${invoice.contractRef || "Catering & Event Services"}`,
       html: htmlContent,
+      attachments,
       text: `Dear ${invoice.clientName},
 
-Please find official Invoice ${invoice.invoiceNumber} from TOTAG Group of Companies Ltd (TOCEPS Division).
+Please find attached official Invoice ${invoice.invoiceNumber} from TOTAG Group of Companies Ltd (TOCEPS Division).
 
+Contract Reference: ${invoice.contractRef || "Catering & Event Services"}
 Total Amount Due: ${invoice.currency} ${invoice.totalAmount}
 Payment Due Date: ${invoice.dueDate}
+
+Bank Settlement Details:
+Bank Transfer: TOTAG Group of Companies Ltd
+Bank: Ecobank Liberia | Account: 6100984712 | SWIFT: ECOCLRMM
 
 Thank you for choosing TOTAG Group.
 

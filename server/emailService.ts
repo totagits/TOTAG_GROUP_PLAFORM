@@ -3,6 +3,14 @@ import path from 'path';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
 
+interface EmailAttachment {
+  filename: string;
+  content?: Buffer | string;
+  path?: string;
+  contentType?: string;
+  cid?: string;
+}
+
 interface EmailOptions {
   to: string;
   subject: string;
@@ -11,6 +19,7 @@ interface EmailOptions {
   text?: string;
   from?: string;
   type?: string;
+  attachments?: EmailAttachment[];
 }
 
 // Zoho Email Service for TOTAG IT Services
@@ -106,7 +115,7 @@ class ZohoEmailService {
       path.join(process.cwd(), 'dist/public/images/totag-logo.png'),
     ];
     const validLogoPath = logoPaths.find(p => fs.existsSync(p));
-    const attachments: any[] = [];
+    const attachments: any[] = [...(options.attachments || [])];
     if (validLogoPath) {
       attachments.push({
         filename: 'totag-logo.png',
