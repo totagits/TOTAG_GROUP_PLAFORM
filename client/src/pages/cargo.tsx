@@ -87,7 +87,9 @@ import {
   Radio,
   FileMinus,
   HelpCircle,
-  Smartphone
+  Smartphone,
+  RotateCcw,
+  LogIn
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -559,6 +561,68 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
+  // DEDICATED CUSTOMER PORTAL LOGIN MODAL STATE
+  const [isCustomerLoginModalOpen, setIsCustomerLoginModalOpen] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const handleCustomerLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loginEmail.trim() || !loginPassword.trim()) {
+      toast({ title: "Credentials Required", description: "Please enter your official account email and password.", variant: "destructive" });
+      return;
+    }
+
+    setIsLoggingIn(true);
+    setTimeout(() => {
+      setIsLoggingIn(false);
+      const isTemp = loginPassword.startsWith("TOTAG-Pass");
+      
+      // Match with known company name if available
+      const matchingContract = vaultContracts.find(c => c.email.toLowerCase() === loginEmail.toLowerCase());
+      const companyName = matchingContract ? matchingContract.companyName : (loginEmail.includes("@") ? loginEmail.split("@")[0].toUpperCase() + " Logistics Ltd" : "Enterprise Client");
+      const signatory = matchingContract ? matchingContract.authorizedSignatory : "Authorized Executive";
+
+      setCustomerAccount({
+        isLoggedIn: true,
+        companyName: companyName,
+        tinNumber: matchingContract?.tinNumber || "LRA-TIN-9940218",
+        email: loginEmail.trim(),
+        phone: matchingContract?.phone || "+231 777 000 111",
+        accountType: "Verified Enterprise Shipper Account",
+        isPasswordChanged: !isTemp,
+        creditLimitUsd: 150000,
+        creditUsedUsd: 24500,
+        teamMembers: [
+          { name: signatory, role: "Managing Director (Primary)", email: loginEmail.trim() },
+          { name: "Officer J. Koffa", role: "Licensed Customs Broker (Assigned)", email: "cargo@totaggroup.com" }
+        ]
+      });
+
+      setIsCustomerLoginModalOpen(false);
+      setActiveTab("b2b-portal");
+      
+      if (isTemp) {
+        setIsPasswordModalOpen(true);
+        toast({ 
+          title: "Temporary Password Detected", 
+          description: "Please set your permanent enterprise password to secure your account." 
+        });
+      } else {
+        toast({ 
+          title: "Welcome to Customer Cargo Dashboard!", 
+          description: `Logged in successfully as ${companyName}.` 
+        });
+      }
+
+      setTimeout(() => {
+        const el = document.getElementById("cargo-customer-dashboard");
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }, 600);
+  };
+
   // INTERACTIVE CANVAS SIGNATURE PAD STATE & HANDLERS
   const signatureCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -2262,6 +2326,34 @@ export default function CargoPage() {
             {/* TAB 3: AUTHENTICATED B2B CLIENT PORTAL (SELF-SERVICE LIFECYCLE)     */}
             {/* =================================================================== */}
             <TabsContent value="b2b-portal" id="cargo-customer-dashboard" className="space-y-8">
+                {/* CUSTOMER LOGIN CARD (IF NOT LOGGED IN) */}
+                {!customerAccount.isLoggedIn && (
+                  <Card className="bg-white border-2 border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-3 bg-emerald-100 rounded-2xl text-emerald-700">
+                          <LogIn className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-black text-slate-900">
+                            Have an Existing Account or Temporary Credentials?
+                          </h3>
+                          <p className="text-xs text-slate-600">
+                            Sign in to view your assigned customs broker, real-time container dispatch, and Document Vault
+                          </p>
+                        </div>
+                      </div>
+                      <Button 
+                        onClick={() => setIsCustomerLoginModalOpen(true)}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-6 py-2.5 shadow-md cursor-pointer"
+                      >
+                        <LogIn className="w-4 h-4 mr-1.5" />
+                        <span>Sign In to Your Account</span>
+                      </Button>
+                    </div>
+                  </Card>
+                )}
+
               
               {/* CLEAN B2B PORTAL BANNER & USER ACCOUNT CONTROL */}
               <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 p-6 rounded-3xl text-slate-900 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
