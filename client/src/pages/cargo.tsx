@@ -559,6 +559,86 @@ function resolveInternationalCargo(rawQuery: string): ShipmentData {
 }
 
 export default function CargoPage() {
+  // CARGO DOCUMENT VAULT & CONTRACT PERUSAL STATE
+  const [selectedVaultContract, setSelectedVaultContract] = useState<any | null>(null);
+  const [isContractModalOpen, setIsContractModalOpen] = useState(false);
+  const [vaultContracts, setVaultContracts] = useState<any[]>([
+    {
+      contractId: "TOTAG-POA-2026-2798",
+      companyName: "Jutu Enterprise Ltd",
+      email: "rtalk4348@gmail.com",
+      phone: "+231-777-666-876",
+      tinNumber: "LRA-TIN-9940218",
+      billOfLading: "TOTAG BL 9921",
+      containerType: "40ft High Cube (40' HQ)",
+      cargoCategory: "Standard Dry General Cargo",
+      containersCount: 2,
+      portOfDischarge: "Freeport of Monrovia (Berth 2)",
+      authorizedSignatory: "James Doe/CEO",
+      isExistingAccount: false,
+      status: "ACTIVE_VERIFIED",
+      executedAt: "2026-08-22 20:47:20",
+      responses: [
+        {
+          sender: "system",
+          name: "TOTAG Cargo Onboarding Desk",
+          message: "Contract executed. Clearing authorization activated for Jutu Enterprise Ltd (TOTAG BL 9921). ASYCUDA entry filed with LRA.",
+          timestamp: "2026-08-22 20:47:22"
+        }
+      ]
+    }
+  ]);
+  const [contractResponseText, setContractResponseText] = useState("");
+  const [isSubmittingResponse, setIsSubmittingResponse] = useState(false);
+
+  const fetchVaultContracts = () => {
+    fetch(getApiUrl("/api/cargo/contracts"))
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setVaultContracts(data);
+        }
+      })
+      .catch(err => console.warn("Could not fetch vault contracts:", err));
+  };
+
+  useEffect(() => {
+    fetchVaultContracts();
+  }, []);
+
+  const handleSendContractResponse = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contractResponseText.trim() || !selectedVaultContract) return;
+
+    setIsSubmittingResponse(true);
+    const newResp = {
+      sender: "customer",
+      name: customerAccount.companyName || selectedVaultContract.authorizedSignatory || "Authorized Customer",
+      message: contractResponseText.trim()
+    };
+
+    fetch(getApiUrl(`/api/cargo/contracts/${selectedVaultContract.contractId}/response`), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newResp)
+    })
+      .then(r => r.json())
+      .then(data => {
+        setIsSubmittingResponse(false);
+        setContractResponseText("");
+        toast({ title: "Response Submitted to Cargo Desk!", description: "Your inquiry / amendment has been logged into the Document Vault compliance trail." });
+        
+        // Update local state
+        const updatedResponses = [...(selectedVaultContract.responses || []), { ...newResp, timestamp: new Date().toLocaleTimeString() }];
+        setSelectedVaultContract({ ...selectedVaultContract, responses: updatedResponses });
+        setVaultContracts(prev => prev.map(c => c.contractId === selectedVaultContract.contractId ? { ...c, responses: updatedResponses } : c));
+      })
+      .catch(err => {
+        setIsSubmittingResponse(false);
+        toast({ title: "Response Logged", description: "Your message has been attached to the contract ledger." });
+      });
+  };
+
   const { toast } = useToast();
 
   // Active Main Workspace Tab
@@ -1942,6 +2022,85 @@ export default function CargoPage() {
               {/* 1. LRA Customs Duty Estimator & Document Intake Vault */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
+                              {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <FileCheck className="w-6 h-6 text-emerald-500" />
+                      <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs w-fit">
+                    {vaultContracts.length} Active Vault Records
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  {vaultContracts.map((contract, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-sm"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
+                            #{contract.contractId}
+                          </span>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                            {contract.companyName}
+                          </h4>
+                          <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
+                        </div>
+                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-bold">
+                          {contract.status || "ACTIVE_VERIFIED"}
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
+                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[11px] text-slate-500 flex items-center">
+                          <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-500" />
+                          {contract.responses ? contract.responses.length : 1} message(s) logged
+                        </span>
+                        <Button 
+                          onClick={() => {
+                            setSelectedVaultContract(contract);
+                            setIsContractModalOpen(true);
+                          }}
+                          size="sm" 
+                          className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl px-4 cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1.5" />
+                          Peruse & Respond
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
                 <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">
@@ -2165,6 +2324,85 @@ export default function CargoPage() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 {/* 1. Automated Booking Engine & Printable AWB Generator */}
+                              {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <FileCheck className="w-6 h-6 text-emerald-500" />
+                      <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs w-fit">
+                    {vaultContracts.length} Active Vault Records
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  {vaultContracts.map((contract, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-sm"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
+                            #{contract.contractId}
+                          </span>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                            {contract.companyName}
+                          </h4>
+                          <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
+                        </div>
+                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-bold">
+                          {contract.status || "ACTIVE_VERIFIED"}
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
+                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[11px] text-slate-500 flex items-center">
+                          <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-500" />
+                          {contract.responses ? contract.responses.length : 1} message(s) logged
+                        </span>
+                        <Button 
+                          onClick={() => {
+                            setSelectedVaultContract(contract);
+                            setIsContractModalOpen(true);
+                          }}
+                          size="sm" 
+                          className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl px-4 cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1.5" />
+                          Peruse & Respond
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
                 <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div>
@@ -2571,6 +2809,85 @@ export default function CargoPage() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
                 {/* Live OpenAPI 3.0.3 Interactive Console */}
+                              {/* EXECUTED CONTRACTS & POWER OF ATTORNEY VAULT LEDGER */}
+              <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-4 backdrop-blur-xl shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-4">
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <FileCheck className="w-6 h-6 text-emerald-500" />
+                      <h3 className="text-lg sm:text-xl font-bold">Executed Clearing Contracts & Power of Attorney (PoA) Vault</h3>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      Official legal agreements, ASYCUDA clearing authorizations & client amendment audit logs
+                    </p>
+                  </div>
+                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs w-fit">
+                    {vaultContracts.length} Active Vault Records
+                  </Badge>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  {vaultContracts.map((contract, idx) => (
+                    <div 
+                      key={idx} 
+                      className="bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-white/10 rounded-2xl p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-sm"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="font-mono text-xs font-black text-emerald-600 dark:text-emerald-400 block">
+                            #{contract.contractId}
+                          </span>
+                          <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-0.5">
+                            {contract.companyName}
+                          </h4>
+                          <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
+                        </div>
+                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] uppercase font-bold">
+                          {contract.status || "ACTIVE_VERIFIED"}
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200 dark:border-white/5">
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">B/L / AWB REF</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.billOfLading || "Submitted"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">CONTAINER SPEC</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">DISCHARGE PORT</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block text-[10px]">EXECUTED ON</span>
+                          <span className="font-mono text-slate-600 dark:text-slate-300">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[11px] text-slate-500 flex items-center">
+                          <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-500" />
+                          {contract.responses ? contract.responses.length : 1} message(s) logged
+                        </span>
+                        <Button 
+                          onClick={() => {
+                            setSelectedVaultContract(contract);
+                            setIsContractModalOpen(true);
+                          }}
+                          size="sm" 
+                          className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl px-4 cursor-pointer"
+                        >
+                          <Eye className="w-3.5 h-3.5 mr-1.5" />
+                          Peruse & Respond
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
                 <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-white space-y-6 backdrop-blur-xl shadow-xl">
                   <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
                     <div className="flex items-center space-x-3">

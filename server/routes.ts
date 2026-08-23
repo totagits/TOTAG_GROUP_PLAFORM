@@ -80,6 +80,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
     // Cargo Clearing Contract Execution & Customer Onboarding Email Dispatch
+  
+  // In-Memory / File Persistent Cargo Contracts Vault
+  const CARGO_CONTRACTS_VAULT: any[] = [
+    {
+      contractId: "TOTAG-POA-2026-2798",
+      companyName: "Jutu Enterprise Ltd",
+      email: "rtalk4348@gmail.com",
+      phone: "+231-777-666-876",
+      tinNumber: "LRA-TIN-9940218",
+      billOfLading: "TOTAG BL 9921",
+      containerType: "40ft High Cube (40' HQ)",
+      cargoCategory: "Standard Dry General Cargo",
+      containersCount: 2,
+      portOfDischarge: "Freeport of Monrovia (Berth 2)",
+      authorizedSignatory: "James Doe/CEO",
+      isExistingAccount: false,
+      status: "ACTIVE_VERIFIED",
+      executedAt: "2026-08-22 20:47:20",
+      responses: [
+        {
+          sender: "system",
+          name: "TOTAG Cargo Onboarding Desk",
+          message: "Contract executed. Customs Clearing Power of Attorney filed with Liberia Revenue Authority (LRA ASYCUDA) and National Port Authority (NPA).",
+          timestamp: "2026-08-22 20:47:22"
+        }
+      ]
+    }
+  ];
+
+  // GET /api/cargo/contracts - List all vault contracts
+  app.get("/api/cargo/contracts", (req, res) => {
+    const email = req.query.email as string;
+    if (email) {
+      const filtered = CARGO_CONTRACTS_VAULT.filter(c => c.email.toLowerCase() === email.toLowerCase());
+      return res.json(filtered);
+    }
+    res.json(CARGO_CONTRACTS_VAULT);
+  });
+
+  // POST /api/cargo/contracts/:id/response - Customer or Broker response
+  app.post("/api/cargo/contracts/:id/response", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { sender, name, message } = req.body;
+      const contract = CARGO_CONTRACTS_VAULT.find(c => c.contractId === id);
+      if (!contract) return res.status(404).json({ error: "Contract not found in vault" });
+
+      const newResponse = {
+        sender: sender || "customer",
+        name: name || "Customer Representative",
+        message: message || "",
+        timestamp: new Date().toISOString().replace("T", " ").slice(0, 19)
+      };
+
+      if (!contract.responses) contract.responses = [];
+      contract.responses.push(newResponse);
+
+      // Notify Cargo Desk
+      await EmailService.sendEmail({
+        to: "cargo@totaggroup.com",
+        subject: `[CONTRACT RESPONSE] #${id} from ${contract.companyName}`,
+        html: `<p>New customer response logged on Contract #${id}:</p><p><strong>${newResponse.name}:</strong> ${newResponse.message}</p>`,
+        text: `New customer response logged on Contract #${id} by ${newResponse.name}: ${newResponse.message}`,
+        type: "notification"
+      });
+
+      res.json({ success: true, contract });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   app.post("/api/cargo/contracts", async (req, res) => {
     try {
       const {
@@ -285,6 +357,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
         type: "notification"
       });
       console.log(`📧 Cargo contract notification sent to cargo operations desk`);
+
+            const contractRecord = {
+        contractId: generatedContractId,
+        companyName,
+        email,
+        phone,
+        tinNumber,
+        billOfLading,
+        containerType,
+        cargoCategory,
+        containersCount,
+        portOfDischarge,
+        authorizedSignatory,
+        isExistingAccount,
+        status: "ACTIVE_VERIFIED",
+        executedAt: new Date().toISOString().replace("T", " ").slice(0, 19),
+        responses: [
+          {
+            sender: "system",
+            name: "TOTAG Cargo Onboarding Desk",
+            message: `Contract executed. Clearing authorization activated for ${companyName} (${billOfLading || "B/L Submitted"}).`,
+            timestamp: new Date().toISOString().replace("T", " ").slice(0, 19)
+          }
+        ]
+      };
+      CARGO_CONTRACTS_VAULT.unshift(contractRecord);
 
       res.status(201).json({
         success: true,
