@@ -184,6 +184,8 @@ function Router() {
         <Route path="/catering/ops/dashboard" component={CateringDashboard} />
         <Route path="/general-merchandise" component={GeneralMerchandisePage} />
         <Route path="/cargo" component={CargoPage} />
+        <Route path="/cargo/dashboard" component={CargoPage} />
+        <Route path="/cargo-dashboard" component={CargoPage} />
         <Route path="/petroleum" component={PetroleumPage} />
         <Route path="/construction" component={ConstructionPage} />
                                 <Route path="/executive-dashboard" component={ExecutiveDashboardPage} />

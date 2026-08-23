@@ -252,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">PORTAL ACCESS URL:</td>
-                    <td style="padding:6px 0;"><a href="https://totaggroup.com/cargo" style="color:#0284c7;font-weight:bold;text-decoration:underline;">https://totaggroup.com/cargo</a></td>
+                    <td style="padding:6px 0;"><a href="https://totaggroup.com/cargo/dashboard" style="color:#0284c7;font-weight:bold;text-decoration:underline;">https://totaggroup.com/cargo/dashboard</a></td>
                   </tr>
                 </table>
                 <div style="margin-top:14px;font-size:12px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:10px;">
@@ -308,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
               <!-- Action Link -->
               <div style="text-align:center;margin-bottom:24px;">
-                <a href="https://totaggroup.com/cargo?tab=b2b-portal#dashboard" style="background:#0f172a;color:#34d399;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;border:1px solid #334155;">
+                <a href="https://totaggroup.com/cargo/dashboard/dashboard" style="background:#0f172a;color:#34d399;font-weight:bold;font-size:14px;padding:12px 28px;border-radius:8px;text-decoration:none;display:inline-block;border:1px solid #334155;">
                   Go to Customer Cargo Dashboard →
                 </a>
               </div>
@@ -321,7 +321,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   <a href="mailto:cargo@totaggroup.com" style="color:#38bdf8;font-weight:bold;text-decoration:underline;">cargo@totaggroup.com</a>
                   <span style="color:#64748b;margin:0 8px;">|</span>
                   <strong style="color:#ffffff;">Portal:</strong> 
-                  <a href="https://totaggroup.com/cargo" style="color:#34d399;font-weight:bold;text-decoration:underline;">totaggroup.com/cargo</a>
+                  <a href="https://totaggroup.com/cargo/dashboard" style="color:#34d399;font-weight:bold;text-decoration:underline;">totaggroup.com/cargo</a>
                 </p>
               </div>
 
@@ -343,7 +343,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         to: email,
         subject: `Welcome to TOTAG Cargo Platform - Clearing Contract #${generatedContractId} Executed`,
         html: emailHtml,
-        text: `Dear ${authorizedSignatory || companyName},\n\nThank you for executing your C&F Clearing Service Contract #${generatedContractId} with TOTAG Cargo Handling & Logistics.\n\nYour Account Credentials:\nUsername: ${email}\nTemporary Password: ${generatedTempPass}\nLogin at: https://totaggroup.com/cargo?tab=b2b-portal#dashboard\n\nBest regards,\nTOTAG Cargo Operations Desk\nTOTAG Group of Companies Ltd`,
+        text: `Dear ${authorizedSignatory || companyName},\n\nThank you for executing your C&F Clearing Service Contract #${generatedContractId} with TOTAG Cargo Handling & Logistics.\n\nYour Account Credentials:\nUsername: ${email}\nTemporary Password: ${generatedTempPass}\nLogin at: https://totaggroup.com/cargo/dashboard/dashboard\n\nBest regards,\nTOTAG Cargo Operations Desk\nTOTAG Group of Companies Ltd`,
         type: "notification"
       });
       console.log(`📧 Cargo onboarding email dispatched to customer: ${email}`);

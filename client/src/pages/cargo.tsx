@@ -767,7 +767,24 @@ export default function CargoPage() {
   const { toast } = useToast();
 
   // Active Main Workspace Tab
-  const [activeTab, setActiveTab] = useState("public-discovery");
+  // INITIALIZE TAB DIRECTLY FROM URL IF NAVIGATED FROM EMAIL OR DASHBOARD LINK
+  const getInitialTab = () => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get("tab");
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (tab === "b2b-portal" || tab === "dashboard" || path.includes("/cargo/dashboard") || hash.includes("dashboard") || hash.includes("b2b-portal")) {
+        return "b2b-portal";
+      }
+      if (tab === "cf-customs-hub" || hash.includes("cf-customs-hub") || hash.includes("vault")) {
+        return "cf-customs-hub";
+      }
+    }
+    return "public-discovery";
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   // URL PARAM & HASH ROUTER FOR CUSTOMER DASHBOARD
   useEffect(() => {
     const handleUrlRouting = () => {
