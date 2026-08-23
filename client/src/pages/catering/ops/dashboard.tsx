@@ -602,9 +602,20 @@ function QuickActionCard({ icon: Icon, title, description, color, onClick }: { i
 // ===== ACCOUNT MANAGER VIEW =====
 
 // ===== INVOICE BUILDER & DOCUMENT VAULT =====
-function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendInvoice }: any) {
+function InvoiceBuilder({ 
+  requests = [], 
+  quotations = [], 
+  invoices = [], 
+  initialInvoice = null, 
+  onSaveInvoice, 
+  onSendInvoice,
+  onClearEditing 
+}: any) {
+  const [editingInvoiceId, setEditingInvoiceId] = useState<number | null>(null);
   const [selectedReqId, setSelectedReqId] = useState("");
   const [selectedQuotId, setSelectedQuotId] = useState("");
+  const [selectedDraftId, setSelectedDraftId] = useState("");
+  
   const [clientName, setClientName] = useState("UNIDO Project Management Office");
   const [clientEmail, setClientEmail] = useState("unido-procurement@unido.org");
   const [clientPhone, setClientPhone] = useState("+231-777-900-100");
@@ -635,6 +646,70 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
   const [notes, setNotes] = useState("Final invoice for UNIDO Article 4 Deliverable C. Dates of service, locations served, and quantities delivered confirmed.");
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const draftInvoices = invoices.filter((i: any) => i.status === "draft");
+
+  // Load from initialInvoice prop if provided
+  useEffect(() => {
+    if (initialInvoice) {
+      loadInvoiceIntoState(initialInvoice);
+    }
+  }, [initialInvoice]);
+
+  const loadInvoiceIntoState = (inv: any) => {
+    setEditingInvoiceId(inv.id);
+    setSelectedDraftId(String(inv.id));
+    setClientName(inv.clientName || inv.client_name || "");
+    setClientEmail(inv.clientEmail || inv.client_email || "");
+    setClientPhone(inv.clientPhone || inv.client_phone || "");
+    setClientCompany(inv.clientCompany || inv.client_company || "");
+    setContractRef(inv.contractRef || inv.contract_ref || "");
+    setInvoiceDate(inv.invoiceDate || inv.invoice_date || new Date().toISOString().split("T")[0]);
+    setDueDate(inv.dueDate || inv.due_date || "");
+    setPaymentTerms(inv.paymentTerms || inv.payment_terms || "Net 30");
+    setCurrency(inv.currency || "USD");
+    setDatesOfService(inv.datesOfService || inv.dates_of_service || "");
+    setLocationsServed(inv.locationsServed || inv.locations_served || "");
+    setQuantitiesDelivered(inv.quantitiesDelivered || inv.quantities_delivered || "");
+    setPaymentDetails(inv.paymentDetails || inv.payment_details || "Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia");
+    setNotes(inv.notes || "");
+    
+    const items = Array.isArray(inv.lineItems) ? inv.lineItems : [];
+    if (items.length > 0) {
+      setLineItems(items);
+      const tax = parseFloat(inv.taxRate || inv.tax_rate || 0);
+      const disc = parseFloat(inv.discount || 0);
+      setTaxRate(tax);
+      setDiscount(disc);
+      recalculateTotals(items, tax, disc);
+    }
+    toast({ title: "Draft Invoice Loaded", description: `Loaded Invoice #${inv.invoiceNumber || inv.id} (${inv.clientName})` });
+  };
+
+  const clearAndReset = () => {
+    setEditingInvoiceId(null);
+    setSelectedReqId("");
+    setSelectedQuotId("");
+    setSelectedDraftId("");
+    setClientName("");
+    setClientEmail("");
+    setClientPhone("");
+    setClientCompany("");
+    setContractRef("");
+    setInvoiceDate(new Date().toISOString().split("T")[0]);
+    setDueDate("");
+    setDatesOfService("");
+    setLocationsServed("");
+    setQuantitiesDelivered("");
+    setLineItems([{ description: "Catering & Event Service", datesOfService: "", location: "", quantity: 1, unitPrice: 0, total: 0 }]);
+    setSubtotal(0);
+    setTaxRate(0);
+    setTaxAmount(0);
+    setDiscount(0);
+    setTotalAmount(0);
+    setNotes("");
+    if (onClearEditing) onClearEditing();
+  };
 
   const handleLineItemChange = (index: number, field: string, value: any) => {
     const updated = [...lineItems];
@@ -713,7 +788,18 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
     toast({ title: "Loaded Quotation Data", description: `Pre-filled invoice from quotation ${q.quotationNumber || q.id}` });
   };
 
-  const handleCreateInvoice = async (sendImmediately: boolean = false) => {
+  const handleImportDraft = (draftId: string) => {
+    setSelectedDraftId(draftId);
+    if (!draftId) return;
+    const d = invoices.find((inv: any) => String(inv.id) === String(draftId));
+    if (d) loadInvoiceIntoState(d);
+  };
+
+  const handleSaveInvoice = async (mode: "draft" | "issued" | "send") => {
+    if (!clientName.trim()) {
+      toast({ title: "Client Name Required", description: "Please provide a client name.", variant: "destructive" });
+      return;
+    }
     setSubmitting(true);
     try {
       const invNumber = `INV-TOCEPS-${Date.now().toString().slice(-6)}`;
@@ -725,7 +811,7 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
         clientCompany,
         contractRef,
         invoiceDate,
-        dueDate,
+        dueDate: dueDate || invoiceDate,
         paymentTerms,
         currency,
         datesOfService,
@@ -739,36 +825,52 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
         totalAmount: String(totalAmount),
         paymentDetails,
         notes,
-        status: sendImmediately ? "sent" : "issued",
+        status: mode === "send" ? "sent" : mode === "issued" ? "issued" : "draft",
         vaultSaved: true,
       };
 
-      const res = await cateringFetch("/api/catering/invoices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      let res: any;
+      if (editingInvoiceId) {
+        res = await cateringFetch(`/api/catering/invoices/${editingInvoiceId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await cateringFetch("/api/catering/invoices", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
 
       if (res && res.success) {
-        toast({
-          title: "Invoice Generated & Saved to Vault",
-          description: `Official Invoice ${res.invoice.invoiceNumber} created and saved in Document Vault!`
-        });
-
-        if (sendImmediately) {
-          await cateringFetch(`/api/catering/invoices/${res.invoice.id}/send`, { method: "POST" });
+        const savedInv = res.invoice;
+        if (mode === "draft") {
           toast({
-            title: "Invoice Dispatched to Client",
-            description: `Emailed invoice to ${clientEmail}`
+            title: "💾 Draft Invoice Saved",
+            description: `Draft ${savedInv.invoiceNumber} saved! You can resume and edit it anytime from the vault.`
+          });
+          setEditingInvoiceId(savedInv.id);
+        } else if (mode === "issued") {
+          toast({
+            title: "📋 Invoice Issued & Vaulted",
+            description: `Official Invoice ${savedInv.invoiceNumber} has been finalized and archived in Document Vault!`
+          });
+        } else if (mode === "send") {
+          await cateringFetch(`/api/catering/invoices/${savedInv.id}/send`, { method: "POST" });
+          toast({
+            title: "🚀 Invoice Issued & Dispatched",
+            description: `Official invoice ${savedInv.invoiceNumber} emailed to ${clientEmail} & saved to vault.`
           });
         }
 
         if (onSaveInvoice) onSaveInvoice();
       } else {
-        toast({ title: "Failed to Create Invoice", description: res?.error || "Error generating invoice", variant: "destructive" });
+        toast({ title: "Operation Failed", description: res?.error || "Error processing invoice", variant: "destructive" });
       }
     } catch (err: any) {
-      toast({ title: "Failed to Create Invoice", description: (err && err.message) ? err.message : "Error creating invoice", variant: "destructive" });
+      toast({ title: "Error", description: err.message || "Failed to save invoice", variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -785,31 +887,75 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
                 TOTAG GROUP Official Invoice Builder
               </CardTitle>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Create binding enterprise invoices with UNIDO contract audit compliance, auto-archive to Document Vault, & client email dispatch
+                Draft, edit, compliance-audit, save to Document Vault, & dispatch enterprise catering invoices
               </p>
             </div>
-            <Badge className="bg-emerald-500/20 text-emerald-500 text-xs font-extrabold px-3 py-1 self-start md:self-auto">
-              UNIDO Deliverable C Compliant
-            </Badge>
+            <div className="flex items-center gap-2">
+              {editingInvoiceId && (
+                <Badge className="bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-black px-3 py-1">
+                  ✏️ Editing Draft #{editingInvoiceId}
+                </Badge>
+              )}
+              <Badge className="bg-emerald-500/20 text-emerald-500 text-xs font-extrabold px-3 py-1 self-start md:self-auto">
+                UNIDO Deliverable C Compliant
+              </Badge>
+            </div>
           </div>
         </CardHeader>
 
         <CardContent className="pt-6 space-y-6">
           
-          {/* Pre-fill from Customer Bookings or Quotations Toolbar */}
+          {/* Active Editing Notice Banner */}
+          {editingInvoiceId && (
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
+              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                You are working on a saved draft. Click "Save Draft" to keep updating, or "Issue to Vault" / "Dispatch" when finished.
+              </span>
+              <Button type="button" variant="outline" size="sm" onClick={clearAndReset} className="h-7 text-xs font-bold">
+                <Plus className="w-3 h-3 mr-1" /> New Invoice
+              </Button>
+            </div>
+          )}
+
+          {/* Quick Auto-Fill Toolbar (Requests, Quotations, Saved Drafts) */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide flex items-center gap-1.5">
                 <ClipboardList className="w-4 h-4 text-emerald-500" />
-                Quick Auto-Fill from Existing Client Records
+                Resume Saved Drafts or Import from Customer Records
               </span>
-              <span className="text-[11px] text-slate-400">Select booking or quotation to load details</span>
+              <span className="text-[11px] text-slate-400">{draftInvoices.length} active draft(s) available</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* Draft Selector */}
               <div>
-                <Label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Load from Customer Request:</Label>
+                <Label className="text-[11px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> Resume Saved Draft Invoice:
+                </Label>
+                <Select value={selectedDraftId} onValueChange={handleImportDraft}>
+                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900 border-amber-500/40">
+                    <SelectValue placeholder="-- Select Draft Invoice --" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {draftInvoices.length === 0 ? (
+                      <SelectItem value="none" disabled>No saved draft invoices</SelectItem>
+                    ) : draftInvoices.map((d: any) => (
+                      <SelectItem key={d.id} value={String(d.id)}>
+                        📝 #{d.id} · {d.clientName} (${d.totalAmount})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Customer Request Selector */}
+              <div>
+                <Label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Load from Customer Booking:</Label>
                 <Select value={selectedReqId} onValueChange={handleImportRequest}>
-                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900"><SelectValue placeholder="-- Select Customer Booking --" /></SelectTrigger>
+                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900">
+                    <SelectValue placeholder="-- Select Booking --" />
+                  </SelectTrigger>
                   <SelectContent>
                     {requests.length === 0 ? (
                       <SelectItem value="none" disabled>No customer bookings in queue</SelectItem>
@@ -822,10 +968,13 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
                 </Select>
               </div>
 
+              {/* Quotation Selector */}
               <div>
                 <Label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">Load from Approved Quotation:</Label>
                 <Select value={selectedQuotId} onValueChange={handleImportQuotation}>
-                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900"><SelectValue placeholder="-- Select Quotation --" /></SelectTrigger>
+                  <SelectTrigger className="text-xs rounded-xl mt-1 bg-white dark:bg-slate-900">
+                    <SelectValue placeholder="-- Select Quotation --" />
+                  </SelectTrigger>
                   <SelectContent>
                     {quotations.length === 0 ? (
                       <SelectItem value="none" disabled>No quotations available</SelectItem>
@@ -987,26 +1136,48 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
+          {/* Action Buttons: Save Draft | Issue to Vault | Dispatch Email */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
             <Button 
               type="button" 
-              onClick={() => handleCreateInvoice(false)}
-              disabled={submitting}
-              className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2"
+              variant="outline"
+              onClick={clearAndReset}
+              className="text-xs font-bold rounded-xl"
             >
-              <Download className="w-4 h-4" />
-              Save to Document Vault
+              Clear / Reset Form
             </Button>
-            <Button 
-              type="button" 
-              onClick={() => handleCreateInvoice(true)}
-              disabled={submitting}
-              className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-lg flex items-center gap-2"
-            >
-              <Send className="w-4 h-4" />
-              Generate, Save Vault & Dispatch Email to Client
-            </Button>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Button 
+                type="button" 
+                onClick={() => handleSaveInvoice("draft")}
+                disabled={submitting}
+                className="bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-1.5"
+              >
+                <Clock className="w-4 h-4" />
+                💾 Save as Draft (Work on Later)
+              </Button>
+
+              <Button 
+                type="button" 
+                onClick={() => handleSaveInvoice("issued")}
+                disabled={submitting}
+                className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2"
+              >
+                <Download className="w-4 h-4" />
+                📋 Issue & Save to Vault
+              </Button>
+
+              <Button 
+                type="button" 
+                onClick={() => handleSaveInvoice("send")}
+                disabled={submitting}
+                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-lg flex items-center gap-2"
+              >
+                <Send className="w-4 h-4" />
+                🚀 Issue, Save Vault & Dispatch Email
+              </Button>
+            </div>
           </div>
 
         </CardContent>
@@ -1015,7 +1186,7 @@ function InvoiceBuilder({ requests = [], quotations = [], onSaveInvoice, onSendI
   );
 }
 
-function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: () => void }) {
+function InvoicesVault({ invoices, onRefresh, onEditInvoice }: { invoices: any[]; onRefresh?: () => void; onEditInvoice?: (inv: any) => void }) {
   const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null);
   const [vaultSubTab, setVaultSubTab] = useState<"active-docs" | "audit-trail">("active-docs");
   const [invoiceToDelete, setInvoiceToDelete] = useState<any | null>(null);
@@ -1184,7 +1355,17 @@ function InvoicesVault({ invoices, onRefresh }: { invoices: any[]; onRefresh?: (
                     )}
 
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-white/5">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {onEditInvoice && (
+                          <Button 
+                            size="sm" 
+                            variant="default" 
+                            onClick={() => onEditInvoice(inv)} 
+                            className="text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm flex items-center gap-1"
+                          >
+                            <Clock className="w-3.5 h-3.5" /> Resume / Edit {inv.status === "draft" ? "Draft" : "Invoice"}
+                          </Button>
+                        )}
                         <Button size="sm" variant="outline" onClick={() => setSelectedInvoice(inv)} className="text-xs font-bold rounded-xl">
                           <Eye className="w-3.5 h-3.5 mr-1 text-emerald-500" /> View & Print Invoice
                         </Button>
@@ -1510,6 +1691,8 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
   const [newTask, setNewTask] = useState({ eventId: "", role: "", title: "", description: "", priority: "normal", dueDate: "" });
   const [quotationRequest, setQuotationRequest] = useState<any>(null);
   const [previewQuotation, setPreviewQuotation] = useState<any>(null);
+  const [editingInvoice, setEditingInvoice] = useState<any>(null);
+  const [editingQuotation, setEditingQuotation] = useState<any>(null);
 
   const pendingRequests = requests.filter((r: any) => ["new", "reviewing"].includes(r.status));
   const quotedRequests = requests.filter((r: any) => r.status === "quoted");
@@ -1820,13 +2003,22 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
         <QuotationBuilder
           request={quotationRequest}
           requests={requests}
+          quotations={quotations}
+          editingQuotation={editingQuotation}
           onSelectRequest={setQuotationRequest}
-          onSave={(data: any) => { onCreateQuotation(data); setQuotationRequest(null); }}
+          onSave={(data: any) => { onCreateQuotation(data); setQuotationRequest(null); setEditingQuotation(null); }}
+          onUpdateQuotation={onUpdateQuotation}
+          onClearEditing={() => setEditingQuotation(null)}
         />
       </TabsContent>
 
       <TabsContent value="quotations">
-        <QuotationsList quotations={quotations} onPreview={setPreviewQuotation} onUpdateQuotation={onUpdateQuotation} />
+        <QuotationsList 
+          quotations={quotations} 
+          onPreview={setPreviewQuotation} 
+          onUpdateQuotation={onUpdateQuotation}
+          onEditQuotation={(q: any) => { setEditingQuotation(q); setActiveTab("quotation-builder"); }}
+        />
         {previewQuotation && (
           <Dialog open={!!previewQuotation} onOpenChange={() => setPreviewQuotation(null)}>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -1939,11 +2131,22 @@ function AccountManagerView({ invoices: propInvoices, refetchInvoices: propRefet
 
       
       <TabsContent value="invoice-builder">
-        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={() => { refetchInvoices(); setActiveTab("invoices-vault"); }} />
+        <InvoiceBuilder 
+          requests={requests} 
+          quotations={quotations} 
+          invoices={invoices}
+          initialInvoice={editingInvoice}
+          onClearEditing={() => setEditingInvoice(null)}
+          onSaveInvoice={() => { refetchInvoices(); setEditingInvoice(null); setActiveTab("invoices-vault"); }} 
+        />
       </TabsContent>
 
       <TabsContent value="invoices-vault">
-        <InvoicesVault invoices={invoices} onRefresh={refetchInvoices} />
+        <InvoicesVault 
+          invoices={invoices} 
+          onRefresh={refetchInvoices} 
+          onEditInvoice={(inv: any) => { setEditingInvoice(inv); setActiveTab("invoice-builder"); }}
+        />
       </TabsContent>
 
       <TabsContent value="staff">
@@ -2127,7 +2330,20 @@ function ResourcePlanBuilder({ request, requests, onSelectRequest, token }: any)
   );
 }
 
-function QuotationBuilder({ request, requests, onSelectRequest, onSave, onSaveAndSend, isSending }: any) {
+function QuotationBuilder({ 
+  request, 
+  requests = [], 
+  quotations = [], 
+  editingQuotation = null, 
+  onSelectRequest, 
+  onSave, 
+  onUpdateQuotation,
+  onSaveAndSend, 
+  onClearEditing,
+  isSending 
+}: any) {
+  const [editingQuotId, setEditingQuotId] = useState<number | null>(null);
+  const [selectedDraftId, setSelectedDraftId] = useState("");
   const [selectedReq, setSelectedReq] = useState<any>(request);
   const [manualClient, setManualClient] = useState({ name: "", email: "", phone: "", company: "", eventType: "", eventDate: "", venue: "", guestCount: 0, urgency: "", details: "" });
   const [manualServices, setManualServices] = useState<string[]>([]);
@@ -2147,6 +2363,47 @@ function QuotationBuilder({ request, requests, onSelectRequest, onSave, onSaveAn
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [coverNote, setCoverNote] = useState("");
   const [includeCoverNote, setIncludeCoverNote] = useState(true);
+  const { toast } = useToast();
+
+  const draftQuotations = quotations.filter((q: any) => q.status === "draft");
+
+  useEffect(() => {
+    if (editingQuotation) {
+      loadQuotationIntoState(editingQuotation);
+    }
+  }, [editingQuotation]);
+
+  const loadQuotationIntoState = (q: any) => {
+    setEditingQuotId(q.id);
+    setSelectedDraftId(String(q.id));
+    setUseManual(true);
+    setSelectedReq(null);
+    setManualClient({
+      name: q.clientName || q.client_name || "",
+      email: q.clientEmail || q.client_email || "",
+      phone: q.clientPhone || q.client_phone || "",
+      company: q.clientCompany || q.client_company || "",
+      eventType: q.eventType || q.event_type || "",
+      eventDate: q.eventDate || q.event_date || "",
+      venue: q.venue || "",
+      guestCount: q.guestCount || q.guest_count || 0,
+      urgency: "",
+      details: q.notes || "",
+    });
+    setNumberOfDays(q.numberOfDays || q.number_of_days || 1);
+    setCurrency(q.currency || "USD");
+    setTaxRate(parseFloat(q.taxRate || q.tax_rate || 0));
+    setDiscount(parseFloat(q.discount || 0));
+    setDiscountType(q.discountType || q.discount_type || "fixed");
+    setPaymentTerms(q.paymentTerms || q.payment_terms || "50% deposit upon confirmation");
+    setTerms(q.termsAndConditions || q.terms_and_conditions || "");
+    setNotes(q.notes || "");
+    const items = Array.isArray(q.lineItems) ? q.lineItems : [];
+    if (items.length > 0) {
+      setLineItems(items);
+    }
+    toast({ title: "Draft Quotation Loaded", description: `Loaded quote ${q.quotationNumber || q.id} for ${q.clientName}` });
+  };
 
   useEffect(() => {
     if (request) {
@@ -2254,7 +2511,7 @@ TOCEPS Operations Team
 TOTAG Group of Companies Ltd`;
   };
 
-  const buildQuotData = () => {
+  const buildQuotData = (status: "draft" | "quoted" | "sent" = "draft") => {
     const src = useManual ? manualClient : selectedReq;
     return {
       requestId: useManual ? (requests[0]?.id || 1) : selectedReq.id,
@@ -2283,11 +2540,13 @@ TOTAG Group of Companies Ltd`;
       notes,
       coverNote: includeCoverNote ? coverNote : "",
       isRevision: isRevision ? 1 : 0,
-      status: "draft",
+      status,
     };
   };
 
   const resetForm = () => {
+    setEditingQuotId(null);
+    setSelectedDraftId("");
     setLineItems([]);
     setSelectedReq(null);
     setUseManual(false);
@@ -2296,12 +2555,37 @@ TOTAG Group of Companies Ltd`;
     setManualClient({ name: "", email: "", phone: "", company: "", eventType: "", eventDate: "", venue: "", guestCount: 0, urgency: "", details: "" });
     setNotes("");
     setNumberOfDays(1);
+    if (onClearEditing) onClearEditing();
   };
 
-  const handleSave = () => {
+  const handleSaveDraft = () => {
+    if ((!selectedReq && !useManual) || lineItems.length === 0) {
+      toast({ title: "Incomplete Quotation", description: "Add at least one line item or select services.", variant: "destructive" });
+      return;
+    }
+    if (useManual && !manualClient.name) {
+      toast({ title: "Client Name Required", description: "Please enter client name.", variant: "destructive" });
+      return;
+    }
+    const data = buildQuotData("draft");
+    if (editingQuotId && onUpdateQuotation) {
+      onUpdateQuotation(editingQuotId, data);
+      toast({ title: "💾 Draft Quotation Updated", description: `Draft quote ${editingQuotId} updated successfully!` });
+    } else {
+      onSave(data);
+      toast({ title: "💾 Draft Quotation Saved", description: "Quotation saved as draft! You can resume and edit it anytime." });
+    }
+  };
+
+  const handleSaveFinal = () => {
     if ((!selectedReq && !useManual) || lineItems.length === 0) return;
     if (useManual && !manualClient.name) return;
-    onSave(buildQuotData());
+    const data = buildQuotData("quoted");
+    if (editingQuotId && onUpdateQuotation) {
+      onUpdateQuotation(editingQuotId, data);
+    } else {
+      onSave(data);
+    }
     resetForm();
   };
 
@@ -2353,29 +2637,91 @@ TOTAG Group of Companies Ltd`;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-white/10 shadow-md">
         <div>
-          <h3 className="font-semibold text-lg flex items-center gap-2"><Receipt className="h-5 w-5 text-purple-600" /> Quotation Builder</h3>
-          <p className="text-sm text-gray-500">Create detailed, itemized quotations from client requests</p>
+          <div className="flex items-center gap-2">
+            <h3 className="font-black text-lg text-slate-900 dark:text-white flex items-center gap-2">
+              <Receipt className="h-5 w-5 text-purple-600" /> Quotation Builder
+            </h3>
+            {editingQuotId && (
+              <Badge className="bg-amber-500/20 text-amber-500 text-xs font-black px-2.5 py-0.5 border border-amber-500/30">
+                ✏️ Editing Quote #{editingQuotId}
+              </Badge>
+            )}
+          </div>
+          <p className="text-xs text-gray-500 mt-1">Draft itemized quotes, calculate live pricing, & dispatch official proposals to clients</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+
+        <div className="flex gap-2 flex-wrap items-center">
+          {editingQuotId && (
+            <Button variant="outline" size="sm" onClick={resetForm} className="text-xs font-bold h-8">
+              <Plus className="h-3.5 w-3.5 mr-1" /> New Quote
+            </Button>
+          )}
           {lineItems.length > 0 && (
             <>
-              <Button variant="outline" size="sm" onClick={() => setShowPreview(true)}>
-                <Eye className="h-4 w-4 mr-1" /> Preview
+              <Button variant="outline" size="sm" onClick={() => setShowPreview(true)} className="text-xs font-bold h-8">
+                <Eye className="h-3.5 w-3.5 mr-1 text-purple-600" /> Preview
               </Button>
-              <Button variant="outline" className="border-green-600 text-green-700 hover:bg-green-50" size="sm" onClick={handleSave}>
-                <FileCheck className="h-4 w-4 mr-1" /> Save Draft
+              <Button 
+                variant="default" 
+                size="sm" 
+                onClick={handleSaveDraft}
+                className="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold h-8 shadow-sm"
+              >
+                <Clock className="h-3.5 w-3.5 mr-1" /> 💾 Save as Draft
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSaveFinal}
+                className="border-green-600 text-green-700 hover:bg-green-50 text-xs font-bold h-8"
+              >
+                <FileCheck className="h-3.5 w-3.5 mr-1" /> 📋 Submit Quote
               </Button>
               {onSaveAndSend && (
-                <Button className="bg-green-700 hover:bg-green-800 text-white" size="sm" onClick={openSendDialog} disabled={isSending}>
-                  <Send className="h-4 w-4 mr-1" /> Save & Send to {activeSource?.email || "Customer"}
+                <Button 
+                  className="bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold h-8 shadow-md" 
+                  size="sm" 
+                  onClick={openSendDialog} 
+                  disabled={isSending}
+                >
+                  <Send className="h-3.5 w-3.5 mr-1" /> 🚀 Save & Email Customer
                 </Button>
               )}
             </>
           )}
         </div>
       </div>
+
+      {/* Resume Saved Drafts Toolbar */}
+      {draftQuotations.length > 0 && (
+        <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-bold text-amber-800 dark:text-amber-300">
+              You have {draftQuotations.length} saved draft quotation(s) waiting for completion:
+            </span>
+          </div>
+          <div className="w-full sm:w-72">
+            <Select value={selectedDraftId} onValueChange={(val) => {
+              const q = quotations.find((quot: any) => String(quot.id) === String(val));
+              if (q) loadQuotationIntoState(q);
+            }}>
+              <SelectTrigger className="h-8 text-xs bg-white dark:bg-slate-900 border-amber-500/40">
+                <SelectValue placeholder="-- Select Draft Quotation to Resume --" />
+              </SelectTrigger>
+              <SelectContent>
+                {draftQuotations.map((d: any) => (
+                  <SelectItem key={d.id} value={String(d.id)}>
+                    📝 #{d.id} · {d.clientName} (${d.totalAmount})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
 
       {!selectedReq && !useManual ? (
         <div className="space-y-4">
@@ -3215,7 +3561,7 @@ function QuotationPreview({ quotation, onClose }: { quotation: any; onClose: () 
 }
 
 // ===== QUOTATIONS LIST =====
-function QuotationsList({ quotations, onPreview, onUpdateQuotation }: any) {
+function QuotationsList({ quotations, onPreview, onUpdateQuotation, onEditQuotation }: any) {
   const statusColors: Record<string, string> = {
     draft: "bg-gray-100 text-gray-800",
     sent: "bg-blue-100 text-blue-800",
@@ -3261,7 +3607,17 @@ function QuotationsList({ quotations, onPreview, onUpdateQuotation }: any) {
                 <div className="text-right">
                   <p className="text-lg font-bold text-green-700">{q.currency} {parseFloat(q.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
                   <p className="text-[10px] text-gray-400">Valid until: {q.validUntil}</p>
-                  <div className="flex gap-1 mt-2 justify-end">
+                  <div className="flex gap-1 mt-2 justify-end items-center">
+                    {onEditQuotation && (
+                      <Button 
+                        size="sm" 
+                        variant="default" 
+                        className="h-7 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white" 
+                        onClick={() => onEditQuotation(q)}
+                      >
+                        <Clock className="h-3 w-3 mr-1" /> Resume / Edit
+                      </Button>
+                    )}
                     <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => onPreview(q)}>
                       <Eye className="h-3 w-3 mr-1" /> View
                     </Button>
@@ -3303,6 +3659,8 @@ function OperationsSupervisorView({ invoices: propInvoices, refetchInvoices: pro
   const [selectedRequest, setSelectedRequest] = useState<any>(null);
   const [quotationRequest, setQuotationRequest] = useState<any>(null);
   const [resourcePlanRequest, setResourcePlanRequest] = useState<any>(null);
+  const [editingInvoice, setEditingInvoice] = useState<any>(null);
+  const [editingQuotation, setEditingQuotation] = useState<any>(null);
   const [viewQuotation, setViewQuotation] = useState<any>(null);
   const [editRequest, setEditRequest] = useState<any>(null);
   const [editForm, setEditForm] = useState<any>({});
@@ -3556,11 +3914,22 @@ function OperationsSupervisorView({ invoices: propInvoices, refetchInvoices: pro
 
       
       <TabsContent value="invoice-builder">
-        <InvoiceBuilder requests={requests} quotations={quotations} onSaveInvoice={() => { refetchInvoices(); setActiveTab("invoices-vault"); }} />
+        <InvoiceBuilder 
+          requests={requests} 
+          quotations={quotations} 
+          invoices={invoices}
+          initialInvoice={editingInvoice}
+          onClearEditing={() => setEditingInvoice(null)}
+          onSaveInvoice={() => { refetchInvoices(); setEditingInvoice(null); setActiveTab("invoices-vault"); }} 
+        />
       </TabsContent>
 
       <TabsContent value="invoices-vault">
-        <InvoicesVault invoices={invoices} onRefresh={refetchInvoices} />
+        <InvoicesVault 
+          invoices={invoices} 
+          onRefresh={refetchInvoices} 
+          onEditInvoice={(inv: any) => { setEditingInvoice(inv); setActiveTab("invoice-builder"); }}
+        />
       </TabsContent>
 
       <TabsContent value="resource-plan">
