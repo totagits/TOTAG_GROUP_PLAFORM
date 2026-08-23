@@ -212,7 +212,7 @@ export default function CateringDashboard() {
     }
     setChangingPassword(true);
     try {
-      const res = await fetch("/api/catering/auth/change-password", {
+      const res = await cateringFetch("/api/catering/auth/change-password", {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ currentPassword, newPassword }),
@@ -2026,7 +2026,7 @@ function ResourcePlanBuilder({ request, requests, onSelectRequest, token }: any)
     if (!eventBrief.trim()) { toast({ title: "Event Brief Required", description: "Please fill in the event brief.", variant: "destructive" }); return; }
     setIsSending(true);
     try {
-      const res = await fetch(`/api/catering/requests/${selectedReq.id}/resource-plan`, {
+      const res = await cateringFetch(`/api/catering/requests/${selectedReq.id}/resource-plan`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ eventBrief, menuPlan, staffingPlan, equipmentList, serviceTimeline, foodSafetyNotes, additionalNotes }),
