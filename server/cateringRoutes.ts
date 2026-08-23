@@ -290,7 +290,82 @@ router.post("/requests", async (req: Request, res: Response) => {
   try {
     const parsed = insertCateringRequestSchema.parse(req.body);
     const request = await storage.createCateringRequest(parsed);
-    res.status(201).json({ success: true, request });
+
+    // Auto-generate preliminary Proforma Quotation & Vault Record for seamless tracking
+    let generatedQuotation: any = null;
+    try {
+      const year = new Date().getFullYear();
+      const randNum = Math.floor(1000 + Math.random() * 9000);
+      const quotNum = `QUOT-TOCEPS-${year}-${randNum}`;
+      const guestCount = request.guestCount || 100;
+      const unitRate = 18.50; // Standard buffet / conference catering unit rate
+      const subtotal = guestCount * unitRate;
+      const serviceCharge = subtotal * 0.05;
+      const totalAmount = subtotal + serviceCharge;
+
+      const lineItems = [
+        {
+          description: `${request.eventType} Catering Package (${request.services ? request.services.join(", ") : "Full Buffet Service"})`,
+          quantity: guestCount,
+          unitPrice: unitRate,
+          total: subtotal
+        },
+        {
+          description: "Service Logistics, Chafing Dish Stations, Table Setup & Food Safety QA",
+          quantity: 1,
+          unitPrice: serviceCharge,
+          total: serviceCharge
+        }
+      ];
+
+      generatedQuotation = await storage.createCateringQuotation({
+        requestId: request.id,
+        quotationNumber: quotNum,
+        clientName: request.name,
+        clientEmail: request.email,
+        clientPhone: request.phone || "",
+        clientCompany: request.company || "Direct Client",
+        eventType: request.eventType,
+        eventDate: request.eventDate || "",
+        venue: request.venue || "Client Specified Venue",
+        guestCount: guestCount,
+        lineItems: lineItems,
+        subtotal: subtotal.toFixed(2),
+        taxRate: "0",
+        taxAmount: "0",
+        discount: "0",
+        discountType: "fixed",
+        totalAmount: totalAmount.toFixed(2),
+        currency: "USD",
+        validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+        paymentTerms: "50% Advance Booking Escrow, 50% Post-Event Settlement",
+        termsAndConditions: "HACCP food safety guaranteed. Professional waitstaff deployment included.",
+        notes: `Auto-generated proforma quotation for online request #${request.id}.`,
+        status: "draft"
+      });
+
+      // Log into Document Vault Compliance & Audit Trail
+      await storage.createCateringAuditLog({
+        action: "create",
+        entityType: "quotation",
+        entityId: String(generatedQuotation.id),
+        entityReference: quotNum,
+        performedById: null,
+        performedByName: `Client Self-Service (${request.name})`,
+        reason: "Public Catering Quote Request Intake",
+        details: {
+          clientEmail: request.email,
+          guestCount: guestCount,
+          totalAmountUsd: totalAmount,
+          eventType: request.eventType
+        }
+      });
+      console.log(`📑 Quotation ${quotNum} & Document Vault audit log generated for request #${request.id}`);
+    } catch (quotErr: any) {
+      console.warn("⚠️ Could not auto-create preliminary quotation:", quotErr.message);
+    }
+
+    res.status(201).json({ success: true, request, quotation: generatedQuotation });
 
     // Send email notifications asynchronously (non-blocking)
     setImmediate(async () => {

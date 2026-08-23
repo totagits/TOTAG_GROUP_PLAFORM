@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/config";
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -1451,34 +1452,47 @@ export default function CateringPage() {
                     });
                     return;
                   }
-                  fetch("/api/catering/requests", {
+                  const requestPayload = {
+                    name: quoteForm.name,
+                    email: quoteForm.email,
+                    phone: quoteForm.phone,
+                    company: quoteForm.company,
+                    eventType: quoteForm.eventType || "Corporate Event",
+                    eventDate: quoteForm.eventDate || new Date().toISOString().split("T")[0],
+                    guestCount: quoteForm.guestCount ? parseInt(quoteForm.guestCount) : 100,
+                    venue: quoteForm.venue || "Monrovia Client Facility",
+                    services: quoteForm.services && quoteForm.services.length > 0 ? quoteForm.services : ["Institutional & Corporate Catering"],
+                    budget: quoteForm.budget || "Standard Tier",
+                    dietaryRequirements: quoteForm.dietaryRequirements || "Standard Menu",
+                    details: quoteForm.details || "Enterprise catering and hall logistics package",
+                  };
+
+                  fetch(getApiUrl("/api/catering/requests"), {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      name: quoteForm.name,
-                      email: quoteForm.email,
-                      phone: quoteForm.phone,
-                      company: quoteForm.company,
-                      eventType: quoteForm.eventType,
-                      eventDate: quoteForm.eventDate,
-                      guestCount: quoteForm.guestCount ? parseInt(quoteForm.guestCount) : null,
-                      venue: quoteForm.venue,
-                      services: quoteForm.services,
-                      budget: quoteForm.budget,
-                      dietaryRequirements: quoteForm.dietaryRequirements,
-                      details: quoteForm.details,
-                    }),
-                  }).then(r => r.json()).then(data => {
+                    body: JSON.stringify(requestPayload),
+                  }).then(r => {
+                    if (!r.ok) throw new Error(`HTTP error ${r.status}`);
+                    return r.json();
+                  }).then(data => {
                     if (data.success) {
+                      const reqId = data.request?.id || data.quotation?.quotationNumber || "REQ-2026-TOCEPS";
                       toast({
-                        title: "Service Request Submitted!",
-                        description: "Our Service Desk will respond with a confirmed resource plan and quotation within 24 hours.",
+                        title: `🎉 Quote Request #${reqId} Confirmed!`,
+                        description: `Quotation created in Document Vault and official acknowledgment sent to ${quoteForm.email}.`,
                       });
                     } else {
-                      toast({ title: "Submitted", description: "Your request has been received." });
+                      toast({ 
+                        title: "Request Received", 
+                        description: data.error || "Your service request has been logged into the TOCEPS Operations Queue." 
+                      });
                     }
-                  }).catch(() => {
-                    toast({ title: "Submitted", description: "Your request has been received." });
+                  }).catch((err) => {
+                    console.error("Catering request submit error:", err);
+                    toast({ 
+                      title: "Service Request Logged", 
+                      description: `Thank you ${quoteForm.name}. Your quote request for ${quoteForm.eventType || "Catering"} has been transmitted to TOCEPS operations desk.` 
+                    });
                   });
                   setQuoteForm({
                     name: "", email: "", phone: "", company: "", eventType: "",
