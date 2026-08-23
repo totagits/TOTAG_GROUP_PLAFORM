@@ -902,6 +902,112 @@ export default function CargoPage() {
   }
 
   const [selectedVaultCategory, setSelectedVaultCategory] = useState<VaultDocCategory>("ALL");
+  // ISOLATED SINGLE-DOCUMENT PRINT ENGINE
+  const handlePrintSingleDocument = () => {
+    const printElement = document.getElementById("printable-vault-document");
+    if (!printElement) {
+      window.print();
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "width=850,height=900");
+    if (!printWindow) {
+      window.print();
+      return;
+    }
+
+    const docTitle = selectedGeneralDoc ? `${selectedGeneralDoc.title} - ${selectedGeneralDoc.docNumber}` : "TOTAG Official Vault Document";
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+          <title>${docTitle}</title>
+          <style>
+            @page {
+              size: A4 portrait;
+              margin: 12mm;
+            }
+            * {
+              box-sizing: border-box;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              color: #0f172a;
+              background: #ffffff;
+              margin: 0;
+              padding: 0;
+              font-size: 11px;
+              line-height: 1.45;
+            }
+            .no-print {
+              display: none !important;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 6px;
+            }
+            th, td {
+              border: 1px solid #e2e8f0;
+              padding: 6px 10px;
+              text-align: left;
+            }
+            th {
+              background-color: #f8fafc;
+              font-weight: bold;
+            }
+            img {
+              max-width: 100%;
+              display: block;
+            }
+            .border {
+              border: 1px solid #e2e8f0 !important;
+            }
+            .rounded-2xl {
+              border-radius: 12px !important;
+            }
+            .rounded-xl {
+              border-radius: 8px !important;
+            }
+            .bg-slate-50 {
+              background-color: #f8fafc !important;
+            }
+            .bg-white {
+              background-color: #ffffff !important;
+            }
+            .text-emerald-700 {
+              color: #047857 !important;
+            }
+            .text-sky-700 {
+              color: #0369a1 !important;
+            }
+            .font-mono {
+              font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+            }
+          </style>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+        </head>
+        <body class="bg-white p-2">
+          ${printElement.innerHTML}
+          <script>
+            window.onload = function() {
+              setTimeout(function() {
+                window.focus();
+                window.print();
+                window.close();
+              }, 400);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
   const [selectedGeneralDoc, setSelectedGeneralDoc] = useState<VaultDocument | null>(null);
   const [isGeneralDocViewerOpen, setIsGeneralDocViewerOpen] = useState(false);
   const [docFeedbackInput, setDocFeedbackInput] = useState("");
@@ -3031,7 +3137,7 @@ export default function CargoPage() {
                                 onClick={() => {
                                   const contractDoc: VaultDocument = {
                                     id: `DOC-CONTRACT-${contract.contractId}`,
-                                    docNumber: `TOTAG-POA-2026-${contract.contractId}`,
+                                    docNumber: contract.contractId.startsWith("TOTAG") ? contract.contractId : `TOTAG-POA-2026-${contract.contractId}`,
                                     title: "Digital Power of Attorney & C&F Clearing Service Agreement",
                                     category: "CONTRACT",
                                     companyName: contract.companyName || customerAccount.companyName,
@@ -3989,7 +4095,7 @@ export default function CargoPage() {
 
                   <div className="flex items-center space-x-3 print:hidden">
                     <Button 
-                      onClick={() => window.print()} 
+                      onClick={handlePrintSingleDocument} 
                       className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl px-5 py-2.5 text-xs shadow-lg flex items-center space-x-1.5"
                     >
                       <Printer className="w-4 h-4" />
@@ -5074,7 +5180,7 @@ export default function CargoPage() {
                   <div className="flex items-center space-x-2 w-full sm:w-auto">
                     <Button 
                       type="button"
-                      onClick={() => window.print()}
+                      onClick={handlePrintSingleDocument}
                       className="bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl px-5 py-2.5 shadow-md flex items-center space-x-1.5 cursor-pointer w-full sm:w-auto justify-center"
                     >
                       <Printer className="w-4 h-4 mr-1 text-emerald-400" />
