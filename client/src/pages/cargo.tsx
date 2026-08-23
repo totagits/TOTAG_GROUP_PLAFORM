@@ -2384,262 +2384,566 @@ export default function CargoPage() {
             {/* TAB 3: AUTHENTICATED B2B CLIENT PORTAL (SELF-SERVICE LIFECYCLE)     */}
             {/* =================================================================== */}
             <TabsContent value="b2b-portal" id="cargo-customer-dashboard" className="space-y-8">
-                {/* CUSTOMER LOGIN CARD (IF NOT LOGGED IN) */}
-                {!customerAccount.isLoggedIn && (
-                  <Card className="bg-white border-2 border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-emerald-100 rounded-2xl text-emerald-700">
-                          <LogIn className="w-6 h-6" />
+                
+                {/* ================================================================= */}
+                {/* 1. PUBLIC VIEW (WHEN NOT LOGGED IN)                              */}
+                {/* ================================================================= */}
+                {!customerAccount.isLoggedIn ? (
+                  <div className="space-y-8">
+                    
+                    {/* A. CUSTOMER PORTAL AUTHENTICATION & LOGIN CARD */}
+                    <Card className="bg-white border-2 border-emerald-500/40 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+                        <div className="flex items-center space-x-4">
+                          <div className="p-3.5 bg-emerald-100 border border-emerald-300 rounded-2xl text-emerald-700 shadow-sm">
+                            <LogIn className="w-7 h-7" />
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <h3 className="text-xl font-black text-slate-900">
+                                Customer Cargo Portal Sign In
+                              </h3>
+                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
+                                Secure Account Access
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-slate-600 mt-1 max-w-xl">
+                              Sign in with your registered enterprise email and password (or temporary credentials from your onboarding email) to access your private Document Vault, live cargo telematics, and credit management.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            onClick={() => {
+                              setCustomerAccount({
+                                isLoggedIn: true,
+                                companyName: "Jutu Enterprise Ltd",
+                                tinNumber: "LRA-TIN-9940218",
+                                email: "rtalk4348@gmail.com",
+                                phone: "+231 777 000 111",
+                                accountType: "Verified Enterprise Shipper Account",
+                                isPasswordChanged: false,
+                                creditLimitUsd: 150000,
+                                creditUsedUsd: 24500,
+                                teamMembers: [
+                                  { name: "Edward James (CEO)", role: "Managing Director (Primary)", email: "rtalk4348@gmail.com" },
+                                  { name: "Officer J. Koffa", role: "Licensed Customs Broker (Assigned)", email: "cargo@totaggroup.com" }
+                                ]
+                              });
+                              toast({ title: "Welcome to Customer Dashboard!", description: "Signed in as Jutu Enterprise Ltd (rtalk4348@gmail.com)." });
+                            }}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-5 py-2.5 shadow-md cursor-pointer"
+                          >
+                            <Zap className="w-4 h-4 mr-1.5" />
+                            <span>1-Click Sign In (Jutu Enterprise)</span>
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Inline Login Form */}
+                      <form onSubmit={handleCustomerLogin} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <div>
+                          <Label className="text-slate-700 text-xs font-bold">Official Account Email *</Label>
+                          <Input 
+                            type="email"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
+                            placeholder="e.g. rtalk4348@gmail.com"
+                            className="bg-white border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold"
+                            required
+                          />
                         </div>
                         <div>
-                          <h3 className="text-lg font-black text-slate-900">
-                            Have an Existing Account or Temporary Credentials?
-                          </h3>
-                          <p className="text-xs text-slate-600">
-                            Sign in to view your assigned customs broker, real-time container dispatch, and Document Vault
+                          <Label className="text-slate-700 text-xs font-bold">Password / Temporary Credentials *</Label>
+                          <Input 
+                            type="password"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                            placeholder="Enter password or TOTAG-Pass#..."
+                            className="bg-white border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-mono"
+                            required
+                          />
+                        </div>
+                        <Button 
+                          type="submit" 
+                          disabled={isLoggingIn}
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl py-3 shadow-md cursor-pointer transition flex items-center justify-center"
+                        >
+                          <LogIn className="w-4 h-4 mr-1.5 text-emerald-400" />
+                          <span>{isLoggingIn ? "Authenticating..." : "Sign In to Dashboard"}</span>
+                        </Button>
+                      </form>
+                    </Card>
+
+                    {/* B. PUBLIC B2B CARGO BOOKING INTAKE & QUOTATION ENGINE */}
+                    <Card className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 text-slate-900 space-y-6 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <Box className="w-6 h-6 text-emerald-600" />
+                            <h3 className="text-xl font-black text-slate-900">
+                              Public B2B Cargo Booking & Manifest Intake
+                            </h3>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            Create new shipment booking, upload manifests & generate official printable AWB quotation
                           </p>
                         </div>
+                        <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs font-bold w-fit">
+                          Public Shipper Intake
+                        </Badge>
                       </div>
-                      <Button 
-                        onClick={() => setIsCustomerLoginModalOpen(true)}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-6 py-2.5 shadow-md cursor-pointer"
-                      >
-                        <LogIn className="w-4 h-4 mr-1.5" />
-                        <span>Sign In to Your Account</span>
-                      </Button>
+
+                      <form onSubmit={handleGenerateAwbBooking} className="space-y-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="text-xs text-slate-700 font-bold">Shipper / Company Name *</Label>
+                            <Input 
+                              value={b2bBookingForm.shipper} 
+                              onChange={(e) => setB2bBookingForm({...b2bBookingForm, shipper: e.target.value})}
+                              placeholder="e.g. Jutu Enterprise Ltd / Global Pharma NV"
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              required
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs text-slate-700 font-bold">Consignee Entity *</Label>
+                            <Input 
+                              value={b2bBookingForm.consignee} 
+                              onChange={(e) => setB2bBookingForm({...b2bBookingForm, consignee: e.target.value})}
+                              placeholder="e.g. TOTAG General Merchandise Ltd"
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <Label className="text-xs text-slate-700 font-bold">Nature of Goods</Label>
+                            <Input 
+                              value={b2bBookingForm.natureOfGoods} 
+                              onChange={(e) => setB2bBookingForm({...b2bBookingForm, natureOfGoods: e.target.value})}
+                              placeholder="e.g. General Merchandise / Pharmaceuticals"
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs text-slate-700 font-bold">Total Pieces / Cartons</Label>
+                            <Input 
+                              type="number" 
+                              value={b2bBookingForm.pieces} 
+                              onChange={(e) => setB2bBookingForm({...b2bBookingForm, pieces: Number(e.target.value)})}
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs text-slate-700 font-bold">Estimated Weight (kg)</Label>
+                            <Input 
+                              type="number" 
+                              value={b2bBookingForm.weightKg} 
+                              onChange={(e) => setB2bBookingForm({...b2bBookingForm, weightKg: Number(e.target.value)})}
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                            />
+                          </div>
+                        </div>
+
+                        <div 
+                          onClick={handleTriggerBlUpload}
+                          className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer bg-slate-50"
+                        >
+                          <Upload className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                          <span className="text-xs font-bold text-slate-900 block">Drop Commercial Invoice, Packing List & Manifest Copy</span>
+                          <span className="text-[10px] text-slate-500 block mt-1">PDF, PNG, TIFF up to 25MB (Click to select local file)</span>
+                        </div>
+
+                        <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl py-3 text-xs shadow-lg flex items-center justify-center space-x-2 cursor-pointer">
+                          <FileText className="w-4 h-4" />
+                          <span>Generate Booking & Issue Official Printable AWB PDF</span>
+                        </Button>
+                      </form>
+                    </Card>
+
+                    {/* C. PROTECTED DASHBOARD FEATURES PREVIEW / TEASER */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div className="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold">
+                          <FileCheck className="w-5 h-5" />
+                        </div>
+                        <h4 className="font-bold text-sm text-slate-900">Private Document Vault</h4>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          Secure repository for your executed Power of Attorney contracts, ASYCUDA SAD entries, and tax receipts. (Sign in to access)
+                        </p>
+                      </div>
+
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div className="w-10 h-10 bg-sky-100 text-sky-700 rounded-xl flex items-center justify-center font-bold">
+                          <Radio className="w-5 h-5" />
+                        </div>
+                        <h4 className="font-bold text-sm text-slate-900">Live Cargo Telematics</h4>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          Real-time cold-chain temperature (2-8°C), shock G-force, and GPS container vessel tracking. (Sign in to access)
+                        </p>
+                      </div>
+
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div className="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center font-bold">
+                          <Wallet className="w-5 h-5" />
+                        </div>
+                        <h4 className="font-bold text-sm text-slate-900">Credit Line & E-Billing</h4>
+                        <p className="text-xs text-slate-500 leading-relaxed">
+                          Up to $150,000 approved revolving credit line, electronic billing, and dispute ticketing. (Sign in to access)
+                        </p>
+                      </div>
                     </div>
-                  </Card>
+
+                  </div>
+                ) : (
+                  /* ================================================================= */
+                  /* 2. AUTHENTICATED CUSTOMER CARGO DASHBOARD                         */
+                  /* ================================================================= */
+                  <div className="space-y-8">
+                    
+                    {/* A. ENTERPRISE CUSTOMER PROFILE HEADER */}
+                    <div className="bg-white border-2 border-emerald-500/40 rounded-3xl p-6 shadow-xl space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                        <div className="flex items-center space-x-3.5">
+                          <div className="p-3 bg-emerald-100 border border-emerald-300 rounded-2xl text-emerald-700 shadow-sm">
+                            <Building2 className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <div className="flex items-center space-x-2.5">
+                              <h3 className="text-xl font-black text-slate-900">
+                                {customerAccount.companyName}
+                              </h3>
+                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] font-bold">
+                                Verified Enterprise Client
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                              Account: <strong className="text-slate-800 font-mono">{customerAccount.email}</strong> • LRA TIN: <strong className="text-slate-800 font-mono">{customerAccount.tinNumber}</strong> • Phone: <strong className="text-slate-800">{customerAccount.phone}</strong>
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2.5">
+                          <Button 
+                            onClick={() => setIsPasswordModalOpen(true)}
+                            variant="outline"
+                            size="sm"
+                            className="border-slate-300 text-slate-700 hover:bg-slate-100 text-xs font-bold rounded-xl"
+                          >
+                            <KeyRound className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                            Change Password
+                          </Button>
+                          <Button 
+                            onClick={() => {
+                              setCustomerAccount(prev => ({ ...prev, isLoggedIn: false }));
+                              toast({ title: "Logged Out", description: "You have signed out of your customer portal." });
+                            }}
+                            variant="outline"
+                            size="sm"
+                            className="border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold rounded-xl"
+                          >
+                            Sign Out
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Account Action Buttons */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                        <div className="flex flex-wrap items-center gap-2.5">
+                          <Button 
+                            onClick={() => setIsBillingModalOpen(true)}
+                            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl px-4 py-2.5 shadow-md flex items-center space-x-1.5 cursor-pointer"
+                          >
+                            <CreditCard className="w-4 h-4" />
+                            <span>Open E-Billing Portal</span>
+                          </Button>
+
+                          <Button 
+                            onClick={() => setIsNewUserModalOpen(true)}
+                            className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl px-4 py-2.5 shadow-md flex items-center space-x-1.5 cursor-pointer"
+                          >
+                            <UserPlus className="w-4 h-4 text-emerald-400" />
+                            <span>Manage Org RBAC</span>
+                          </Button>
+
+                          <Button 
+                            onClick={() => setIsDisputeModalOpen(true)}
+                            className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl px-4 py-2.5 shadow-md flex items-center space-x-1.5 cursor-pointer"
+                          >
+                            <HelpCircle className="w-4 h-4 text-amber-400" />
+                            <span>File Dispute Ticket</span>
+                          </Button>
+                        </div>
+
+                        <Badge className="bg-sky-100 text-sky-800 border-sky-300 text-xs font-bold px-3 py-1">
+                          Assigned Broker: Officer J. Koffa (ONLINE)
+                        </Badge>
+                      </div>
+
+                      {/* Financial Stats Bar */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2">
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                          <span className="text-slate-500 block text-[10px] font-bold">APPROVED CREDIT LINE</span>
+                          <span className="text-lg font-black text-emerald-600">${customerAccount.creditLimitUsd.toLocaleString()} USD</span>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                          <span className="text-slate-500 block text-[10px] font-bold">USED CREDIT BALANCE</span>
+                          <span className="text-lg font-black text-amber-600">${customerAccount.creditUsedUsd.toLocaleString()} USD</span>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                          <span className="text-slate-500 block text-[10px] font-bold">AVAILABLE CREDIT</span>
+                          <span className="text-lg font-black text-sky-600">${(customerAccount.creditLimitUsd - customerAccount.creditUsedUsd).toLocaleString()} USD</span>
+                        </div>
+                        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                          <span className="text-slate-500 block text-[10px] font-bold">ACTIVE ORG USERS</span>
+                          <span className="text-lg font-black text-slate-800">{customerAccount.teamMembers.length} Members</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* B. PRIVATE EXECUTED CONTRACTS & DOCUMENT VAULT */}
+                    <Card className="w-full bg-white border border-slate-200 rounded-3xl p-6 text-slate-900 space-y-4 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <FileCheck className="w-6 h-6 text-emerald-600" />
+                            <h3 className="text-lg sm:text-xl font-black text-slate-900">
+                              Customer Private Document Vault & Power of Attorney
+                            </h3>
+                          </div>
+                          <p className="text-xs text-slate-500 mt-1">
+                            Legal clearing authorizations, ASYCUDA tax clearance receipts & direct customs amendments
+                          </p>
+                        </div>
+                        <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-xs w-fit font-bold">
+                          {vaultContracts.length} Active Records
+                        </Badge>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        {vaultContracts.map((contract, idx) => (
+                          <div 
+                            key={idx} 
+                            className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-3 hover:border-emerald-500/50 transition-all shadow-sm"
+                          >
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <span className="font-mono text-xs font-black text-emerald-700 block">
+                                  #{contract.contractId}
+                                </span>
+                                <h4 className="font-bold text-sm text-slate-900 mt-0.5">
+                                  {contract.companyName}
+                                </h4>
+                                <span className="text-[11px] text-slate-500">Signatory: {contract.authorizedSignatory}</span>
+                              </div>
+                              <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 text-[10px] uppercase font-bold">
+                                {contract.status || "ACTIVE_VERIFIED"}
+                              </Badge>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 text-[11px] bg-white p-3 rounded-xl border border-slate-200 shadow-inner">
+                              <div>
+                                <span className="text-slate-400 block text-[10px] font-bold">B/L / AWB REF</span>
+                                <span className="font-semibold text-slate-800">{contract.billOfLading || "Submitted"}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block text-[10px] font-bold">CONTAINER SPEC</span>
+                                <span className="font-semibold text-slate-800">{contract.containerType || "40' HQ"} ({contract.containersCount || 1} TEU)</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block text-[10px] font-bold">DISCHARGE PORT</span>
+                                <span className="font-semibold text-slate-800">{contract.portOfDischarge || "Monrovia Berth 2"}</span>
+                              </div>
+                              <div>
+                                <span className="text-slate-400 block text-[10px] font-bold">EXECUTED ON</span>
+                                <span className="font-mono text-slate-700">{contract.executedAt ? contract.executedAt.slice(0, 10) : "2026-08-22"}</span>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-1">
+                              <span className="text-[11px] text-slate-500 flex items-center">
+                                <MessageSquare className="w-3.5 h-3.5 mr-1 text-sky-600" />
+                                {contract.responses ? contract.responses.length : 1} message(s) logged
+                              </span>
+                              <Button 
+                                onClick={() => {
+                                  setSelectedVaultContract(contract);
+                                  setIsContractModalOpen(true);
+                                }}
+                                size="sm" 
+                                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl px-4 cursor-pointer shadow-sm"
+                              >
+                                <Eye className="w-3.5 h-3.5 mr-1.5" />
+                                Peruse & Respond
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+
+                    {/* C. B2B CARGO BOOKING & LIVE SENSOR TELEMATICS (AUTHENTICATED VIEW) */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                      
+                      {/* B2B Cargo Booking Form */}
+                      <Card className="lg:col-span-7 bg-white border border-slate-200 rounded-3xl p-6 text-slate-900 space-y-6 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                          <div>
+                            <h3 className="text-xl font-bold">B2B Cargo Booking & Manifest Engine</h3>
+                            <p className="text-xs text-slate-500">Create new shipment booking, upload manifests & generate official printable AWB PDF</p>
+                          </div>
+                          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-300 font-bold">IATA Compliant</Badge>
+                        </div>
+
+                        <form onSubmit={handleGenerateAwbBooking} className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <Label className="text-xs text-slate-700 font-bold">Shipper Organization *</Label>
+                              <Input 
+                                value={b2bBookingForm.shipper} 
+                                onChange={(e) => setB2bBookingForm({...b2bBookingForm, shipper: e.target.value})}
+                                placeholder="e.g. Jutu Enterprise Ltd"
+                                className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-slate-700 font-bold">Consignee Entity *</Label>
+                              <Input 
+                                value={b2bBookingForm.consignee} 
+                                onChange={(e) => setB2bBookingForm({...b2bBookingForm, consignee: e.target.value})}
+                                placeholder="e.g. TOTAG General Merchandise Ltd"
+                                className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-3">
+                            <div>
+                              <Label className="text-xs text-slate-700 font-bold">Nature of Goods</Label>
+                              <Input 
+                                value={b2bBookingForm.natureOfGoods} 
+                                onChange={(e) => setB2bBookingForm({...b2bBookingForm, natureOfGoods: e.target.value})}
+                                className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-slate-700 font-bold">Total Pieces</Label>
+                              <Input 
+                                type="number" 
+                                value={b2bBookingForm.pieces} 
+                                onChange={(e) => setB2bBookingForm({...b2bBookingForm, pieces: Number(e.target.value)})}
+                                className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              />
+                            </div>
+                            <div>
+                              <Label className="text-xs text-slate-700 font-bold">Total Weight (kg)</Label>
+                              <Input 
+                                type="number" 
+                                value={b2bBookingForm.weightKg} 
+                                onChange={(e) => setB2bBookingForm({...b2bBookingForm, weightKg: Number(e.target.value)})}
+                                className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
+                              />
+                            </div>
+                          </div>
+
+                          <div 
+                            onClick={handleTriggerBlUpload}
+                            className="border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center hover:border-emerald-500 transition-colors cursor-pointer bg-slate-50"
+                          >
+                            <Upload className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
+                            <span className="text-xs font-bold text-slate-900 block">Attach Commercial Invoice, Packing List & Manifest Copy</span>
+                            <span className="text-[10px] text-slate-500 block mt-1">PDF, PNG, TIFF up to 25MB (Click to select local file)</span>
+                          </div>
+
+                          <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl py-3 text-xs shadow-lg flex items-center justify-center space-x-2 cursor-pointer">
+                            <FileText className="w-4 h-4" />
+                            <span>Generate Booking & Issue Official Printable AWB PDF</span>
+                          </Button>
+                        </form>
+                      </Card>
+
+                      {/* Live Sensor Telematics & Broker Channel */}
+                      <Card className="lg:col-span-5 bg-white border border-slate-200 rounded-3xl p-6 text-slate-900 space-y-6 shadow-xl">
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                          <div>
+                            <h3 className="text-xl font-bold">Live Sensor Telematics & Alerts</h3>
+                            <p className="text-xs text-slate-500">Real-time telemetry for in-transit enterprise cargo</p>
+                          </div>
+                          <Radio className="w-6 h-6 text-sky-500 animate-pulse" />
+                        </div>
+
+                        {/* Sensor Gauges */}
+                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-3 gap-3 text-center text-xs">
+                          <div>
+                            <span className="text-slate-500 block text-[10px] font-bold">TEMP (COLD-CHAIN)</span>
+                            <span className="font-bold text-sky-600 text-sm flex items-center justify-center space-x-1 mt-0.5">
+                              <Thermometer className="w-3.5 h-3.5" />
+                              <span>4.2 °C</span>
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block text-[10px] font-bold">SHOCK G-FORCE</span>
+                            <span className="font-bold text-emerald-600 text-sm flex items-center justify-center space-x-1 mt-0.5">
+                              <Activity className="w-3.5 h-3.5" />
+                              <span>0.4 G</span>
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 block text-[10px] font-bold">HUMIDITY %</span>
+                            <span className="font-bold text-amber-600 text-sm flex items-center justify-center space-x-1 mt-0.5">
+                              <Zap className="w-3.5 h-3.5" />
+                              <span>55 %</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Assigned Customs Broker Workspace */}
+                        <div className="border-t border-slate-200 pt-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-xs text-slate-900 flex items-center">
+                              <UserCheck className="w-4 h-4 mr-1.5 text-emerald-600" />
+                              Assigned Customs Broker Channel
+                            </span>
+                            <Badge className="bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                              Officer Koffa (Active)
+                            </Badge>
+                          </div>
+
+                          <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2 max-h-36 overflow-y-auto">
+                            <div className="text-xs">
+                              <span className="font-bold text-[10px] text-slate-500 block">Officer J. Koffa (Senior Licensed Customs Broker):</span>
+                              <p className="text-slate-700 text-[11px] mt-0.5">
+                                "Hello! Your cargo declaration has been assigned to Berth 2 inspection. Please feel free to upload any revised commercial invoices or duty inquiries."
+                              </p>
+                            </div>
+                          </div>
+
+                          <form onSubmit={handleSendMessage} className="flex space-x-2 pt-1">
+                            <Input 
+                              value={chatInput} 
+                              onChange={(e) => setChatInput(e.target.value)}
+                              placeholder="Message Officer Koffa directly..."
+                              className="bg-slate-50 border-slate-300 text-slate-900 rounded-xl text-xs"
+                            />
+                            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl px-4 cursor-pointer">
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </form>
+                        </div>
+
+                      </Card>
+
+                    </div>
+
+                  </div>
                 )}
 
-              
-              {/* CLEAN B2B PORTAL BANNER & USER ACCOUNT CONTROL */}
-              <div className="bg-gradient-to-r from-slate-900 via-emerald-950 to-slate-900 border border-emerald-500/20 p-6 rounded-3xl text-slate-900 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3.5 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl text-emerald-400">
-                    <Users className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <h3 className="font-black text-xl text-slate-900">TOTAG Authenticated B2B Client Portal</h3>
-                      <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px]">
-                        Multi-User RBAC & Telematics Enabled
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-slate-700 mt-1 max-w-2xl">
-                      Self-service lifecycle management: End-to-end cargo visibility, live telematics (temperature, shock, GPS), ASYCUDA customs clearance status, and credit e-billing.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <Button 
-                    onClick={() => setIsBillingModalOpen(true)}
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 text-xs font-black rounded-xl px-4 py-2.5 shadow-lg flex items-center space-x-1.5"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>Open E-Billing Portal</span>
-                  </Button>
-
-                  <Button 
-                    onClick={() => setIsNewUserModalOpen(true)}
-                    className="bg-slate-800 hover:bg-slate-700 text-slate-900 text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
-                  >
-                    <UserPlus className="w-4 h-4 text-emerald-400" />
-                    <span>Manage Org RBAC</span>
-                  </Button>
-
-                  <Button 
-                    onClick={() => setIsDisputeModalOpen(true)}
-                    className="bg-slate-800 hover:bg-slate-700 text-slate-900 text-xs font-bold rounded-xl px-4 py-2.5 border border-white/10 flex items-center space-x-1.5"
-                  >
-                    <HelpCircle className="w-4 h-4 text-amber-400" />
-                    <span>File Dispute Ticket</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* SECTION 1: FINANCIAL & CREDIT MANAGEMENT SUMMARY BAR */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">APPROVED CREDIT LINE</span>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">${customerAccount.creditLimitUsd.toLocaleString()}</span>
-                    <span className="text-xs text-slate-500">USD</span>
-                  </div>
-                </Card>
-
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">USED CREDIT BALANCE</span>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-black text-amber-600 dark:text-amber-400">${customerAccount.creditUsedUsd.toLocaleString()}</span>
-                    <span className="text-xs text-slate-500">USD</span>
-                  </div>
-                </Card>
-
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">AVAILABLE CREDIT</span>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-black text-sky-600 dark:text-sky-400">${(customerAccount.creditLimitUsd - customerAccount.creditUsedUsd).toLocaleString()}</span>
-                    <span className="text-xs text-slate-500">USD</span>
-                  </div>
-                </Card>
-
-                <Card className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-2xl p-4 text-slate-900 dark:text-slate-900 space-y-1 shadow-md">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">ACTIVE ORG USERS</span>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-black text-slate-900 dark:text-slate-900">{customerAccount.teamMembers.length} Team Members</span>
-                  </div>
-                </Card>
-              </div>
-
-              {/* SECTION 2: END-TO-END TELEMATICS & CUSTOMS CLEARANCE CONTROL ROOM */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                {/* 1. Automated Booking Engine & Printable AWB Generator */}
-                <Card className="lg:col-span-7 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
-                    <div>
-                      <h3 className="text-xl font-bold">B2B Cargo Booking & Document Vault</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-500">Create new shipment booking, upload manifests & generate official printable AWB PDF</p>
-                    </div>
-                    <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">Multi-User RBAC</Badge>
-                  </div>
-
-                  <form onSubmit={handleGenerateAwbBooking} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Shipper Organization *</Label>
-                        <Input 
-                          value={b2bBookingForm.shipper} 
-                          onChange={(e) => setB2bBookingForm({...b2bBookingForm, shipper: e.target.value})}
-                          placeholder="e.g. Global Pharma & Freight NV"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Consignee Entity *</Label>
-                        <Input 
-                          value={b2bBookingForm.consignee} 
-                          onChange={(e) => setB2bBookingForm({...b2bBookingForm, consignee: e.target.value})}
-                          placeholder="e.g. TOTAG General Merchandise Ltd"
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Nature of Goods</Label>
-                        <Input 
-                          value={b2bBookingForm.natureOfGoods} 
-                          onChange={(e) => setB2bBookingForm({...b2bBookingForm, natureOfGoods: e.target.value})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Total Pieces</Label>
-                        <Input 
-                          type="number" 
-                          value={b2bBookingForm.pieces} 
-                          onChange={(e) => setB2bBookingForm({...b2bBookingForm, pieces: Number(e.target.value)})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs text-slate-600 dark:text-slate-700 font-bold">Total Weight (kg)</Label>
-                        <Input 
-                          type="number" 
-                          value={b2bBookingForm.weightKg} 
-                          onChange={(e) => setB2bBookingForm({...b2bBookingForm, weightKg: Number(e.target.value)})}
-                          className="bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-white/10 text-slate-900 dark:text-slate-900 rounded-xl text-xs mt-1 font-semibold" 
-                        />
-                      </div>
-                    </div>
-
-                    <div 
-                      onClick={handleTriggerBlUpload}
-                      className="border-2 border-dashed border-slate-300 dark:border-white/20 rounded-2xl p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer bg-slate-50 dark:bg-slate-950/50"
-                    >
-                      <Upload className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                      <span className="text-xs font-bold text-slate-900 dark:text-slate-900 block">Drop Commercial Invoice, Packing List & Customs Declarations</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-500 block mt-1">PDF, PNG, TIFF up to 25MB (Click to select local file)</span>
-                    </div>
-
-                    <Button type="submit" className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-xl py-3 text-xs shadow-lg flex items-center justify-center space-x-2">
-                      <FileText className="w-4 h-4" />
-                      <span>Generate Booking & Issue Official Printable AWB PDF</span>
-                    </Button>
-                  </form>
-                </Card>
-
-                {/* 2. Real-Time Telematics & Exception Alerts */}
-                <Card className="lg:col-span-5 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 rounded-3xl p-6 text-slate-900 dark:text-slate-900 space-y-6 backdrop-blur-xl shadow-xl">
-                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
-                    <div>
-                      <h3 className="text-xl font-bold">Live Sensor Telematics & Exception Alerts</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-500">Proactive milestone & environmental risk monitoring</p>
-                    </div>
-                    <Radio className="w-6 h-6 text-sky-500 animate-pulse" />
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* Live Sensor Gauges */}
-                    <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-white/10 grid grid-cols-3 gap-3 text-center text-xs">
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">TEMP (COLD-CHAIN)</span>
-                        <span className="font-bold text-sky-500 text-sm flex items-center justify-center space-x-1 mt-0.5">
-                          <Thermometer className="w-3.5 h-3.5" />
-                          <span>4.2 °C</span>
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">SHOCK G-FORCE</span>
-                        <span className="font-bold text-emerald-500 text-sm flex items-center justify-center space-x-1 mt-0.5">
-                          <Activity className="w-3.5 h-3.5" />
-                          <span>0.4 G</span>
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-slate-500 block text-[10px]">HUMIDITY %</span>
-                        <span className="font-bold text-teal-400 text-sm flex items-center justify-center space-x-1 mt-0.5">
-                          <Compass className="w-3.5 h-3.5" />
-                          <span>55 %</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center space-x-1.5">
-                            <AlertCircle className="w-4 h-4" />
-                            <span>Demurrage Storage Risk Warning</span>
-                          </span>
-                          <Badge className="bg-amber-500/20 text-amber-700 dark:text-amber-300 text-[10px]">1 Day Remaining</Badge>
-                        </div>
-                        <p className="text-xs text-slate-700 dark:text-slate-200">Container TGHU-940218-4 at Buchanan Terminal is approaching free storage limit. Clearance required by Aug 18.</p>
-                      </div>
-
-                      <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center space-x-1.5">
-                            <Lock className="w-4 h-4" />
-                            <span>Customs Hold Active</span>
-                          </span>
-                          <Badge className="bg-rose-500/20 text-rose-700 dark:text-rose-300 text-[10px]">LRA Inspection</Badge>
-                        </div>
-                        <p className="text-xs text-slate-700 dark:text-slate-200">AWB 020-88419203 requires Class 9 Hazmat compliance documentation verification.</p>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-
-              </div>
-
             </TabsContent>
-
-            {/* =================================================================== */}
+{/* =================================================================== */}
             {/* TAB 4: WMS & RAMP COMMAND CENTER                                   */}
             {/* =================================================================== */}
             <TabsContent value="operations-center" className="space-y-8">
