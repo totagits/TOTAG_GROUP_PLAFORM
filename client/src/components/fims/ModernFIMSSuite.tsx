@@ -257,6 +257,7 @@ const INITIAL_AR: ARInvoice[] = [
 
 export function ModernFIMSSuite() {
   const { toast } = useToast();
+  const [companyName, setCompanyName] = useState<string>(() => localStorage.getItem('saas_company_name') || 'Your Enterprise Organization');
   const [activeTab, setActiveTab] = useState<string>("general-ledger");
   const [journals, setJournals] = useState<JournalEntry[]>(INITIAL_JOURNAL);
   const [apInvoices, setApInvoices] = useState<APInvoice[]>(INITIAL_AP);
@@ -342,7 +343,7 @@ export function ModernFIMSSuite() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `TOTAG_FIMS_Audit_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `FIMS_Financial_Audit_Report_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -364,7 +365,7 @@ export function ModernFIMSSuite() {
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-2xl font-black tracking-tight text-white">
-                    TOTAG Modern FIMS Enterprise Suite
+                    {companyName} Modern FIMS Financial Suite
                   </h2>
                   <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs">
                     GAAP &bull; IFRS COMPLIANT
@@ -453,7 +454,7 @@ export function ModernFIMSSuite() {
             <Card className="bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200">
               <CardContent className="p-4 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-emerald-600 font-bold uppercase">Total Group Revenue</p>
+                  <p className="text-xs text-emerald-600 font-bold uppercase">Total Corporate Revenue</p>
                   <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">
                     {selectedCurrency === "USD" ? `$${totalRevenueUsd.toLocaleString()}` : `L$${(totalRevenueUsd * exchangeRate).toLocaleString()}`}
                   </p>
@@ -507,7 +508,7 @@ export function ModernFIMSSuite() {
                     Double-Entry General Ledger Registry
                   </CardTitle>
                   <CardDescription>
-                    Real-time transaction posting ensuring Debit and Credit balance integrity across all 9 operating subsidiaries.
+                    Real-time transaction posting ensuring Debit and Credit balance integrity across all operating corporate divisions.
                   </CardDescription>
                 </div>
                 <Button size="sm" onClick={() => setShowNewVoucherModal(true)} className="bg-emerald-600 hover:bg-emerald-700 text-xs font-bold">

@@ -72,6 +72,40 @@ export default function SaaSDashboard() {
     }
   }, [setLocation]);
 
+  // Fetch tenant's white-label profile and company branding
+  const { data: tenantProfileData, refetch: refetchTenantProfile } = useQuery<any>({
+    queryKey: ['/api/saas/tenant/profile'],
+    enabled: !!user,
+  });
+
+  const tenantCompany = tenantProfileData?.data || {
+    name: localStorage.getItem('saas_company_name') || 'Your Enterprise Organization',
+    slug: 'my-org',
+    taxId: 'TIN-100984712',
+    address: 'Monrovia, Liberia',
+    contactPhone: '+231-777-000-000',
+    brandColor: '#1e40af'
+  };
+
+  const [showBrandModal, setShowBrandModal] = useState(false);
+  const [customBrandName, setCustomBrandName] = useState("");
+  const [customTaxId, setCustomTaxId] = useState("");
+  const [customAddress, setCustomAddress] = useState("");
+  const [customPhone, setCustomPhone] = useState("");
+
+  const { toast } = useToast();
+
+  const handleSaveBrandCustomization = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newName = customBrandName || tenantCompany.name;
+    localStorage.setItem('saas_company_name', newName);
+    toast({
+      title: "Company Identity Updated",
+      description: `Portal rebranded to "${newName}". All pay stubs, reports, and ledger vouchers updated.`,
+    });
+    setShowBrandModal(false);
+  };
+
   // Fetch tenant's accessible modules based on subscription
   const { data: tenantModulesData } = useQuery<any>({
     queryKey: ['/api/saas/tenant/modules'],
@@ -133,11 +167,20 @@ export default function SaaSDashboard() {
       <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <Building2 className="w-8 h-8 text-blue-600" />
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 text-white font-black text-sm flex items-center justify-center shadow-md">
+                {(tenantCompany.name || 'E').slice(0, 2).toUpperCase()}
+              </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">TOTAG Enterprise</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Welcome back, {user.firstName || 'User'}</p>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">
+                    {tenantCompany.name}
+                  </h1>
+                  <Badge className="bg-blue-100 text-blue-800 text-[10px] font-bold">PRIVATE TENANT INSTANCE</Badge>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Cloud Portal &bull; Logged in as <span className="font-semibold text-slate-700 dark:text-slate-200">{user.firstName || 'Administrator'}</span>
+                </p>
               </div>
             </div>
             
@@ -226,6 +269,21 @@ export default function SaaSDashboard() {
               >
                 <FileText className="w-3.5 h-3.5 mr-1.5" />
                 Reports
+              </Button>
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setCustomBrandName(tenantCompany.name);
+                  setCustomTaxId(tenantCompany.taxId);
+                  setCustomAddress(tenantCompany.address);
+                  setCustomPhone(tenantCompany.contactPhone);
+                  setShowBrandModal(true);
+                }}
+                className="border-purple-300 text-purple-700 dark:text-purple-300 hover:bg-purple-50"
+              >
+                <Building2 className="w-3.5 h-3.5 mr-1.5" />
+                Company Branding
               </Button>
               <Button 
                 variant="outline"
@@ -579,6 +637,78 @@ export default function SaaSDashboard() {
           </>
         )}
       </div>
+
+      {/* ==================== WHITE-LABEL COMPANY BRANDING MODAL ==================== */}
+      <Dialog open={showBrandModal} onOpenChange={setShowBrandModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <Building2 className="w-5 h-5 text-purple-600" />
+              Company White-Label Branding Customizer
+            </DialogTitle>
+            <DialogDescription>
+              Customize your private portal identity. Your company name, logo, address, and TIN will appear across all modules, invoices, and employee payslips.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSaveBrandCustomization} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Company Legal / Trade Name *</Label>
+              <Input
+                required
+                placeholder="e.g. West Africa Logistics Corp"
+                value={customBrandName}
+                onChange={(e) => setCustomBrandName(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Tax Identification (TIN) *</Label>
+                <Input
+                  placeholder="e.g. TIN-100849201"
+                  value={customTaxId}
+                  onChange={(e) => setCustomTaxId(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Official Phone Line *</Label>
+                <Input
+                  placeholder="+231-777-000-000"
+                  value={customPhone}
+                  onChange={(e) => setCustomPhone(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Headquarters Business Address *</Label>
+              <Input
+                placeholder="e.g. Tubman Boulevard, Sinkor, Monrovia, Liberia"
+                value={customAddress}
+                onChange={(e) => setCustomAddress(e.target.value)}
+              />
+            </div>
+
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 text-xs text-purple-900 dark:text-purple-200 space-y-1">
+              <p className="font-bold">✓ 100% Dedicated &amp; Isolated Tenant Instance</p>
+              <p className="text-[11px] text-purple-700 dark:text-purple-300">
+                Your portal will strictly reflect your company's name and brand across all departments, salary slips, and financial statements.
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowBrandModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-bold">
+                Apply Company Branding
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

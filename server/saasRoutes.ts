@@ -745,6 +745,62 @@ router.get('/auth/profile', authenticateToken, async (req: AuthenticatedRequest,
 
 // ==== TENANT MANAGEMENT ROUTES ====
 
+// Get tenant profile & white-label branding
+router.get('/tenant/profile', authenticateToken, enforceStrictTenantIsolation, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const tenantId = (req as TenantScopedRequest).tenantId;
+    const tenant = await saasStorage.getTenantById(tenantId);
+    if (!tenant) {
+      return res.status(404).json({ success: false, error: 'Tenant not found' });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        id: tenant.id,
+        name: tenant.name,
+        slug: tenant.slug,
+        contactEmail: tenant.contactEmail,
+        contactPhone: tenant.contactPhone,
+        address: tenant.address,
+        status: tenant.status,
+        portalType: (tenant as any).portalType || 'combined',
+        brandColor: (tenant as any).brandColor || '#1e40af',
+        taxId: (tenant as any).taxId || 'TIN-100984712',
+        customLogoUrl: (tenant as any).customLogoUrl || ''
+      }
+    });
+  } catch (error) {
+    console.error('Tenant profile fetch error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch tenant profile' });
+  }
+});
+
+// Update tenant profile & white-label branding
+router.patch('/tenant/profile', authenticateToken, enforceStrictTenantIsolation, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const tenantId = (req as TenantScopedRequest).tenantId;
+    const { name, address, contactPhone, brandColor, taxId, customLogoUrl } = req.body;
+
+    const updated = await saasStorage.updateTenant(tenantId, {
+      name,
+      address,
+      contactPhone,
+      ...(brandColor && { brandColor }),
+      ...(taxId && { taxId }),
+      ...(customLogoUrl && { customLogoUrl })
+    } as any);
+
+    res.json({
+      success: true,
+      data: updated
+    });
+  } catch (error) {
+    console.error('Tenant profile update error:', error);
+    res.status(500).json({ success: false, error: 'Failed to update tenant profile' });
+  }
+});
+
 // Get tenant dashboard stats
 router.get('/tenant/dashboard', authenticateToken, enforceStrictTenantIsolation, async (req: AuthenticatedRequest, res: Response) => {
   try {

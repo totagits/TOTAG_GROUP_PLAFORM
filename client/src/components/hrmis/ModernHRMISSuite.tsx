@@ -489,7 +489,7 @@ export function ModernHRMISSuite() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `TOTAG_HRMIS_Workforce_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute("download", `Workforce_Report_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -511,7 +511,7 @@ export function ModernHRMISSuite() {
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-2xl font-black tracking-tight text-white">
-                    TOTAG Modern HRMIS Enterprise Suite
+                    {companyName} Modern HRMIS Enterprise Suite
                   </h2>
                   <Badge className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs">
                     ACTIVE CLOUD SUITE
@@ -1703,7 +1703,7 @@ export function ModernHRMISSuite() {
               Official Itemized Pay Stub ({payrollPeriod})
             </DialogTitle>
             <DialogDescription>
-              TOTAG Group of Companies Ltd &bull; Statutory Payroll Voucher
+              {companyName} &bull; Statutory Payroll Voucher
             </DialogDescription>
           </DialogHeader>
 
@@ -1711,7 +1711,7 @@ export function ModernHRMISSuite() {
             <div className="space-y-4 text-xs bg-white dark:bg-slate-950 p-4 border rounded-xl shadow-inner">
               <div className="flex justify-between border-b pb-3">
                 <div>
-                  <h4 className="font-black text-sm text-slate-900 dark:text-white">TOTAG Group of Companies Ltd</h4>
+                  <h4 className="font-black text-sm text-slate-900 dark:text-white">{companyName}</h4>
                   <p className="text-[10px] text-slate-500">Monrovia, Liberia &bull; TIN: 100984712</p>
                 </div>
                 <div className="text-right">
