@@ -1,3 +1,4 @@
+import { ModernFIMSSuite } from "@/components/fims/ModernFIMSSuite";
 import { ModernHRMISSuite } from "@/components/hrmis/ModernHRMISSuite";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,7 @@ interface Module {
 
 export default function SaaSDashboard() {
   const [user, setUser] = useState<User | null>(null);
-  const [activeDashboardView, setActiveDashboardView] = useState<'overview' | 'hrmis-suite'>('overview');
+  const [activeDashboardView, setActiveDashboardView] = useState<'overview' | 'hrmis-suite' | 'fims-suite'>('overview');
   const [, setLocation] = useLocation();
 
   // Check authentication and get user from token
@@ -187,29 +188,52 @@ export default function SaaSDashboard() {
                 Monitor your business operations and system performance
               </p>
             </div>
-            <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
+            <div className="mt-4 sm:mt-0 flex flex-wrap items-center gap-2">
+              <Button 
+                variant={activeDashboardView === 'overview' ? "default" : "outline"}
+                size="sm"
+                className={activeDashboardView === 'overview' ? "bg-slate-900 text-white font-bold" : "border-slate-300"}
+                onClick={() => setActiveDashboardView('overview')}
+              >
+                <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+                Executive Overview
+              </Button>
               <Button 
                 variant={activeDashboardView === 'hrmis-suite' ? "default" : "outline"}
-                className={activeDashboardView === 'hrmis-suite' ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold" : "border-blue-300 text-blue-700 dark:text-blue-300"}
-                onClick={() => setActiveDashboardView(activeDashboardView === 'hrmis-suite' ? 'overview' : 'hrmis-suite')}
+                size="sm"
+                className={activeDashboardView === 'hrmis-suite' ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-md shadow-blue-500/20" : "border-blue-300 text-blue-700 dark:text-blue-300"}
+                onClick={() => setActiveDashboardView('hrmis-suite')}
                 data-testid="button-toggle-hrmis-suite"
               >
-                <Users className="w-4 h-4 mr-2" />
-                {activeDashboardView === 'hrmis-suite' ? "Back to Dashboard Overview" : "Modern HRMIS Enterprise Suite"}
+                <Users className="w-3.5 h-3.5 mr-1.5" />
+                Modern HRMIS Suite
+              </Button>
+              <Button 
+                variant={activeDashboardView === 'fims-suite' ? "default" : "outline"}
+                size="sm"
+                className={activeDashboardView === 'fims-suite' ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold shadow-md shadow-emerald-500/20" : "border-emerald-300 text-emerald-700 dark:text-emerald-300"}
+                onClick={() => setActiveDashboardView('fims-suite')}
+                data-testid="button-toggle-fims-suite"
+              >
+                <DollarSign className="w-3.5 h-3.5 mr-1.5" />
+                Modern FIMS Financial Suite
               </Button>
               <Button 
                 variant="outline" 
+                size="sm"
                 onClick={() => setLocation('/saas/reports')}
                 data-testid="button-reports"
               >
-                <FileText className="w-4 h-4 mr-2" />
+                <FileText className="w-3.5 h-3.5 mr-1.5" />
                 Reports
               </Button>
               <Button 
+                variant="outline"
+                size="sm"
                 onClick={() => setLocation('/saas/settings')}
                 data-testid="button-settings"
               >
-                <Settings className="w-4 h-4 mr-2" />
+                <Settings className="w-3.5 h-3.5 mr-1.5" />
                 Settings
               </Button>
             </div>
@@ -219,6 +243,10 @@ export default function SaaSDashboard() {
         {activeDashboardView === 'hrmis-suite' ? (
           <div className="space-y-6">
             <ModernHRMISSuite />
+          </div>
+        ) : activeDashboardView === 'fims-suite' ? (
+          <div className="space-y-6">
+            <ModernFIMSSuite />
           </div>
         ) : (
           <>

@@ -1,3 +1,4 @@
+import { ModernFIMSSuite } from "@/components/fims/ModernFIMSSuite";
 import { ModuleLayout } from '@/components/ModuleLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
