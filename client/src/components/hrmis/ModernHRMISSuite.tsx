@@ -252,7 +252,8 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
 
 export function ModernHRMISSuite() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<string>("core-hr");
+  const [companyName, setCompanyName] = useState<string>(() => localStorage.getItem('saas_company_name') || 'Your Enterprise Organization');
+  const [activeTab, setActiveTab] = useState<string>("core-directory");
   const [employees, setEmployees] = useState<EmployeeRecord[]>(INITIAL_EMPLOYEES);
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
