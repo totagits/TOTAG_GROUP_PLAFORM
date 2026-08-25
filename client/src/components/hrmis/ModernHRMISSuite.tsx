@@ -1910,6 +1910,191 @@ export function ModernHRMISSuite() {
         </DialogContent>
       </Dialog>
 
+
+      {/* ==================== 1. CLOCK IN / TIME LOG MODAL ==================== */}
+      <Dialog open={showClockInModal} onOpenChange={setShowClockInModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <Clock className="w-5 h-5 text-blue-600" />
+              Employee Biometric &amp; Time Log Ingestion
+            </DialogTitle>
+            <DialogDescription>
+              Captures work hours, punch-in timestamps, GPS location, and shifts for automated payroll calculation.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleClockInSubmit} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Select Employee *</Label>
+              <Select
+                value={clockInRecord.employeeId}
+                onValueChange={(val) => setClockInRecord({ ...clockInRecord, employeeId: val })}
+              >
+                <SelectTrigger className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>
+                      {e.firstName} {e.lastName} ({e.employeeCode} - {e.department})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Shift &amp; Duty Schedule</Label>
+              <Select
+                value={clockInRecord.shiftType}
+                onValueChange={(val) => setClockInRecord({ ...clockInRecord, shiftType: val })}
+              >
+                <SelectTrigger className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Morning Shift (08:00 - 17:00)">Morning Standard (08:00 - 17:00)</SelectItem>
+                  <SelectItem value="Night Security &amp; Logistics (20:00 - 06:00)">Night Duty (20:00 - 06:00)</SelectItem>
+                  <SelectItem value="Field Agronomy Shift (06:00 - 14:00)">Field Shift (06:00 - 14:00)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Verified Geolocation / Terminal</Label>
+              <Input
+                readOnly
+                value={clockInRecord.location}
+                className="bg-slate-50 dark:bg-slate-900 font-mono text-[11px]"
+              />
+            </div>
+
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 text-xs text-blue-900 dark:text-blue-200 space-y-1">
+              <p className="font-bold">✓ Automated Statutory Compliance</p>
+              <p className="text-[11px]">
+                Overtime beyond 8 hours automatically feeds into the statutory payroll calculation engine with 1.5x hourly rate.
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowClockInModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
+                Confirm Clock-In Punch
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ==================== 2. LEAVE APPLICATION MODAL ==================== */}
+      <Dialog open={showLeaveModal} onOpenChange={setShowLeaveModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <Calendar className="w-5 h-5 text-emerald-600" />
+              Employee Self-Service (ESS) Leave Application
+            </DialogTitle>
+            <DialogDescription>
+              Submit formal leave requests. Automatically updates remaining leave balance upon supervisor sign-off.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleLeaveSubmit} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Applying Employee *</Label>
+              <Select
+                value={leaveForm.employeeId}
+                onValueChange={(val) => setLeaveForm({ ...leaveForm, employeeId: val })}
+              >
+                <SelectTrigger className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>
+                      {e.firstName} {e.lastName} ({e.department})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Leave Category *</Label>
+                <Select
+                  value={leaveForm.leaveType}
+                  onValueChange={(val) => setLeaveForm({ ...leaveForm, leaveType: val })}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Annual Paid Leave">Annual Paid Leave</SelectItem>
+                    <SelectItem value="Medical / Sick Leave">Medical / Sick Leave</SelectItem>
+                    <SelectItem value="Maternity / Paternity">Maternity / Paternity</SelectItem>
+                    <SelectItem value="Compassionate / Bereavement">Compassionate Leave</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Duration (Days) *</Label>
+                <Input
+                  type="number"
+                  required
+                  value={leaveForm.daysCount}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, daysCount: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Start Date *</Label>
+                <Input
+                  type="date"
+                  required
+                  value={leaveForm.startDate}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, startDate: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">End Date *</Label>
+                <Input
+                  type="date"
+                  required
+                  value={leaveForm.endDate}
+                  onChange={(e) => setLeaveForm({ ...leaveForm, endDate: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Reason / Explanation</Label>
+              <Textarea
+                placeholder="Details of leave request..."
+                value={leaveForm.reason}
+                onChange={(e) => setLeaveForm({ ...leaveForm, reason: e.target.value })}
+                className="text-xs"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowLeaveModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+                Submit Leave Application
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

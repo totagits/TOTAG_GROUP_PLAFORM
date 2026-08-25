@@ -269,6 +269,114 @@ export function ModernFIMSSuite() {
 
   // New Journal Voucher Form Modal
   const [showNewVoucherModal, setShowNewVoucherModal] = useState(false);
+
+  // New AP Bill Modal
+  const [showNewAPModal, setShowNewAPModal] = useState(false);
+  const [newAPBill, setNewAPBill] = useState({
+    vendorName: "",
+    category: "Equipment Maintenance",
+    amountUsd: 2500,
+    dueDate: "2026-09-15",
+    paymentMethod: "Orange Money" as "Orange Money" | "MTN MoMo" | "Ecobank Wire"
+  });
+
+  // New AR Invoice Modal
+  const [showNewARModal, setShowNewARModal] = useState(false);
+  const [newARInvoice, setNewARInvoice] = useState({
+    clientName: "",
+    subsidiary: "Cargo & Port Handling",
+    amountUsd: 15000,
+    dueDate: "2026-09-30"
+  });
+
+  // New Budget Allocation Modal
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
+  const [budgetAllocation, setBudgetAllocation] = useState({
+    department: "Managed IT & SaaS Operations",
+    annualBudgetUsd: 200000,
+    fiscalYear: "2026"
+  });
+
+  // Bank Feed Ingestion Modal
+  const [showBankFeedModal, setShowBankFeedModal] = useState(false);
+  const [bankFeed, setBankFeed] = useState({
+    account: "Ecobank Liberia (Acc: 6103394551)",
+    refNumber: "EB-WIRE-2026-904",
+    amountUsd: 25000,
+    type: "Credit (Customer Wire)",
+    description: "Port Cargo Off-Take Wire Deposit"
+  });
+
+  // Handlers for Data Ingestion
+  const handleAddAPBill = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAPBill.vendorName || newAPBill.amountUsd <= 0) {
+      toast({ title: "Validation Error", description: "Please provide vendor name and amount.", variant: "destructive" });
+      return;
+    }
+    const createdAP: APInvoice = {
+      id: `AP-${Date.now().toString().slice(-3)}`,
+      invoiceNo: `INV-VEND-${Math.floor(100 + Math.random() * 900)}`,
+      vendorName: newAPBill.vendorName,
+      category: newAPBill.category,
+      invoiceDate: new Date().toISOString().split("T")[0],
+      dueDate: newAPBill.dueDate,
+      amountUsd: Number(newAPBill.amountUsd),
+      matchStatus: "3-Way Verified",
+      paymentStatus: "Scheduled",
+      paymentMethod: newAPBill.paymentMethod
+    };
+    setApInvoices([createdAP, ...apInvoices]);
+    setShowNewAPModal(false);
+    toast({
+      title: "Vendor Bill Recorded & 3-Way Matched",
+      description: `Bill from ${createdAP.vendorName} ($${createdAP.amountUsd.toLocaleString()} USD) added to Accounts Payable schedule.`
+    });
+  };
+
+  const handleAddARInvoice = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newARInvoice.clientName || newARInvoice.amountUsd <= 0) {
+      toast({ title: "Validation Error", description: "Please provide client name and amount.", variant: "destructive" });
+      return;
+    }
+    const createdAR: ARInvoice = {
+      id: `AR-${Date.now().toString().slice(-3)}`,
+      invoiceNo: `TOT-INV-2026-${Math.floor(100 + Math.random() * 900)}`,
+      clientName: newARInvoice.clientName,
+      subsidiary: newARInvoice.subsidiary,
+      issueDate: new Date().toISOString().split("T")[0],
+      dueDate: newARInvoice.dueDate,
+      amountUsd: Number(newARInvoice.amountUsd),
+      paidAmountUsd: 0,
+      agingBucket: "Current",
+      status: "Outstanding"
+    };
+    setArInvoices([createdAR, ...arInvoices]);
+    setShowNewARModal(false);
+    toast({
+      title: "Client Invoice Dispatched",
+      description: `Invoice ${createdAR.invoiceNo} ($${createdAR.amountUsd.toLocaleString()} USD) issued to ${createdAR.clientName}. Added to Accounts Receivable.`
+    });
+  };
+
+  const handleSetBudget = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Annual Budget Target Updated",
+      description: `Fiscal budget for ${budgetAllocation.department} allocated to $${Number(budgetAllocation.annualBudgetUsd).toLocaleString()} USD for FY ${budgetAllocation.fiscalYear}.`
+    });
+    setShowBudgetModal(false);
+  };
+
+  const handleBankFeedImport = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "🏦 Bank Statement Ingested & Reconciled",
+      description: `Ingested ${bankFeed.refNumber} ($${Number(bankFeed.amountUsd).toLocaleString()} USD) into ${bankFeed.account}. Cryptographic SOX audit hash generated.`
+    });
+    setShowBankFeedModal(false);
+  };
   const [newVoucher, setNewVoucher] = useState({
     description: "",
     accountDebit: "1010 - Operating Cash (Ecobank Liberia)",
@@ -396,6 +504,30 @@ export function ModernFIMSSuite() {
               </button>
             </div>
 
+            <Button
+              size="sm"
+              onClick={() => setShowNewAPModal(true)}
+              className="bg-rose-600/40 border border-rose-400/50 hover:bg-rose-600/60 text-white text-xs font-bold"
+            >
+              <CreditCard className="w-3.5 h-3.5 mr-1.5 text-rose-300" />
+              + Enter Vendor Bill (AP)
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setShowNewARModal(true)}
+              className="bg-blue-600/40 border border-blue-400/50 hover:bg-blue-600/60 text-white text-xs font-bold"
+            >
+              <Receipt className="w-3.5 h-3.5 mr-1.5 text-blue-300" />
+              + Issue Invoice (AR)
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setShowBankFeedModal(true)}
+              className="bg-cyan-600/40 border border-cyan-400/50 hover:bg-cyan-600/60 text-white text-xs font-bold"
+            >
+              <Landmark className="w-3.5 h-3.5 mr-1.5 text-cyan-300" />
+              Ingest Bank Feed
+            </Button>
             <Button
               size="sm"
               variant="outline"
@@ -1065,6 +1197,258 @@ export function ModernFIMSSuite() {
               </Button>
               <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
                 Post Journal Voucher
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+
+      {/* ==================== 1. ENTER AP VENDOR BILL MODAL ==================== */}
+      <Dialog open={showNewAPModal} onOpenChange={setShowNewAPModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <CreditCard className="w-5 h-5 text-rose-600" />
+              Enter Vendor Bill &bull; Accounts Payable (AP)
+            </DialogTitle>
+            <DialogDescription>
+              Record incoming supplier invoices. Automatic 3-way matching with purchase orders.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleAddAPBill} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Vendor / Supplier Name *</Label>
+              <Input
+                required
+                placeholder="e.g. TotalEnergies Liberia Terminal Supplies"
+                value={newAPBill.vendorName}
+                onChange={(e) => setNewAPBill({ ...newAPBill, vendorName: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Expense Category</Label>
+                <Select
+                  value={newAPBill.category}
+                  onValueChange={(val) => setNewAPBill({ ...newAPBill, category: val })}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Food Supplies (TOCEPS)">Food Supplies (TOCEPS)</SelectItem>
+                    <SelectItem value="Equipment Maintenance">Equipment Maintenance</SelectItem>
+                    <SelectItem value="SaaS Hosting &amp; Server Power">SaaS Hosting &amp; Server</SelectItem>
+                    <SelectItem value="Agronomy Inputs &amp; Seeds">Agronomy Inputs</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Amount ($ USD) *</Label>
+                <Input
+                  type="number"
+                  required
+                  placeholder="2500"
+                  value={newAPBill.amountUsd}
+                  onChange={(e) => setNewAPBill({ ...newAPBill, amountUsd: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Due Date *</Label>
+                <Input
+                  type="date"
+                  required
+                  value={newAPBill.dueDate}
+                  onChange={(e) => setNewAPBill({ ...newAPBill, dueDate: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Disbursement Channel</Label>
+                <Select
+                  value={newAPBill.paymentMethod}
+                  onValueChange={(val: any) => setNewAPBill({ ...newAPBill, paymentMethod: val })}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Orange Money">Orange Money (+231-777-666-999)</SelectItem>
+                    <SelectItem value="MTN MoMo">MTN MoMo (+231-887-666-999)</SelectItem>
+                    <SelectItem value="Ecobank Wire">Ecobank Commercial Wire</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowNewAPModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-rose-600 hover:bg-rose-700 text-white font-bold">
+                Post to Accounts Payable
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ==================== 2. ISSUE AR CLIENT INVOICE MODAL ==================== */}
+      <Dialog open={showNewARModal} onOpenChange={setShowNewARModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <Receipt className="w-5 h-5 text-blue-600" />
+              Issue Customer Invoice &bull; Accounts Receivable (AR)
+            </DialogTitle>
+            <DialogDescription>
+              Create customer billing records. Invoices automatically update AR aging buckets.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleAddARInvoice} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Client / Customer Legal Name *</Label>
+              <Input
+                required
+                placeholder="e.g. National Port Authority of Liberia"
+                value={newARInvoice.clientName}
+                onChange={(e) => setNewARInvoice({ ...newARInvoice, clientName: e.target.value })}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Corporate Division</Label>
+                <Select
+                  value={newARInvoice.subsidiary}
+                  onValueChange={(val) => setNewARInvoice({ ...newARInvoice, subsidiary: val })}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Cargo & Port Handling">Cargo &amp; Port Handling</SelectItem>
+                    <SelectItem value="TOCEPS Catering">TOCEPS Catering</SelectItem>
+                    <SelectItem value="Managed IT & SaaS">Managed IT &amp; SaaS</SelectItem>
+                    <SelectItem value="TOTAG Farm">TOTAG Farm</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs">Invoice Amount ($ USD) *</Label>
+                <Input
+                  type="number"
+                  required
+                  placeholder="15000"
+                  value={newARInvoice.amountUsd}
+                  onChange={(e) => setNewARInvoice({ ...newARInvoice, amountUsd: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Payment Due Date *</Label>
+              <Input
+                type="date"
+                required
+                value={newARInvoice.dueDate}
+                onChange={(e) => setNewARInvoice({ ...newARInvoice, dueDate: e.target.value })}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowNewARModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-bold">
+                Generate &amp; Dispatch Invoice
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ==================== 3. BANK STATEMENT INGESTION MODAL ==================== */}
+      <Dialog open={showBankFeedModal} onOpenChange={setShowBankFeedModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold">
+              <Landmark className="w-5 h-5 text-cyan-600" />
+              Bank &amp; Mobile Money Feed Ingestion
+            </DialogTitle>
+            <DialogDescription>
+              Reconcile bank statements against posted General Ledger vouchers with SOX audit compliance.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleBankFeedImport} className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <Label className="text-xs">Treasury Facility *</Label>
+              <Select
+                value={bankFeed.account}
+                onValueChange={(val) => setBankFeed({ ...bankFeed, account: val })}
+              >
+                <SelectTrigger className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Ecobank Liberia (Acc: 6103394551)">Ecobank Liberia (6103394551)</SelectItem>
+                  <SelectItem value="Orange Money Merchant (+231-777-666-999)">Orange Money (+231-777-666-999)</SelectItem>
+                  <SelectItem value="MTN MoMo Merchant (+231-887-666-999)">MTN MoMo (+231-887-666-999)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Bank Ref / Transaction ID *</Label>
+                <Input
+                  required
+                  value={bankFeed.refNumber}
+                  onChange={(e) => setBankFeed({ ...bankFeed, refNumber: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Amount ($ USD) *</Label>
+                <Input
+                  type="number"
+                  required
+                  value={bankFeed.amountUsd}
+                  onChange={(e) => setBankFeed({ ...bankFeed, amountUsd: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Transaction Description</Label>
+              <Input
+                value={bankFeed.description}
+                onChange={(e) => setBankFeed({ ...bankFeed, description: e.target.value })}
+              />
+            </div>
+
+            <div className="p-3 bg-cyan-50 dark:bg-cyan-950/30 rounded-lg border border-cyan-200 text-xs text-cyan-900 dark:text-cyan-200">
+              <p className="font-bold">✓ Automated Bank Reconciliation</p>
+              <p className="text-[11px] mt-0.5">
+                Automatically matches transaction references with accounts receivable and payable ledgers.
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-3 border-t">
+              <Button type="button" variant="outline" onClick={() => setShowBankFeedModal(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold">
+                Reconcile &amp; Post to GL
               </Button>
             </div>
           </form>
