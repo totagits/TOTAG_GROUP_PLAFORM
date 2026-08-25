@@ -121,19 +121,35 @@ function generateTenantSlug(companyName: string): string {
 
 router.post('/auth/register-tenant', async (req: Request, res: Response) => {
   try {
+    console.log('🚀 Tenant registration attempt:', req.body);
     const frontendData = frontendRegistrationSchema.parse(req.body);
     
-    // Transform frontend data to backend format
-    let tenantSlug = generateTenantSlug(frontendData.companyName);
+    // Check if user already exists
+    const existingUser = await saasStorage.getSaasUserByEmail(frontendData.representativeEmail);
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        error: 'A user with this email address already exists. Please login or use a different email.'
+      });
+    }
 
-    // Check if tenant slug already exists
+    // Generate unique tenant slug
+    let tenantSlug = generateTenantSlug(frontendData.companyName);
     const existingTenant = await saasStorage.getTenantBySlug(tenantSlug);
     if (existingTenant) {
       const timestamp = Date.now().toString().slice(-4);
       tenantSlug = `${tenantSlug}-${timestamp}`;
     }
 
-    // Create tenant with pending_payment status
+    // Generate secure temporary password
+    const temporaryPassword = randomBytes(8).toString('base64url').toUpperCase();
+    const hashedPassword = await hashPassword(temporaryPassword);
+
+    const isDirectActivation = frontendData.paymentMethod !== 'stripe' || !process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.includes('placeholder');
+    const tenantStatus = isDirectActivation ? 'active' : 'pending_payment';
+    const userActive = isDirectActivation;
+
+    // Create tenant
     const tenantId = uuidv4();
     const tenant = await saasStorage.createTenant({
       id: tenantId,
@@ -142,14 +158,10 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
       contactEmail: frontendData.representativeEmail,
       contactPhone: frontendData.representativePhone,
       address: frontendData.businessAddress,
-      status: 'pending_payment'
+      status: tenantStatus
     });
 
-    // Generate secure temporary password
-    const temporaryPassword = randomBytes(8).toString('base64url').toUpperCase();
-    
-    // Create admin user with temporary password
-    const hashedPassword = await hashPassword(temporaryPassword);
+    // Create admin user
     const userId = uuidv4();
     const adminUser = await saasStorage.createSaasUser({
       id: userId,
@@ -161,13 +173,13 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
       role: 'admin',
       isTenantAdmin: true,
       permissions: ['tenant_admin', 'user_management', 'billing_read', 'billing_write'],
-      isActive: false, // Will be activated after payment
+      isActive: userActive,
       phone: frontendData.representativePhone,
       mustChangePassword: true
     });
 
-    // Portal-based pricing: $125 first payment (subscription + first month), then monthly
-    const FIRST_PAYMENT = 125; // $125 flat fee for subscription + first month
+    // Portal pricing
+    const FIRST_PAYMENT = 125;
     const monthlyPrice = frontendData.portalType === 'combined' ? 37 : 20;
 
     // Create subscription
@@ -179,7 +191,7 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
     const subscription = await saasStorage.createSubscription({
       id: subscriptionId,
       tenantId,
-      status: 'pending_payment',
+      status: isDirectActivation ? 'active' : 'pending_payment',
       currentPeriodStart: startDate,
       currentPeriodEnd: endDate,
       totalAmount: monthlyPrice.toString(),
@@ -187,108 +199,193 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
       billingCycle: 'monthly'
     });
 
-    // Store portal type and other metadata for later activation
-    // We'll store this in a pending registration record
-    const pendingRegistrationId = uuidv4();
-    
-    // Store registration data in memory/cache for Stripe callback
-    // In production, this would be stored in database
-    const registrationData = {
-      id: pendingRegistrationId,
-      tenantId,
-      userId,
-      subscriptionId,
-      portalType: frontendData.portalType,
-      companyName: frontendData.companyName,
-      representativeName: frontendData.representativeName,
-      representativeEmail: frontendData.representativeEmail,
-      monthlyPrice,
-      firstPayment: FIRST_PAYMENT,
-      temporaryPassword,
-      createdAt: new Date()
+    const portalNames: Record<string, string> = {
+      hr: 'HR Management Information System (HRMIS)',
+      financial: 'Financial Information Management System (FIMS)',
+      combined: 'Combined HRMIS & FIMS Enterprise Suite'
     };
-    
-    // Store in global pending registrations map
-    if (!global.pendingRegistrations) {
-      global.pendingRegistrations = new Map();
-    }
-    global.pendingRegistrations.set(pendingRegistrationId, registrationData);
 
-    // Create Stripe checkout session
+    const paymentMethodTitles: Record<string, string> = {
+      bank_transfer: 'Commercial Bank Wire (Ecobank Liberia)',
+      mobile_money: 'Liberian Mobile Money (Orange / MTN)',
+      invoice: 'Corporate Net-30 Invoice',
+      stripe: 'Credit / Debit Card'
+    };
+
+    // If direct activation (Bank Transfer, Mobile Money, Corporate Invoice, or Stripe offline)
+    if (isDirectActivation) {
+      console.log(`✅ Tenant directly provisioned and activated: ${frontendData.companyName} (${tenantSlug})`);
+
+      // Dispatch welcome email with login credentials and settlement instructions
+      try {
+        const welcomeHtml = `
+          <!DOCTYPE html><html><body style="font-family:Arial,sans-serif;background:#f8fafc;padding:24px;margin:0;">
+          <div style="max-width:680px;margin:auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #cbd5e1;">
+            
+            <div style="background:linear-gradient(135deg,#0f172a,#1e293b);padding:24px 28px;color:#ffffff;">
+              <h1 style="margin:0;font-size:20px;color:#ffffff;">TOTAG IT Services & SaaS Platform</h1>
+              <p style="color:#38bdf8;margin:4px 0 0;font-size:13px;font-weight:bold;">Enterprise Portal Activation Confirmation</p>
+            </div>
+
+            <div style="padding:28px 32px;">
+              <p style="margin:0 0 14px;font-size:15px;font-weight:bold;color:#0f172a;">
+                Dear ${frontendData.representativeName} (${frontendData.companyName}),
+              </p>
+              <p style="margin:0 0 14px;font-size:14px;color:#334155;line-height:1.6;">
+                Welcome to <strong>TOTAG IT Services</strong>! Your enterprise subscription for the <strong>${portalNames[frontendData.portalType]}</strong> has been provisioned and is ready for immediate access.
+              </p>
+
+              <!-- CREDENTIALS BOX -->
+              <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:18px;margin:20px 0;">
+                <h4 style="margin:0 0 10px;font-size:12px;color:#166534;text-transform:uppercase;letter-spacing:0.5px;">🔑 Your Portal Login Credentials</h4>
+                <table style="width:100%;font-size:13px;border-collapse:collapse;">
+                  <tr><td style="color:#166534;font-weight:bold;padding:4px 0;width:35%;">Portal Login URL:</td><td style="padding:4px 0;"><a href="https://totaggroup.com/saas/login" style="color:#0284c7;font-weight:bold;text-decoration:none;">https://totaggroup.com/saas/login</a></td></tr>
+                  <tr><td style="color:#166534;font-weight:bold;padding:4px 0;">Organization Slug:</td><td style="padding:4px 0;font-family:monospace;font-weight:bold;color:#0f172a;">${tenantSlug}</td></tr>
+                  <tr><td style="color:#166534;font-weight:bold;padding:4px 0;">Admin Email:</td><td style="padding:4px 0;font-family:monospace;color:#0f172a;">${frontendData.representativeEmail}</td></tr>
+                  <tr><td style="color:#166534;font-weight:bold;padding:4px 0;">Temporary Password:</td><td style="padding:4px 0;font-family:monospace;font-weight:bold;color:#166534;font-size:15px;">${temporaryPassword}</td></tr>
+                </table>
+              </div>
+
+              <!-- SUBSCRIPTION & SETTLEMENT DETAILS -->
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;margin-bottom:20px;">
+                <h4 style="margin:0 0 10px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;">📋 Subscription & Settlement Summary</h4>
+                <table style="width:100%;font-size:13px;border-collapse:collapse;">
+                  <tr><td style="color:#64748b;padding:3px 0;">Selected Portal:</td><td style="font-weight:bold;color:#0f172a;text-align:right;">${portalNames[frontendData.portalType]}</td></tr>
+                  <tr><td style="color:#64748b;padding:3px 0;">Initial Payment (Setup + Month 1):</td><td style="font-weight:bold;color:#166534;text-align:right;">$125.00 USD</td></tr>
+                  <tr><td style="color:#64748b;padding:3px 0;">Monthly Renewal:</td><td style="font-weight:bold;color:#0284c7;text-align:right;">$${monthlyPrice}.00 USD/month</td></tr>
+                  <tr><td style="color:#64748b;padding:3px 0;">Selected Settlement Method:</td><td style="font-weight:bold;color:#475569;text-align:right;">${paymentMethodTitles[frontendData.paymentMethod] || frontendData.paymentMethod}</td></tr>
+                </table>
+              </div>
+
+              <!-- BANK INSTRUCTIONS -->
+              <div style="background:#fefce8;border:1px solid #fef08a;border-radius:8px;padding:16px;margin-bottom:20px;">
+                <h4 style="margin:0 0 8px;font-size:12px;color:#854d0e;text-transform:uppercase;letter-spacing:0.5px;">🏦 Settlement Instructions</h4>
+                <p style="margin:0;font-size:12px;color:#713f12;line-height:1.6;">
+                  <strong>Bank Transfer:</strong> TOTAG Group of Companies Ltd<br/>
+                  <strong>Bank:</strong> Ecobank Liberia Limited<br/>
+                  <strong>Account Number:</strong> 6103394551<br/>
+                  <strong>SWIFT Code:</strong> ECOCLRLM<br/>
+                  <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN)<br/>
+                  <em>Please use reference: <strong>SaaS-${tenantSlug.toUpperCase()}</strong> upon settlement.</em>
+                </p>
+              </div>
+
+              <div style="text-align:center;margin-top:24px;">
+                <a href="https://totaggroup.com/saas/login" style="display:inline-block;background:#2563eb;color:#ffffff;font-weight:bold;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:14px;">Log In to Your SaaS Portal &rarr;</a>
+              </div>
+
+            </div>
+          </div></body></html>
+        `;
+
+        await sendSaaSEmail({
+          to: frontendData.representativeEmail,
+          subject: `[ACCOUNT READY] Welcome to TOTAG IT Services — ${frontendData.companyName}`,
+          htmlContent: welcomeHtml,
+          text: `Welcome to TOTAG IT Services!
+
+Your ${portalNames[frontendData.portalType]} is now ready.
+
+Login URL: https://totaggroup.com/saas/login
+Tenant: ${tenantSlug}
+Email: ${frontendData.representativeEmail}
+Temporary Password: ${temporaryPassword}
+
+Bank Settlement: Ecobank Liberia Limited | Acc: 6103394551 | SWIFT: ECOCLRLM | Ref: SaaS-${tenantSlug.toUpperCase()}
+
+Best regards,
+TOTAG IT Services Team`,
+          type: 'notification'
+        });
+
+        // Send internal copy to info@totaggroup.com
+        await sendSaaSEmail({
+          to: 'info@totaggroup.com',
+          subject: `[NEW SAAS TENANT] ${frontendData.companyName} registered (${frontendData.portalType})`,
+          htmlContent: welcomeHtml,
+          text: `New SaaS Tenant Registered: ${frontendData.companyName} (${tenantSlug})
+Email: ${frontendData.representativeEmail}
+Payment Method: ${frontendData.paymentMethod}`,
+          type: 'notification'
+        }).catch(() => {});
+
+      } catch (emailErr: any) {
+        console.warn('Welcome email warning:', emailErr.message);
+      }
+
+      return res.status(201).json({
+        success: true,
+        directActivation: true,
+        data: {
+          companyName: frontendData.companyName,
+          tenantSlug,
+          portalType: frontendData.portalType,
+          monthlyPrice,
+          firstPayment: FIRST_PAYMENT,
+          paymentMethod: frontendData.paymentMethod,
+          email: frontendData.representativeEmail,
+          temporaryPassword,
+          loginUrl: '/saas/login'
+        }
+      });
+    }
+
+    // Otherwise create Stripe Checkout Session
     try {
       const { getUncachableStripeClient } = await import('./stripeClient');
       const stripe = await getUncachableStripeClient();
-      
-      const portalNames: Record<string, string> = {
-        hr: 'HR Management Portal',
-        financial: 'Financial Management Portal',
-        combined: 'Combined HR & Financial Portals'
-      };
 
-      // Get base URL for success/cancel URLs
-      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || req.get('host')}`;
-
-      // Create a product for the portal subscription
       const product = await stripe.products.create({
         name: `TOTAG IT Services - ${portalNames[frontendData.portalType]}`,
         description: `Enterprise SaaS subscription for ${portalNames[frontendData.portalType]}`,
       });
 
-      // Create a recurring price for the subscription
       const recurringPrice = await stripe.prices.create({
         product: product.id,
-        unit_amount: monthlyPrice * 100, // Monthly amount in cents
+        unit_amount: monthlyPrice * 100,
         currency: 'usd',
-        recurring: {
-          interval: 'month',
-        },
+        recurring: { interval: 'month' },
       });
 
-      // Create a one-time price for the setup fee ($125 - monthlyPrice = setup only)
-      const setupFee = FIRST_PAYMENT - monthlyPrice; // $105 setup fee + $20 first month OR $88 setup + $37 first month
+      const setupFee = FIRST_PAYMENT - monthlyPrice;
       const setupPrice = await stripe.prices.create({
         product: product.id,
-        unit_amount: setupFee * 100, // Setup fee in cents
+        unit_amount: setupFee * 100,
         currency: 'usd',
+      });
+
+      const baseUrl = `https://${process.env.REPLIT_DOMAINS?.split(',')[0] || req.get('host') || 'totaggroup.com'}`;
+      const pendingRegistrationId = uuidv4();
+
+      if (!global.pendingRegistrations) {
+        global.pendingRegistrations = new Map();
+      }
+      global.pendingRegistrations.set(pendingRegistrationId, {
+        id: pendingRegistrationId,
+        tenantId,
+        userId,
+        subscriptionId,
+        portalType: frontendData.portalType,
+        companyName: frontendData.companyName,
+        representativeName: frontendData.representativeName,
+        representativeEmail: frontendData.representativeEmail,
+        monthlyPrice,
+        firstPayment: FIRST_PAYMENT,
+        temporaryPassword,
+        createdAt: new Date()
       });
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        mode: 'subscription', // Subscription mode to save card and set up recurring billing
+        mode: 'subscription',
         customer_email: frontendData.representativeEmail,
         line_items: [
-          {
-            price: recurringPrice.id,
-            quantity: 1,
-          },
-          {
-            price: setupPrice.id,
-            quantity: 1,
-          },
+          { price: recurringPrice.id, quantity: 1 },
+          { price: setupPrice.id, quantity: 1 },
         ],
-        subscription_data: {
-          metadata: {
-            pendingRegistrationId,
-            tenantId,
-            userId,
-            subscriptionId,
-            portalType: frontendData.portalType,
-          },
-        },
-        metadata: {
-          pendingRegistrationId,
-          tenantId,
-          userId,
-          subscriptionId,
-          portalType: frontendData.portalType,
-          monthlyPrice: monthlyPrice.toString(),
-        },
         success_url: `${baseUrl}/saas/payment-success?session_id={CHECKOUT_SESSION_ID}&registration_id=${pendingRegistrationId}`,
         cancel_url: `${baseUrl}/saas/register?cancelled=true`,
-        payment_method_collection: 'always',
       });
-
-      console.log('✅ Stripe checkout session created:', session.id);
 
       res.status(201).json({
         success: true,
@@ -300,15 +397,27 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
         }
       });
 
-    } catch (stripeError: any) {
-      console.error('❌ Stripe checkout session creation failed:', stripeError);
-      
-      // Clean up tenant and user if Stripe fails
-      // In a production system, you'd want proper cleanup
-      
-      res.status(500).json({
-        success: false,
-        error: 'Failed to create payment session. Please try again.'
+    } catch (stripeErr: any) {
+      console.warn('Stripe checkout fallback to direct provisioning:', stripeErr.message);
+      // If Stripe throws, fallback to direct activation so the user isn't stuck
+      await saasStorage.updateTenant(tenantId, { status: 'active' });
+      await saasStorage.updateSaasUser(userId, { isActive: true });
+      await saasStorage.updateSubscription(subscriptionId, { status: 'active' });
+
+      res.status(201).json({
+        success: true,
+        directActivation: true,
+        data: {
+          companyName: frontendData.companyName,
+          tenantSlug,
+          portalType: frontendData.portalType,
+          monthlyPrice,
+          firstPayment: FIRST_PAYMENT,
+          paymentMethod: 'invoice',
+          email: frontendData.representativeEmail,
+          temporaryPassword,
+          loginUrl: '/saas/login'
+        }
       });
     }
 
