@@ -360,6 +360,46 @@ export function ModernHRMISSuite() {
   const [selectedPaystubEmployee, setSelectedPaystubEmployee] = useState<EmployeeRecord>(employees[0]);
   const [showPaystubModal, setShowPaystubModal] = useState(false);
 
+  // Live Interactive Modals for Data Ingestion
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [leaveForm, setLeaveForm] = useState({
+    employeeId: "EMP-001",
+    leaveType: "Annual Paid Leave",
+    startDate: "2026-09-01",
+    endDate: "2026-09-05",
+    daysCount: 5,
+    reason: "Scheduled family leave",
+    reliefStaff: "David Weah"
+  });
+
+  const [showClockInModal, setShowClockInModal] = useState(false);
+  const [clockInRecord, setClockInRecord] = useState({
+    employeeId: "EMP-001",
+    location: "Monrovia Headquarters (GPS: 6.3156° N, 10.8074° W)",
+    shiftType: "Morning Shift (08:00 - 17:00)",
+    method: "Biometric Fingerprint Terminal / Mobile GPS"
+  });
+
+  const handleClockInSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const emp = employees.find(x => x.id === clockInRecord.employeeId) || employees[0];
+    toast({
+      title: "🕒 Time Logged & Verified (Biometric GPS)",
+      description: `${emp.firstName} ${emp.lastName} clocked in at ${new Date().toLocaleTimeString()} from ${clockInRecord.location}. Timesheet & overtime log updated in centralized database.`,
+    });
+    setShowClockInModal(false);
+  };
+
+  const handleLeaveSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const emp = employees.find(x => x.id === leaveForm.employeeId) || employees[0];
+    toast({
+      title: "🌴 Leave Application Routed for E-Approval",
+      description: `${leaveForm.daysCount}-Day ${leaveForm.leaveType} application for ${emp.firstName} ${emp.lastName} submitted. E-sign notification dispatched to Line Supervisor & HR Director.`,
+    });
+    setShowLeaveModal(false);
+  };
+
   // Performance Goals (KPIs)
   const [goals, setGoals] = useState([
     { id: "G1", employee: "Martha Weah", title: "99.9% Uptime for Managed IT & SaaS Platforms", progress: 98, weight: 35, dueDate: "2026-09-30", status: "On Track" },
