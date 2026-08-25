@@ -108,6 +108,7 @@ type RegistrationForm = z.infer<typeof registrationSchema>;
 
 export default function SaaSRegister() {
   const [selectedPortal, setSelectedPortal] = useState<PortalType>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'bank_transfer' | 'mobile_money' | 'stripe' | 'invoice'>('bank_transfer');
   const [step, setStep] = useState<'portal' | 'details' | 'payment' | 'review'>('portal');
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -138,25 +139,36 @@ export default function SaaSRegister() {
       return response;
     },
     onSuccess: (response: any) => {
+      if (response.success && response.directActivation) {
+        toast({
+          title: "Account Provisioned Successfully!",
+          description: "Your portal is activated and ready to launch.",
+        });
+        try {
+          sessionStorage.setItem('saas_registration_result', JSON.stringify(response.data));
+        } catch (e) {}
+        window.location.href = '/saas/payment-success?direct=true';
+        return;
+      }
+
       if (response.success && response.data?.checkoutUrl) {
         toast({
           title: "Opening Payment Page",
           description: "A new tab will open for secure payment with Stripe. Please complete the payment there.",
         });
-        // Open Stripe checkout in a new tab (required for Stripe to work properly)
         const stripeWindow = window.open(response.data.checkoutUrl, '_blank');
         if (!stripeWindow) {
-          // If popup was blocked, fall back to redirect
-          toast({
-            title: "Popup Blocked",
-            description: "Please allow popups and try again, or click the link below to continue.",
-          });
           window.location.href = response.data.checkoutUrl;
         }
+      } else if (response.success && response.data) {
+        try {
+          sessionStorage.setItem('saas_registration_result', JSON.stringify(response.data));
+        } catch (e) {}
+        window.location.href = '/saas/payment-success?direct=true';
       } else {
         toast({
-          title: "Registration Failed",
-          description: "Failed to create payment session. Please try again.",
+          title: "Registration Error",
+          description: response.error || "Failed to complete registration.",
           variant: "destructive",
         });
       }
@@ -183,7 +195,7 @@ export default function SaaSRegister() {
     await registerMutation.mutateAsync({
       ...data,
       portalType: selectedPortal,
-      paymentMethod: 'stripe',
+      paymentMethod: selectedPaymentMethod,
       monthlyPrice: monthlyAfter,
       firstPayment: FIRST_PAYMENT,
     });
@@ -607,100 +619,173 @@ export default function SaaSRegister() {
           </div>
         )}
 
-        {/* Step 3: Payment with Stripe */}
+        {/* Step 3: Payment Method Selection */}
         {step === 'payment' && (
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-3xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Secure Payment
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Select Settlement & Payment Method
               </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                Complete your subscription with secure Stripe payment.
+              <p className="text-gray-600 dark:text-gray-300 text-sm">
+                Choose your preferred payment method. All options include instant portal activation.
               </p>
             </div>
 
             <div className="space-y-6">
               {/* Payment Summary */}
-              <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <DollarSign className="w-5 h-5" />
-                    <span>Payment Summary</span>
+              <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border-2 border-blue-200 dark:border-blue-900">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center space-x-2 text-base">
+                    <DollarSign className="w-5 h-5 text-blue-600" />
+                    <span>Subscription Rate Summary</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {selectedOption && (
-                      <div className="flex justify-between">
-                        <span>Selected Portal:</span>
-                        <span className="font-semibold">{selectedOption.name}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between">
-                      <span>First Payment (Setup + Month 1):</span>
-                      <span className="text-2xl font-bold text-green-600">${FIRST_PAYMENT}</span>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="bg-white/80 dark:bg-gray-900/80 p-3 rounded-lg border">
+                      <span className="text-xs text-gray-500 block">Initial Setup + 1st Month:</span>
+                      <span className="text-2xl font-black text-emerald-600">${FIRST_PAYMENT} USD</span>
                     </div>
-                    <div className="border-t pt-2">
-                      <div className="flex justify-between">
-                        <span>Monthly after first payment:</span>
-                        <span className="text-xl font-bold text-blue-600">${monthlyAfter}/mo</span>
-                      </div>
+                    <div className="bg-white/80 dark:bg-gray-900/80 p-3 rounded-lg border">
+                      <span className="text-xs text-gray-500 block">Monthly Renewal After Month 1:</span>
+                      <span className="text-2xl font-black text-blue-600">${monthlyAfter}/month</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Stripe Payment */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <CreditCard className="w-5 h-5 text-indigo-600" />
-                    <span>Credit or Debit Card</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Pay securely with Stripe - the industry standard for online payments
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-3 p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg">
-                    <CreditCard className="w-8 h-8 text-indigo-600" />
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 dark:text-gray-100">
-                        Secure Card Payment
-                      </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Visa, Mastercard, American Express, or Discover
-                      </p>
-                    </div>
-                    <div className="flex space-x-1">
-                      <div className="w-8 h-5 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">VISA</div>
-                      <div className="w-8 h-5 bg-red-500 rounded text-white text-xs flex items-center justify-center font-bold">MC</div>
-                      <div className="w-8 h-5 bg-blue-800 rounded text-white text-xs flex items-center justify-center font-bold">AMEX</div>
-                    </div>
-                  </div>
-
-                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+              {/* 4 Selectable Payment Methods */}
+              <div className="space-y-3">
+                
+                {/* 1. Direct Bank Wire */}
+                <div 
+                  onClick={() => setSelectedPaymentMethod('bank_transfer')}
+                  className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedPaymentMethod === 'bank_transfer'
+                      ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/30 shadow-md ring-2 ring-blue-600/20'
+                      : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 bg-white dark:bg-gray-900'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-3">
-                      <Shield className="w-5 h-5 text-green-600 mt-0.5" />
+                      <div className="p-2.5 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 mt-0.5">
+                        <Building2 className="w-5 h-5" />
+                      </div>
                       <div>
-                        <h4 className="font-medium text-green-900 dark:text-green-100">
-                          Your payment is secure
-                        </h4>
-                        <p className="text-sm text-green-800 dark:text-green-200 mt-1">
-                          After completing registration, you'll be redirected to Stripe's secure checkout page. 
-                          Your card information is never stored on our servers.
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-gray-900 dark:text-white">Commercial Bank Wire (Ecobank Liberia)</h4>
+                          <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">RECOMMENDED</span>
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                          Direct corporate transfer to <strong>Ecobank Liberia Limited</strong> (Account: <strong>6103394551</strong> | SWIFT: <strong>ECOCLRLM</strong>).
+                        </p>
+                        <p className="text-[11px] text-emerald-600 font-medium mt-1.5">
+                          ✓ Instant account provisioning + Net-15 official invoice dispatched to your email
                         </p>
                       </div>
                     </div>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedPaymentMethod === 'bank_transfer' ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
+                      {selectedPaymentMethod === 'bank_transfer' && <Check className="w-3.5 h-3.5" />}
+                    </div>
                   </div>
+                </div>
 
-                  <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                    <p>Powered by <span className="font-semibold text-indigo-600">Stripe</span> - trusted by millions of businesses worldwide</p>
+                {/* 2. Mobile Money */}
+                <div 
+                  onClick={() => setSelectedPaymentMethod('mobile_money')}
+                  className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedPaymentMethod === 'mobile_money'
+                      ? 'border-amber-600 bg-amber-50/50 dark:bg-amber-950/30 shadow-md ring-2 ring-amber-600/20'
+                      : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 bg-white dark:bg-gray-900'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 mt-0.5">
+                        <Wallet className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-gray-900 dark:text-white">Liberian Mobile Money (Orange / MTN)</h4>
+                          <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">INSTANT</span>
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                          Pay via Orange Money or MTN Mobile Money merchant line (<strong>+231-777-100-001</strong>).
+                        </p>
+                        <p className="text-[11px] text-emerald-600 font-medium mt-1.5">
+                          ✓ Instant account provisioning + SMS and email confirmation
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedPaymentMethod === 'mobile_money' ? 'border-amber-600 bg-amber-600 text-white' : 'border-gray-300'}`}>
+                      {selectedPaymentMethod === 'mobile_money' && <Check className="w-3.5 h-3.5" />}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
 
-              <div className="flex justify-between">
+                {/* 3. Credit or Debit Card */}
+                <div 
+                  onClick={() => setSelectedPaymentMethod('stripe')}
+                  className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedPaymentMethod === 'stripe'
+                      ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/30 shadow-md ring-2 ring-indigo-600/20'
+                      : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 bg-white dark:bg-gray-900'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-2.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 mt-0.5">
+                        <CreditCard className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-gray-900 dark:text-white">Credit / Debit Card (Stripe)</h4>
+                          <span className="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded">INTERNATIONAL</span>
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                          Visa, Mastercard, American Express, or Discover with encrypted checkout.
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedPaymentMethod === 'stripe' ? 'border-indigo-600 bg-indigo-600 text-white' : 'border-gray-300'}`}>
+                      {selectedPaymentMethod === 'stripe' && <Check className="w-3.5 h-3.5" />}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Corporate Net 30 Invoice */}
+                <div 
+                  onClick={() => setSelectedPaymentMethod('invoice')}
+                  className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${
+                    selectedPaymentMethod === 'invoice'
+                      ? 'border-purple-600 bg-purple-50/50 dark:bg-purple-950/30 shadow-md ring-2 ring-purple-600/20'
+                      : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 bg-white dark:bg-gray-900'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-2.5 rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 mt-0.5">
+                        <Shield className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-gray-900 dark:text-white">Corporate Invoice Billing (Net 30)</h4>
+                          <span className="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded">ENTERPRISE</span>
+                        </div>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+                          Receive an official corporate PO invoice with Net 30 payment terms for finance departments.
+                        </p>
+                      </div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${selectedPaymentMethod === 'invoice' ? 'border-purple-600 bg-purple-600 text-white' : 'border-gray-300'}`}>
+                      {selectedPaymentMethod === 'invoice' && <Check className="w-3.5 h-3.5" />}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div className="flex justify-between pt-4">
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -714,6 +799,7 @@ export default function SaaSRegister() {
                   type="button" 
                   onClick={() => setStep('review')}
                   size="lg"
+                  className="bg-blue-600 hover:bg-blue-700"
                   data-testid="button-review-order"
                 >
                   Review Order
@@ -831,14 +917,17 @@ export default function SaaSRegister() {
 
                   <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                     <div className="flex items-start space-x-3">
-                      <CreditCard className="w-5 h-5 text-indigo-600 mt-0.5" />
+                      <Building2 className="w-5 h-5 text-blue-600 mt-0.5" />
                       <div>
-                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Payment Method</h4>
-                        <p className="text-sm text-gray-700 dark:text-gray-300" data-testid="review-payment-method">
-                          Credit/Debit Card via Stripe
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Selected Settlement Method</h4>
+                        <p className="text-sm font-bold text-blue-600" data-testid="review-payment-method">
+                          {selectedPaymentMethod === 'bank_transfer' && 'Commercial Bank Wire (Ecobank Liberia - 6103394551)'}
+                          {selectedPaymentMethod === 'mobile_money' && 'Liberian Mobile Money (Orange / MTN - +231-777-100-001)'}
+                          {selectedPaymentMethod === 'stripe' && 'International Credit / Debit Card (Stripe)'}
+                          {selectedPaymentMethod === 'invoice' && 'Corporate Net 30 Invoice Billing'}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          You'll be redirected to Stripe's secure checkout after submitting
+                        <p className="text-xs text-emerald-600 font-medium mt-1">
+                          ✓ Your account and login credentials will be generated immediately upon submission.
                         </p>
                       </div>
                     </div>

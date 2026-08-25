@@ -3,6 +3,15 @@ import Stripe from 'stripe';
 let connectionSettings: any;
 
 async function getCredentials() {
+  // 1. Check direct environment variables (Standard VPS / Production)
+  if (process.env.STRIPE_SECRET_KEY) {
+    return {
+      publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_live_totag_placeholder',
+      secretKey: process.env.STRIPE_SECRET_KEY,
+    };
+  }
+
+  // 2. Fallback to Replit Connectors if running inside Replit
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? 'repl ' + process.env.REPL_IDENTITY
@@ -10,37 +19,42 @@ async function getCredentials() {
       ? 'depl ' + process.env.WEB_REPL_RENEWAL
       : null;
 
-  if (!xReplitToken) {
-    throw new Error('X_REPLIT_TOKEN not found for repl/depl');
-  }
+  if (hostname && xReplitToken) {
+    try {
+      const connectorName = 'stripe';
+      const isProduction = process.env.REPLIT_DEPLOYMENT === '1';
+      const targetEnvironment = isProduction ? 'production' : 'development';
 
-  const connectorName = 'stripe';
-  const isProduction = process.env.REPLIT_DEPLOYMENT === '1';
-  const targetEnvironment = isProduction ? 'production' : 'development';
+      const url = new URL(`https://${hostname}/api/v2/connection`);
+      url.searchParams.set('include_secrets', 'true');
+      url.searchParams.set('connector_names', connectorName);
+      url.searchParams.set('environment', targetEnvironment);
 
-  const url = new URL(`https://${hostname}/api/v2/connection`);
-  url.searchParams.set('include_secrets', 'true');
-  url.searchParams.set('connector_names', connectorName);
-  url.searchParams.set('environment', targetEnvironment);
+      const response = await fetch(url.toString(), {
+        headers: {
+          'Accept': 'application/json',
+          'X_REPLIT_TOKEN': xReplitToken
+        }
+      });
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      'Accept': 'application/json',
-      'X_REPLIT_TOKEN': xReplitToken
+      const data = await response.json();
+      connectionSettings = data.items?.[0];
+
+      if (connectionSettings?.settings?.publishable && connectionSettings?.settings?.secret) {
+        return {
+          publishableKey: connectionSettings.settings.publishable,
+          secretKey: connectionSettings.settings.secret,
+        };
+      }
+    } catch (e: any) {
+      console.warn('Replit stripe connector lookup failed:', e.message);
     }
-  });
-
-  const data = await response.json();
-  
-  connectionSettings = data.items?.[0];
-
-  if (!connectionSettings || (!connectionSettings.settings.publishable || !connectionSettings.settings.secret)) {
-    throw new Error(`Stripe ${targetEnvironment} connection not found`);
   }
 
+  // 3. Graceful fallback placeholder (non-crashing)
   return {
-    publishableKey: connectionSettings.settings.publishable,
-    secretKey: connectionSettings.settings.secret,
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_totag_placeholder',
+    secretKey: process.env.STRIPE_SECRET_KEY || 'sk_test_totag_placeholder',
   };
 }
 
@@ -69,16 +83,22 @@ let stripeSync: any = null;
 
 export async function getStripeSync() {
   if (!stripeSync) {
-    const { StripeSync } = await import('stripe-replit-sync');
-    const secretKey = await getStripeSecretKey();
+    try {
+      const { StripeSync } = await import('stripe-replit-sync');
+      const secretKey = await getStripeSecretKey();
 
-    stripeSync = new StripeSync({
-      poolConfig: {
-        connectionString: process.env.DATABASE_URL!,
-        max: 2,
-      },
-      stripeSecretKey: secretKey,
-    });
+      if (process.env.DATABASE_URL && secretKey && !secretKey.includes('placeholder')) {
+        stripeSync = new StripeSync({
+          poolConfig: {
+            connectionString: process.env.DATABASE_URL!,
+            max: 2,
+          },
+          stripeSecretKey: secretKey,
+        });
+      }
+    } catch (e: any) {
+      console.warn('StripeSync initialization skipped:', e.message);
+    }
   }
   return stripeSync;
 }
