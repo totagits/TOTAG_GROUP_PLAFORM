@@ -1251,7 +1251,7 @@ function buildInvoiceEmailHtml(invoice: any): string {
                   <strong>Account Number:</strong> 6103394551<br/>
                   <strong>SWIFT Code:</strong> ECOCLRLM<br/>
                   <strong>Branch:</strong> 11th Street Sinkor, Monrovia, Liberia<br/>
-                  <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN)<br/>
+                  <strong>Mobile Money:</strong> Orange: +231-777-666-999 | MTN: +231-887-666-999<br/>
                   <em>Please include reference <strong>${invoice.invoiceNumber}</strong> with your transfer.</em>
                 </p>
               </div>

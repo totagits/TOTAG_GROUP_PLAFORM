@@ -710,7 +710,7 @@ export default function SaaSRegister() {
                           <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">INSTANT</span>
                         </div>
                         <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
-                          Pay via Orange Money or MTN Mobile Money merchant line (<strong>+231-777-100-001</strong>).
+                          Pay via Orange Money (<strong>+231-777-666-999</strong>) or MTN Mobile Money (<strong>+231-887-666-999</strong>).
                         </p>
                         <p className="text-[11px] text-emerald-600 font-medium mt-1.5">
                           ✓ Instant account provisioning + SMS and email confirmation
@@ -922,7 +922,7 @@ export default function SaaSRegister() {
                         <h4 className="font-medium text-gray-900 dark:text-gray-100">Selected Settlement Method</h4>
                         <p className="text-sm font-bold text-blue-600" data-testid="review-payment-method">
                           {selectedPaymentMethod === 'bank_transfer' && 'Commercial Bank Wire (Ecobank Liberia - 6103394551)'}
-                          {selectedPaymentMethod === 'mobile_money' && 'Liberian Mobile Money (Orange / MTN - +231-777-100-001)'}
+                          {selectedPaymentMethod === 'mobile_money' && 'Liberian Mobile Money (Orange: +231-777-666-999 | MTN: +231-887-666-999)'}
                           {selectedPaymentMethod === 'stripe' && 'International Credit / Debit Card (Stripe)'}
                           {selectedPaymentMethod === 'invoice' && 'Corporate Net 30 Invoice Billing'}
                         </p>

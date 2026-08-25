@@ -236,7 +236,7 @@ export default function PaymentSuccessPage() {
               <p className="text-amber-900 dark:text-amber-300 text-xs leading-relaxed">
                 <strong>Bank Transfer:</strong> TOTAG Group of Companies Ltd | <strong>Bank:</strong> Ecobank Liberia Limited<br/>
                 <strong>Account Number:</strong> 6103394551 | <strong>SWIFT:</strong> ECOCLRLM | <strong>Branch:</strong> 11th Street Sinkor, Monrovia<br/>
-                <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN) | <strong>Ref:</strong> SaaS-{registrationData?.tenantSlug?.toUpperCase()}
+                <strong>Mobile Money:</strong> Orange: +231-777-666-999 | MTN: +231-887-666-999 | <strong>Ref:</strong> SaaS-{registrationData?.tenantSlug?.toUpperCase()}
               </p>
             </div>
 

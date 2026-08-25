@@ -207,7 +207,7 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
 
     const paymentMethodTitles: Record<string, string> = {
       bank_transfer: 'Commercial Bank Wire (Ecobank Liberia)',
-      mobile_money: 'Liberian Mobile Money (Orange / MTN)',
+      mobile_money: 'Liberian Mobile Money (Orange: +231-777-666-999 | MTN: +231-887-666-999)',
       invoice: 'Corporate Net-30 Invoice',
       stripe: 'Credit / Debit Card'
     };
@@ -265,7 +265,7 @@ router.post('/auth/register-tenant', async (req: Request, res: Response) => {
                   <strong>Bank:</strong> Ecobank Liberia Limited<br/>
                   <strong>Account Number:</strong> 6103394551<br/>
                   <strong>SWIFT Code:</strong> ECOCLRLM<br/>
-                  <strong>Mobile Money:</strong> +231-777-100-001 (Orange / MTN)<br/>
+                  <strong>Mobile Money:</strong> Orange: +231-777-666-999 | MTN MoMo: +231-887-666-999<br/>
                   <em>Please use reference: <strong>SaaS-${tenantSlug.toUpperCase()}</strong> upon settlement.</em>
                 </p>
               </div>

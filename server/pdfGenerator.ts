@@ -152,7 +152,7 @@ export function generateInvoicePdf(invoice: InvoicePdfData): Promise<Buffer> {
         .text('Bank: Ecobank Liberia Limited | Account: 6103394551', 50, y + 34)
         .text('SWIFT Code: ECOCLRLM | Branch: 11th Street Sinkor, Monrovia', 50, y + 46)
         .text(`Ref: Please state Invoice ${invoice.invoiceNumber} on transfer.`, 50, y + 58)
-        .text('Mobile Money: +231-777-100-001 (Orange / MTN)', 50, y + 70);
+        .text('Mobile Money: Orange: +231-777-666-999 | MTN: +231-887-666-999', 50, y + 70);
 
       // Financial Summary Box
       doc.rect(345, y, 210, 90).fillAndStroke('#f8fafc', '#e2e8f0');

@@ -642,7 +642,7 @@ function InvoiceBuilder({
   const [taxAmount, setTaxAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(18125.00);
-  const [paymentDetails, setPaymentDetails] = useState("Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM | BBAN: 003011610339455101 | Branch: 11th Street Sinkor, Monrovia");
+  const [paymentDetails, setPaymentDetails] = useState("Bank Transfer: TOTAG Group of Companies Ltd | Ecobank Liberia Limited | Account: 6103394551 | SWIFT: ECOCLRLM | Mobile Money: Orange (+231-777-666-999) / MTN (+231-887-666-999)");
   const [notes, setNotes] = useState("Final invoice for UNIDO Article 4 Deliverable C. Dates of service, locations served, and quantities delivered confirmed.");
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
