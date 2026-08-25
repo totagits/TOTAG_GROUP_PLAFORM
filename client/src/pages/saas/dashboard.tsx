@@ -1,3 +1,4 @@
+import { ModernHRMISSuite } from "@/components/hrmis/ModernHRMISSuite";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,6 +43,7 @@ interface Module {
 
 export default function SaaSDashboard() {
   const [user, setUser] = useState<User | null>(null);
+  const [activeDashboardView, setActiveDashboardView] = useState<'overview' | 'hrmis-suite'>('overview');
   const [, setLocation] = useLocation();
 
   // Check authentication and get user from token
@@ -185,7 +187,16 @@ export default function SaaSDashboard() {
                 Monitor your business operations and system performance
               </p>
             </div>
-            <div className="mt-4 sm:mt-0 flex space-x-3">
+            <div className="mt-4 sm:mt-0 flex flex-wrap gap-2">
+              <Button 
+                variant={activeDashboardView === 'hrmis-suite' ? "default" : "outline"}
+                className={activeDashboardView === 'hrmis-suite' ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold" : "border-blue-300 text-blue-700 dark:text-blue-300"}
+                onClick={() => setActiveDashboardView(activeDashboardView === 'hrmis-suite' ? 'overview' : 'hrmis-suite')}
+                data-testid="button-toggle-hrmis-suite"
+              >
+                <Users className="w-4 h-4 mr-2" />
+                {activeDashboardView === 'hrmis-suite' ? "Back to Dashboard Overview" : "Modern HRMIS Enterprise Suite"}
+              </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setLocation('/saas/reports')}
@@ -205,6 +216,12 @@ export default function SaaSDashboard() {
           </div>
         </div>
 
+        {activeDashboardView === 'hrmis-suite' ? (
+          <div className="space-y-6">
+            <ModernHRMISSuite />
+          </div>
+        ) : (
+          <>
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
@@ -531,6 +548,8 @@ export default function SaaSDashboard() {
             </Card>
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

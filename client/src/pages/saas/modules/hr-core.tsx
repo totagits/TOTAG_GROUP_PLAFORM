@@ -1,3 +1,4 @@
+import { ModernHRMISSuite } from "@/components/hrmis/ModernHRMISSuite";
 import { ModuleLayout } from '@/components/ModuleLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -465,6 +466,11 @@ export default function HRCorePage() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Complete Modern HRMIS Suite Component */}
+      <div className="mt-8">
+        <ModernHRMISSuite />
       </div>
 
       {/* Recent Activity */}
