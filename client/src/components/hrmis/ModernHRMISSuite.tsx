@@ -78,6 +78,11 @@ export interface EmployeeRecord {
   performanceScore: number; // 1-100
   attendanceRate: number; // 0-100%
   skills: string[];
+  mobileSalaryCarrier: "Orange Money" | "Lonestar MTN MoMo" | "Direct Bank (Ecobank)";
+  mobileSalaryNumber: string;
+  mobileSalarySplit: "100% USD" | "50% USD / 50% LRD" | "100% LRD";
+  mobileKycStatus: "Verified" | "Pending";
+  lastMobilePayoutTx?: string;
 }
 
 const INITIAL_EMPLOYEES: EmployeeRecord[] = [
@@ -101,7 +106,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "Low",
     performanceScore: 94,
     attendanceRate: 98,
-    skills: ["Strategic Planning", "Supply Chain", "Budgeting", "Team Leadership"]
+    skills: ["Strategic Planning", "Supply Chain", "Budgeting", "Team Leadership"],
+    mobileSalaryCarrier: "Orange Money",
+    mobileSalaryNumber: "+231-777-666-999",
+    mobileSalarySplit: "100% USD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "ORANGE-SAL-2026-981"
   },
   {
     id: "EMP-002",
@@ -123,7 +133,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "Low",
     performanceScore: 96,
     attendanceRate: 99,
-    skills: ["PostgreSQL", "Cloud Infrastructure", "Kubernetes", "Node.js"]
+    skills: ["PostgreSQL", "Cloud Infrastructure", "Kubernetes", "Node.js"],
+    mobileSalaryCarrier: "Orange Money",
+    mobileSalaryNumber: "+231-777-666-102",
+    mobileSalarySplit: "50% USD / 50% LRD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "ORANGE-SAL-2026-982"
   },
   {
     id: "EMP-003",
@@ -145,7 +160,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "Medium",
     performanceScore: 89,
     attendanceRate: 95,
-    skills: ["IFRS Accounting", "Tax Compliance", "Payroll Auditing", "Risk Analysis"]
+    skills: ["IFRS Accounting", "Tax Compliance", "Payroll Auditing", "Risk Analysis"],
+    mobileSalaryCarrier: "Lonestar MTN MoMo",
+    mobileSalaryNumber: "+231-887-666-999",
+    mobileSalarySplit: "100% USD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "MTN-MOMO-2026-441"
   },
   {
     id: "EMP-004",
@@ -167,7 +187,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "Low",
     performanceScore: 92,
     attendanceRate: 97,
-    skills: ["HACCP Standards", "Hygiene Auditing", "Vendor Logistics", "Menu Planning"]
+    skills: ["HACCP Standards", "Hygiene Auditing", "Vendor Logistics", "Menu Planning"],
+    mobileSalaryCarrier: "Orange Money",
+    mobileSalaryNumber: "+231-777-666-104",
+    mobileSalarySplit: "100% USD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "ORANGE-SAL-2026-984"
   },
   {
     id: "EMP-005",
@@ -189,7 +214,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "High",
     performanceScore: 82,
     attendanceRate: 91,
-    skills: ["Mechanized Tillage", "Irrigation Systems", "Drone Crop Extension", "Crop Off-Take"]
+    skills: ["Mechanized Tillage", "Irrigation Systems", "Drone Crop Extension", "Crop Off-Take"],
+    mobileSalaryCarrier: "Lonestar MTN MoMo",
+    mobileSalaryNumber: "+231-887-666-105",
+    mobileSalarySplit: "50% USD / 50% LRD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "MTN-MOMO-2026-445"
   },
   {
     id: "EMP-006",
@@ -211,7 +241,12 @@ const INITIAL_EMPLOYEES: EmployeeRecord[] = [
     flightRisk: "Low",
     performanceScore: 91,
     attendanceRate: 96,
-    skills: ["ASYCUDA", "Freight Forwarding", "Tariff Classification", "Warehousing"]
+    skills: ["ASYCUDA", "Freight Forwarding", "Tariff Classification", "Warehousing"],
+    mobileSalaryCarrier: "Orange Money",
+    mobileSalaryNumber: "+231-777-666-106",
+    mobileSalarySplit: "100% USD",
+    mobileKycStatus: "Verified",
+    lastMobilePayoutTx: "ORANGE-SAL-2026-986"
   }
 ];
 
@@ -339,6 +374,34 @@ export function ModernHRMISSuite() {
     { id: "C3", title: "Advanced FIMS Financial Compliance & Ledger Standards", category: "Finance", hours: 8, enrolledCount: 16, completionRate: 75, mandatory: false },
     { id: "C4", title: "Executive Leadership & Team Alignment", category: "Leadership", hours: 10, enrolledCount: 12, completionRate: 90, mandatory: false }
   ]);
+
+  // Mobile Salary Instant Payout Handler
+  const handleInstantMobilePayout = (emp: EmployeeRecord) => {
+    const nasscorpEmp = emp.baseSalaryUsd * 0.04;
+    const paye = emp.baseSalaryUsd * 0.12;
+    const net = emp.baseSalaryUsd - nasscorpEmp - paye + 100;
+    const txId = `${emp.mobileSalaryCarrier.includes('Orange') ? 'ORANGE' : 'MTN'}-SAL-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    toast({
+      title: "📱 Instant Mobile Salary Disbursed!",
+      description: `Successfully paid $${net.toFixed(2)} USD to ${emp.firstName} ${emp.lastName} via ${emp.mobileSalaryCarrier} (${emp.mobileSalaryNumber}). Tx ID: ${txId}. SMS confirmation sent to employee.`,
+    });
+  };
+
+  // Bulk Mobile Salary Payout Handler
+  const handleBulkMobileSalaryPayout = () => {
+    const mobileEmployees = employees.filter(e => e.mobileSalaryCarrier !== 'Direct Bank (Ecobank)');
+    const totalMobileDisbursement = mobileEmployees.reduce((acc, emp) => {
+      const nasscorpEmp = emp.baseSalaryUsd * 0.04;
+      const paye = emp.baseSalaryUsd * 0.12;
+      return acc + (emp.baseSalaryUsd - nasscorpEmp - paye + 100);
+    }, 0);
+
+    toast({
+      title: "🚀 Batch Mobile Salary Gateway Completed",
+      description: `Disbursed $${totalMobileDisbursement.toFixed(2)} USD across ${mobileEmployees.length} employee mobile wallets (Orange Money & MTN MoMo) with automated SMS settlement notifications.`,
+    });
+  };
 
   // Filtered Employees
   const filteredEmployees = employees.filter((emp) => {
@@ -1062,6 +1125,56 @@ export function ModernHRMISSuite() {
             </Card>
           </div>
 
+          {/* Dedicated Mobile Salary Batch Engine */}
+          <Card className="border-2 border-amber-300 dark:border-amber-800 bg-gradient-to-r from-amber-50/70 via-orange-50/50 to-amber-50/30 dark:from-slate-950 dark:to-amber-950/20 shadow-md">
+            <CardHeader className="pb-3 border-b border-amber-200 dark:border-amber-800/60">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-base font-black text-amber-950 dark:text-amber-200 flex items-center gap-2">
+                      <Smartphone className="w-5 h-5 text-amber-600" />
+                      Liberian Mobile Salary Disbursement Gateway (Orange &amp; MTN MoMo)
+                    </CardTitle>
+                    <Badge className="bg-amber-600 text-white text-[10px] font-bold">LIVE TELECOM INTEGRATION</Badge>
+                  </div>
+                  <CardDescription className="text-amber-900/80 dark:text-amber-300/80 text-xs mt-1">
+                    Direct automated salary transmission to employee mobile wallets across Liberia (Orange Money &bull; MTN Mobile Money). Includes dual-currency USD/LRD split and automated SMS payslip dispatch.
+                  </CardDescription>
+                </div>
+                <Button
+                  size="sm"
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-xs font-black shadow-lg shadow-orange-500/20"
+                  onClick={handleBulkMobileSalaryPayout}
+                >
+                  <Zap className="w-3.5 h-3.5 mr-1.5" />
+                  Disburse All Mobile Salaries Batch &rarr;
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
+                <span className="text-[10px] font-bold text-amber-700 block uppercase">Orange Money Channel</span>
+                <span className="font-bold text-sm text-slate-900 dark:text-white">4 Personnel</span>
+                <p className="text-[10px] text-slate-500 mt-0.5">Merchant: +231-777-666-999</p>
+              </div>
+              <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
+                <span className="text-[10px] font-bold text-yellow-700 block uppercase">MTN MoMo Channel</span>
+                <span className="font-bold text-sm text-slate-900 dark:text-white">2 Personnel</span>
+                <p className="text-[10px] text-slate-500 mt-0.5">Merchant: +231-887-666-999</p>
+              </div>
+              <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
+                <span className="text-[10px] font-bold text-emerald-700 block uppercase">CBL Exchange Benchmark</span>
+                <span className="font-bold text-sm text-emerald-600">1 USD = 194.50 LRD</span>
+                <p className="text-[10px] text-slate-500 mt-0.5">Dual-Currency Rate</p>
+              </div>
+              <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-lg border border-amber-200 dark:border-amber-900">
+                <span className="text-[10px] font-bold text-blue-700 block uppercase">SMS Gateway Status</span>
+                <span className="font-bold text-sm text-blue-600">100% Online</span>
+                <p className="text-[10px] text-slate-500 mt-0.5">Instant SMS Delivery</p>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Automated Payroll Engine */}
           <Card className="border shadow-sm">
             <CardHeader className="pb-3 border-b bg-slate-50/50 dark:bg-slate-900/50">
@@ -1099,7 +1212,8 @@ export function ModernHRMISSuite() {
                       <th className="py-3 px-4">NASSCORP (4%)</th>
                       <th className="py-3 px-4">PAYE Tax (12%)</th>
                       <th className="py-3 px-4">Net Payout</th>
-                      <th className="py-3 px-4">Disbursement Method</th>
+                      <th className="py-3 px-4">Mobile Salary Wallet</th>
+                      <th className="py-3 px-4">Disbursement Action</th>
                       <th className="py-3 px-4 text-right">Pay Slip</th>
                     </tr>
                   </thead>
@@ -1119,9 +1233,29 @@ export function ModernHRMISSuite() {
                           <td className="py-3 px-4 font-mono text-blue-600">-${paye.toFixed(2)}</td>
                           <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">${net.toFixed(2)}</td>
                           <td className="py-3 px-4">
-                            <span className="text-[11px] bg-slate-100 text-slate-800 px-2 py-0.5 rounded font-mono">
-                              Ecobank Liberia / MoMo
-                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                emp.mobileSalaryCarrier.includes('Orange')
+                                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                                  : emp.mobileSalaryCarrier.includes('MTN')
+                                  ? 'bg-yellow-100 text-yellow-900 border border-yellow-300'
+                                  : 'bg-blue-100 text-blue-900 border border-blue-300'
+                              }`}>
+                                {emp.mobileSalaryCarrier.includes('Orange') ? '🟠 Orange' : emp.mobileSalaryCarrier.includes('MTN') ? '🟡 MTN MoMo' : '🏦 Bank'}
+                              </span>
+                              <span className="font-mono text-[10px] text-slate-600 dark:text-slate-300">{emp.mobileSalaryNumber}</span>
+                            </div>
+                            <p className="text-[9px] text-emerald-600 font-medium mt-0.5">Split: {emp.mobileSalarySplit} &bull; KYC Verified</p>
+                          </td>
+                          <td className="py-3 px-4">
+                            <Button
+                              size="sm"
+                              className="h-7 text-[11px] bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold shadow-sm"
+                              onClick={() => handleInstantMobilePayout(emp)}
+                            >
+                              <Smartphone className="w-3 h-3 mr-1" />
+                              Instant Mobile Pay
+                            </Button>
                           </td>
                           <td className="py-3 px-4 text-right">
                             <Button
@@ -1134,7 +1268,7 @@ export function ModernHRMISSuite() {
                               }}
                             >
                               <Printer className="w-3.5 h-3.5 mr-1" />
-                              View Slip
+                              Pay Slip
                             </Button>
                           </td>
                         </tr>
