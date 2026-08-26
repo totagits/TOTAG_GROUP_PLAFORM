@@ -2589,6 +2589,8 @@ TOTAG Group of Companies Ltd`;
     resetForm();
   };
 
+  const handleSave = handleSaveDraft;
+
   const openSendDialog = () => {
     if ((!selectedReq && !useManual) || lineItems.length === 0) return;
     if (useManual && !manualClient.name) return;
@@ -2603,7 +2605,7 @@ TOTAG Group of Companies Ltd`;
       resetForm();
       setShowSendDialog(false);
     } else {
-      handleSave();
+      handleSaveDraft();
       setShowSendDialog(false);
     }
   };
@@ -2991,7 +2993,7 @@ TOTAG Group of Companies Ltd`;
                     <Button variant="outline" className="w-full" size="sm" onClick={() => setShowPreview(true)} disabled={lineItems.length === 0}>
                       <Eye className="h-4 w-4 mr-1" /> Preview Quotation
                     </Button>
-                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50" size="sm" onClick={handleSave} disabled={lineItems.length === 0 || !manualClient.name}>
+                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50" size="sm" onClick={handleSaveDraft} disabled={lineItems.length === 0 || !manualClient.name}>
                       <FileCheck className="h-4 w-4 mr-1" /> Save Draft
                     </Button>
                     {onSaveAndSend && (
@@ -3225,7 +3227,7 @@ TOTAG Group of Companies Ltd`;
                     <Button variant="outline" className="w-full" size="sm" onClick={() => setShowPreview(true)} disabled={lineItems.length === 0}>
                       <Eye className="h-4 w-4 mr-1" /> Preview Quotation
                     </Button>
-                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50" size="sm" onClick={handleSave} disabled={lineItems.length === 0}>
+                    <Button variant="outline" className="w-full border-green-600 text-green-700 hover:bg-green-50" size="sm" onClick={handleSaveDraft} disabled={lineItems.length === 0}>
                       <FileCheck className="h-4 w-4 mr-1" /> Save Draft
                     </Button>
                     {onSaveAndSend && (
