@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
+  Crosshair,
   Sprout, 
   Sun, 
   Droplets, 
@@ -379,9 +380,55 @@ export default function FarmHome() {
     cropType: "NERICA Certified Paddy Rice",
     farmSizeAcres: 15,
     householdMembers: 8,
+    gpsLatitude: "8.421940",
+    gpsLongitude: "-9.747820",
+    gpsElevation: "340m (Highland Valley)",
+    gpsAccuracy: "Live Verified (±3m)",
     requestedServices: ["Certified Seeds", "Bio-Fertilizer", "Tractor Plowing", "Guaranteed Off-Take"],
     preferredPayment: "Instant Mobile Money (USD/LRD Split)"
   });
+  const [isLocatingFarm, setIsLocatingFarm] = useState(false);
+
+  const handleCaptureFarmGPS = () => {
+    if (!navigator.geolocation) {
+      toast({
+        title: "GPS Not Supported",
+        description: "Browser geolocation is not available. Please enter farm coordinates manually.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsLocatingFarm(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude.toFixed(6);
+        const lng = position.coords.longitude.toFixed(6);
+        const acc = Math.round(position.coords.accuracy);
+        const alt = position.coords.altitude ? `${Math.round(position.coords.altitude)}m elevation` : "Ground Level";
+        setOutgrowerForm(prev => ({
+          ...prev,
+          gpsLatitude: lat,
+          gpsLongitude: lng,
+          gpsElevation: alt,
+          gpsAccuracy: `Live Satellite (±${acc}m accuracy)`
+        }));
+        setIsLocatingFarm(false);
+        toast({
+          title: "📍 Farm GPS Coordinates Captured!",
+          description: `Plot Tagged at ${lat}° N, ${lng}° W (Accuracy: ±${acc}m). Traceability verified for tractor dispatch & off-take.`
+        });
+      },
+      (error) => {
+        setIsLocatingFarm(false);
+        toast({
+          title: "GPS Satellite Fix Failed",
+          description: error.message || "Could not retrieve GPS lock. You can type coordinates manually.",
+          variant: "destructive"
+        });
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
+  };
   const [enrolledReceipt, setEnrolledReceipt] = useState<{ id: string; date: string } | null>(null);
 
   // Revenue & Floor Price Calculator State
@@ -1198,6 +1245,97 @@ export default function FarmHome() {
                                 required
                               />
                             </div>
+                          </div>
+
+                          {/* FARM GPS SATELLITE GEOLOCATION SUB-PANEL */}
+                          <div className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-white/10 space-y-3">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                              <div>
+                                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                  <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                                  Farm Plot GPS Coordinates & Satellite Geofencing
+                                </span>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                  Required for precision tractor dispatch, weighbridge off-take truck routing, and EUDR / MoA traceability.
+                                </p>
+                              </div>
+
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={handleCaptureFarmGPS}
+                                disabled={isLocatingFarm}
+                                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl h-8 shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+                              >
+                                <Crosshair className={`w-3.5 h-3.5 ${isLocatingFarm ? "animate-spin" : ""}`} />
+                                {isLocatingFarm ? "Triangulating GPS..." : "📍 Auto-Detect Live GPS"}
+                              </Button>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                                  Farm Latitude (North) *
+                                </Label>
+                                <div className="relative">
+                                  <Input
+                                    value={outgrowerForm.gpsLatitude}
+                                    onChange={(e) => setOutgrowerForm({ ...outgrowerForm, gpsLatitude: e.target.value })}
+                                    placeholder="8.421940"
+                                    className="rounded-xl text-xs bg-white dark:bg-slate-900 font-mono pl-3"
+                                    required
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                                  Farm Longitude (West) *
+                                </Label>
+                                <div className="relative">
+                                  <Input
+                                    value={outgrowerForm.gpsLongitude}
+                                    onChange={(e) => setOutgrowerForm({ ...outgrowerForm, gpsLongitude: e.target.value })}
+                                    placeholder="-9.747820"
+                                    className="rounded-xl text-xs bg-white dark:bg-slate-900 font-mono pl-3"
+                                    required
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-1">
+                                <Label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
+                                  Satellite Fix & Map Preview
+                                </Label>
+                                <div className="flex items-center gap-2">
+                                  <a
+                                    href={`https://www.google.com/maps?q=${outgrowerForm.gpsLatitude},${outgrowerForm.gpsLongitude}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex-1 h-10 px-3 rounded-xl border border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-colors"
+                                  >
+                                    <span>🛰️ View on Google Satellite</span>
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+
+                            {outgrowerForm.gpsLatitude && outgrowerForm.gpsLongitude && (
+                              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px]">
+                                    ✓ GEO-TAGGED
+                                  </Badge>
+                                  <span className="font-mono">
+                                    Coordinates: <strong>{outgrowerForm.gpsLatitude}° N, {outgrowerForm.gpsLongitude}° W</strong>
+                                  </span>
+                                  <span>&bull; {outgrowerForm.gpsElevation}</span>
+                                </div>
+                                <span className="text-slate-400 font-mono text-[10px]">
+                                  {outgrowerForm.gpsAccuracy}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         </div>
 
