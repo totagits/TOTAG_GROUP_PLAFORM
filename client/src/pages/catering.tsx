@@ -932,7 +932,7 @@ export default function CateringPage() {
                           {[
                             "Jollof Rice with grilled chicken or fish",
                             "Fried Rice with mixed vegetables and protein",
-                            "Cassava Leaf with fufu or rice",
+                            "Cassava Leaf with rice",
                             "Palava Sauce with traditional sides",
                             "Potato Greens with smoked fish",
                             "Grilled Fish/Chicken with mixed vegetables",
