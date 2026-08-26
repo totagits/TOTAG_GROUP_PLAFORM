@@ -3,12 +3,14 @@ import App from "./App";
 import { ErrorBoundary } from "@/components/error-boundary";
 import "./index.css";
 
-// Unregister any legacy service worker to prevent stale browser disk caching
+// Register TOTAG Enterprise PWA Service Worker for Offline Field Capabilities
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (let registration of registrations) {
-      registration.unregister();
-    }
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").then((reg) => {
+      console.log("TOTAG Field PWA Worker active:", reg.scope);
+    }).catch((err) => {
+      console.log("Service Worker registration info:", err);
+    });
   });
 }
 

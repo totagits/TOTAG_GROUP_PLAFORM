@@ -1,0 +1,55 @@
+{
+  "name": "TOTAG Group of Companies - Enterprise Platform",
+  "short_name": "TOTAG Field",
+  "description": "Offline-First Enterprise Operations, Agricultural Outgrower Ledger, Logistics & Field Telemetry Suite",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0f172a",
+  "background_color": "#090d16",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/images/totag-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/totag-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/totag-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "TOTAG FARM Outgrower",
+      "short_name": "Farm",
+      "description": "Farmer Enrollment, Weighbridge & Mechanization",
+      "url": "/farm#/farm",
+      "icons": [{ "src": "/images/totag-logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cargo Handling",
+      "short_name": "Cargo",
+      "description": "Port Container Tracking & Customs Clearance",
+      "url": "/cargo#/cargo",
+      "icons": [{ "src": "/images/totag-logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "HRMIS Suite",
+      "short_name": "HRMIS",
+      "description": "Time Clock Punch & Worker Self-Service",
+      "url": "/saas/dashboard#/saas/dashboard",
+      "icons": [{ "src": "/images/totag-logo.png", "sizes": "192x192" }]
+    }
+  ]
+}

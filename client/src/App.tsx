@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import VoiceChatWidget from "@/components/voice-chat-widget";
+import { PWAInstallBanner } from "@/components/PWAInstallBanner";
 import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 import FarmHome from "@/pages/farm/home";
@@ -265,6 +266,7 @@ function App() {
         <Toaster />
         <Router />
         <VoiceChatWidget />
+        <PWAInstallBanner />
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,5 +1,6 @@
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import { FarmGeospatialSatelliteViewer } from "@/components/farm/FarmGeospatialSatelliteViewer";
+import { saveToOfflineQueue } from "@/lib/offlineSync";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
@@ -1143,11 +1144,15 @@ export default function FarmHome() {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          const isOnline = typeof navigator !== "undefined" ? navigator.onLine : true;
                           const passId = `OUTGROWER-LIB-${Math.floor(10000 + Math.random() * 90000)}`;
+                          saveToOfflineQueue("farmer_enrollment", { ...outgrowerForm, id: passId }, { lat: outgrowerForm.gpsLatitude, lng: outgrowerForm.gpsLongitude });
                           setEnrolledReceipt({ id: passId, date: new Date().toLocaleDateString() });
                           toast({
-                            title: "Outgrower Registration Confirmed",
-                            description: `Cooperative ${outgrowerForm.cooperativeName} assigned ID ${passId}.`
+                            title: isOnline ? "✓ Outgrower Registration Confirmed" : "⚡ Offline Field Record Stamped & Vaulted",
+                            description: isOnline
+                              ? `Cooperative ${outgrowerForm.cooperativeName} assigned ID ${passId}. Coordinates: ${outgrowerForm.gpsLatitude}°, ${outgrowerForm.gpsLongitude}°`
+                              : `Saved locally in phone vault with GPS lock (${outgrowerForm.gpsLatitude}°, ${outgrowerForm.gpsLongitude}°). Will auto-sync to central database upon reconnecting.`,
                           });
                         }}
                         className="space-y-6"
