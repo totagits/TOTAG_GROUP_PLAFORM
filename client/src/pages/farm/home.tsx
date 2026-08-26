@@ -1,4 +1,5 @@
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
+import { FarmGeospatialSatelliteViewer } from "@/components/farm/FarmGeospatialSatelliteViewer";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/header";
@@ -1305,37 +1306,42 @@ export default function FarmHome() {
 
                               <div className="space-y-1">
                                 <Label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                                  Satellite Fix & Map Preview
+                                  Satellite Imagery HUD
                                 </Label>
                                 <div className="flex items-center gap-2">
-                                  <a
-                                    href={`https://www.google.com/maps?q=${outgrowerForm.gpsLatitude},${outgrowerForm.gpsLongitude}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex-1 h-10 px-3 rounded-xl border border-emerald-500/40 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-100 transition-colors"
-                                  >
-                                    <span>🛰️ View on Google Satellite</span>
-                                  </a>
+                                  <div className="flex-1 h-10 px-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 text-xs font-mono font-bold flex items-center justify-between">
+                                    <span className="flex items-center gap-1.5">
+                                      <Satellite className="w-3.5 h-3.5 text-emerald-400" />
+                                      Live HD Sat Active
+                                    </span>
+                                    <Badge className="bg-emerald-500 text-white text-[9px] px-1.5 py-0">
+                                      0.3m Sentinel
+                                    </Badge>
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
-                            {outgrowerForm.gpsLatitude && outgrowerForm.gpsLongitude && (
-                              <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-                                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-                                  <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-[10px]">
-                                    ✓ GEO-TAGGED
-                                  </Badge>
-                                  <span className="font-mono">
-                                    Coordinates: <strong>{outgrowerForm.gpsLatitude}° N, {outgrowerForm.gpsLongitude}° W</strong>
-                                  </span>
-                                  <span>&bull; {outgrowerForm.gpsElevation}</span>
-                                </div>
-                                <span className="text-slate-400 font-mono text-[10px]">
-                                  {outgrowerForm.gpsAccuracy}
-                                </span>
-                              </div>
-                            )}
+                            {/* EMBEDDED HIGH-RES SATELLITE RADAR & GEOFENCE VIEWER */}
+                            <div className="mt-4">
+                              <FarmGeospatialSatelliteViewer
+                                latitude={outgrowerForm.gpsLatitude}
+                                longitude={outgrowerForm.gpsLongitude}
+                                farmSizeAcres={outgrowerForm.farmSizeAcres}
+                                cropType={outgrowerForm.cropType}
+                                cooperativeName={outgrowerForm.cooperativeName}
+                                county={outgrowerForm.county}
+                                onCoordinatesChange={(lat, lng, elevation) => {
+                                  setOutgrowerForm(prev => ({
+                                    ...prev,
+                                    gpsLatitude: lat,
+                                    gpsLongitude: lng,
+                                    gpsElevation: elevation || prev.gpsElevation,
+                                    gpsAccuracy: "Interactive Satellite Dragged (Sub-Meter)"
+                                  }));
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
 
