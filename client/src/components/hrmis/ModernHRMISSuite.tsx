@@ -1512,6 +1512,109 @@ export function ModernHRMISSuite() {
               </div>
             </div>
 
+            {/* ========================================================================= */}
+            {/* TOTAG SCOPE OF WORK (SOW) COMMAND & CONTROL CONSOLE (4 CONTRACT PILLARS) */}
+            {/* ========================================================================= */}
+            <div className="p-5 rounded-3xl bg-slate-900 border border-teal-500/30 space-y-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
+                <div>
+                  <h4 className="text-sm font-black text-white flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-teal-400" />
+                    TOTAG SERVICE PROVIDER SCOPE OF WORK (SOW) MANAGEMENT CONSOLE
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Execution matrix under the supervision of Campaign Management Team (CMT) & County Health Teams (CHTs)
+                  </p>
+                </div>
+                <Badge className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-[10px] font-mono">
+                  All 4 SOW Pillars Active
+                </Badge>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                
+                {/* Pillar 1: Logistics & 3PL Receiving */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-blue-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-blue-500/20 text-blue-300 border-0 text-[10px] font-bold">
+                      1. Logistics & 3PL
+                    </Badge>
+                    <CheckCircle className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <h5 className="font-bold text-white text-xs">Logistics & Insurance Bond</h5>
+                  <ul className="text-[11px] text-slate-400 space-y-1">
+                    <li>&bull; BYOD Consent & digital app deployed</li>
+                    <li>&bull; 3PL delivery waybill verification at PPS/DPs</li>
+                    <li>&bull; <strong>All-Risk Insurance Bond</strong> active on 84.9k nets</li>
+                    <li>&bull; Weekly CMT inventory reconciliation</li>
+                  </ul>
+                  <div className="pt-1 font-mono text-[10px] text-blue-400 font-bold">
+                    ✓ Status: 100% Waybills Logged
+                  </div>
+                </div>
+
+                {/* Pillar 2: Distribution Requirements */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] font-bold">
+                      2. Distribution
+                    </Badge>
+                    <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <h5 className="font-bold text-white text-xs">HHR & ITN Issuance</h5>
+                  <ul className="text-[11px] text-slate-400 space-y-1">
+                    <li>&bull; Urban door-to-door (Montserrado/Margibi)</li>
+                    <li>&bull; Rural 2-phase: HHR + 91 Fixed/Mobile DPs</li>
+                    <li>&bull; <strong>Token-card verification</strong> before issue</li>
+                    <li>&bull; Mandatory barcode scan & SBC sensitization</li>
+                  </ul>
+                  <div className="pt-1 font-mono text-[10px] text-emerald-400 font-bold">
+                    ✓ Status: 38,291 Target Ready
+                  </div>
+                </div>
+
+                {/* Pillar 3: Waste Management (49-in-1) */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-purple-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-purple-500/20 text-purple-300 border-0 text-[10px] font-bold">
+                      3. Waste Reverse
+                    </Badge>
+                    <CheckCircle className="w-4 h-4 text-purple-400" />
+                  </div>
+                  <h5 className="font-bold text-white text-xs">49-in-1 Bale Reverse Logistics</h5>
+                  <ul className="text-[11px] text-slate-400 space-y-1">
+                    <li>&bull; 100% empty bag & strap retrieval</li>
+                    <li>&bull; <strong>49 bags packed into 1 outer bag</strong></li>
+                    <li>&bull; Bundled straps with numbered tallies</li>
+                    <li>&bull; Dedicated Waste Stock Cards for 3PL</li>
+                  </ul>
+                  <div className="pt-1 font-mono text-[10px] text-purple-400 font-bold">
+                    ✓ Status: 1,734 Bales Tracked
+                  </div>
+                </div>
+
+                {/* Pillar 4: Admin & Governance */}
+                <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Badge className="bg-amber-500/20 text-amber-300 border-0 text-[10px] font-bold">
+                      4. Administration
+                    </Badge>
+                    <CheckCircle className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <h5 className="font-bold text-white text-xs">Global Fund & CHT Oversight</h5>
+                  <ul className="text-[11px] text-slate-400 space-y-1">
+                    <li>&bull; Global Fund financial procedure compliance</li>
+                    <li>&bull; Local recruitment of 202 field personnel</li>
+                    <li>&bull; Daily escalation to CMT/CHTs & MOH</li>
+                    <li>&bull; Decent Work Act & PSEA safeguarding</li>
+                  </ul>
+                  <div className="pt-1 font-mono text-[10px] text-amber-400 font-bold">
+                    ✓ Status: 100% Compliant
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* SECTION: 4 INTERACTIVE CAMPAIGN ACTION BUTTONS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Action 1: Recruit Worker */}
@@ -2068,17 +2171,17 @@ export function ModernHRMISSuite() {
       </Dialog>
 
       {/* ========================================================================= */}
-      {/* CRS MODAL 2: LEGAL PHONE CUSTODY & $129.00 LIABILITY DEDUCTION CONTRACT */}
+      {/* CRS MODAL 2: MASTER LEGAL CAMPAIGN CONTRACT (ITN INSURANCE BOND, $129 DEVICE & WASTE REVERSE) */}
       {/* ========================================================================= */}
       <Dialog open={showCrsPhoneContractModal} onOpenChange={setShowCrsPhoneContractModal}>
-        <DialogContent className="max-w-xl rounded-3xl bg-slate-950 text-white border border-amber-500/40 p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl rounded-3xl bg-slate-950 text-white border border-amber-500/50 p-6 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-black text-white flex items-center gap-2">
               <FileSignature className="w-5 h-5 text-amber-400" />
-              CRS Smartphone Custody & $129.00 Liability Agreement
+              CRS & TOTAG Master Legal Temporary Employment & Asset Liability Contract
             </DialogTitle>
             <DialogDescription className="text-xs text-slate-400">
-              Legally binding device custody contract mandated by Catholic Relief Services (CRS) and TOTAG GROUP.
+              Mandatory tripartite binding agreement covering ITN Net Insurance Bonds, $129 Smartphone Custody, and 49-in-1 Waste Reverse Logistics.
             </DialogDescription>
           </DialogHeader>
 
@@ -2086,32 +2189,58 @@ export function ModernHRMISSuite() {
             <form onSubmit={handleSignPhoneContract} className="space-y-4 text-xs py-2">
               
               {/* LEGAL CONTRACT TERMS BOX */}
-              <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-2.5 text-slate-300 leading-relaxed font-sans">
+              <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-3 text-slate-300 leading-relaxed font-sans max-h-72 overflow-y-auto">
                 <div className="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5 border-b border-white/10 pb-2">
                   <ShieldAlert className="w-4 h-4 text-amber-400" />
-                  Mandatory Asset Custody & Financial Liability Clause
+                  Legal Liability, Asset Custody & Insurance Bond Clauses
                 </div>
-                <p>
-                  <strong>1. Custody of Assigned Campaign Equipment:</strong> The undersigned temporary worker (<strong>{selectedCrsWorker.fullName}</strong>, National ID: <strong>{selectedCrsWorker.nationalId}</strong>) hereby acknowledges receipt and operational custody of one (1) Android campaign smartphone (IMEI: <span className="font-mono text-amber-300">{phoneContractSignature.phoneImei || selectedCrsWorker.byodPhoneImei}</span>) for the duration of the CRS Mass LLIN Campaign (Nov/Dec 2026).
-                </p>
-                <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-200 text-[11px] space-y-1">
-                  <strong>2. $129.00 USD Replacement Penalty & Payroll Withholding:</strong>
+
+                <div className="space-y-1">
+                  <strong className="text-white text-xs">CLAUSE 1: Scope of Employment & Daily Quotas</strong>
                   <p>
-                    In strict accordance with the CRS Global Fund Master Service Agreement, TOTAG is financially penalised <strong>$129.00 USD</strong> for any device lost, stolen, water-damaged, broken, or unreturned.
+                    The Worker (<strong>{selectedCrsWorker.fullName}</strong>, National ID: <strong>{selectedCrsWorker.nationalId}</strong>) is employed on a temporary campaign contract ({selectedCrsWorker.contractWindowDays} days) assigned to {selectedCrsWorker.district} ({selectedCrsWorker.healthFacilityCatchment}). The Worker agrees to maintain the mandatory daily productivity of 25 Households/day (HHR) or 50 ITNs/day (Distribution).
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-[11px] space-y-1.5">
+                  <strong className="text-amber-300 text-xs">CLAUSE 2: ITN Net Custody, All-Risk Insurance & Loss Indemnity</strong>
+                  <p>
+                    TOTAG GROUP is contractually bound to provide an All-Risk Insurance Bond for every Long-Lasting Insecticidal Net (ITN) received from 3PL preposition sites (PPS) and distribution points (DPs).
+                  </p>
+                  <p className="font-semibold text-white">
+                    The Worker assumes full personal and financial liability for all ITN bales and individual nets under their custody. In the event of unauthorized diversion, theft, unaccounted loss, damaged packaging, or issuance without token-card validation, the Worker explicitly authorizes TOTAG GROUP to deduct the full replacement cost of each net directly from their Mobile Money stipend and initiate legal recovery under the Decent Work Act and Liberian Penal Code.
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-200 text-[11px] space-y-1.5">
+                  <strong className="text-rose-300 text-xs">CLAUSE 3: $129.00 USD Smartphone Loss/Damage Withholding Penalty</strong>
+                  <p>
+                    The Worker acknowledges physical receipt and custody of one (1) Android campaign smartphone (IMEI: <span className="font-mono text-amber-300 font-bold">{phoneContractSignature.phoneImei || selectedCrsWorker.byodPhoneImei}</span>). Under the CRS Global Fund Agreement, TOTAG is penalized <strong>$129.00 USD</strong> for any unreturned, lost, stolen, or damaged device.
                   </p>
                   <p className="font-bold text-amber-300">
-                    By signing below, the worker explicitly and irrevocably authorizes TOTAG GROUP to withhold their final campaign compensation and deduct $129.00 USD directly from their Mobile Money stipend if the phone and accessories are not returned in clean working condition by December 18, 2026.
+                    The Worker explicitly and irrevocably authorizes TOTAG to withhold 100% of their final campaign pay tranche and deduct $129.00 USD if the device and original accessories are not returned in certified working condition on or before December 18, 2026.
                   </p>
                 </div>
-                <p>
-                  <strong>3. Data Security & Anti-Fraud:</strong> The worker agrees not to share device PINs, take unauthorized screenshots of beneficiary data, or use the device for non-campaign purposes.
-                </p>
+
+                <div className="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 text-purple-200 text-[11px] space-y-1.5">
+                  <strong className="text-purple-300 text-xs">CLAUSE 4: Waste Management & 49-in-1 Bale Reverse Logistics</strong>
+                  <p>
+                    The Worker is legally required to collect 100% of empty ITN bale bags and packaging straps. The Worker must bundle exactly <strong>49 empty bale bags inside 1 outer sealed bag (50 total)</strong> and return tied strap bundles to PPS/DPs with signed Waste Stock Cards. Failure to account for empty bags will result in waste-clearance withholdings.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <strong className="text-white text-xs">CLAUSE 5: Safeguarding, PSEA & Anti-Fraud Compliance</strong>
+                  <p>
+                    Zero tolerance for Protection from Sexual Exploitation & Abuse (PSEA), extortion of beneficiaries, or falsified household GPS logs. Immediate termination and reporting to CMT/CHTs upon infraction.
+                  </p>
+                </div>
               </div>
 
               {/* IMEI & SIGNATURE CONFIRMATION */}
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <Label className="text-slate-300 font-bold">Confirmed Device IMEI Number:</Label>
+                  <Label className="text-slate-300 font-bold">Confirmed Campaign Smartphone IMEI Number:</Label>
                   <Input
                     required
                     value={phoneContractSignature.phoneImei}
@@ -2124,33 +2253,59 @@ export function ModernHRMISSuite() {
                   <Label className="text-slate-300 font-bold">Worker Digital Signature (Type Full Legal Name):</Label>
                   <Input
                     required
-                    placeholder="Type legal name to e-sign..."
+                    placeholder="Type legal name to e-sign and execute contract..."
                     value={phoneContractSignature.signatureName}
                     onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, signatureName: e.target.value })}
                     className="bg-slate-900 border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl"
                   />
                 </div>
 
-                <div className="flex items-center space-x-2 pt-1">
-                  <input
-                    type="checkbox"
-                    id="deductAgree"
-                    checked={phoneContractSignature.agreedTo129Deduction}
-                    onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, agreedTo129Deduction: e.target.checked })}
-                    className="w-4 h-4 rounded border-amber-500"
-                  />
-                  <Label htmlFor="deductAgree" className="text-[11px] text-slate-300 font-medium cursor-pointer">
-                    I accept full legal responsibility and agree to the <strong>$129.00 USD</strong> salary deduction clause upon non-return.
-                  </Label>
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      id="netBondAgree"
+                      defaultChecked={true}
+                      className="w-4 h-4 rounded border-amber-500 mt-0.5"
+                    />
+                    <Label htmlFor="netBondAgree" className="text-[11px] text-slate-300 font-medium cursor-pointer">
+                      I accept legal custody of assigned ITN nets and agree to financial liability for lost/diverted nets under TOTAG's Insurance Bond.
+                    </Label>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      id="deductAgree"
+                      checked={phoneContractSignature.agreedTo129Deduction}
+                      onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, agreedTo129Deduction: e.target.checked })}
+                      className="w-4 h-4 rounded border-rose-500 mt-0.5"
+                    />
+                    <Label htmlFor="deductAgree" className="text-[11px] text-slate-300 font-medium cursor-pointer">
+                      I agree to the mandatory <strong>$129.00 USD</strong> salary deduction clause for lost, broken, or unreturned smartphone devices.
+                    </Label>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <input
+                      type="checkbox"
+                      id="wasteAgree"
+                      defaultChecked={true}
+                      className="w-4 h-4 rounded border-purple-500 mt-0.5"
+                    />
+                    <Label htmlFor="wasteAgree" className="text-[11px] text-slate-300 font-medium cursor-pointer">
+                      I agree to collect all waste and return <strong>49 empty bale bags inside 1 outer sealed bag</strong> with tied straps to the PPS/DP.
+                    </Label>
+                  </div>
                 </div>
               </div>
 
               <Button
                 type="submit"
                 disabled={!phoneContractSignature.agreedTo129Deduction || !phoneContractSignature.signatureName}
-                className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xs h-10 rounded-xl shadow-lg mt-2"
+                className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xs h-11 rounded-xl shadow-lg mt-2"
               >
-                Legally Sign & Seal Phone Custody Agreement ➔
+                Legally Sign & Execute Tripartite Campaign Contract ➔
               </Button>
             </form>
           )}
