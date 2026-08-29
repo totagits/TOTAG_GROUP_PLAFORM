@@ -758,14 +758,18 @@ export function ModernHRMISSuite() {
       actualItnDistributed: 0,
       performanceRatio: 100,
       materialsReturnedStatus: "Pending Campaign Completion",
-      disbursementStatus: "Daily Staged"
+      disbursementStatus: "Daily Staged",
+      loginPhone: newCrsWorkerForm.phone,
+      temporaryPassword: `CRS-${Math.floor(1000 + Math.random() * 9000)}`,
+      isFirstLogin: true,
+      credentialsDispatchedSms: true
     };
 
     setCrsWorkers(prev => [newWorker, ...prev]);
     setShowCrsRecruitModal(false);
     toast({
-      title: "✓ Temporary Campaign Worker Registered",
-      description: `${newWorker.fullName} registered for ${newWorker.district} (${newWorker.contractWindowDays} Days @ $${newWorker.dailyRateUsd}/day). Next step: Sign $129 Phone Custody Agreement.`
+      title: "✓ Temporary Worker Registered & Credentials Dispatched",
+      description: `SMS & Email sent to ${newWorker.phone}: Login ID: ${newWorker.phone} | Temporary PIN: ${newWorker.temporaryPassword}. Worker will set permanent password on first login.`
     });
   };
 

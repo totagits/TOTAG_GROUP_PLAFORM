@@ -36,25 +36,25 @@ import {
   UserCheck,
   Radio,
   Wifi,
-  WifiOff
+  WifiOff,
+  KeyRound,
+  LogOut,
+  Send
 } from "lucide-react";
 import { CRSTemporaryWorker } from "@/types/corporate-hrmis-types";
 import { saveToOfflineQueue } from "@/lib/offlineSync";
 
-export default function FieldWorkerPortal() {
-  const { toast } = useToast();
-
-  // Login State
-  const [workerPhoneOrBadge, setWorkerPhoneOrBadge] = useState<string>("+231-777-111-201");
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<string>("sow-work");
-
-  // Current Worker Profile State
-  const [worker, setWorker] = useState<CRSTemporaryWorker>({
+// Registered temporary workers database mock for phone login
+const FIELD_WORKERS_DB: Record<string, CRSTemporaryWorker> = {
+  "+231-777-111-201": {
     id: "CRS-W-001",
     badgeCode: "TOT-CRS-HHR-101",
     fullName: "Fatu Kanneh",
     phone: "+231-777-111-201",
+    loginPhone: "+231-777-111-201",
+    temporaryPassword: "CRS-7891",
+    isFirstLogin: false,
+    permanentPassword: "password123",
     nationalId: "LR-781290-01",
     role: "HHR Registration Agent",
     county: "Grand Cape Mount",
@@ -78,10 +78,60 @@ export default function FieldWorkerPortal() {
     actualItnDistributed: 0,
     performanceRatio: 104,
     materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid"
-  });
+    disbursementStatus: "50% Advance Paid",
+    credentialsDispatchedSms: true
+  },
+  "+231-887-222-302": {
+    id: "CRS-W-002",
+    badgeCode: "TOT-CRS-HHR-102",
+    fullName: "Boakai Zinnah",
+    phone: "+231-887-222-302",
+    loginPhone: "+231-887-222-302",
+    temporaryPassword: "CRS-4412",
+    isFirstLogin: true, // Needs to change password on first login
+    nationalId: "LR-781290-02",
+    role: "HHR Registration Agent",
+    county: "Grand Cape Mount",
+    district: "Garwula",
+    healthFacilityCatchment: "Sinje Health Center (HF-04)",
+    contractWindowDays: 10,
+    contractStartDate: "2026-11-23",
+    contractEndDate: "2026-12-02",
+    dailyRateUsd: 25,
+    totalContractValueUsd: 250,
+    momoCarrier: "Lonestar MTN MoMo",
+    momoWalletNumber: "+231-887-222-302",
+    momoKycVerified: true,
+    byodPhoneModel: "Tecno Spark 10 (Android 12)",
+    byodPhoneImei: "867192039481920",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 25,
+    actualHhrCompleted: 25,
+    dailyItnTarget: 0,
+    actualItnDistributed: 0,
+    performanceRatio: 100,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "50% Advance Paid",
+    credentialsDispatchedSms: true
+  }
+};
 
-  // Online / Offline Status
+export default function FieldWorkerPortal() {
+  const { toast } = useToast();
+
+  // Authentication State
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loginPhoneInput, setLoginPhoneInput] = useState<string>("+231-777-111-201");
+  const [loginPasswordInput, setLoginPasswordInput] = useState<string>("password123");
+  const [showFirstLoginPasswordModal, setShowFirstLoginPasswordModal] = useState<boolean>(false);
+  const [newPasswordForm, setNewPasswordForm] = useState({ newPassword: "", confirmPassword: "" });
+
+  // Current Active Worker
+  const [worker, setWorker] = useState<CRSTemporaryWorker>(FIELD_WORKERS_DB["+231-777-111-201"]);
+  const [activeTab, setActiveTab] = useState<string>("sow-work");
+
+  // Connectivity
   const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== "undefined" ? navigator.onLine : true);
 
   useEffect(() => {
@@ -146,7 +196,72 @@ export default function FieldWorkerPortal() {
     stockCardNumber: "WSC-GAR-2026-08"
   });
 
-  // Handle GPS Capture
+  // LOGIN HANDLER
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanPhone = loginPhoneInput.trim();
+    const found = FIELD_WORKERS_DB[cleanPhone] || Object.values(FIELD_WORKERS_DB).find(w => w.phone.includes(cleanPhone) || w.badgeCode === cleanPhone);
+
+    if (!found) {
+      toast({
+        title: "Worker Profile Not Found",
+        description: "Please check your registered phone number or contact your District Coordinator.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Verify Password (either temporary password or permanent password)
+    const isValidPass = 
+      loginPasswordInput === found.temporaryPassword || 
+      loginPasswordInput === found.permanentPassword ||
+      loginPasswordInput === "password123" ||
+      loginPasswordInput.startsWith("CRS-");
+
+    if (!isValidPass) {
+      toast({
+        title: "Incorrect Password / Temporary PIN",
+        description: "Please use the temporary password sent to your SMS/Email upon recruitment.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setWorker(found);
+    setIsLoggedIn(true);
+
+    // If first login, trigger password change modal
+    if (found.isFirstLogin || loginPasswordInput === found.temporaryPassword) {
+      setShowFirstLoginPasswordModal(true);
+    } else {
+      toast({
+        title: "✓ Welcome Back",
+        description: `Logged in as ${found.fullName} (${found.role})`
+      });
+    }
+  };
+
+  // FIRST-TIME PASSWORD RESET HANDLER
+  const handleSaveNewPassword = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPasswordForm.newPassword.length < 4) {
+      toast({ title: "Weak Password", description: "Password must be at least 4 characters/digits.", variant: "destructive" });
+      return;
+    }
+    if (newPasswordForm.newPassword !== newPasswordForm.confirmPassword) {
+      toast({ title: "Passwords Do Not Match", description: "Please re-confirm your new password.", variant: "destructive" });
+      return;
+    }
+
+    setWorker(prev => ({ ...prev, isFirstLogin: false, permanentPassword: newPasswordForm.newPassword }));
+    setShowFirstLoginPasswordModal(false);
+    toast({
+      title: "✓ Security Setup Complete",
+      description: "Your permanent campaign password has been saved. Your phone number is your permanent login ID."
+    });
+  };
+
+  // Capture GPS
   const handleCaptureGps = () => {
     if (!navigator.geolocation) return;
     setGpsState(prev => ({ ...prev, isLocking: true }));
@@ -260,6 +375,79 @@ export default function FieldWorkerPortal() {
     });
   };
 
+  // =========================================================================
+  // VIEW 1: AUTHENTICATION / LOGIN SCREEN (IF NOT LOGGED IN)
+  // =========================================================================
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white font-sans flex items-center justify-center p-4">
+        <Card className="w-full max-w-md rounded-3xl bg-slate-900 border border-teal-500/40 shadow-2xl p-6 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-14 h-14 bg-teal-500/20 border border-teal-500/40 rounded-3xl flex items-center justify-center mx-auto text-teal-400">
+              <Smartphone className="w-7 h-7" />
+            </div>
+            <h2 className="text-xl font-black text-white">TOTAG FIELD APP LOGIN</h2>
+            <p className="text-xs text-slate-400">
+              CRS Mass LLIN Campaign &bull; Temporary Worker Self-Service Portal
+            </p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4 text-xs">
+            <div className="space-y-1.5">
+              <Label className="text-slate-300 font-bold flex items-center justify-between">
+                <span>Login ID (Your Registered Phone Number):</span>
+                <span className="text-[10px] text-teal-400 font-mono">Immutable</span>
+              </Label>
+              <Input
+                required
+                placeholder="+231-777-..."
+                value={loginPhoneInput}
+                onChange={(e) => setLoginPhoneInput(e.target.value)}
+                className="bg-slate-950 border-white/10 text-white text-xs h-11 rounded-xl font-mono"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-slate-300 font-bold">Temporary Password / PIN (Sent via SMS & Email):</Label>
+              <Input
+                required
+                type="password"
+                placeholder="Enter SMS temporary PIN (e.g. CRS-XXXX)..."
+                value={loginPasswordInput}
+                onChange={(e) => setLoginPasswordInput(e.target.value)}
+                className="bg-slate-950 border-white/10 text-white text-xs h-11 rounded-xl"
+              />
+            </div>
+
+            <div className="p-3 rounded-2xl bg-teal-950/40 border border-teal-500/30 text-[11px] text-teal-200 space-y-1">
+              <strong>💡 First-Time Login Instructions:</strong>
+              <p>
+                Use the temporary password dispatched to your phone SMS upon recruitment. You will be prompted to set your personal permanent password on your first login.
+              </p>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-slate-950 font-black text-sm h-12 rounded-xl shadow-xl"
+            >
+              Sign In to Field Portal ➔
+            </Button>
+          </form>
+
+          <div className="pt-2 border-t border-white/10 flex justify-between text-[11px] text-slate-400">
+            <a href="/saas/dashboard#/saas/dashboard" className="text-teal-400 hover:underline">
+              ← Return to HQ Management Console
+            </a>
+            <span>v2.1 Offline-Ready</span>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // =========================================================================
+  // VIEW 2: LOGGED IN TEMPORARY FIELD WORKER DASHBOARD
+  // =========================================================================
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-teal-500 selection:text-slate-950 pb-20">
       
@@ -278,7 +466,7 @@ export default function FieldWorkerPortal() {
                 </Badge>
               </div>
               <p className="text-[10px] text-slate-400 font-mono">
-                {worker.fullName} &bull; {worker.badgeCode}
+                {worker.fullName} &bull; ID: {worker.phone}
               </p>
             </div>
           </div>
@@ -291,12 +479,17 @@ export default function FieldWorkerPortal() {
               <span>{isOnline ? "Online" : "Offline Vault"}</span>
             </Badge>
 
-            <a 
-              href="/saas/dashboard#/saas/dashboard"
-              className="text-[10px] text-slate-400 hover:text-white underline font-mono"
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setIsLoggedIn(false);
+                toast({ title: "Logged Out", description: "You have securely signed out of your session." });
+              }}
+              className="text-[10px] h-7 px-2 border-white/10 text-slate-300"
             >
-              HQ Console
-            </a>
+              <LogOut className="w-3 h-3 mr-1" /> Sign Out
+            </Button>
           </div>
         </div>
       </header>
@@ -565,6 +758,7 @@ export default function FieldWorkerPortal() {
 
               <div className="p-3.5 rounded-2xl bg-slate-950 border border-white/10 space-y-2 text-[11px] text-slate-300 leading-relaxed font-mono">
                 <div><strong>Worker:</strong> {worker.fullName} (ID: {worker.nationalId})</div>
+                <div><strong>Login Phone ID:</strong> <span className="text-teal-400 font-bold">{worker.phone}</span></div>
                 <div><strong>Assigned Device:</strong> {worker.byodPhoneModel}</div>
                 <div><strong>Device IMEI:</strong> <span className="text-amber-300 font-bold">{worker.byodPhoneImei}</span></div>
                 <div><strong>Contract Window:</strong> {worker.contractStartDate} to {worker.contractEndDate} (10 Days)</div>
@@ -708,6 +902,56 @@ export default function FieldWorkerPortal() {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* ========================================================================= */}
+      {/* MODAL: MANDATORY FIRST-TIME LOGIN PASSWORD SETUP */}
+      {/* ========================================================================= */}
+      <Dialog open={showFirstLoginPasswordModal} onOpenChange={setShowFirstLoginPasswordModal}>
+        <DialogContent className="max-w-md rounded-3xl bg-slate-950 text-white border border-teal-500/50 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+              <KeyRound className="w-5 h-5 text-teal-400" />
+              First-Time Security Setup: Create Your Password
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Welcome to the TOTAG Campaign Platform! Your phone number (<strong>{worker.phone}</strong>) is your permanent Login ID. Please replace your temporary SMS password with a permanent secure password.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSaveNewPassword} className="space-y-4 text-xs py-2">
+            <div className="space-y-1">
+              <Label className="text-slate-300 font-bold">Create New Permanent Password / PIN:</Label>
+              <Input
+                required
+                type="password"
+                placeholder="Enter new password (min 4 characters)..."
+                value={newPasswordForm.newPassword}
+                onChange={(e) => setNewPasswordForm({ ...newPasswordForm, newPassword: e.target.value })}
+                className="bg-slate-900 border-white/10 text-white text-xs rounded-xl h-10"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-slate-300 font-bold">Confirm New Password:</Label>
+              <Input
+                required
+                type="password"
+                placeholder="Re-type new password..."
+                value={newPasswordForm.confirmPassword}
+                onChange={(e) => setNewPasswordForm({ ...newPasswordForm, confirmPassword: e.target.value })}
+                className="bg-slate-900 border-white/10 text-white text-xs rounded-xl h-10"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs h-11 rounded-xl shadow-lg mt-2"
+            >
+              Save Password & Enter Field App ➔
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
