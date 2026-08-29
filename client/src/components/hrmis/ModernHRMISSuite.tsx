@@ -110,6 +110,190 @@ export interface CorporateEmployeeRecord {
   lastMobilePayoutTx?: string;
 }
 
+
+const SEED_CRS_CAMPAIGN_WORKERS: CRSTemporaryWorker[] = [
+  {
+    id: "CRS-W-001",
+    badgeCode: "TOT-CRS-HHR-101",
+    fullName: "Fatu Kanneh",
+    phone: "+231-777-111-201",
+    nationalId: "LR-781290-01",
+    role: "HHR Registration Agent",
+    county: "Grand Cape Mount",
+    district: "Garwula",
+    healthFacilityCatchment: "Sinje Health Center (HF-04)",
+    contractWindowDays: 10,
+    contractStartDate: "2026-11-23",
+    contractEndDate: "2026-12-02",
+    dailyRateUsd: 25,
+    totalContractValueUsd: 250,
+    momoCarrier: "Orange Money",
+    momoWalletNumber: "+231-777-111-201",
+    momoKycVerified: true,
+    byodPhoneModel: "Samsung Galaxy A14 (Android 13)",
+    byodPhoneImei: "358912093849102",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 25,
+    actualHhrCompleted: 26,
+    dailyItnTarget: 0,
+    actualItnDistributed: 0,
+    performanceRatio: 104,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "50% Advance Paid"
+  },
+  {
+    id: "CRS-W-002",
+    badgeCode: "TOT-CRS-HHR-102",
+    fullName: "Boakai Zinnah",
+    phone: "+231-887-222-302",
+    nationalId: "LR-781290-02",
+    role: "HHR Registration Agent",
+    county: "Grand Cape Mount",
+    district: "Garwula",
+    healthFacilityCatchment: "Sinje Health Center (HF-04)",
+    contractWindowDays: 10,
+    contractStartDate: "2026-11-23",
+    contractEndDate: "2026-12-02",
+    dailyRateUsd: 25,
+    totalContractValueUsd: 250,
+    momoCarrier: "Lonestar MTN MoMo",
+    momoWalletNumber: "+231-887-222-302",
+    momoKycVerified: true,
+    byodPhoneModel: "Tecno Spark 10 (Android 12)",
+    byodPhoneImei: "867192039481920",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 25,
+    actualHhrCompleted: 25,
+    dailyItnTarget: 0,
+    actualItnDistributed: 0,
+    performanceRatio: 100,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "50% Advance Paid"
+  },
+  {
+    id: "CRS-W-003",
+    badgeCode: "TOT-CRS-SUP-001",
+    fullName: "Varney Kromah",
+    phone: "+231-777-333-403",
+    nationalId: "LR-661294-88",
+    role: "Field Supervisor",
+    county: "Grand Cape Mount",
+    district: "Garwula",
+    healthFacilityCatchment: "Garwula District Hub (5 Teams)",
+    contractWindowDays: 12,
+    contractStartDate: "2026-11-22",
+    contractEndDate: "2026-12-03",
+    dailyRateUsd: 40,
+    totalContractValueUsd: 480,
+    momoCarrier: "Orange Money",
+    momoWalletNumber: "+231-777-333-403",
+    momoKycVerified: true,
+    byodPhoneModel: "Infinix Hot 30 (Android 13)",
+    byodPhoneImei: "359012948571029",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 125,
+    actualHhrCompleted: 130,
+    dailyItnTarget: 0,
+    actualItnDistributed: 0,
+    performanceRatio: 104,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "50% Advance Paid"
+  },
+  {
+    id: "CRS-W-004",
+    badgeCode: "TOT-CRS-DP-201",
+    fullName: "Miatta Fahnbulleh",
+    phone: "+231-887-444-504",
+    nationalId: "LR-551029-77",
+    role: "ITN Distribution Lead",
+    county: "Grand Cape Mount",
+    district: "Tewor",
+    healthFacilityCatchment: "Robertsport Fixed DP (DP-01)",
+    contractWindowDays: 10,
+    contractStartDate: "2026-12-07",
+    contractEndDate: "2026-12-16",
+    dailyRateUsd: 30,
+    totalContractValueUsd: 300,
+    momoCarrier: "Lonestar MTN MoMo",
+    momoWalletNumber: "+231-887-444-504",
+    momoKycVerified: true,
+    byodPhoneModel: "Samsung Galaxy A05 (Android 13)",
+    byodPhoneImei: "869102938471920",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 0,
+    actualHhrCompleted: 0,
+    dailyItnTarget: 50,
+    actualItnDistributed: 52,
+    performanceRatio: 104,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "Daily Staged"
+  },
+  {
+    id: "CRS-W-005",
+    badgeCode: "TOT-CRS-DC-001",
+    fullName: "Gbessay Freeman",
+    phone: "+231-777-555-605",
+    nationalId: "LR-441029-66",
+    role: "District Coordinator",
+    county: "Grand Cape Mount",
+    district: "Porkpah",
+    healthFacilityCatchment: "Porkpah District Command Cell",
+    contractWindowDays: 14,
+    contractStartDate: "2026-11-20",
+    contractEndDate: "2026-12-18",
+    dailyRateUsd: 55,
+    totalContractValueUsd: 770,
+    momoCarrier: "Orange Money",
+    momoWalletNumber: "+231-777-555-605",
+    momoKycVerified: true,
+    byodPhoneModel: "Redmi Note 12 (Android 13)",
+    byodPhoneImei: "861920394857102",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 275,
+    actualHhrCompleted: 280,
+    dailyItnTarget: 600,
+    actualItnDistributed: 610,
+    performanceRatio: 102,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "50% Advance Paid"
+  },
+  {
+    id: "CRS-W-006",
+    badgeCode: "TOT-CRS-LOG-001",
+    fullName: "Sekou Kamara",
+    phone: "+231-887-666-706",
+    nationalId: "LR-331029-55",
+    role: "Logistics & Site-Readiness",
+    county: "Grand Cape Mount",
+    district: "Gola Konneh",
+    healthFacilityCatchment: "Lofa Bridge Preposition Site (PPS-02)",
+    contractWindowDays: 14,
+    contractStartDate: "2026-11-20",
+    contractEndDate: "2026-12-18",
+    dailyRateUsd: 35,
+    totalContractValueUsd: 490,
+    momoCarrier: "Lonestar MTN MoMo",
+    momoWalletNumber: "+231-887-666-706",
+    momoKycVerified: true,
+    byodPhoneModel: "Infinix Smart 7 (Android 12)",
+    byodPhoneImei: "351029384756192",
+    byodConsentSigned: true,
+    pseaCodeOfConductSigned: true,
+    dailyHhrTarget: 0,
+    actualHhrCompleted: 0,
+    dailyItnTarget: 200,
+    actualItnDistributed: 200,
+    performanceRatio: 100,
+    materialsReturnedStatus: "Pending Campaign Completion",
+    disbursementStatus: "Daily Staged"
+  }
+];
+
 const SEED_CORPORATE_EMPLOYEES: CorporateEmployeeRecord[] = [
   {
     id: "EMP-001",
@@ -770,9 +954,9 @@ export function ModernHRMISSuite() {
               <Key className="w-3.5 h-3.5 mr-1.5 text-indigo-500" />
               5. Corporate Delegations
             </TabsTrigger>
-            <TabsTrigger value="crs-tenant" className="rounded-xl text-xs font-bold py-2.5">
-              <Briefcase className="w-3.5 h-3.5 mr-1.5 text-teal-500" />
-              6. CRS Tenant Portal
+            <TabsTrigger value="crs-campaign" className="rounded-xl text-xs font-black py-2.5 text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/20">
+              <Briefcase className="w-3.5 h-3.5 mr-1.5 text-teal-500 animate-pulse" />
+              6. CRS Campaign (10-14D Temporary Staff)
             </TabsTrigger>
           </TabsList>
         </div>
@@ -1119,43 +1303,200 @@ export function ModernHRMISSuite() {
         </TabsContent>
 
         {/* ========================================================================= */}
-        {/* TAB 6: CRS TENANT & WHITE-LABEL MANAGEMENT */}
+        {/* TAB 6: CRS CONSULTANCY 10-14 DAY CAMPAIGN WORKFORCE & OPERATIONS HUB */}
         {/* ========================================================================= */}
-        <TabsContent value="crs-tenant" className="space-y-6">
-          <Card className="rounded-3xl border border-teal-500/30 bg-teal-950/20 shadow-xl p-6 space-y-6">
-            <div className="flex items-center justify-between border-b border-teal-500/20 pb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 bg-teal-500/20 border border-teal-500/40 rounded-2xl text-teal-400">
-                  <Briefcase className="w-6 h-6" />
+        <TabsContent value="crs-campaign" className="space-y-6">
+          <Card className="rounded-3xl border border-teal-500/40 bg-slate-950 text-white shadow-2xl p-6 space-y-6">
+            
+            {/* CAMPAIGN HEADER & SCOPE OVERVIEW */}
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-white/10 pb-5">
+              <div className="flex items-center space-x-3.5">
+                <div className="p-3.5 bg-teal-500/20 border border-teal-500/40 rounded-2xl text-teal-400">
+                  <Briefcase className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-white">CRS Consultancy Multi-Tenancy Engine</h3>
-                  <p className="text-xs text-teal-200/70">
-                    Standalone SaaS tenant isolation for external client licensing and corporate advisory.
+                  <div className="flex items-center space-x-2">
+                    <h3 className="text-lg font-black text-white">
+                      CRS LLIN CAMPAIGN — TEMPORARY WORKFORCE & FIELD HR HUB
+                    </h3>
+                    <Badge className="bg-teal-500 text-slate-950 font-mono font-black text-[10px]">
+                      10-14 Day Contracts
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Client: <strong>Catholic Relief Services (CRS) / Global Fund / NMCP / MOH</strong> &bull; Contractor: <strong>TOTAG GROUP</strong>
                   </p>
                 </div>
               </div>
-              <Badge className="bg-teal-500 text-slate-950 font-bold text-xs px-3 py-1">
-                Licensed Tenant Active
-              </Badge>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs px-3 py-1">
+                  📅 Nov 16 - Dec 18, 2026 Window
+                </Badge>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    toast({
+                      title: "✓ CRS Daily Compliance Export Generated",
+                      description: "Daily Attendance, BYOD Device IMEI Register & MoMo Payroll Report compiled."
+                    });
+                  }}
+                  className="bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs rounded-xl h-8 px-3"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1" /> Export CRS Daily Audit
+                </Button>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2 text-white">
-                <h4 className="font-bold text-teal-400">White-Label Branding Specs</h4>
-                <div className="text-[11px] text-slate-300 space-y-1">
-                  <div>Tenant Subdomain: <span className="font-mono text-teal-300">crs.totaggroup.com</span></div>
-                  <div>Custom Theme: <span className="text-teal-300 font-bold">Teal & Dark Slate Glassmorphism</span></div>
-                  <div>Data Isolation: <span className="text-emerald-400 font-bold">Encrypted Tenant DB Partition</span></div>
+            {/* CAMPAIGN CAPACITY & QUOTA HUD */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Field Deployment</span>
+                <div className="text-xl font-black text-teal-400">202 Staff</div>
+                <div className="text-[10px] text-slate-400">180 Field + 22 Command</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase">HHR Household Quota</span>
+                <div className="text-xl font-black text-emerald-400">38,291 HH</div>
+                <div className="text-[10px] text-emerald-400 font-bold">50 HH / Team / Day</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase">ITN Distribution Quota</span>
+                <div className="text-xl font-black text-sky-400">84,952 Nets</div>
+                <div className="text-[10px] text-sky-400 font-bold">200 Nets / Team / Day</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Tested BYOD Devices</span>
+                <div className="text-xl font-black text-amber-400">174 Phones</div>
+                <div className="text-[10px] text-slate-400">Android 9+ &bull; GPS Active</div>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1 col-span-2 lg:col-span-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Waste Bale Reverse</span>
+                <div className="text-xl font-black text-purple-400">49 Bags/Bale</div>
+                <div className="text-[10px] text-purple-400 font-bold">100% Bag Accounting</div>
+              </div>
+            </div>
+
+            {/* SECTION: TEMPORARY WORKFORCE ROSTER TABLE */}
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div>
+                  <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-teal-400" />
+                    Temporary Campaign Personnel Roster (10-14 Day Contracts)
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    Grand Cape Mount, Montserrado & Margibi &bull; KYC Verified MoMo Wallets & BYOD Phone Registrations
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      toast({
+                        title: "✓ Batch 50% Contract Advance Dispatched",
+                        description: "Disbursed $1,280 USD via Orange Money and MTN MoMo to 6 temporary field staff."
+                      });
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl h-8 px-3"
+                  >
+                    <Smartphone className="w-3.5 h-3.5 mr-1" /> Pay Staged Mobile DSA
+                  </Button>
                 </div>
               </div>
-              <div className="p-4 rounded-2xl bg-slate-900 border border-white/10 space-y-2 text-white">
-                <h4 className="font-bold text-teal-400">External Client Advisory Features</h4>
-                <div className="text-[11px] text-slate-300 space-y-1">
-                  <div>&bull; Multi-organization labor audit reports</div>
-                  <div>&bull; Ministry of Labor statutory compliance checkups</div>
-                  <div>&bull; Executive compensation benchmarking for Liberia</div>
-                </div>
+
+              <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60">
+                <table className="w-full text-xs text-left">
+                  <thead>
+                    <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
+                      <th className="p-3 font-bold">Badge / Worker</th>
+                      <th className="p-3 font-bold">Role & District</th>
+                      <th className="p-3 font-bold">Health Facility Catchment</th>
+                      <th className="p-3 font-bold">BYOD Device & IMEI</th>
+                      <th className="p-3 font-bold">Target vs Done</th>
+                      <th className="p-3 font-bold">Contract (Days/Rate)</th>
+                      <th className="p-3 font-bold">MoMo Payout</th>
+                      <th className="p-3 font-bold">Safeguarding</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {SEED_CRS_CAMPAIGN_WORKERS.map((worker) => (
+                      <tr key={worker.id} className="hover:bg-slate-800/40 transition-colors">
+                        <td className="p-3">
+                          <div className="font-bold text-white">{worker.fullName}</div>
+                          <span className="font-mono text-[10px] text-teal-400">{worker.badgeCode}</span>
+                        </td>
+                        <td className="p-3">
+                          <Badge className="bg-slate-800 text-slate-200 text-[10px] border-0">
+                            {worker.role}
+                          </Badge>
+                          <div className="text-[10px] text-slate-400 mt-0.5">{worker.district} ({worker.county})</div>
+                        </td>
+                        <td className="p-3">
+                          <span className="text-slate-300 text-[11px] block max-w-[160px] truncate">
+                            {worker.healthFacilityCatchment}
+                          </span>
+                        </td>
+                        <td className="p-3 font-mono text-[11px]">
+                          <div className="text-slate-200">{worker.byodPhoneModel}</div>
+                          <span className="text-[9px] text-slate-500">IMEI: {worker.byodPhoneImei}</span>
+                        </td>
+                        <td className="p-3 font-mono">
+                          <div className="font-bold text-emerald-400">
+                            {worker.actualHhrCompleted > 0 ? `${worker.actualHhrCompleted}/${worker.dailyHhrTarget} HH/day` : `${worker.actualItnDistributed}/${worker.dailyItnTarget} Nets/day`}
+                          </div>
+                          <span className="text-[10px] text-slate-400">{worker.performanceRatio}% Quota Lock</span>
+                        </td>
+                        <td className="p-3 font-mono">
+                          <div className="text-white font-bold">${worker.totalContractValueUsd} USD</div>
+                          <span className="text-[10px] text-slate-400">{worker.contractWindowDays} Days @ ${worker.dailyRateUsd}/day</span>
+                        </td>
+                        <td className="p-3">
+                          <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">
+                            ✓ {worker.momoCarrier}
+                          </Badge>
+                          <div className="text-[9px] text-slate-400 font-mono mt-0.5">{worker.momoWalletNumber}</div>
+                        </td>
+                        <td className="p-3">
+                          <div className="flex items-center gap-1 text-[10px] text-teal-300">
+                            <ShieldCheck className="w-3 h-3 text-teal-400" />
+                            <span>BYOD + PSEA Signed</span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* CONTRACT COMPLIANCE & REVERSE LOGISTICS BANNER */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <h5 className="font-bold text-teal-300 flex items-center gap-1">
+                  <Smartphone className="w-3.5 h-3.5 text-teal-400" /> BYOD Device Custody & Asset Safety
+                </h5>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  All 174 campaign devices are PIN-protected, serial-logged, and GPS geo-stamped. Materials return check mandatory prior to final tranche release.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <h5 className="font-bold text-amber-300 flex items-center gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" /> &lt;90% Performance & Reserve Pool
+                </h5>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Supervisors monitor daily door-to-door outputs. Teams underperforming &lt;90% of daily target receive immediate reserve personnel reinforcement.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                <h5 className="font-bold text-purple-300 flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-purple-400" /> Waste Management & Reverse Logistics
+                </h5>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Empty ITN bale bags are bundled (49 bags inside 1 outer bag) with strap tallies and returned to 3PL depots per CRS environmental guidelines.
+                </p>
               </div>
             </div>
           </Card>

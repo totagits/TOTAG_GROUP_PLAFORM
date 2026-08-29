@@ -100,3 +100,34 @@ export interface BiometricAttendancePunch {
   shiftType: "Standard Day" | "Night Watch" | "Vessel Discharge Surge" | "Weekend Overtime";
   isOfflineSynced: boolean;
 }
+
+export interface CRSTemporaryWorker {
+  id: string;
+  badgeCode: string;
+  fullName: string;
+  phone: string;
+  nationalId: string;
+  role: "HHR Registration Agent" | "ITN Distribution Lead" | "Field Supervisor" | "District Coordinator" | "Logistics & Site-Readiness" | "QA / Data Monitor" | "Community Mobilizer";
+  county: string;
+  district: "Commonwealth" | "Gola Konneh" | "Garwula" | "Porkpah" | "Tewor" | "Montserrado Urban" | "Margibi Rural";
+  healthFacilityCatchment: string;
+  contractWindowDays: number;
+  contractStartDate: string;
+  contractEndDate: string;
+  dailyRateUsd: number;
+  totalContractValueUsd: number;
+  momoCarrier: "Orange Money" | "Lonestar MTN MoMo";
+  momoWalletNumber: string;
+  momoKycVerified: boolean;
+  byodPhoneModel: string;
+  byodPhoneImei: string;
+  byodConsentSigned: boolean;
+  pseaCodeOfConductSigned: boolean;
+  dailyHhrTarget: number;
+  actualHhrCompleted: number;
+  dailyItnTarget: number;
+  actualItnDistributed: number;
+  performanceRatio: number;
+  materialsReturnedStatus: "Pending Campaign Completion" | "All Returned & Reconciled" | "Discrepancy / Deducted";
+  disbursementStatus: "Daily Staged" | "50% Advance Paid" | "Final Tranche Released" | "Disbursed";
+}
