@@ -871,6 +871,17 @@ export function ModernHRMISSuite() {
 
           {/* Identity & White-Label Switcher Controls */}
           <div className="flex flex-wrap items-center gap-2">
+            {/* Field Worker Portal Direct Launcher */}
+            <a
+              href="/field#/field"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-slate-950 font-black text-xs px-3.5 py-1.5 rounded-xl shadow-lg transition-all"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-slate-950" />
+              <span>Open Field Worker App ➔</span>
+            </a>
+
             {/* White Label Switcher */}
             <Button
               size="sm"

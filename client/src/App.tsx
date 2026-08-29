@@ -94,6 +94,7 @@ import FIMSCommitmentControlPage from "@/pages/saas/modules/fims-commitment-cont
 import FIMSFixedAssetsPage from "@/pages/saas/modules/fims-fixed-assets";
 import FIMSContractsPage from "@/pages/saas/modules/fims-contracts";
 import FIMSProjectsPage from "@/pages/saas/modules/fims-projects";
+import FieldWorkerPortal from "@/pages/field/worker-portal";
 
 // Hybrid Location Hook supporting both standard path URLs (/solar), hash routes (/#/solar), and in-page anchor links (/#contact)
 const useHybridLocation = () => {
@@ -252,6 +253,10 @@ function Router() {
         <Route path="/saas/modules/fims-fixed-assets/:tab?" component={FIMSFixedAssetsPage} />
         <Route path="/saas/modules/fims-contracts/:tab?" component={FIMSContractsPage} />
         <Route path="/saas/modules/fims-projects/:tab?" component={FIMSProjectsPage} />
+        
+        {/* CRS Campaign Temporary Field Worker Self-Service Portal */}
+        <Route path="/field" component={FieldWorkerPortal} />
+        <Route path="/field/portal" component={FieldWorkerPortal} />
         
         <Route component={NotFound} />
       </Switch>
