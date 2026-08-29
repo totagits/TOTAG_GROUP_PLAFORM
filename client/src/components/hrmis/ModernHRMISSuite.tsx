@@ -31,6 +31,7 @@ import {
   TrendingUp,
   TrendingDown,
   Shield,
+  ShieldCheck,
   Smartphone,
   Sparkles,
   BookOpen,
