@@ -615,6 +615,48 @@ export function ModernHRMISSuite() {
   });
 
   // Active Delegation Grants List
+  // CRS Campaign Workforce State & Modals
+  const [crsWorkers, setCrsWorkers] = useState<CRSTemporaryWorker[]>(SEED_CRS_CAMPAIGN_WORKERS);
+  const [selectedCrsWorker, setSelectedCrsWorker] = useState<CRSTemporaryWorker | null>(null);
+  const [showCrsRecruitModal, setShowCrsRecruitModal] = useState(false);
+  const [showCrsPhoneContractModal, setShowCrsPhoneContractModal] = useState(false);
+  const [showCrsQuotaModal, setShowCrsQuotaModal] = useState(false);
+  const [showCrsSupervisorClockInModal, setShowCrsSupervisorClockInModal] = useState(false);
+
+  // New Worker Recruitment Form
+  const [newCrsWorkerForm, setNewCrsWorkerForm] = useState({
+    fullName: "",
+    phone: "",
+    nationalId: "",
+    role: "HHR Registration Agent" as CRSTemporaryWorker["role"],
+    county: "Grand Cape Mount",
+    district: "Garwula" as CRSTemporaryWorker["district"],
+    healthFacilityCatchment: "Sinje Health Center (HF-04)",
+    contractWindowDays: 10,
+    dailyRateUsd: 25,
+    momoCarrier: "Orange Money" as CRSTemporaryWorker["momoCarrier"],
+    momoWalletNumber: "",
+    byodPhoneModel: "Samsung Galaxy A14 (Android 13)",
+    byodPhoneImei: ""
+  });
+
+  // Quota Update Form
+  const [quotaUpdateForm, setQuotaUpdateForm] = useState({
+    workerId: "",
+    todayHhrRegistered: 25,
+    todayItnDistributed: 0,
+    notes: "All households geotagged per CRS SOP."
+  });
+
+  // Digital Phone Contract State ($129 Liability Clause)
+  const [phoneContractSignature, setPhoneContractSignature] = useState({
+    workerName: "",
+    workerNationalId: "",
+    phoneImei: "",
+    agreedTo129Deduction: true,
+    signatureName: ""
+  });
+
   const [delegations, setDelegations] = useState<CorporateDelegationGrant[]>([
     {
       id: "DEL-2026-01",
@@ -681,6 +723,99 @@ export function ModernHRMISSuite() {
   };
 
   // Submit Clock In
+  // Handle Recruitment Submit
+  const handleRecruitCrsWorker = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCrsWorkerForm.fullName || !newCrsWorkerForm.phone) {
+      toast({ title: "Error", description: "Please enter candidate full name and phone number.", variant: "destructive" });
+      return;
+    }
+    const newWorker: CRSTemporaryWorker = {
+      id: `CRS-W-${String(crsWorkers.length + 1).padStart(3, '0')}`,
+      badgeCode: `TOT-CRS-${newCrsWorkerForm.role.includes("HHR") ? "HHR" : newCrsWorkerForm.role.includes("Supervisor") ? "SUP" : "DP"}-${100 + crsWorkers.length + 1}`,
+      fullName: newCrsWorkerForm.fullName,
+      phone: newCrsWorkerForm.phone,
+      nationalId: newCrsWorkerForm.nationalId || "LR-PENDING-00",
+      role: newCrsWorkerForm.role,
+      county: newCrsWorkerForm.county,
+      district: newCrsWorkerForm.district,
+      healthFacilityCatchment: newCrsWorkerForm.healthFacilityCatchment,
+      contractWindowDays: Number(newCrsWorkerForm.contractWindowDays),
+      contractStartDate: "2026-11-23",
+      contractEndDate: "2026-12-02",
+      dailyRateUsd: Number(newCrsWorkerForm.dailyRateUsd),
+      totalContractValueUsd: Number(newCrsWorkerForm.contractWindowDays) * Number(newCrsWorkerForm.dailyRateUsd),
+      momoCarrier: newCrsWorkerForm.momoCarrier,
+      momoWalletNumber: newCrsWorkerForm.momoWalletNumber || newCrsWorkerForm.phone,
+      momoKycVerified: true,
+      byodPhoneModel: newCrsWorkerForm.byodPhoneModel,
+      byodPhoneImei: newCrsWorkerForm.byodPhoneImei || "IMEI-PENDING-CHECK",
+      byodConsentSigned: false,
+      pseaCodeOfConductSigned: true,
+      dailyHhrTarget: newCrsWorkerForm.role.includes("HHR") ? 25 : 0,
+      actualHhrCompleted: 0,
+      dailyItnTarget: newCrsWorkerForm.role.includes("Distribution") ? 50 : 0,
+      actualItnDistributed: 0,
+      performanceRatio: 100,
+      materialsReturnedStatus: "Pending Campaign Completion",
+      disbursementStatus: "Daily Staged"
+    };
+
+    setCrsWorkers(prev => [newWorker, ...prev]);
+    setShowCrsRecruitModal(false);
+    toast({
+      title: "✓ Temporary Campaign Worker Registered",
+      description: `${newWorker.fullName} registered for ${newWorker.district} (${newWorker.contractWindowDays} Days @ $${newWorker.dailyRateUsd}/day). Next step: Sign $129 Phone Custody Agreement.`
+    });
+  };
+
+  // Handle Sign $129 Phone Custody Contract
+  const handleSignPhoneContract = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCrsWorker) return;
+    setCrsWorkers(prev => prev.map(w => {
+      if (w.id === selectedCrsWorker.id) {
+        return {
+          ...w,
+          byodPhoneImei: phoneContractSignature.phoneImei || w.byodPhoneImei,
+          byodConsentSigned: true
+        };
+      }
+      return w;
+    }));
+    setShowCrsPhoneContractModal(false);
+    toast({
+      title: "✓ $129.00 Device Liability Contract Signed & Sealed",
+      description: `${selectedCrsWorker.fullName} signed legal custody for device IMEI: ${phoneContractSignature.phoneImei || selectedCrsWorker.byodPhoneImei}. $129 deduction clause active.`
+    });
+  };
+
+  // Handle Log Daily Quota
+  const handleLogDailyQuota = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quotaUpdateForm.workerId) return;
+    setCrsWorkers(prev => prev.map(w => {
+      if (w.id === quotaUpdateForm.workerId) {
+        const done = Number(quotaUpdateForm.todayHhrRegistered) || Number(quotaUpdateForm.todayItnDistributed);
+        const target = w.dailyHhrTarget > 0 ? w.dailyHhrTarget : w.dailyItnTarget;
+        const ratio = target > 0 ? Math.round((done / target) * 100) : 100;
+        return {
+          ...w,
+          actualHhrCompleted: w.dailyHhrTarget > 0 ? done : 0,
+          actualItnDistributed: w.dailyItnTarget > 0 ? done : 0,
+          performanceRatio: ratio
+        };
+      }
+      return w;
+    }));
+    setShowCrsQuotaModal(false);
+    toast({
+      title: "✓ Daily Quota Progress Stamped",
+      description: "Supervisor verification logged in CRS Daily Progress Registry."
+    });
+  };
+
+
   const handleClockInSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const emp = employees.find(e => e.id === clockInState.employeeId) || employees[0];
@@ -1377,16 +1512,74 @@ export function ModernHRMISSuite() {
               </div>
             </div>
 
-            {/* SECTION: TEMPORARY WORKFORCE ROSTER TABLE */}
+            {/* SECTION: 4 INTERACTIVE CAMPAIGN ACTION BUTTONS */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {/* Action 1: Recruit Worker */}
+              <Button
+                onClick={() => setShowCrsRecruitModal(true)}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-2xl h-12 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <Plus className="w-4 h-4" />
+                1. Recruit Temporary Worker
+              </Button>
+
+              {/* Action 2: Sign $129 Phone Contract */}
+              <Button
+                onClick={() => {
+                  const target = crsWorkers.find(w => !w.byodConsentSigned) || crsWorkers[0];
+                  setSelectedCrsWorker(target);
+                  setPhoneContractSignature({
+                    workerName: target.fullName,
+                    workerNationalId: target.nationalId,
+                    phoneImei: target.byodPhoneImei,
+                    agreedTo129Deduction: true,
+                    signatureName: target.fullName
+                  });
+                  setShowCrsPhoneContractModal(true);
+                }}
+                className="bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-2xl h-12 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <FileSignature className="w-4 h-4" />
+                2. Sign $129 Phone Contract
+              </Button>
+
+              {/* Action 3: Field GPS Clock-In */}
+              <Button
+                onClick={() => setShowCrsSupervisorClockInModal(true)}
+                className="bg-sky-600 hover:bg-sky-500 text-white font-black text-xs rounded-2xl h-12 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <MapPin className="w-4 h-4" />
+                3. Field GPS Clock-In Punch
+              </Button>
+
+              {/* Action 4: Log Quota */}
+              <Button
+                onClick={() => {
+                  setQuotaUpdateForm({
+                    workerId: crsWorkers[0].id,
+                    todayHhrRegistered: 25,
+                    todayItnDistributed: 0,
+                    notes: "All households geotagged per CRS SOP."
+                  });
+                  setShowCrsQuotaModal(true);
+                }}
+                className="bg-purple-600 hover:bg-purple-500 text-white font-black text-xs rounded-2xl h-12 flex items-center justify-center gap-2 shadow-lg"
+              >
+                <Target className="w-4 h-4" />
+                4. Log Daily Quota & Output
+              </Button>
+            </div>
+
+            {/* SECTION: TEMPORARY WORKFORCE ROSTER TABLE WITH LIVE ACTION BUTTONS */}
             <div className="space-y-3">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div>
                   <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-teal-400" />
-                    Temporary Campaign Personnel Roster (10-14 Day Contracts)
+                    Temporary Campaign Personnel Roster ({crsWorkers.length} Field Staff Onboarded)
                   </h4>
                   <p className="text-[11px] text-slate-400">
-                    Grand Cape Mount, Montserrado & Margibi &bull; KYC Verified MoMo Wallets & BYOD Phone Registrations
+                    Grand Cape Mount, Montserrado & Margibi &bull; Mandatory $129 Phone Contract, Daily Quotas & MoMo Wallets
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1394,11 +1587,11 @@ export function ModernHRMISSuite() {
                     size="sm"
                     onClick={() => {
                       toast({
-                        title: "✓ Batch 50% Contract Advance Dispatched",
-                        description: "Disbursed $1,280 USD via Orange Money and MTN MoMo to 6 temporary field staff."
+                        title: "✓ Batch Staged Mobile DSA Dispatched",
+                        description: `Disbursed $${crsWorkers.reduce((acc, curr) => acc + (curr.dailyRateUsd * 5), 0)} USD advance via Orange Money / MTN MoMo to ${crsWorkers.length} personnel.`
                       });
                     }}
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl h-8 px-3"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl h-8 px-3 shadow-md"
                   >
                     <Smartphone className="w-3.5 h-3.5 mr-1" /> Pay Staged Mobile DSA
                   </Button>
@@ -1412,55 +1605,101 @@ export function ModernHRMISSuite() {
                       <th className="p-3 font-bold">Badge / Worker</th>
                       <th className="p-3 font-bold">Role & District</th>
                       <th className="p-3 font-bold">Health Facility Catchment</th>
-                      <th className="p-3 font-bold">BYOD Device & IMEI</th>
-                      <th className="p-3 font-bold">Target vs Done</th>
+                      <th className="p-3 font-bold">$129 Phone Custody</th>
+                      <th className="p-3 font-bold">Daily Quota Status</th>
                       <th className="p-3 font-bold">Contract (Days/Rate)</th>
-                      <th className="p-3 font-bold">MoMo Payout</th>
-                      <th className="p-3 font-bold">Safeguarding</th>
+                      <th className="p-3 font-bold">MoMo Wallet</th>
+                      <th className="p-3 font-bold">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
-                    {SEED_CRS_CAMPAIGN_WORKERS.map((worker) => (
+                    {crsWorkers.map((worker) => (
                       <tr key={worker.id} className="hover:bg-slate-800/40 transition-colors">
                         <td className="p-3">
                           <div className="font-bold text-white">{worker.fullName}</div>
                           <span className="font-mono text-[10px] text-teal-400">{worker.badgeCode}</span>
                         </td>
                         <td className="p-3">
-                          <Badge className="bg-slate-800 text-slate-200 text-[10px] border-0">
+                          <Badge className="bg-slate-800 text-slate-200 text-[10px] border-0 font-bold">
                             {worker.role}
                           </Badge>
                           <div className="text-[10px] text-slate-400 mt-0.5">{worker.district} ({worker.county})</div>
                         </td>
                         <td className="p-3">
-                          <span className="text-slate-300 text-[11px] block max-w-[160px] truncate">
+                          <span className="text-slate-300 text-[11px] block max-w-[150px] truncate">
                             {worker.healthFacilityCatchment}
                           </span>
                         </td>
                         <td className="p-3 font-mono text-[11px]">
-                          <div className="text-slate-200">{worker.byodPhoneModel}</div>
-                          <span className="text-[9px] text-slate-500">IMEI: {worker.byodPhoneImei}</span>
+                          {worker.byodConsentSigned ? (
+                            <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] flex items-center gap-1 w-fit">
+                              <CheckCircle className="w-3 h-3 text-emerald-400" />
+                              <span>$129 Contract Signed</span>
+                            </Badge>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCrsWorker(worker);
+                                setPhoneContractSignature({
+                                  workerName: worker.fullName,
+                                  workerNationalId: worker.nationalId,
+                                  phoneImei: worker.byodPhoneImei,
+                                  agreedTo129Deduction: true,
+                                  signatureName: worker.fullName
+                                });
+                                setShowCrsPhoneContractModal(true);
+                              }}
+                              className="bg-amber-600 hover:bg-amber-500 text-white text-[10px] h-6 px-2 rounded-lg font-bold"
+                            >
+                              <FileSignature className="w-3 h-3 mr-1" /> Sign Contract
+                            </Button>
+                          )}
+                          <span className="text-[9px] text-slate-500 block mt-0.5">IMEI: {worker.byodPhoneImei}</span>
                         </td>
                         <td className="p-3 font-mono">
-                          <div className="font-bold text-emerald-400">
-                            {worker.actualHhrCompleted > 0 ? `${worker.actualHhrCompleted}/${worker.dailyHhrTarget} HH/day` : `${worker.actualItnDistributed}/${worker.dailyItnTarget} Nets/day`}
+                          <div className={`font-bold ${worker.performanceRatio >= 90 ? "text-emerald-400" : "text-rose-400"}`}>
+                            {worker.dailyHhrTarget > 0 
+                              ? `${worker.actualHhrCompleted}/${worker.dailyHhrTarget} HH/day` 
+                              : `${worker.actualItnDistributed}/${worker.dailyItnTarget} Nets/day`}
                           </div>
-                          <span className="text-[10px] text-slate-400">{worker.performanceRatio}% Quota Lock</span>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <span className="text-[10px] text-slate-400">{worker.performanceRatio}%</span>
+                            {worker.performanceRatio < 90 && (
+                              <Badge className="bg-rose-500/20 text-rose-300 text-[8px] border-0 animate-pulse">
+                                Under Quota &bull; Reserve Trigger
+                              </Badge>
+                            )}
+                          </div>
                         </td>
                         <td className="p-3 font-mono">
                           <div className="text-white font-bold">${worker.totalContractValueUsd} USD</div>
-                          <span className="text-[10px] text-slate-400">{worker.contractWindowDays} Days @ ${worker.dailyRateUsd}/day</span>
+                          <span className="text-[10px] text-slate-400">{worker.contractWindowDays}D @ ${worker.dailyRateUsd}/day</span>
                         </td>
                         <td className="p-3">
-                          <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">
+                          <Badge className="bg-emerald-500/15 text-emerald-300 border-0 text-[10px]">
                             ✓ {worker.momoCarrier}
                           </Badge>
                           <div className="text-[9px] text-slate-400 font-mono mt-0.5">{worker.momoWalletNumber}</div>
                         </td>
                         <td className="p-3">
-                          <div className="flex items-center gap-1 text-[10px] text-teal-300">
-                            <ShieldCheck className="w-3 h-3 text-teal-400" />
-                            <span>BYOD + PSEA Signed</span>
+                          <div className="flex items-center gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setQuotaUpdateForm({
+                                  workerId: worker.id,
+                                  todayHhrRegistered: worker.actualHhrCompleted || 25,
+                                  todayItnDistributed: worker.actualItnDistributed || 50,
+                                  notes: "Field output validated."
+                                });
+                                setShowCrsQuotaModal(true);
+                              }}
+                              className="text-[10px] h-6 px-2 rounded-lg bg-slate-800 border-white/10 text-white font-bold"
+                            >
+                              Log Quota
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -1678,6 +1917,362 @@ export function ModernHRMISSuite() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* ========================================================================= */}
+      {/* CRS MODAL 1: RECRUIT & ONBOARD TEMPORARY CAMPAIGN WORKER */}
+      {/* ========================================================================= */}
+      <Dialog open={showCrsRecruitModal} onOpenChange={setShowCrsRecruitModal}>
+        <DialogContent className="max-w-xl rounded-3xl bg-slate-950 text-white border border-teal-500/40 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+              <Plus className="w-5 h-5 text-teal-400" />
+              Recruit & Onboard Temporary Campaign Worker (10-14 Days)
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Onboards field staff for the CRS Mass LLIN / HHR Campaign in Grand Cape Mount & rural districts.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleRecruitCrsWorker} className="space-y-3.5 text-xs py-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Full Name of Candidate:</Label>
+                <Input
+                  required
+                  placeholder="e.g. Sando Varney"
+                  value={newCrsWorkerForm.fullName}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, fullName: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Contact Phone Number:</Label>
+                <Input
+                  required
+                  placeholder="+231-777-..."
+                  value={newCrsWorkerForm.phone}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, phone: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">National ID / Voter Card #:</Label>
+                <Input
+                  placeholder="LR-..."
+                  value={newCrsWorkerForm.nationalId}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, nationalId: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Campaign Field Role:</Label>
+                <select
+                  value={newCrsWorkerForm.role}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, role: e.target.value as any })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                >
+                  <option value="HHR Registration Agent">HHR Registration Agent (Door-to-Door)</option>
+                  <option value="ITN Distribution Lead">ITN Distribution Lead (Fixed/Mobile DP)</option>
+                  <option value="Field Supervisor">Field Supervisor (1:5 Teams)</option>
+                  <option value="District Coordinator">District Coordinator (Command Cell)</option>
+                  <option value="Logistics & Site-Readiness">Logistics & Site-Readiness Lead</option>
+                  <option value="QA / Data Monitor">QA & Data Quality Monitor</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Assigned District:</Label>
+                <select
+                  value={newCrsWorkerForm.district}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, district: e.target.value as any })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                >
+                  <option value="Commonwealth">Commonwealth (7 HHR / 4 Dist Teams)</option>
+                  <option value="Gola Konneh">Gola Konneh (9 HHR / 5 Dist Teams)</option>
+                  <option value="Garwula">Garwula (19 HHR / 11 Dist Teams)</option>
+                  <option value="Porkpah">Porkpah (23 HHR / 13 Dist Teams)</option>
+                  <option value="Tewor">Tewor (21 HHR / 12 Dist Teams)</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Health Facility (HF) Catchment / DP:</Label>
+                <Input
+                  placeholder="e.g. Sinje Health Center (HF-04)"
+                  value={newCrsWorkerForm.healthFacilityCatchment}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, healthFacilityCatchment: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Contract Window (Days):</Label>
+                <select
+                  value={newCrsWorkerForm.contractWindowDays}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, contractWindowDays: Number(e.target.value) })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                >
+                  <option value={10}>10 Field Days (Standard HHR/Distribution)</option>
+                  <option value={12}>12 Days (Supervisors + Mop-up)</option>
+                  <option value={14}>14 Days (Command Cell & Logistics Closeout)</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Daily DSA / Stipend Rate (USD):</Label>
+                <Input
+                  type="number"
+                  value={newCrsWorkerForm.dailyRateUsd}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, dailyRateUsd: Number(e.target.value) })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Mobile Money Carrier:</Label>
+                <select
+                  value={newCrsWorkerForm.momoCarrier}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, momoCarrier: e.target.value as any })}
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                >
+                  <option value="Orange Money">Orange Money Liberia</option>
+                  <option value="Lonestar MTN MoMo">Lonestar MTN MoMo</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">BYOD Phone Model & IMEI:</Label>
+                <Input
+                  placeholder="e.g. Tecno Spark 10 / IMEI: 867..."
+                  value={newCrsWorkerForm.byodPhoneImei}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, byodPhoneImei: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs h-10 rounded-xl shadow-lg mt-2"
+            >
+              Confirm Recruitment & Generate Contract ➔
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* CRS MODAL 2: LEGAL PHONE CUSTODY & $129.00 LIABILITY DEDUCTION CONTRACT */}
+      {/* ========================================================================= */}
+      <Dialog open={showCrsPhoneContractModal} onOpenChange={setShowCrsPhoneContractModal}>
+        <DialogContent className="max-w-xl rounded-3xl bg-slate-950 text-white border border-amber-500/40 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+              <FileSignature className="w-5 h-5 text-amber-400" />
+              CRS Smartphone Custody & $129.00 Liability Agreement
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Legally binding device custody contract mandated by Catholic Relief Services (CRS) and TOTAG GROUP.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedCrsWorker && (
+            <form onSubmit={handleSignPhoneContract} className="space-y-4 text-xs py-2">
+              
+              {/* LEGAL CONTRACT TERMS BOX */}
+              <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-2.5 text-slate-300 leading-relaxed font-sans">
+                <div className="text-amber-400 font-bold text-xs uppercase flex items-center gap-1.5 border-b border-white/10 pb-2">
+                  <ShieldAlert className="w-4 h-4 text-amber-400" />
+                  Mandatory Asset Custody & Financial Liability Clause
+                </div>
+                <p>
+                  <strong>1. Custody of Assigned Campaign Equipment:</strong> The undersigned temporary worker (<strong>{selectedCrsWorker.fullName}</strong>, National ID: <strong>{selectedCrsWorker.nationalId}</strong>) hereby acknowledges receipt and operational custody of one (1) Android campaign smartphone (IMEI: <span className="font-mono text-amber-300">{phoneContractSignature.phoneImei || selectedCrsWorker.byodPhoneImei}</span>) for the duration of the CRS Mass LLIN Campaign (Nov/Dec 2026).
+                </p>
+                <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-200 text-[11px] space-y-1">
+                  <strong>2. $129.00 USD Replacement Penalty & Payroll Withholding:</strong>
+                  <p>
+                    In strict accordance with the CRS Global Fund Master Service Agreement, TOTAG is financially penalised <strong>$129.00 USD</strong> for any device lost, stolen, water-damaged, broken, or unreturned.
+                  </p>
+                  <p className="font-bold text-amber-300">
+                    By signing below, the worker explicitly and irrevocably authorizes TOTAG GROUP to withhold their final campaign compensation and deduct $129.00 USD directly from their Mobile Money stipend if the phone and accessories are not returned in clean working condition by December 18, 2026.
+                  </p>
+                </div>
+                <p>
+                  <strong>3. Data Security & Anti-Fraud:</strong> The worker agrees not to share device PINs, take unauthorized screenshots of beneficiary data, or use the device for non-campaign purposes.
+                </p>
+              </div>
+
+              {/* IMEI & SIGNATURE CONFIRMATION */}
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Label className="text-slate-300 font-bold">Confirmed Device IMEI Number:</Label>
+                  <Input
+                    required
+                    value={phoneContractSignature.phoneImei}
+                    onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, phoneImei: e.target.value })}
+                    className="bg-slate-900 border-white/10 font-mono text-amber-300 text-xs rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-slate-300 font-bold">Worker Digital Signature (Type Full Legal Name):</Label>
+                  <Input
+                    required
+                    placeholder="Type legal name to e-sign..."
+                    value={phoneContractSignature.signatureName}
+                    onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, signatureName: e.target.value })}
+                    className="bg-slate-900 border-teal-500/40 text-teal-300 font-bold text-xs rounded-xl"
+                  />
+                </div>
+
+                <div className="flex items-center space-x-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id="deductAgree"
+                    checked={phoneContractSignature.agreedTo129Deduction}
+                    onChange={(e) => setPhoneContractSignature({ ...phoneContractSignature, agreedTo129Deduction: e.target.checked })}
+                    className="w-4 h-4 rounded border-amber-500"
+                  />
+                  <Label htmlFor="deductAgree" className="text-[11px] text-slate-300 font-medium cursor-pointer">
+                    I accept full legal responsibility and agree to the <strong>$129.00 USD</strong> salary deduction clause upon non-return.
+                  </Label>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={!phoneContractSignature.agreedTo129Deduction || !phoneContractSignature.signatureName}
+                className="w-full bg-amber-600 hover:bg-amber-500 text-white font-black text-xs h-10 rounded-xl shadow-lg mt-2"
+              >
+                Legally Sign & Seal Phone Custody Agreement ➔
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* CRS MODAL 3: LOG DAILY QUOTA & FIELD OUTPUT */}
+      {/* ========================================================================= */}
+      <Dialog open={showCrsQuotaModal} onOpenChange={setShowCrsQuotaModal}>
+        <DialogContent className="max-w-md rounded-3xl bg-slate-950 text-white border border-purple-500/40 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+              <Target className="w-5 h-5 text-purple-400" />
+              Log Daily Household (HHR) & ITN Quota
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Records validated field output against the daily CRS target (25 HH/agent/day or 50 Nets/agent/day).
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleLogDailyQuota} className="space-y-4 text-xs py-2">
+            <div className="space-y-1">
+              <Label className="text-slate-300 font-bold">Select Campaign Worker:</Label>
+              <select
+                value={quotaUpdateForm.workerId}
+                onChange={(e) => setQuotaUpdateForm({ ...quotaUpdateForm, workerId: e.target.value })}
+                className="w-full bg-slate-900 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+              >
+                {crsWorkers.map(w => (
+                  <option key={w.id} value={w.id}>{w.fullName} ({w.role} &bull; {w.district})</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Households Registered Today:</Label>
+                <Input
+                  type="number"
+                  value={quotaUpdateForm.todayHhrRegistered}
+                  onChange={(e) => setQuotaUpdateForm({ ...quotaUpdateForm, todayHhrRegistered: Number(e.target.value) })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+                <span className="text-[10px] text-slate-500">Target: 25 HH / day</span>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">ITNs Distributed Today:</Label>
+                <Input
+                  type="number"
+                  value={quotaUpdateForm.todayItnDistributed}
+                  onChange={(e) => setQuotaUpdateForm({ ...quotaUpdateForm, todayItnDistributed: Number(e.target.value) })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+                <span className="text-[10px] text-slate-500">Target: 50 Nets / day</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-slate-900 border border-white/10 space-y-1 text-[11px]">
+              <span className="font-bold text-amber-400">&lt;90% Performance Policy:</span>
+              <p className="text-slate-400">
+                If daily output falls below 22 households (88%), supervisor triggers immediate reinforcement from the 5% reserve personnel pool.
+              </p>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-500 text-white font-black text-xs h-10 rounded-xl shadow-lg"
+            >
+              Verify & Stamp Daily Output Record ➔
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* CRS MODAL 4: SUPERVISOR MORNING BRIEFING & FIELD GPS CLOCK-IN */}
+      {/* ========================================================================= */}
+      <Dialog open={showCrsSupervisorClockInModal} onOpenChange={setShowCrsSupervisorClockInModal}>
+        <DialogContent className="max-w-md rounded-3xl bg-slate-950 text-white border border-sky-500/40 p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-sky-400" />
+              Supervisor Field GPS & Roster Clock-In
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Batch clocks in the 5 assigned 2-person HHR teams during the 07:30 AM morning briefing.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 text-xs py-2">
+            <div className="p-3.5 rounded-2xl bg-slate-900 border border-sky-500/30 space-y-2">
+              <div className="flex justify-between text-slate-300">
+                <span>Catchment Hub:</span>
+                <strong className="text-white">Sinje Health Center (HF-04)</strong>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Assigned Field Teams:</span>
+                <strong className="text-sky-400">5 Teams (10 Personnel)</strong>
+              </div>
+              <div className="flex justify-between text-slate-300">
+                <span>Satellite GPS Coordinates:</span>
+                <strong className="text-emerald-400 font-mono">6.912400° N, -11.312900° W</strong>
+              </div>
+            </div>
+
+            <Button
+              onClick={() => {
+                setShowCrsSupervisorClockInModal(false);
+                toast({
+                  title: "✓ Supervisor Field Roster Verified",
+                  description: "10 HHR field personnel clocked in at Garwula Hub with satellite GPS lock."
+                });
+              }}
+              className="w-full bg-sky-600 hover:bg-sky-500 text-white font-black text-xs h-10 rounded-xl shadow-lg"
+            >
+              Authorize Route Release & Clock In Teams ➔
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
