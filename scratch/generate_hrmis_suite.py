@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import os
+
+content = """import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1339,3 +1341,9 @@ export function ModernHRMISSuite() {
     </div>
   );
 }
+"""
+
+with open("client/src/components/hrmis/ModernHRMISSuite.tsx", "w", encoding="utf-8") as f:
+    f.write(content)
+
+print("Created comprehensive ModernHRMISSuite.tsx successfully!")
