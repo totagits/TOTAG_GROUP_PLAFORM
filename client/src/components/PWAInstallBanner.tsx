@@ -75,7 +75,7 @@ export function PWAInstallBanner() {
   if (dismissed && isOnline && pendingCount === 0) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 z-50 max-w-md pointer-events-auto">
+    <div className="fixed bottom-6 left-4 right-20 md:right-auto md:left-6 z-40 max-w-sm md:max-w-md pointer-events-auto">
       {/* Offline Status or Sync Notification */}
       {!isOnline && (
         <div className="mb-2 p-3 rounded-2xl bg-amber-500 text-slate-950 font-sans shadow-2xl flex items-center justify-between gap-3 border border-amber-400 animate-pulse">
