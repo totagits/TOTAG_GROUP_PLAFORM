@@ -61,7 +61,9 @@ import {
   Lock,
   Globe,
   Radio,
-  FileSignature
+  FileSignature,
+  ArrowRight,
+  Scan
 } from "lucide-react";
 import { 
   SubsidiaryId, 
