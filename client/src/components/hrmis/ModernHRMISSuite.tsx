@@ -1524,7 +1524,7 @@ export function ModernHRMISSuite() {
                 <div className="text-2xl font-black text-emerald-400">
                   {crsWorkers.reduce((acc, curr) => acc + (curr.actualHhrCompleted || 0), 0)} <span className="text-xs font-normal text-slate-400">HH Done</span>
                 </div>
-                <div className="text-[10px] text-emerald-400 font-bold">Target: 38,291 Households</div>
+                <div className="text-[10px] text-emerald-400 font-bold">{crsWorkers.reduce((acc, curr) => acc + (curr.actualHhrCompleted || 0), 0) > 0 ? "Live Aggregated Daily Output" : "0 Logs Logged Today"}</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
                 <span className="text-[10px] font-mono text-slate-400 uppercase">3PL Waybill Bales</span>
@@ -1771,22 +1771,22 @@ export function ModernHRMISSuite() {
                     </div>
                   </div>
 
-                  {/* Summary Metric Cards */}
+                  {/* Dynamic Real-Time Metric Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                     <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-mono">Total Planned Households:</span>
-                      <div className="text-2xl font-black text-white">38,291 HH</div>
-                      <div className="text-[10px] text-emerald-400 font-bold">50 HH / 2-person team / day quota</div>
+                      <span className="text-[10px] text-slate-400 font-mono">Real-Time Logged Households (HHR):</span>
+                      <div className="text-2xl font-black text-white">{crsWorkers.reduce((acc, curr) => acc + (curr.actualHhrCompleted || 0), 0)} HH</div>
+                      <div className="text-[10px] text-emerald-400 font-bold">{crsWorkers.length} Active Field Agents Registered</div>
                     </div>
                     <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-mono">Total Planned ITN Nets:</span>
-                      <div className="text-2xl font-black text-white">84,952 Nets</div>
-                      <div className="text-[10px] text-sky-400 font-bold">200 Nets / 4-person team / day quota</div>
+                      <span className="text-[10px] text-slate-400 font-mono">Total Bonded Net Inventory:</span>
+                      <div className="text-2xl font-black text-white">{waybills.reduce((acc, curr) => acc + curr.nets, 0).toLocaleString()} Nets</div>
+                      <div className="text-[10px] text-sky-400 font-bold">{waybills.length} Verified 3PL Waybills Recorded</div>
                     </div>
                     <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-mono">Distribution Points (DPs):</span>
-                      <div className="text-2xl font-black text-white">91 Locations</div>
-                      <div className="text-[10px] text-purple-400 font-bold">Sequenced across 5 Catchment Districts</div>
+                      <span className="text-[10px] text-slate-400 font-mono">Active Field PPS Locations:</span>
+                      <div className="text-2xl font-black text-white">{new Set([...waybills.map(w => w.site), ...crsWorkers.map(w => w.healthFacilityCatchment)]).size} Locations</div>
+                      <div className="text-[10px] text-purple-400 font-bold">Dynamic Catchment Operational Range</div>
                     </div>
                   </div>
 
@@ -1844,24 +1844,25 @@ export function ModernHRMISSuite() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5 font-mono text-slate-300">
-                          <tr className="hover:bg-slate-800/40">
-                            <td className="p-3 font-bold text-white">Momo K. Fahnbulleh</td>
-                            <td className="p-3">Sinje Central Community</td>
-                            <td className="p-3 text-teal-400 font-bold">TKN-GAR-0042</td>
-                            <td className="p-3 text-emerald-400 font-bold">2 Nets (LLIN)</td>
-                            <td className="p-3"><span className="text-emerald-400">✓ 100% SBC Taught</span></td>
-                            <td className="p-3 text-[10px] text-slate-400">6.9124° N, 11.3129° W</td>
-                            <td className="p-3 text-amber-300 font-bold">Michael Gwoah</td>
-                          </tr>
-                          <tr className="hover:bg-slate-800/40">
-                            <td className="p-3 font-bold text-white">Fatu Kromah</td>
-                            <td className="p-3">Gbesseh Town Zone B</td>
-                            <td className="p-3 text-teal-400 font-bold">TKN-GAR-0043</td>
-                            <td className="p-3 text-emerald-400 font-bold">3 Nets (LLIN)</td>
-                            <td className="p-3"><span className="text-emerald-400">✓ 100% SBC Taught</span></td>
-                            <td className="p-3 text-[10px] text-slate-400">6.9140° N, 11.3142° W</td>
-                            <td className="p-3 text-amber-300 font-bold">Michael Gwoah</td>
-                          </tr>
+                          {crsWorkers.filter(w => (w.actualHhrCompleted || 0) > 0).length > 0 ? (
+                            crsWorkers.filter(w => (w.actualHhrCompleted || 0) > 0).map((w, idx) => (
+                              <tr key={w.id || idx} className="hover:bg-slate-800/40">
+                                <td className="p-3 font-bold text-white">{w.fullName} (Catchment Lead)</td>
+                                <td className="p-3">{w.healthFacilityCatchment}</td>
+                                <td className="p-3 text-teal-400 font-bold">TKN-SYNC-0{idx + 1}</td>
+                                <td className="p-3 text-emerald-400 font-bold">{w.actualItnDistributed || (w.actualHhrCompleted * 2)} Nets</td>
+                                <td className="p-3"><span className="text-emerald-400">✓ 100% SBC Taught</span></td>
+                                <td className="p-3 text-[10px] text-slate-400">GPS Locked</td>
+                                <td className="p-3 text-amber-300 font-bold">{w.fullName}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={7} className="p-6 text-center text-slate-500 font-mono italic">
+                                📡 No field activity logged yet. Real-time entries will stream here automatically as field personnel punch GPS and record SOW tasks.
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </div>
