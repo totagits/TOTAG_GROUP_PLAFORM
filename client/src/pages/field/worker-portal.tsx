@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/config";
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -48,8 +49,10 @@ import { saveToOfflineQueue } from "@/lib/offlineSync";
 const getLiveWorkersList = (): CRSTemporaryWorker[] => {
   if (typeof window !== "undefined") {
     try {
-      const saved = localStorage.getItem("totag_crs_workers_live_v1");
-      if (saved) return JSON.parse(saved);
+      const saved3 = localStorage.getItem("totag_crs_workers_clean_v3");
+      if (saved3) return JSON.parse(saved3);
+      const saved1 = localStorage.getItem("totag_crs_workers_live_v1");
+      if (saved1) return JSON.parse(saved1);
     } catch (e) {
       console.error(e);
     }
@@ -62,13 +65,13 @@ export default function FieldWorkerPortal() {
 
   // Authentication State
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [loginPhoneInput, setLoginPhoneInput] = useState<string>("+231-777-111-201");
-  const [loginPasswordInput, setLoginPasswordInput] = useState<string>("password123");
+  const [loginPhoneInput, setLoginPhoneInput] = useState<string>("");
+  const [loginPasswordInput, setLoginPasswordInput] = useState<string>("");
   const [showFirstLoginPasswordModal, setShowFirstLoginPasswordModal] = useState<boolean>(false);
   const [newPasswordForm, setNewPasswordForm] = useState({ newPassword: "", confirmPassword: "" });
 
   // Current Active Worker
-  const [worker, setWorker] = useState<CRSTemporaryWorker>(FIELD_WORKERS_DB["+231-777-111-201"]);
+  const [worker, setWorker] = useState<CRSTemporaryWorker | null>(null);
   const [activeTab, setActiveTab] = useState<string>("sow-work");
 
   // Connectivity
