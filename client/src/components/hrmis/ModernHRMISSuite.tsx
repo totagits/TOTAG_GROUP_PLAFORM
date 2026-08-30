@@ -449,7 +449,7 @@ export function ModernHRMISSuite() {
   const [crsWorkers, setCrsWorkers] = useState<CRSTemporaryWorker[]>(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem("totag_crs_workers_live_v1");
+        const saved = localStorage.getItem("totag_crs_workers_clean_v3");
         if (saved) return JSON.parse(saved);
       } catch (e) {
         console.error(e);
@@ -460,7 +460,7 @@ export function ModernHRMISSuite() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("totag_crs_workers_live_v1", JSON.stringify(crsWorkers));
+      localStorage.setItem("totag_crs_workers_clean_v3", JSON.stringify(crsWorkers));
     }
   }, [crsWorkers]);
 
@@ -471,14 +471,10 @@ export function ModernHRMISSuite() {
   const [showWasteManifestModal, setShowWasteManifestModal] = useState(false);
 
   // Live 3PL Waybills List
-  const [waybills, setWaybills] = useState<Array<{ id: string; waybillNo: string; site: string; bales: number; nets: number; driver: string; status: string; date: string }>>([
-    { id: "WB-01", waybillNo: "WB-3PL-99201", site: "Sinje Preposition Site (PPS-04)", bales: 20, nets: 1000, driver: "Mohammed Dukuly", status: "Witnessed & Bonded", date: "2026-11-20" }
-  ]);
+  const [waybills, setWaybills] = useState<Array<{ id: string; waybillNo: string; site: string; bales: number; nets: number; driver: string; status: string; date: string }>>([]);
 
   // Live Waste Manifests List
-  const [wasteManifests, setWasteManifests] = useState<Array<{ id: string; manifestNo: string; pps: string; bundles49: number; totalBags: number; straps: number; status: string; date: string }>>([
-    { id: "WM-01", manifestNo: "WSC-GAR-2026-08", pps: "Sinje PPS Waste Bay", bundles49: 2, totalBags: 98, straps: 98, status: "Handed to 3PL", date: "2026-11-25" }
-  ]);
+  const [wasteManifests, setWasteManifests] = useState<Array<{ id: string; manifestNo: string; pps: string; bundles49: number; totalBags: number; straps: number; status: string; date: string }>>([]);
 
   const [selectedCrsWorker, setSelectedCrsWorker] = useState<CRSTemporaryWorker | null>(null);
   const [selectedWorkerForDossier, setSelectedWorkerForDossier] = useState<CRSTemporaryWorker | null>(null);
@@ -624,6 +620,21 @@ export function ModernHRMISSuite() {
         description: `Login Phone: ${worker.phone} | Temp PIN: ${worker.temporaryPassword || 'CRS-2026'}`
       });
     }
+  };
+
+  const handleResetCrsData = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("totag_crs_workers_clean_v3");
+      localStorage.removeItem("totag_crs_workers_live_v1");
+      localStorage.removeItem("totag_crs_workers_live_v2");
+    }
+    setCrsWorkers([]);
+    setWaybills([]);
+    setWasteManifests([]);
+    toast({
+      title: "✓ System Clean Reset Complete",
+      description: "All seeded data, test recruits, waybills, and waste manifests have been wiped to 0."
+    });
   };
 
   const handleRecruitCrsWorker = async (e: React.FormEvent) => {
