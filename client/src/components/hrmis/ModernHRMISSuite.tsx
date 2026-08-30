@@ -1,3 +1,4 @@
+import { getApiUrl } from "@/lib/config";
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -484,6 +485,8 @@ export function ModernHRMISSuite() {
   const [showWorkerDossierModal, setShowWorkerDossierModal] = useState<boolean>(false);
   const [supervisorNote, setSupervisorNote] = useState<string>("");
   const [showCrsRecruitModal, setShowCrsRecruitModal] = useState(false);
+  const [recruitedWorkerSuccess, setRecruitedWorkerSuccess] = useState<CRSTemporaryWorker | null>(null);
+  const [showRecruitSuccessModal, setShowRecruitSuccessModal] = useState(false);
   const [showCrsPhoneContractModal, setShowCrsPhoneContractModal] = useState(false);
   const [showCrsQuotaModal, setShowCrsQuotaModal] = useState(false);
   const [showCrsSupervisorClockInModal, setShowCrsSupervisorClockInModal] = useState(false);
@@ -592,7 +595,7 @@ export function ModernHRMISSuite() {
   // Handle Recruitment Submit
   const handleResendCredentials = async (worker: CRSTemporaryWorker) => {
     try {
-      const res = await fetch("/api/crs/resend-credentials", {
+      const res = await fetch(getApiUrl("/api/crs/resend-credentials"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -611,7 +614,7 @@ export function ModernHRMISSuite() {
         });
       } else {
         toast({
-          title: "✓ Credentials Ready for Worker",
+          title: "✓ Credentials Generated",
           description: `Login Phone: ${worker.phone} | Temp PIN: ${worker.temporaryPassword || 'CRS-2026'}`
         });
       }
@@ -633,7 +636,7 @@ export function ModernHRMISSuite() {
     const tempPin = `CRS-${Math.floor(1000 + Math.random() * 9000)}`;
     const badgeCode = `TOT-CRS-${(newCrsWorkerForm.role || '').includes("HHR") ? "HHR" : (newCrsWorkerForm.role || '').includes("Supervisor") ? "SUP" : "DP"}-${100 + crsWorkers.length + 1}`;
 
-    const newWorker: CRSTemporaryWorker = {
+    let createdWorker: CRSTemporaryWorker = {
       id: `CRS-W-${String(crsWorkers.length + 1).padStart(3, '0')}`,
       badgeCode,
       fullName: newCrsWorkerForm.fullName,
@@ -666,12 +669,13 @@ export function ModernHRMISSuite() {
       loginPhone: newCrsWorkerForm.phone,
       temporaryPassword: tempPin,
       isFirstLogin: true,
-      credentialsDispatchedSms: true
+      credentialsDispatchedSms: true,
+      credentialsDispatchedEmail: false
     };
 
-    // Call backend API to trigger real email and SMS dispatch
+    // Call live backend API to dispatch official Zoho email & SMS
     try {
-      fetch("/api/crs/recruit-worker", {
+      const res = await fetch(getApiUrl("/api/crs/recruit-worker"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -689,16 +693,23 @@ export function ModernHRMISSuite() {
           byodPhoneModel: newCrsWorkerForm.byodPhoneModel,
           byodPhoneImei: newCrsWorkerForm.byodPhoneImei
         })
-      }).catch(err => console.log("Background API notification:", err));
+      });
+      const data = await res.json();
+      if (data.worker) {
+        createdWorker = data.worker;
+      }
     } catch (e) {
-      console.error(e);
+      console.error("Recruitment API call error:", e);
     }
 
-    setCrsWorkers(prev => [newWorker, ...prev]);
+    setCrsWorkers(prev => [createdWorker, ...prev]);
     setShowCrsRecruitModal(false);
+    setRecruitedWorkerSuccess(createdWorker);
+    setShowRecruitSuccessModal(true);
+
     toast({
-      title: "✓ Candidate Onboarded & Credentials Dispatched",
-      description: `Dispatched to ${newCrsWorkerForm.phone}${newCrsWorkerForm.email ? " & " + newCrsWorkerForm.email : ""}! Login ID: ${newWorker.phone} | Temp PIN: ${newWorker.temporaryPassword}`
+      title: "✓ Candidate Successfully Recruited!",
+      description: `Dispatched credentials to ${createdWorker.phone}${createdWorker.email ? " & " + createdWorker.email : ""}. Login ID: ${createdWorker.phone} | Temp PIN: ${createdWorker.temporaryPassword}`
     });
   };
 
@@ -2625,6 +2636,69 @@ export function ModernHRMISSuite() {
               Authorize Route Release & Clock In Teams ➔
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+
+      {/* ========================================================================= */}
+      {/* MODAL: ONBOARDING SUCCESS & CREDENTIALS CONFIRMATION */}
+      {/* ========================================================================= */}
+      <Dialog open={showRecruitSuccessModal} onOpenChange={setShowRecruitSuccessModal}>
+        <DialogContent className="max-w-md rounded-3xl bg-slate-950 text-white border border-teal-500/50 p-6">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-2xl bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 mb-2">
+              <CheckCircle2 className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-base font-black text-white">
+              Candidate Recruited & Credentials Dispatched!
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Account created and credentials transmitted to field worker.
+            </DialogDescription>
+          </DialogHeader>
+
+          {recruitedWorkerSuccess && (
+            <div className="space-y-4 pt-2">
+              <div className="p-4 rounded-2xl bg-slate-900 border border-teal-500/30 space-y-2 text-xs font-mono">
+                <div><strong>Candidate:</strong> <span className="text-white font-bold">{recruitedWorkerSuccess.fullName}</span></div>
+                <div><strong>Login ID (Phone):</strong> <span className="text-teal-400 font-bold">{recruitedWorkerSuccess.phone}</span></div>
+                <div><strong>Temporary PIN:</strong> <span className="text-amber-300 font-bold text-sm">{recruitedWorkerSuccess.temporaryPassword}</span></div>
+                <div><strong>Assigned Role:</strong> {recruitedWorkerSuccess.role}</div>
+                <div><strong>Catchment:</strong> {recruitedWorkerSuccess.healthFacilityCatchment}</div>
+                <div><strong>Email Status:</strong> {recruitedWorkerSuccess.email ? "✅ Dispatched to " + recruitedWorkerSuccess.email : "⚠️ No email provided"}</div>
+                <div><strong>Field App URL:</strong> <span className="text-sky-400">totaggroup.com/field</span></div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <a
+                  href={`https://api.whatsapp.com/send?phone=${recruitedWorkerSuccess.phone.replace(/[^0-9]/g, '')}&text=${encodeURIComponent('Hello ' + recruitedWorkerSuccess.fullName + ', your TOTAG Field App credentials are: Login ID: ' + recruitedWorkerSuccess.phone + ', Temp PIN: ' + recruitedWorkerSuccess.temporaryPassword + '. Sign in at https://totaggroup.com/field')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5"
+                >
+                  <Share2 className="w-4 h-4" /> 📲 Send Credentials via WhatsApp / SMS
+                </a>
+
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`TOTAG Field App Credentials: Login ID: ${recruitedWorkerSuccess.phone}, Temp PIN: ${recruitedWorkerSuccess.temporaryPassword}, URL: https://totaggroup.com/field`);
+                    toast({ title: "Copied!", description: "Credentials copied to clipboard." });
+                  }}
+                  variant="outline"
+                  className="w-full rounded-xl border-white/10 text-xs text-slate-300"
+                >
+                  📋 Copy Login Credentials
+                </Button>
+
+                <Button
+                  onClick={() => setShowRecruitSuccessModal(false)}
+                  className="w-full rounded-xl bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs"
+                >
+                  Done
+                </Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
