@@ -32,6 +32,7 @@ import {
   TrendingDown,
   Shield,
   ShieldCheck,
+  RotateCcw,
   Smartphone,
   Sparkles,
   BookOpen,
@@ -111,188 +112,7 @@ export interface CorporateEmployeeRecord {
 }
 
 
-const SEED_CRS_CAMPAIGN_WORKERS: CRSTemporaryWorker[] = [
-  {
-    id: "CRS-W-001",
-    badgeCode: "TOT-CRS-HHR-101",
-    fullName: "Fatu Kanneh",
-    phone: "+231-777-111-201",
-    nationalId: "LR-781290-01",
-    role: "HHR Registration Agent",
-    county: "Grand Cape Mount",
-    district: "Garwula",
-    healthFacilityCatchment: "Sinje Health Center (HF-04)",
-    contractWindowDays: 10,
-    contractStartDate: "2026-11-23",
-    contractEndDate: "2026-12-02",
-    dailyRateUsd: 25,
-    totalContractValueUsd: 250,
-    momoCarrier: "Orange Money",
-    momoWalletNumber: "+231-777-111-201",
-    momoKycVerified: true,
-    byodPhoneModel: "Samsung Galaxy A14 (Android 13)",
-    byodPhoneImei: "358912093849102",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 25,
-    actualHhrCompleted: 26,
-    dailyItnTarget: 0,
-    actualItnDistributed: 0,
-    performanceRatio: 104,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid"
-  },
-  {
-    id: "CRS-W-002",
-    badgeCode: "TOT-CRS-HHR-102",
-    fullName: "Boakai Zinnah",
-    phone: "+231-887-222-302",
-    nationalId: "LR-781290-02",
-    role: "HHR Registration Agent",
-    county: "Grand Cape Mount",
-    district: "Garwula",
-    healthFacilityCatchment: "Sinje Health Center (HF-04)",
-    contractWindowDays: 10,
-    contractStartDate: "2026-11-23",
-    contractEndDate: "2026-12-02",
-    dailyRateUsd: 25,
-    totalContractValueUsd: 250,
-    momoCarrier: "Lonestar MTN MoMo",
-    momoWalletNumber: "+231-887-222-302",
-    momoKycVerified: true,
-    byodPhoneModel: "Tecno Spark 10 (Android 12)",
-    byodPhoneImei: "867192039481920",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 25,
-    actualHhrCompleted: 25,
-    dailyItnTarget: 0,
-    actualItnDistributed: 0,
-    performanceRatio: 100,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid"
-  },
-  {
-    id: "CRS-W-003",
-    badgeCode: "TOT-CRS-SUP-001",
-    fullName: "Varney Kromah",
-    phone: "+231-777-333-403",
-    nationalId: "LR-661294-88",
-    role: "Field Supervisor",
-    county: "Grand Cape Mount",
-    district: "Garwula",
-    healthFacilityCatchment: "Garwula District Hub (5 Teams)",
-    contractWindowDays: 12,
-    contractStartDate: "2026-11-22",
-    contractEndDate: "2026-12-03",
-    dailyRateUsd: 40,
-    totalContractValueUsd: 480,
-    momoCarrier: "Orange Money",
-    momoWalletNumber: "+231-777-333-403",
-    momoKycVerified: true,
-    byodPhoneModel: "Infinix Hot 30 (Android 13)",
-    byodPhoneImei: "359012948571029",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 125,
-    actualHhrCompleted: 130,
-    dailyItnTarget: 0,
-    actualItnDistributed: 0,
-    performanceRatio: 104,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid"
-  },
-  {
-    id: "CRS-W-004",
-    badgeCode: "TOT-CRS-DP-201",
-    fullName: "Miatta Fahnbulleh",
-    phone: "+231-887-444-504",
-    nationalId: "LR-551029-77",
-    role: "ITN Distribution Lead",
-    county: "Grand Cape Mount",
-    district: "Tewor",
-    healthFacilityCatchment: "Robertsport Fixed DP (DP-01)",
-    contractWindowDays: 10,
-    contractStartDate: "2026-12-07",
-    contractEndDate: "2026-12-16",
-    dailyRateUsd: 30,
-    totalContractValueUsd: 300,
-    momoCarrier: "Lonestar MTN MoMo",
-    momoWalletNumber: "+231-887-444-504",
-    momoKycVerified: true,
-    byodPhoneModel: "Samsung Galaxy A05 (Android 13)",
-    byodPhoneImei: "869102938471920",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 0,
-    actualHhrCompleted: 0,
-    dailyItnTarget: 50,
-    actualItnDistributed: 52,
-    performanceRatio: 104,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "Daily Staged"
-  },
-  {
-    id: "CRS-W-005",
-    badgeCode: "TOT-CRS-DC-001",
-    fullName: "Gbessay Freeman",
-    phone: "+231-777-555-605",
-    nationalId: "LR-441029-66",
-    role: "District Coordinator",
-    county: "Grand Cape Mount",
-    district: "Porkpah",
-    healthFacilityCatchment: "Porkpah District Command Cell",
-    contractWindowDays: 14,
-    contractStartDate: "2026-11-20",
-    contractEndDate: "2026-12-18",
-    dailyRateUsd: 55,
-    totalContractValueUsd: 770,
-    momoCarrier: "Orange Money",
-    momoWalletNumber: "+231-777-555-605",
-    momoKycVerified: true,
-    byodPhoneModel: "Redmi Note 12 (Android 13)",
-    byodPhoneImei: "861920394857102",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 275,
-    actualHhrCompleted: 280,
-    dailyItnTarget: 600,
-    actualItnDistributed: 610,
-    performanceRatio: 102,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid"
-  },
-  {
-    id: "CRS-W-006",
-    badgeCode: "TOT-CRS-LOG-001",
-    fullName: "Sekou Kamara",
-    phone: "+231-887-666-706",
-    nationalId: "LR-331029-55",
-    role: "Logistics & Site-Readiness",
-    county: "Grand Cape Mount",
-    district: "Gola Konneh",
-    healthFacilityCatchment: "Lofa Bridge Preposition Site (PPS-02)",
-    contractWindowDays: 14,
-    contractStartDate: "2026-11-20",
-    contractEndDate: "2026-12-18",
-    dailyRateUsd: 35,
-    totalContractValueUsd: 490,
-    momoCarrier: "Lonestar MTN MoMo",
-    momoWalletNumber: "+231-887-666-706",
-    momoKycVerified: true,
-    byodPhoneModel: "Infinix Smart 7 (Android 12)",
-    byodPhoneImei: "351029384756192",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 0,
-    actualHhrCompleted: 0,
-    dailyItnTarget: 200,
-    actualItnDistributed: 200,
-    performanceRatio: 100,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "Daily Staged"
-  }
-];
+const SEED_CRS_CAMPAIGN_WORKERS: CRSTemporaryWorker[] = [];
 
 const SEED_CORPORATE_EMPLOYEES: CorporateEmployeeRecord[] = [
   {
@@ -616,7 +436,40 @@ export function ModernHRMISSuite() {
 
   // Active Delegation Grants List
   // CRS Campaign Workforce State & Modals
-  const [crsWorkers, setCrsWorkers] = useState<CRSTemporaryWorker[]>(SEED_CRS_CAMPAIGN_WORKERS);
+  const [crsWorkers, setCrsWorkers] = useState<CRSTemporaryWorker[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("totag_crs_workers_live_v1");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("totag_crs_workers_live_v1", JSON.stringify(crsWorkers));
+    }
+  }, [crsWorkers]);
+
+  // SOW Sub-Module Interactive Views State
+  const [activeSowPillar, setActiveSowPillar] = useState<"overview" | "logistics" | "distribution" | "waste" | "admin">("overview");
+  const [showExportAuditModal, setShowExportAuditModal] = useState(false);
+  const [showWaybillModal, setShowWaybillModal] = useState(false);
+  const [showWasteManifestModal, setShowWasteManifestModal] = useState(false);
+
+  // Live 3PL Waybills List
+  const [waybills, setWaybills] = useState<Array<{ id: string; waybillNo: string; site: string; bales: number; nets: number; driver: string; status: string; date: string }>>([
+    { id: "WB-01", waybillNo: "WB-3PL-99201", site: "Sinje Preposition Site (PPS-04)", bales: 20, nets: 1000, driver: "Mohammed Dukuly", status: "Witnessed & Bonded", date: "2026-11-20" }
+  ]);
+
+  // Live Waste Manifests List
+  const [wasteManifests, setWasteManifests] = useState<Array<{ id: string; manifestNo: string; pps: string; bundles49: number; totalBags: number; straps: number; status: string; date: string }>>([
+    { id: "WM-01", manifestNo: "WSC-GAR-2026-08", pps: "Sinje PPS Waste Bay", bundles49: 2, totalBags: 98, straps: 98, status: "Handed to 3PL", date: "2026-11-25" }
+  ]);
+
   const [selectedCrsWorker, setSelectedCrsWorker] = useState<CRSTemporaryWorker | null>(null);
   const [showCrsRecruitModal, setShowCrsRecruitModal] = useState(false);
   const [showCrsPhoneContractModal, setShowCrsPhoneContractModal] = useState(false);
@@ -1467,10 +1320,10 @@ export function ModernHRMISSuite() {
                 <div>
                   <div className="flex items-center space-x-2">
                     <h3 className="text-lg font-black text-white">
-                      CRS LLIN CAMPAIGN — TEMPORARY WORKFORCE & FIELD HR HUB
+                      CRS LLIN CAMPAIGN — TEMPORARY WORKFORCE & SOW OPERATIONS HUB
                     </h3>
-                    <Badge className="bg-teal-500 text-slate-950 font-mono font-black text-[10px]">
-                      10-14 Day Contracts
+                    <Badge className="bg-emerald-500 text-slate-950 font-mono font-black text-[10px]">
+                      LIVE REAL-TIME MODE
                     </Badge>
                   </div>
                   <p className="text-xs text-slate-400 mt-0.5">
@@ -1485,149 +1338,381 @@ export function ModernHRMISSuite() {
                 </Badge>
                 <Button
                   size="sm"
-                  onClick={() => {
-                    toast({
-                      title: "✓ CRS Daily Compliance Export Generated",
-                      description: "Daily Attendance, BYOD Device IMEI Register & MoMo Payroll Report compiled."
-                    });
-                  }}
-                  className="bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs rounded-xl h-8 px-3"
+                  onClick={() => setShowExportAuditModal(true)}
+                  className="bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs rounded-xl h-8 px-3 shadow-md"
                 >
-                  <Download className="w-3.5 h-3.5 mr-1" /> Export CRS Daily Audit
+                  <Download className="w-3.5 h-3.5 mr-1" /> Open Official CRS Daily Audit Report
                 </Button>
               </div>
             </div>
 
-            {/* CAMPAIGN CAPACITY & QUOTA HUD */}
+            {/* REAL-TIME CAMPAIGN TELEMETRY KPI HUD */}
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Field Deployment</span>
-                <div className="text-xl font-black text-teal-400">202 Staff</div>
-                <div className="text-[10px] text-slate-400">180 Field + 22 Command</div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Live Headcount</span>
+                <div className="text-2xl font-black text-teal-400">{crsWorkers.length} <span className="text-xs font-normal text-slate-400">Staff</span></div>
+                <div className="text-[10px] text-slate-400">Target: 202 Field/Command</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">HHR Household Quota</span>
-                <div className="text-xl font-black text-emerald-400">38,291 HH</div>
-                <div className="text-[10px] text-emerald-400 font-bold">50 HH / Team / Day</div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">Signed $129 Contracts</span>
+                <div className="text-2xl font-black text-amber-400">{crsWorkers.filter(w => w.byodConsentSigned).length} / {crsWorkers.length || 0}</div>
+                <div className="text-[10px] text-amber-300 font-bold">{crsWorkers.length > 0 ? `${Math.round((crsWorkers.filter(w => w.byodConsentSigned).length / crsWorkers.length) * 100)}% Signed` : "Awaiting Recruits"}</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">ITN Distribution Quota</span>
-                <div className="text-xl font-black text-sky-400">84,952 Nets</div>
-                <div className="text-[10px] text-sky-400 font-bold">200 Nets / Team / Day</div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">HHR Door-to-Door Quota</span>
+                <div className="text-2xl font-black text-emerald-400">
+                  {crsWorkers.reduce((acc, curr) => acc + (curr.actualHhrCompleted || 0), 0)} <span className="text-xs font-normal text-slate-400">HH Done</span>
+                </div>
+                <div className="text-[10px] text-emerald-400 font-bold">Target: 38,291 Households</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Tested BYOD Devices</span>
-                <div className="text-xl font-black text-amber-400">174 Phones</div>
-                <div className="text-[10px] text-slate-400">Android 9+ &bull; GPS Active</div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">3PL Waybill Bales</span>
+                <div className="text-2xl font-black text-sky-400">{waybills.reduce((acc, curr) => acc + curr.bales, 0)} <span className="text-xs font-normal text-slate-400">Bales</span></div>
+                <div className="text-[10px] text-slate-400">{waybills.reduce((acc, curr) => acc + curr.nets, 0)} Nets Witnessed</div>
               </div>
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1 col-span-2 lg:col-span-1">
-                <span className="text-[10px] font-mono text-slate-400 uppercase">Waste Bale Reverse</span>
-                <div className="text-xl font-black text-purple-400">49 Bags/Bale</div>
-                <div className="text-[10px] text-purple-400 font-bold">100% Bag Accounting</div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase">49-in-1 Waste Bundles</span>
+                <div className="text-2xl font-black text-purple-400">{wasteManifests.reduce((acc, curr) => acc + curr.bundles49, 0)} <span className="text-xs font-normal text-slate-400">Bundles</span></div>
+                <div className="text-[10px] text-purple-400 font-bold">{wasteManifests.reduce((acc, curr) => acc + curr.totalBags, 0)} Empty Bags Returned</div>
               </div>
             </div>
 
             {/* ========================================================================= */}
-            {/* TOTAG SCOPE OF WORK (SOW) COMMAND & CONTROL CONSOLE (4 CONTRACT PILLARS) */}
+            {/* TOTAG 4 SCOPE OF WORK (SOW) INTERACTIVE PILLARS CONSOLE */}
             {/* ========================================================================= */}
             <div className="p-5 rounded-3xl bg-slate-900 border border-teal-500/30 space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
                 <div>
                   <h4 className="text-sm font-black text-white flex items-center gap-2">
                     <Layers className="w-4 h-4 text-teal-400" />
-                    TOTAG SERVICE PROVIDER SCOPE OF WORK (SOW) MANAGEMENT CONSOLE
+                    TOTAG SERVICE PROVIDER SCOPE OF WORK (SOW) COMMAND & CONTROL CONSOLE
                   </h4>
                   <p className="text-[11px] text-slate-400">
-                    Execution matrix under the supervision of Campaign Management Team (CMT) & County Health Teams (CHTs)
+                    Click any SOW Pillar to open its dedicated operational console, waybill ledger, or reverse manifest.
                   </p>
                 </div>
-                <Badge className="bg-teal-500/20 text-teal-300 border border-teal-500/40 text-[10px] font-mono">
-                  All 4 SOW Pillars Active
-                </Badge>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
-                
-                {/* Pillar 1: Logistics & 3PL Receiving */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-blue-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-blue-500/20 text-blue-300 border-0 text-[10px] font-bold">
-                      1. Logistics & 3PL
-                    </Badge>
-                    <CheckCircle className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <h5 className="font-bold text-white text-xs">Logistics & Insurance Bond</h5>
-                  <ul className="text-[11px] text-slate-400 space-y-1">
-                    <li>&bull; BYOD Consent & digital app deployed</li>
-                    <li>&bull; 3PL delivery waybill verification at PPS/DPs</li>
-                    <li>&bull; <strong>All-Risk Insurance Bond</strong> active on 84.9k nets</li>
-                    <li>&bull; Weekly CMT inventory reconciliation</li>
-                  </ul>
-                  <div className="pt-1 font-mono text-[10px] text-blue-400 font-bold">
-                    ✓ Status: 100% Waybills Logged
-                  </div>
-                </div>
-
-                {/* Pillar 2: Distribution Requirements */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] font-bold">
-                      2. Distribution
-                    </Badge>
-                    <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <h5 className="font-bold text-white text-xs">HHR & ITN Issuance</h5>
-                  <ul className="text-[11px] text-slate-400 space-y-1">
-                    <li>&bull; Urban door-to-door (Montserrado/Margibi)</li>
-                    <li>&bull; Rural 2-phase: HHR + 91 Fixed/Mobile DPs</li>
-                    <li>&bull; <strong>Token-card verification</strong> before issue</li>
-                    <li>&bull; Mandatory barcode scan & SBC sensitization</li>
-                  </ul>
-                  <div className="pt-1 font-mono text-[10px] text-emerald-400 font-bold">
-                    ✓ Status: 38,291 Target Ready
-                  </div>
-                </div>
-
-                {/* Pillar 3: Waste Management (49-in-1) */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-purple-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-purple-500/20 text-purple-300 border-0 text-[10px] font-bold">
-                      3. Waste Reverse
-                    </Badge>
-                    <CheckCircle className="w-4 h-4 text-purple-400" />
-                  </div>
-                  <h5 className="font-bold text-white text-xs">49-in-1 Bale Reverse Logistics</h5>
-                  <ul className="text-[11px] text-slate-400 space-y-1">
-                    <li>&bull; 100% empty bag & strap retrieval</li>
-                    <li>&bull; <strong>49 bags packed into 1 outer bag</strong></li>
-                    <li>&bull; Bundled straps with numbered tallies</li>
-                    <li>&bull; Dedicated Waste Stock Cards for 3PL</li>
-                  </ul>
-                  <div className="pt-1 font-mono text-[10px] text-purple-400 font-bold">
-                    ✓ Status: 1,734 Bales Tracked
-                  </div>
-                </div>
-
-                {/* Pillar 4: Admin & Governance */}
-                <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge className="bg-amber-500/20 text-amber-300 border-0 text-[10px] font-bold">
-                      4. Administration
-                    </Badge>
-                    <CheckCircle className="w-4 h-4 text-amber-400" />
-                  </div>
-                  <h5 className="font-bold text-white text-xs">Global Fund & CHT Oversight</h5>
-                  <ul className="text-[11px] text-slate-400 space-y-1">
-                    <li>&bull; Global Fund financial procedure compliance</li>
-                    <li>&bull; Local recruitment of 202 field personnel</li>
-                    <li>&bull; Daily escalation to CMT/CHTs & MOH</li>
-                    <li>&bull; Decent Work Act & PSEA safeguarding</li>
-                  </ul>
-                  <div className="pt-1 font-mono text-[10px] text-amber-400 font-bold">
-                    ✓ Status: 100% Compliant
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <Button
+                    size="sm"
+                    variant={activeSowPillar === "overview" ? "default" : "outline"}
+                    onClick={() => setActiveSowPillar("overview")}
+                    className="text-[10px] h-7 px-2.5 rounded-xl font-bold"
+                  >
+                    All 4 Pillars
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={activeSowPillar === "logistics" ? "default" : "outline"}
+                    onClick={() => setActiveSowPillar("logistics")}
+                    className="text-[10px] h-7 px-2.5 rounded-xl font-bold text-blue-300"
+                  >
+                    1. Logistics (3PL)
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={activeSowPillar === "distribution" ? "default" : "outline"}
+                    onClick={() => setActiveSowPillar("distribution")}
+                    className="text-[10px] h-7 px-2.5 rounded-xl font-bold text-emerald-300"
+                  >
+                    2. Distribution
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={activeSowPillar === "waste" ? "default" : "outline"}
+                    onClick={() => setActiveSowPillar("waste")}
+                    className="text-[10px] h-7 px-2.5 rounded-xl font-bold text-purple-300"
+                  >
+                    3. Waste (49-in-1)
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={activeSowPillar === "admin" ? "default" : "outline"}
+                    onClick={() => setActiveSowPillar("admin")}
+                    className="text-[10px] h-7 px-2.5 rounded-xl font-bold text-amber-300"
+                  >
+                    4. Governance
+                  </Button>
                 </div>
               </div>
+
+              {/* PILLAR SUB-VIEWS */}
+              {activeSowPillar === "overview" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                  
+                  {/* Pillar 1: Logistics & 3PL Receiving */}
+                  <div 
+                    onClick={() => setActiveSowPillar("logistics")}
+                    className="p-4 rounded-2xl bg-slate-950 border border-blue-500/30 hover:border-blue-400 transition-all cursor-pointer space-y-2 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-blue-500/20 text-blue-300 border-0 text-[10px] font-bold">
+                        1. Logistics & 3PL
+                      </Badge>
+                      <ArrowRight className="w-4 h-4 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h5 className="font-bold text-white text-xs">Logistics & Insurance Bond</h5>
+                    <ul className="text-[11px] text-slate-400 space-y-1">
+                      <li>&bull; BYOD Consent & digital app deployed</li>
+                      <li>&bull; 3PL delivery waybill verification at PPS/DPs</li>
+                      <li>&bull; <strong>All-Risk Insurance Bond</strong> active on 84.9k nets</li>
+                      <li>&bull; Weekly CMT inventory reconciliation</li>
+                    </ul>
+                    <div className="pt-1 font-mono text-[10px] text-blue-400 font-bold">
+                      Open Logistics Console ➔
+                    </div>
+                  </div>
+
+                  {/* Pillar 2: Distribution Requirements */}
+                  <div 
+                    onClick={() => setActiveSowPillar("distribution")}
+                    className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer space-y-2 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] font-bold">
+                        2. Distribution
+                      </Badge>
+                      <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h5 className="font-bold text-white text-xs">HHR & ITN Issuance</h5>
+                    <ul className="text-[11px] text-slate-400 space-y-1">
+                      <li>&bull; Urban door-to-door (Montserrado/Margibi)</li>
+                      <li>&bull; Rural 2-phase: HHR + 91 Fixed/Mobile DPs</li>
+                      <li>&bull; <strong>Token-card verification</strong> before issue</li>
+                      <li>&bull; Mandatory barcode scan & SBC sensitization</li>
+                    </ul>
+                    <div className="pt-1 font-mono text-[10px] text-emerald-400 font-bold">
+                      Open Distribution Console ➔
+                    </div>
+                  </div>
+
+                  {/* Pillar 3: Waste Management (49-in-1) */}
+                  <div 
+                    onClick={() => setActiveSowPillar("waste")}
+                    className="p-4 rounded-2xl bg-slate-950 border border-purple-500/30 hover:border-purple-400 transition-all cursor-pointer space-y-2 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-purple-500/20 text-purple-300 border-0 text-[10px] font-bold">
+                        3. Waste Reverse
+                      </Badge>
+                      <ArrowRight className="w-4 h-4 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h5 className="font-bold text-white text-xs">49-in-1 Bale Reverse Logistics</h5>
+                    <ul className="text-[11px] text-slate-400 space-y-1">
+                      <li>&bull; 100% empty bag & strap retrieval</li>
+                      <li>&bull; <strong>49 bags packed into 1 outer bag</strong></li>
+                      <li>&bull; Bundled straps with numbered tallies</li>
+                      <li>&bull; Dedicated Waste Stock Cards for 3PL</li>
+                    </ul>
+                    <div className="pt-1 font-mono text-[10px] text-purple-400 font-bold">
+                      Open Waste Console ➔
+                    </div>
+                  </div>
+
+                  {/* Pillar 4: Admin & Governance */}
+                  <div 
+                    onClick={() => setActiveSowPillar("admin")}
+                    className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 hover:border-amber-400 transition-all cursor-pointer space-y-2 group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-amber-500/20 text-amber-300 border-0 text-[10px] font-bold">
+                        4. Administration
+                      </Badge>
+                      <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h5 className="font-bold text-white text-xs">Global Fund & CHT Oversight</h5>
+                    <ul className="text-[11px] text-slate-400 space-y-1">
+                      <li>&bull; Global Fund financial procedure compliance</li>
+                      <li>&bull; Local recruitment of field personnel</li>
+                      <li>&bull; Daily escalation to CMT/CHTs & MOH</li>
+                      <li>&bull; Decent Work Act & PSEA safeguarding</li>
+                    </ul>
+                    <div className="pt-1 font-mono text-[10px] text-amber-400 font-bold">
+                      Open Governance Console ➔
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PILLAR 1 EXPANDED: 3PL LOGISTICS & WAYBILL CONSOLE */}
+              {activeSowPillar === "logistics" && (
+                <div className="p-4 rounded-2xl bg-slate-950 border border-blue-500/30 space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <div>
+                      <h5 className="font-black text-white text-sm flex items-center gap-2">
+                        <Package className="w-4 h-4 text-blue-400" />
+                        Pillar 1: 3PL Delivery Witnessing & All-Risk Insurance Bond Ledger
+                      </h5>
+                      <p className="text-[11px] text-slate-400">
+                        Tracks physical delivery receipts from 3PL at District Warehouses, Preposition Sites (PPS), and Distribution Points (DPs).
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowWaybillModal(true)}
+                      className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs h-8 px-3 rounded-xl"
+                    >
+                      <Plus className="w-3.5 h-3.5 mr-1" /> Record 3PL Waybill Receipt
+                    </Button>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-xl border border-white/10">
+                    <table className="w-full text-xs text-left">
+                      <thead>
+                        <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
+                          <th className="p-3">Waybill #</th>
+                          <th className="p-3">Preposition Site (PPS)</th>
+                          <th className="p-3">Bales Received</th>
+                          <th className="p-3">Total Nets</th>
+                          <th className="p-3">3PL Driver</th>
+                          <th className="p-3">Insurance Bond Status</th>
+                          <th className="p-3">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5 font-mono">
+                        {waybills.map((wb) => (
+                          <tr key={wb.id} className="hover:bg-slate-800/40">
+                            <td className="p-3 text-blue-400 font-bold">{wb.waybillNo}</td>
+                            <td className="p-3 text-slate-200">{wb.site}</td>
+                            <td className="p-3 text-white font-bold">{wb.bales} Bales</td>
+                            <td className="p-3 text-emerald-400 font-bold">{wb.nets.toLocaleString()} Nets</td>
+                            <td className="p-3 text-slate-300">{wb.driver}</td>
+                            <td className="p-3">
+                              <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px]">
+                                ✓ {wb.status}
+                              </Badge>
+                            </td>
+                            <td className="p-3 text-slate-400">{wb.date}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* PILLAR 2 EXPANDED: DISTRIBUTION & BARCODE CONSOLE */}
+              {activeSowPillar === "distribution" && (
+                <div className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="font-black text-white text-sm flex items-center gap-2">
+                        <Scan className="w-4 h-4 text-emerald-400" />
+                        Pillar 2: Distribution Operations & Anti-Fraud Token/Barcode Scanner
+                      </h5>
+                      <p className="text-[11px] text-slate-400">
+                        Tracks double-phase rural model (HHR registration + Fixed/Mobile DP net issuance) with token verification.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-slate-400 font-mono">Total Planned Households:</span>
+                      <div className="text-xl font-bold text-white">38,291 HH</div>
+                      <div className="text-[10px] text-emerald-400 font-bold">50 HH / 2-person team / day</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-slate-400 font-mono">Total Planned ITN Nets:</span>
+                      <div className="text-xl font-bold text-white">84,952 Nets</div>
+                      <div className="text-[10px] text-sky-400 font-bold">200 Nets / 4-person team / day</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-slate-400 font-mono">Distribution Locations:</span>
+                      <div className="text-xl font-bold text-white">91 Fixed / Mobile DPs</div>
+                      <div className="text-[10px] text-purple-400 font-bold">Sequenced across 5 Districts</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PILLAR 3 EXPANDED: 49-IN-1 WASTE CONSOLE */}
+              {activeSowPillar === "waste" && (
+                <div className="p-4 rounded-2xl bg-slate-950 border border-purple-500/30 space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <div>
+                      <h5 className="font-black text-white text-sm flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-purple-400" />
+                        Pillar 3: 49-in-1 Waste Reverse Logistics & Stock Cards Ledger
+                      </h5>
+                      <p className="text-[11px] text-slate-400">
+                        Mandatory stacking of 49 empty bale bags inside 1 outer sealed bag (50 total) for 3PL collection.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowWasteManifestModal(true)}
+                      className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs h-8 px-3 rounded-xl"
+                    >
+                      <Plus className="w-3.5 h-3.5 mr-1" /> Log Waste Return Manifest
+                    </Button>
+                  </div>
+
+                  <div className="overflow-x-auto rounded-xl border border-white/10">
+                    <table className="w-full text-xs text-left">
+                      <thead>
+                        <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
+                          <th className="p-3">Waste Manifest #</th>
+                          <th className="p-3">PPS Return Location</th>
+                          <th className="p-3">49-in-1 Bundles</th>
+                          <th className="p-3">Total Empty Bags</th>
+                          <th className="p-3">Straps Tied</th>
+                          <th className="p-3">3PL Handover Status</th>
+                          <th className="p-3">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/5 font-mono">
+                        {wasteManifests.map((wm) => (
+                          <tr key={wm.id} className="hover:bg-slate-800/40">
+                            <td className="p-3 text-purple-400 font-bold">{wm.manifestNo}</td>
+                            <td className="p-3 text-slate-200">{wm.pps}</td>
+                            <td className="p-3 text-white font-bold">{wm.bundles49} Bundles</td>
+                            <td className="p-3 text-emerald-400 font-bold">{wm.totalBags} Bags</td>
+                            <td className="p-3 text-amber-300">{wm.straps} Straps</td>
+                            <td className="p-3">
+                              <Badge className="bg-purple-500/20 text-purple-300 border-0 text-[10px]">
+                                ✓ {wm.status}
+                              </Badge>
+                            </td>
+                            <td className="p-3 text-slate-400">{wm.date}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* PILLAR 4 EXPANDED: GOVERNANCE & PSEA CONSOLE */}
+              {activeSowPillar === "admin" && (
+                <div className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="font-black text-white text-sm flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-amber-400" />
+                        Pillar 4: Organizational Governance, Global Fund Compliance & PSEA
+                      </h5>
+                      <p className="text-[11px] text-slate-400">
+                        Operational compliance with Decent Work Act 2015, CMT Joint Supervision, and Zero-Tolerance PSEA protocols.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3.5 rounded-xl bg-slate-900 border border-white/10 space-y-2 text-xs">
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span>Safeguarding & PSEA Incident Escalation Queue:</span>
+                      <Badge className="bg-emerald-500/20 text-emerald-300 text-[10px]">0 Active Infractions</Badge>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span>Global Fund Financial Audit Status:</span>
+                      <strong className="text-emerald-400">100% Compliant & Reconciled</strong>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-300">
+                      <span>County Health Team (CHT) Joint Sign-off:</span>
+                      <strong className="text-teal-300">Signed Daily Briefing Registers Active</strong>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* SECTION: 4 INTERACTIVE CAMPAIGN ACTION BUTTONS */}
@@ -1644,6 +1729,10 @@ export function ModernHRMISSuite() {
               {/* Action 2: Sign $129 Phone Contract */}
               <Button
                 onClick={() => {
+                  if (crsWorkers.length === 0) {
+                    toast({ title: "No Workers Registered", description: "Please recruit a temporary worker first before signing contract.", variant: "destructive" });
+                    return;
+                  }
                   const target = crsWorkers.find(w => !w.byodConsentSigned) || crsWorkers[0];
                   setSelectedCrsWorker(target);
                   setPhoneContractSignature({
@@ -1673,6 +1762,10 @@ export function ModernHRMISSuite() {
               {/* Action 4: Log Quota */}
               <Button
                 onClick={() => {
+                  if (crsWorkers.length === 0) {
+                    toast({ title: "No Workers Registered", description: "Please recruit a temporary worker first before logging quota.", variant: "destructive" });
+                    return;
+                  }
                   setQuotaUpdateForm({
                     workerId: crsWorkers[0].id,
                     todayHhrRegistered: 25,
@@ -1704,6 +1797,10 @@ export function ModernHRMISSuite() {
                   <Button
                     size="sm"
                     onClick={() => {
+                      if (crsWorkers.length === 0) {
+                        toast({ title: "No Staff to Disburse", description: "Please recruit temporary workers before running batch Mobile Money.", variant: "destructive" });
+                        return;
+                      }
                       toast({
                         title: "✓ Batch Staged Mobile DSA Dispatched",
                         description: `Disbursed $${crsWorkers.reduce((acc, curr) => acc + (curr.dailyRateUsd * 5), 0)} USD advance via Orange Money / MTN MoMo to ${crsWorkers.length} personnel.`
@@ -1716,145 +1813,135 @@ export function ModernHRMISSuite() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60">
-                <table className="w-full text-xs text-left">
-                  <thead>
-                    <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
-                      <th className="p-3 font-bold">Badge / Worker</th>
-                      <th className="p-3 font-bold">Role & District</th>
-                      <th className="p-3 font-bold">Health Facility Catchment</th>
-                      <th className="p-3 font-bold">$129 Phone Custody</th>
-                      <th className="p-3 font-bold">Daily Quota Status</th>
-                      <th className="p-3 font-bold">Contract (Days/Rate)</th>
-                      <th className="p-3 font-bold">MoMo Wallet</th>
-                      <th className="p-3 font-bold">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {crsWorkers.map((worker) => (
-                      <tr key={worker.id} className="hover:bg-slate-800/40 transition-colors">
-                        <td className="p-3">
-                          <div className="font-bold text-white">{worker.fullName}</div>
-                          <span className="font-mono text-[10px] text-teal-400">{worker.badgeCode}</span>
-                        </td>
-                        <td className="p-3">
-                          <Badge className="bg-slate-800 text-slate-200 text-[10px] border-0 font-bold">
-                            {worker.role}
-                          </Badge>
-                          <div className="text-[10px] text-slate-400 mt-0.5">{worker.district} ({worker.county})</div>
-                        </td>
-                        <td className="p-3">
-                          <span className="text-slate-300 text-[11px] block max-w-[150px] truncate">
-                            {worker.healthFacilityCatchment}
-                          </span>
-                        </td>
-                        <td className="p-3 font-mono text-[11px]">
-                          {worker.byodConsentSigned ? (
-                            <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] flex items-center gap-1 w-fit">
-                              <CheckCircle className="w-3 h-3 text-emerald-400" />
-                              <span>$129 Contract Signed</span>
-                            </Badge>
-                          ) : (
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                setSelectedCrsWorker(worker);
-                                setPhoneContractSignature({
-                                  workerName: worker.fullName,
-                                  workerNationalId: worker.nationalId,
-                                  phoneImei: worker.byodPhoneImei,
-                                  agreedTo129Deduction: true,
-                                  signatureName: worker.fullName
-                                });
-                                setShowCrsPhoneContractModal(true);
-                              }}
-                              className="bg-amber-600 hover:bg-amber-500 text-white text-[10px] h-6 px-2 rounded-lg font-bold"
-                            >
-                              <FileSignature className="w-3 h-3 mr-1" /> Sign Contract
-                            </Button>
-                          )}
-                          <span className="text-[9px] text-slate-500 block mt-0.5">IMEI: {worker.byodPhoneImei}</span>
-                        </td>
-                        <td className="p-3 font-mono">
-                          <div className={`font-bold ${worker.performanceRatio >= 90 ? "text-emerald-400" : "text-rose-400"}`}>
-                            {worker.dailyHhrTarget > 0 
-                              ? `${worker.actualHhrCompleted}/${worker.dailyHhrTarget} HH/day` 
-                              : `${worker.actualItnDistributed}/${worker.dailyItnTarget} Nets/day`}
-                          </div>
-                          <div className="flex items-center gap-1 mt-0.5">
-                            <span className="text-[10px] text-slate-400">{worker.performanceRatio}%</span>
-                            {worker.performanceRatio < 90 && (
-                              <Badge className="bg-rose-500/20 text-rose-300 text-[8px] border-0 animate-pulse">
-                                Under Quota &bull; Reserve Trigger
-                              </Badge>
-                            )}
-                          </div>
-                        </td>
-                        <td className="p-3 font-mono">
-                          <div className="text-white font-bold">${worker.totalContractValueUsd} USD</div>
-                          <span className="text-[10px] text-slate-400">{worker.contractWindowDays}D @ ${worker.dailyRateUsd}/day</span>
-                        </td>
-                        <td className="p-3">
-                          <Badge className="bg-emerald-500/15 text-emerald-300 border-0 text-[10px]">
-                            ✓ {worker.momoCarrier}
-                          </Badge>
-                          <div className="text-[9px] text-slate-400 font-mono mt-0.5">{worker.momoWalletNumber}</div>
-                        </td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-1.5">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => {
-                                setQuotaUpdateForm({
-                                  workerId: worker.id,
-                                  todayHhrRegistered: worker.actualHhrCompleted || 25,
-                                  todayItnDistributed: worker.actualItnDistributed || 50,
-                                  notes: "Field output validated."
-                                });
-                                setShowCrsQuotaModal(true);
-                              }}
-                              className="text-[10px] h-6 px-2 rounded-lg bg-slate-800 border-white/10 text-white font-bold"
-                            >
-                              Log Quota
-                            </Button>
-                          </div>
-                        </td>
+              {crsWorkers.length === 0 ? (
+                <div className="p-8 rounded-2xl border border-dashed border-white/10 bg-slate-900/40 text-center space-y-3">
+                  <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center mx-auto text-teal-400">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <div className="space-y-1">
+                    <h5 className="text-sm font-bold text-white">No Temporary Campaign Staff Registered Yet</h5>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      Click <strong>"+ 1. Recruit Temporary Worker"</strong> above to onboard HHR agents, distribution leads, and field supervisors with automated SMS credentials.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setShowCrsRecruitModal(true)}
+                    className="bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs h-9 px-4 rounded-xl shadow-md"
+                  >
+                    <Plus className="w-4 h-4 mr-1" /> Register First Campaign Worker
+                  </Button>
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-900/60">
+                  <table className="w-full text-xs text-left">
+                    <thead>
+                      <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
+                        <th className="p-3 font-bold">Badge / Worker</th>
+                        <th className="p-3 font-bold">Role & District</th>
+                        <th className="p-3 font-bold">Health Facility Catchment</th>
+                        <th className="p-3 font-bold">$129 Phone Custody</th>
+                        <th className="p-3 font-bold">Daily Quota Status</th>
+                        <th className="p-3 font-bold">Contract (Days/Rate)</th>
+                        <th className="p-3 font-bold">MoMo Wallet</th>
+                        <th className="p-3 font-bold">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* CONTRACT COMPLIANCE & REVERSE LOGISTICS BANNER */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <h5 className="font-bold text-teal-300 flex items-center gap-1">
-                  <Smartphone className="w-3.5 h-3.5 text-teal-400" /> BYOD Device Custody & Asset Safety
-                </h5>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  All 174 campaign devices are PIN-protected, serial-logged, and GPS geo-stamped. Materials return check mandatory prior to final tranche release.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <h5 className="font-bold text-amber-300 flex items-center gap-1">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" /> &lt;90% Performance & Reserve Pool
-                </h5>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Supervisors monitor daily door-to-door outputs. Teams underperforming &lt;90% of daily target receive immediate reserve personnel reinforcement.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
-                <h5 className="font-bold text-purple-300 flex items-center gap-1">
-                  <Layers className="w-3.5 h-3.5 text-purple-400" /> Waste Management & Reverse Logistics
-                </h5>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Empty ITN bale bags are bundled (49 bags inside 1 outer bag) with strap tallies and returned to 3PL depots per CRS environmental guidelines.
-                </p>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {crsWorkers.map((worker) => (
+                        <tr key={worker.id} className="hover:bg-slate-800/40 transition-colors">
+                          <td className="p-3">
+                            <div className="font-bold text-white">{worker.fullName}</div>
+                            <span className="font-mono text-[10px] text-teal-400">{worker.badgeCode}</span>
+                          </td>
+                          <td className="p-3">
+                            <Badge className="bg-slate-800 text-slate-200 text-[10px] border-0 font-bold">
+                              {worker.role}
+                            </Badge>
+                            <div className="text-[10px] text-slate-400 mt-0.5">{worker.district} ({worker.county})</div>
+                          </td>
+                          <td className="p-3">
+                            <span className="text-slate-300 text-[11px] block max-w-[150px] truncate">
+                              {worker.healthFacilityCatchment}
+                            </span>
+                          </td>
+                          <td className="p-3 font-mono text-[11px]">
+                            {worker.byodConsentSigned ? (
+                              <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] flex items-center gap-1 w-fit">
+                                <CheckCircle className="w-3 h-3 text-emerald-400" />
+                                <span>$129 Contract Signed</span>
+                              </Badge>
+                            ) : (
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedCrsWorker(worker);
+                                  setPhoneContractSignature({
+                                    workerName: worker.fullName,
+                                    workerNationalId: worker.nationalId,
+                                    phoneImei: worker.byodPhoneImei,
+                                    agreedTo129Deduction: true,
+                                    signatureName: worker.fullName
+                                  });
+                                  setShowCrsPhoneContractModal(true);
+                                }}
+                                className="bg-amber-600 hover:bg-amber-500 text-white text-[10px] h-6 px-2 rounded-lg font-bold"
+                              >
+                                <FileSignature className="w-3 h-3 mr-1" /> Sign Contract
+                              </Button>
+                            )}
+                            <span className="text-[9px] text-slate-500 block mt-0.5">IMEI: {worker.byodPhoneImei}</span>
+                          </td>
+                          <td className="p-3 font-mono">
+                            <div className={`font-bold ${worker.performanceRatio >= 90 ? "text-emerald-400" : "text-rose-400"}`}>
+                              {worker.dailyHhrTarget > 0 
+                                ? `${worker.actualHhrCompleted}/${worker.dailyHhrTarget} HH/day` 
+                                : `${worker.actualItnDistributed}/${worker.dailyItnTarget} Nets/day`}
+                            </div>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <span className="text-[10px] text-slate-400">{worker.performanceRatio}%</span>
+                              {worker.performanceRatio < 90 && (
+                                <Badge className="bg-rose-500/20 text-rose-300 text-[8px] border-0 animate-pulse">
+                                  Under Quota &bull; Reserve Trigger
+                                </Badge>
+                              )}
+                            </div>
+                          </td>
+                          <td className="p-3 font-mono">
+                            <div className="text-white font-bold">${worker.totalContractValueUsd} USD</div>
+                            <span className="text-[10px] text-slate-400">{worker.contractWindowDays}D @ ${worker.dailyRateUsd}/day</span>
+                          </td>
+                          <td className="p-3">
+                            <Badge className="bg-emerald-500/15 text-emerald-300 border-0 text-[10px]">
+                              ✓ {worker.momoCarrier}
+                            </Badge>
+                            <div className="text-[9px] text-slate-400 font-mono mt-0.5">{worker.momoWalletNumber}</div>
+                          </td>
+                          <td className="p-3">
+                            <div className="flex items-center gap-1.5">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setQuotaUpdateForm({
+                                    workerId: worker.id,
+                                    todayHhrRegistered: worker.actualHhrCompleted || 25,
+                                    todayItnDistributed: worker.actualItnDistributed || 50,
+                                    notes: "Field output validated."
+                                  });
+                                  setShowCrsQuotaModal(true);
+                                }}
+                                className="text-[10px] h-6 px-2 rounded-lg bg-slate-800 border-white/10 text-white font-bold"
+                              >
+                                Log Quota
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </Card>
         </TabsContent>

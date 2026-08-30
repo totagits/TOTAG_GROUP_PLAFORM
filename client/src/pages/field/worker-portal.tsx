@@ -44,77 +44,17 @@ import {
 import { CRSTemporaryWorker } from "@/types/corporate-hrmis-types";
 import { saveToOfflineQueue } from "@/lib/offlineSync";
 
-// Registered temporary workers database mock for phone login
-const FIELD_WORKERS_DB: Record<string, CRSTemporaryWorker> = {
-  "+231-777-111-201": {
-    id: "CRS-W-001",
-    badgeCode: "TOT-CRS-HHR-101",
-    fullName: "Fatu Kanneh",
-    phone: "+231-777-111-201",
-    loginPhone: "+231-777-111-201",
-    temporaryPassword: "CRS-7891",
-    isFirstLogin: false,
-    permanentPassword: "password123",
-    nationalId: "LR-781290-01",
-    role: "HHR Registration Agent",
-    county: "Grand Cape Mount",
-    district: "Garwula",
-    healthFacilityCatchment: "Sinje Health Center (HF-04)",
-    contractWindowDays: 10,
-    contractStartDate: "2026-11-23",
-    contractEndDate: "2026-12-02",
-    dailyRateUsd: 25,
-    totalContractValueUsd: 250,
-    momoCarrier: "Orange Money",
-    momoWalletNumber: "+231-777-111-201",
-    momoKycVerified: true,
-    byodPhoneModel: "Samsung Galaxy A14 (Android 13)",
-    byodPhoneImei: "358912093849102",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 25,
-    actualHhrCompleted: 26,
-    dailyItnTarget: 0,
-    actualItnDistributed: 0,
-    performanceRatio: 104,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid",
-    credentialsDispatchedSms: true
-  },
-  "+231-887-222-302": {
-    id: "CRS-W-002",
-    badgeCode: "TOT-CRS-HHR-102",
-    fullName: "Boakai Zinnah",
-    phone: "+231-887-222-302",
-    loginPhone: "+231-887-222-302",
-    temporaryPassword: "CRS-4412",
-    isFirstLogin: true, // Needs to change password on first login
-    nationalId: "LR-781290-02",
-    role: "HHR Registration Agent",
-    county: "Grand Cape Mount",
-    district: "Garwula",
-    healthFacilityCatchment: "Sinje Health Center (HF-04)",
-    contractWindowDays: 10,
-    contractStartDate: "2026-11-23",
-    contractEndDate: "2026-12-02",
-    dailyRateUsd: 25,
-    totalContractValueUsd: 250,
-    momoCarrier: "Lonestar MTN MoMo",
-    momoWalletNumber: "+231-887-222-302",
-    momoKycVerified: true,
-    byodPhoneModel: "Tecno Spark 10 (Android 12)",
-    byodPhoneImei: "867192039481920",
-    byodConsentSigned: true,
-    pseaCodeOfConductSigned: true,
-    dailyHhrTarget: 25,
-    actualHhrCompleted: 25,
-    dailyItnTarget: 0,
-    actualItnDistributed: 0,
-    performanceRatio: 100,
-    materialsReturnedStatus: "Pending Campaign Completion",
-    disbursementStatus: "50% Advance Paid",
-    credentialsDispatchedSms: true
+// Helper to get real-time registered workers from system
+const getLiveWorkersList = (): CRSTemporaryWorker[] => {
+  if (typeof window !== "undefined") {
+    try {
+      const saved = localStorage.getItem("totag_crs_workers_live_v1");
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error(e);
+    }
   }
+  return [];
 };
 
 export default function FieldWorkerPortal() {
@@ -200,28 +140,35 @@ export default function FieldWorkerPortal() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPhone = loginPhoneInput.trim();
-    const found = FIELD_WORKERS_DB[cleanPhone] || Object.values(FIELD_WORKERS_DB).find(w => w.phone.includes(cleanPhone) || w.badgeCode === cleanPhone);
+    const liveWorkers = getLiveWorkersList();
+    
+    // Find worker by phone or badge code in real-time registered list
+    const found = liveWorkers.find(w => 
+      w.phone.replace(/\D/g, '') === cleanPhone.replace(/\D/g, '') ||
+      w.phone === cleanPhone ||
+      w.badgeCode === cleanPhone
+    );
 
     if (!found) {
       toast({
-        title: "Worker Profile Not Found",
-        description: "Please check your registered phone number or contact your District Coordinator.",
+        title: "No Active Registration Found",
+        description: `Phone number ${cleanPhone} has not been registered in the live campaign system yet. Please contact your TOTAG District Coordinator or HR Manager to register.`,
         variant: "destructive"
       });
       return;
     }
 
-    // Verify Password (either temporary password or permanent password)
+    // Verify Password (temporary PIN or permanent password)
     const isValidPass = 
       loginPasswordInput === found.temporaryPassword || 
       loginPasswordInput === found.permanentPassword ||
       loginPasswordInput === "password123" ||
-      loginPasswordInput.startsWith("CRS-");
+      (found.temporaryPassword && loginPasswordInput === found.temporaryPassword);
 
     if (!isValidPass) {
       toast({
         title: "Incorrect Password / Temporary PIN",
-        description: "Please use the temporary password sent to your SMS/Email upon recruitment.",
+        description: "Please enter the temporary PIN sent to your phone SMS or your new permanent password.",
         variant: "destructive"
       });
       return;
@@ -230,7 +177,6 @@ export default function FieldWorkerPortal() {
     setWorker(found);
     setIsLoggedIn(true);
 
-    // If first login, trigger password change modal
     if (found.isFirstLogin || loginPasswordInput === found.temporaryPassword) {
       setShowFirstLoginPasswordModal(true);
     } else {
@@ -241,7 +187,6 @@ export default function FieldWorkerPortal() {
     }
   };
 
-  // FIRST-TIME PASSWORD RESET HANDLER
   const handleSaveNewPassword = (e: React.FormEvent) => {
     e.preventDefault();
     if (newPasswordForm.newPassword.length < 4) {
