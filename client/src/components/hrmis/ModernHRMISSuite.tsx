@@ -32,6 +32,13 @@ import {
   TrendingDown,
   Shield,
   ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  MessageSquare,
+  History,
+  User,
+  Activity,
+  Package,
   RotateCcw,
   Smartphone,
   Sparkles,
@@ -473,6 +480,9 @@ export function ModernHRMISSuite() {
   ]);
 
   const [selectedCrsWorker, setSelectedCrsWorker] = useState<CRSTemporaryWorker | null>(null);
+  const [selectedWorkerForDossier, setSelectedWorkerForDossier] = useState<CRSTemporaryWorker | null>(null);
+  const [showWorkerDossierModal, setShowWorkerDossierModal] = useState<boolean>(false);
+  const [supervisorNote, setSupervisorNote] = useState<string>("");
   const [showCrsRecruitModal, setShowCrsRecruitModal] = useState(false);
   const [showCrsPhoneContractModal, setShowCrsPhoneContractModal] = useState(false);
   const [showCrsQuotaModal, setShowCrsQuotaModal] = useState(false);
@@ -1920,6 +1930,16 @@ export function ModernHRMISSuite() {
                           </td>
                           <td className="p-3">
                             <div className="flex items-center gap-1.5">
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedWorkerForDossier(worker);
+                                  setShowWorkerDossierModal(true);
+                                }}
+                                className="bg-teal-600 hover:bg-teal-500 text-slate-950 text-[10px] h-6 px-2.5 rounded-lg font-black shadow-md flex items-center gap-1"
+                              >
+                                <Eye className="w-3 h-3" /> Activities & Chain
+                              </Button>
                               <Button
                                 size="sm"
                                 variant="outline"
