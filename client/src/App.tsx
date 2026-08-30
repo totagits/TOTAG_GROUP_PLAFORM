@@ -62,6 +62,8 @@ import PaymentSuccessPage from "@/pages/saas/payment-success";
 import { ChangePasswordPage } from "@/pages/saas/change-password";
 import SubscriptionPage from "@/pages/saas/subscription";
 import UserManagement from "@/pages/saas/users";
+import SaaSSettings from "@/pages/saas/settings";
+import SaaSReports from "@/pages/saas/reports";
 
 // HRMIS Module Pages
 import HRCorePage from "@/pages/saas/modules/hr-core";
@@ -213,6 +215,8 @@ function Router() {
         <Route path="/saas/login" component={SaaSLogin} />
         <Route path="/saas/change-password" component={ChangePasswordPage} />
         <Route path="/saas/dashboard" component={SaaSDashboard} />
+      <Route path="/saas/settings" component={SaaSSettings} />
+      <Route path="/saas/reports" component={SaaSReports} />
         <Route path="/saas/subscription" component={SubscriptionPage} />
         <Route path="/saas/users" component={UserManagement} />
         
