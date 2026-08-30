@@ -73,7 +73,8 @@ import {
   Eraser,
   PenTool,
   ArrowRight,
-  Scan
+  Scan,
+  QrCode
 } from "lucide-react";
 import { 
   SubsidiaryId, 
