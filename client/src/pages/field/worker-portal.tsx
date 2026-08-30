@@ -68,6 +68,11 @@ export default function FieldWorkerPortal() {
   const [loginPhoneInput, setLoginPhoneInput] = useState<string>("");
   const [loginPasswordInput, setLoginPasswordInput] = useState<string>("");
   const [showFirstLoginPasswordModal, setShowFirstLoginPasswordModal] = useState<boolean>(false);
+  const [showContractSignModal, setShowContractSignModal] = useState<boolean>(false);
+  const [contractSignatureName, setContractSignatureName] = useState<string>("");
+  const [hasAgreedLiability, setHasAgreedLiability] = useState<boolean>(false);
+  const [hasAgreedInsuranceBond, setHasAgreedInsuranceBond] = useState<boolean>(false);
+  const [hasAgreedWasteReverse, setHasAgreedWasteReverse] = useState<boolean>(false);
   const [newPasswordForm, setNewPasswordForm] = useState({ newPassword: "", confirmPassword: "" });
 
   // Current Active Worker
@@ -151,6 +156,58 @@ export default function FieldWorkerPortal() {
     ppsDropoffLocation: "Sinje PPS Waste Bay",
     stockCardNumber: "WSC-GAR-2026-08"
   });
+
+  const handleSignContractSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!hasAgreedLiability || !hasAgreedInsuranceBond || !hasAgreedWasteReverse) {
+      toast({
+        title: "Mandatory Acknowledgment",
+        description: "You must check all 3 legal clauses ($129 Phone Loss, Insurance Bond, and Waste Reverse) to proceed.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!contractSignatureName || contractSignatureName.trim().length < 3) {
+      toast({
+        title: "Signature Required",
+        description: "Please type your full legal name as your digital signature.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const timestamp = new Date().toLocaleString();
+    const updatedWorker = {
+      ...worker!,
+      byodConsentSigned: true,
+      signatureTimestamp: timestamp,
+      digitalSignature: contractSignatureName
+    };
+
+    setWorker(updatedWorker);
+    setShowContractSignModal(false);
+
+    // Save to local storage cache
+    try {
+      const saved = localStorage.getItem("totag_crs_workers_clean_v3");
+      if (saved) {
+        const list = JSON.parse(saved);
+        const idx = list.findIndex((w: any) => w.phone === worker!.phone);
+        if (idx !== -1) {
+          list[idx] = updatedWorker;
+          localStorage.setItem("totag_crs_workers_clean_v3", JSON.stringify(list));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    toast({
+      title: "✓ Contract Legally Signed & Active!",
+      description: `Digitally executed by ${contractSignatureName}. You are now authorized to commence field operations.`
+    });
+  };
 
   // LOGIN HANDLER (Multi-tier: Server API + Local Cache)
   const handleLogin = async (e: React.FormEvent) => {
@@ -255,11 +312,16 @@ export default function FieldWorkerPortal() {
       return;
     }
 
-    setWorker(prev => ({ ...prev, isFirstLogin: false, permanentPassword: newPasswordForm.newPassword }));
+    setWorker(prev => prev ? ({ ...prev, isFirstLogin: false, permanentPassword: newPasswordForm.newPassword }) : null);
     setShowFirstLoginPasswordModal(false);
+    
+    // Immediately trigger mandatory contract signing
+    setContractSignatureName(worker?.fullName || "");
+    setShowContractSignModal(true);
+
     toast({
-      title: "✓ Security Setup Complete",
-      description: "Your permanent campaign password has been saved. Your phone number is your permanent login ID."
+      title: "✓ Password Saved",
+      description: "Please now review and digitally sign your Mandatory Tripartite Master Contract."
     });
   };
 
@@ -753,9 +815,15 @@ export default function FieldWorkerPortal() {
                   <FileSignature className="w-5 h-5 text-amber-400" />
                   <h3 className="text-sm font-black text-white">Your Tripartite Master Agreement</h3>
                 </div>
-                <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] font-bold">
-                  ✓ Legally Signed & Active
-                </Badge>
+                {worker.byodConsentSigned ? (
+                  <Badge className="bg-emerald-500/20 text-emerald-300 border-0 text-[10px] font-bold">
+                    ✓ Legally Signed & Active
+                  </Badge>
+                ) : (
+                  <Badge className="bg-amber-500/20 text-amber-300 border-0 text-[10px] font-bold animate-pulse">
+                    ⚠️ Awaiting Your Signature
+                  </Badge>
+                )}
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-950 border border-white/10 space-y-2 text-[11px] text-slate-300 leading-relaxed font-mono">
@@ -765,7 +833,25 @@ export default function FieldWorkerPortal() {
                 <div><strong>Device IMEI:</strong> <span className="text-amber-300 font-bold">{worker.byodPhoneImei}</span></div>
                 <div><strong>Contract Window:</strong> {worker.contractStartDate} to {worker.contractEndDate} (10 Days)</div>
                 <div><strong>Contract Value:</strong> ${worker.totalContractValueUsd} USD (${worker.dailyRateUsd}/day)</div>
+                <div><strong>Signature Status:</strong> {worker.byodConsentSigned ? "✓ Signed by " + (worker.digitalSignature || worker.fullName) : "⚠️ Pending Signature"}</div>
               </div>
+
+              {/* Action if unsigned */}
+              {!worker.byodConsentSigned && (
+                <div className="p-3 rounded-2xl bg-amber-950/50 border border-amber-500/50 space-y-2">
+                  <div className="text-xs text-amber-300 font-bold">Action Required: Digital Signature Pending</div>
+                  <p className="text-[11px] text-slate-300">You must execute your tripartite agreement before receiving your 50% mobilization advance stipend.</p>
+                  <Button
+                    onClick={() => {
+                      setContractSignatureName(worker.fullName);
+                      setShowContractSignModal(true);
+                    }}
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs h-9 rounded-xl shadow-lg"
+                  >
+                    ✍️ Sign Contract & Liability Agreement Now ➔
+                  </Button>
+                </div>
+              )}
 
               {/* Binding Clauses Summary */}
               <div className="space-y-2 text-[11px]">
@@ -954,6 +1040,103 @@ export default function FieldWorkerPortal() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* ========================================================================= */}
+      {/* MODAL: MANDATORY TRIPARTITE CONTRACT SIGNING & LIABILITY ATTESTATION */}
+      {/* ========================================================================= */}
+      <Dialog open={showContractSignModal} onOpenChange={setShowContractSignModal}>
+        <DialogContent className="max-w-lg rounded-3xl bg-slate-950 text-white border border-amber-500/60 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 mb-1">
+              <FileSignature className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-base font-black text-white">
+              Tripartite Master Employment Agreement
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Mandatory legal contract for CRS Mass LLIN Campaign field personnel.
+            </DialogDescription>
+          </DialogHeader>
+
+          {worker && (
+            <form onSubmit={handleSignContractSubmit} className="space-y-4 pt-2 text-xs">
+              
+              <div className="p-3 rounded-2xl bg-slate-900 border border-white/10 space-y-1.5 font-mono text-[11px]">
+                <div><strong>Field Staff:</strong> <span className="text-teal-400 font-bold">{worker.fullName}</span></div>
+                <div><strong>Assigned Role:</strong> {worker.role}</div>
+                <div><strong>Catchment:</strong> {worker.healthFacilityCatchment} ({worker.district})</div>
+                <div><strong>Device Model / IMEI:</strong> {worker.byodPhoneModel} / {worker.byodPhoneImei}</div>
+                <div><strong>Contract DSA:</strong> ${worker.dailyRateUsd}/day &bull; 10 Days ($${worker.totalContractValueUsd} USD)</div>
+              </div>
+
+              <div className="space-y-2.5">
+                <label className="flex items-start gap-2.5 p-3 rounded-xl bg-rose-950/40 border border-rose-500/40 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasAgreedLiability}
+                    onChange={(e) => setHasAgreedLiability(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-rose-400 text-rose-500 focus:ring-0"
+                  />
+                  <div className="text-[11px] text-rose-200 leading-snug">
+                    <strong className="text-rose-300 font-bold block mb-0.5">1. $129.00 USD Phone Custody & Loss Authorization</strong>
+                    I acknowledge receipt of the CRS Android device (IMEI: {worker.byodPhoneImei}) and authorize TOTAG to deduct <strong>$129.00 USD</strong> from my stipend if not returned in good condition by December 18, 2026.
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-950/40 border border-amber-500/40 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasAgreedInsuranceBond}
+                    onChange={(e) => setHasAgreedInsuranceBond(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-amber-400 text-amber-500 focus:ring-0"
+                  />
+                  <div className="text-[11px] text-amber-200 leading-snug">
+                    <strong className="text-amber-300 font-bold block mb-0.5">2. ITN Net All-Risk Insurance Bond & Anti-Fraud</strong>
+                    I am legally accountable for all ITN nets under my custody and agree never to divert, sell, or misappropriate campaign nets under penalty of Liberian law.
+                  </div>
+                </label>
+
+                <label className="flex items-start gap-2.5 p-3 rounded-xl bg-purple-950/40 border border-purple-500/40 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasAgreedWasteReverse}
+                    onChange={(e) => setHasAgreedWasteReverse(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-purple-400 text-purple-500 focus:ring-0"
+                  />
+                  <div className="text-[11px] text-purple-200 leading-snug">
+                    <strong className="text-purple-300 font-bold block mb-0.5">3. 49-in-1 Waste Reverse Logistics & PSEA</strong>
+                    I agree to return 100% of empty packaging bags bundled 49 into 1 outer bag and strictly adhere to Global Fund PSEA (Protection from Sexual Exploitation & Abuse) standards.
+                  </div>
+                </label>
+              </div>
+
+              <div className="space-y-1 pt-1">
+                <Label className="text-slate-300 font-bold flex items-center justify-between">
+                  <span>Type Full Legal Name as Digital Signature:</span>
+                  <span className="text-[10px] text-teal-400 font-mono">Legally Binding</span>
+                </Label>
+                <Input
+                  required
+                  placeholder="e.g. Michael Gwoah"
+                  value={contractSignatureName}
+                  onChange={(e) => setContractSignatureName(e.target.value)}
+                  className="bg-slate-900 border-amber-500/40 text-white font-mono text-xs rounded-xl h-10 font-bold"
+                />
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs h-11 rounded-xl shadow-lg shadow-amber-500/20"
+                >
+                  ✍️ Execute & Legally Sign Tripartite Master Agreement ➔
+                </Button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
