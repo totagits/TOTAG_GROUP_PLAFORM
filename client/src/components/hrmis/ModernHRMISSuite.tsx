@@ -70,6 +70,8 @@ import {
   Globe,
   Radio,
   FileSignature,
+  Eraser,
+  PenTool,
   ArrowRight,
   Scan
 } from "lucide-react";
@@ -1687,36 +1689,119 @@ export function ModernHRMISSuite() {
                 </div>
               )}
 
-              {/* PILLAR 2 EXPANDED: DISTRIBUTION & BARCODE CONSOLE */}
+              {/* PILLAR 2 EXPANDED: INTERACTIVE DISTRIBUTION & ANTI-FRAUD SCANNER CONSOLE */}
               {activeSowPillar === "distribution" && (
-                <div className="p-4 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-4">
-                  <div className="flex items-center justify-between">
+                <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-500/40 space-y-5">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
                     <div>
-                      <h5 className="font-black text-white text-sm flex items-center gap-2">
-                        <Scan className="w-4 h-4 text-emerald-400" />
-                        Pillar 2: Distribution Operations & Anti-Fraud Token/Barcode Scanner
+                      <h5 className="font-black text-white text-base flex items-center gap-2">
+                        <Scan className="w-5 h-5 text-emerald-400" />
+                        Pillar 2: Distribution Operations & Anti-Fraud Token/Barcode Console
                       </h5>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-xs text-slate-400">
                         Tracks double-phase rural model (HHR registration + Fixed/Mobile DP net issuance) with token verification.
                       </p>
                     </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 px-3 py-1 font-mono text-xs">
+                        ● Anti-Fraud Engine Active
+                      </Badge>
+                    </div>
                   </div>
 
+                  {/* Summary Metric Cards */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
+                    <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
                       <span className="text-[10px] text-slate-400 font-mono">Total Planned Households:</span>
-                      <div className="text-xl font-bold text-white">38,291 HH</div>
-                      <div className="text-[10px] text-emerald-400 font-bold">50 HH / 2-person team / day</div>
+                      <div className="text-2xl font-black text-white">38,291 HH</div>
+                      <div className="text-[10px] text-emerald-400 font-bold">50 HH / 2-person team / day quota</div>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
+                    <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
                       <span className="text-[10px] text-slate-400 font-mono">Total Planned ITN Nets:</span>
-                      <div className="text-xl font-bold text-white">84,952 Nets</div>
-                      <div className="text-[10px] text-sky-400 font-bold">200 Nets / 4-person team / day</div>
+                      <div className="text-2xl font-black text-white">84,952 Nets</div>
+                      <div className="text-[10px] text-sky-400 font-bold">200 Nets / 4-person team / day quota</div>
                     </div>
-                    <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1">
-                      <span className="text-[10px] text-slate-400 font-mono">Distribution Locations:</span>
-                      <div className="text-xl font-bold text-white">91 Fixed / Mobile DPs</div>
-                      <div className="text-[10px] text-purple-400 font-bold">Sequenced across 5 Districts</div>
+                    <div className="p-3.5 rounded-2xl bg-slate-900 border border-white/10 space-y-1">
+                      <span className="text-[10px] text-slate-400 font-mono">Distribution Points (DPs):</span>
+                      <div className="text-2xl font-black text-white">91 Locations</div>
+                      <div className="text-[10px] text-purple-400 font-bold">Sequenced across 5 Catchment Districts</div>
+                    </div>
+                  </div>
+
+                  {/* Anti-Fraud Token Verification & Scanner Simulator */}
+                  <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 to-emerald-950/40 border border-emerald-500/30 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-emerald-300 uppercase tracking-wide flex items-center gap-1.5">
+                        <QrCode className="w-4 h-4" /> Live Field Anti-Fraud Token Verification Simulator
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400">Sinje Central DP #04</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <Input
+                        placeholder="Scan or Enter Token (e.g. TKN-GAR-0042)..."
+                        defaultValue="TKN-GAR-0042"
+                        className="bg-slate-950 border-white/10 font-mono text-xs rounded-xl text-white"
+                      />
+                      <Input
+                        placeholder="ITN Bale Barcode (e.g. LLIN-NET-889102)..."
+                        defaultValue="LLIN-NET-889102"
+                        className="bg-slate-950 border-white/10 font-mono text-xs rounded-xl text-amber-300"
+                      />
+                      <Button
+                        onClick={() => {
+                          toast({
+                            title: "✓ Anti-Fraud Token Validated & Redeemed",
+                            description: "Token TKN-GAR-0042 verified for 2 nets. Barcode LLIN-NET-889102 recorded in NMCP database."
+                          });
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs rounded-xl h-10 shadow-md"
+                      >
+                        <CheckCircle2 className="w-4 h-4 mr-1" /> Validate Token & Issue Nets
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Real-time Field Logs Stream Table */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-300 uppercase font-mono">Recent Live HHR & Distribution Field Feed:</span>
+                      <span className="text-[10px] text-teal-400 font-mono">GPS-Verified Logs</span>
+                    </div>
+                    <div className="overflow-x-auto rounded-xl border border-white/10">
+                      <table className="w-full text-xs text-left">
+                        <thead>
+                          <tr className="border-b border-white/10 text-slate-400 font-mono text-[10px] uppercase bg-slate-900">
+                            <th className="p-3">Beneficiary / HH Head</th>
+                            <th className="p-3">Community</th>
+                            <th className="p-3">Token Card</th>
+                            <th className="p-3">Nets Issued</th>
+                            <th className="p-3">SBC Delivered</th>
+                            <th className="p-3">GPS Coordinates</th>
+                            <th className="p-3">Field Agent</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5 font-mono text-slate-300">
+                          <tr className="hover:bg-slate-800/40">
+                            <td className="p-3 font-bold text-white">Momo K. Fahnbulleh</td>
+                            <td className="p-3">Sinje Central Community</td>
+                            <td className="p-3 text-teal-400 font-bold">TKN-GAR-0042</td>
+                            <td className="p-3 text-emerald-400 font-bold">2 Nets (LLIN)</td>
+                            <td className="p-3"><span className="text-emerald-400">✓ 100% SBC Taught</span></td>
+                            <td className="p-3 text-[10px] text-slate-400">6.9124° N, 11.3129° W</td>
+                            <td className="p-3 text-amber-300 font-bold">Michael Gwoah</td>
+                          </tr>
+                          <tr className="hover:bg-slate-800/40">
+                            <td className="p-3 font-bold text-white">Fatu Kromah</td>
+                            <td className="p-3">Gbesseh Town Zone B</td>
+                            <td className="p-3 text-teal-400 font-bold">TKN-GAR-0043</td>
+                            <td className="p-3 text-emerald-400 font-bold">3 Nets (LLIN)</td>
+                            <td className="p-3"><span className="text-emerald-400">✓ 100% SBC Taught</span></td>
+                            <td className="p-3 text-[10px] text-slate-400">6.9140° N, 11.3142° W</td>
+                            <td className="p-3 text-amber-300 font-bold">Michael Gwoah</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
