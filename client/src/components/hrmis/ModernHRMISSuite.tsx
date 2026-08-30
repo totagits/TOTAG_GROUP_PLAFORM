@@ -2191,25 +2191,38 @@ export function ModernHRMISSuite() {
           </DialogHeader>
 
           <form onSubmit={handleRecruitCrsWorker} className="space-y-3.5 text-xs py-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="space-y-1">
                 <Label className="text-slate-300 font-bold">Full Name of Candidate:</Label>
                 <Input
                   required
-                  placeholder="e.g. Sando Varney"
+                  placeholder="e.g. Michael Gwoah"
                   value={newCrsWorkerForm.fullName}
                   onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, fullName: e.target.value })}
                   className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
                 />
               </div>
               <div className="space-y-1">
-                <Label className="text-slate-300 font-bold">Contact Phone Number:</Label>
+                <Label className="text-slate-300 font-bold">Contact Phone Number (Login ID):</Label>
                 <Input
                   required
                   placeholder="+231-777-..."
                   value={newCrsWorkerForm.phone}
                   onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, phone: e.target.value })}
-                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl font-mono"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold flex items-center justify-between">
+                  <span>Candidate Email:</span>
+                  <span className="text-[10px] text-teal-400 font-mono">For Credentials</span>
+                </Label>
+                <Input
+                  type="email"
+                  placeholder="e.g. candidate@example.com"
+                  value={newCrsWorkerForm.email}
+                  onChange={(e) => setNewCrsWorkerForm({ ...newCrsWorkerForm, email: e.target.value })}
+                  className="bg-slate-900 border-teal-500/40 text-white text-xs rounded-xl font-mono"
                 />
               </div>
             </div>
