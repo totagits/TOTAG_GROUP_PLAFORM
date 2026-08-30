@@ -590,6 +590,39 @@ export function ModernHRMISSuite() {
 
   // Submit Clock In
   // Handle Recruitment Submit
+  const handleResendCredentials = async (worker: CRSTemporaryWorker) => {
+    try {
+      const res = await fetch("/api/crs/resend-credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: worker.fullName,
+          phone: worker.phone,
+          email: worker.email,
+          temporaryPassword: worker.temporaryPassword || "CRS-2026",
+          role: worker.role
+        })
+      });
+      const data = await res.json();
+      if (data.emailSent) {
+        toast({
+          title: "✓ Email & SMS Dispatched",
+          description: `Login credentials resent to ${worker.email || worker.phone}. Temp PIN: ${worker.temporaryPassword || 'CRS-2026'}`
+        });
+      } else {
+        toast({
+          title: "✓ Credentials Ready for Worker",
+          description: `Login Phone: ${worker.phone} | Temp PIN: ${worker.temporaryPassword || 'CRS-2026'}`
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Credentials Details",
+        description: `Login Phone: ${worker.phone} | Temp PIN: ${worker.temporaryPassword || 'CRS-2026'}`
+      });
+    }
+  };
+
   const handleRecruitCrsWorker = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCrsWorkerForm.fullName || !newCrsWorkerForm.phone) {

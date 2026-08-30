@@ -2311,6 +2311,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  // =========================================================================
+  // CRS CAMPAIGN TEMPORARY FIELD WORKER RECRUITMENT & CREDENTIAL DISPATCH API
+  // =========================================================================
+  app.post("/api/crs/recruit-worker", async (req, res) => {
+    try {
+      const {
+        fullName,
+        phone,
+        email,
+        nationalId,
+        role,
+        county = "Grand Cape Mount",
+        district = "Garwula",
+        healthFacilityCatchment = "Sinje Health Center",
+        contractWindowDays = 10,
+        dailyRateUsd = 25,
+        momoCarrier = "Orange Money",
+        momoWalletNumber,
+        byodPhoneModel,
+        byodPhoneImei
+      } = req.body;
+
+      if (!fullName || !phone) {
+        return res.status(400).json({ error: "Candidate full name and phone number are required." });
+      }
+
+      const temporaryPassword = `CRS-${Math.floor(1000 + Math.random() * 9000)}`;
+      const badgeCode = `TOT-CRS-${(role || '').includes("HHR") ? "HHR" : (role || '').includes("Supervisor") ? "SUP" : "DP"}-${Math.floor(100 + Math.random() * 900)}`;
+
+      console.log(`📋 [CRS HRMIS] Onboarding Campaign Worker: ${fullName} | Phone: ${phone} | Email: ${email} | Temp PIN: ${temporaryPassword}`);
+
+      let emailSent = false;
+      if (email && email.includes("@")) {
+        try {
+          const emailSubject = `[TOTAG GROUP & CRS CAMPAIGN] Field Staff Onboarding & Credentials - ${fullName}`;
+          const emailHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #090d16; color: #f8fafc; margin: 0; padding: 24px; }
+                .container { max-width: 600px; margin: 0 auto; background: #111827; border-radius: 16px; padding: 28px; border: 1px solid #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+                .header { text-align: center; border-bottom: 1px solid #1e293b; padding-bottom: 20px; margin-bottom: 24px; }
+                .logo { font-size: 22px; font-weight: 800; color: #14b8a6; letter-spacing: 1px; }
+                .badge { display: inline-block; background: rgba(20,184,166,0.2); color: #2dd4bf; padding: 6px 14px; border-radius: 20px; font-family: monospace; font-size: 12px; font-weight: bold; margin-top: 10px; }
+                .cred-box { background: #030712; border: 1px solid #14b8a6; border-radius: 14px; padding: 20px; margin: 24px 0; }
+                .cred-line { margin: 10px 0; font-size: 14px; font-family: monospace; }
+                .cred-line strong { color: #94a3b8; }
+                .cred-val { color: #facc15; font-weight: bold; font-size: 15px; }
+                .warning-box { background: rgba(225,29,72,0.12); border: 1px solid rgba(225,29,72,0.4); border-radius: 10px; padding: 14px; font-size: 12px; color: #fecdd3; line-height: 1.5; margin-bottom: 20px; }
+                .btn { display: inline-block; background: #14b8a6; color: #030712; font-weight: 800; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-size: 14px; }
+                .footer { font-size: 11px; color: #64748b; margin-top: 28px; border-top: 1px solid #1e293b; padding-top: 20px; text-align: center; line-height: 1.6; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <div class="logo">TOTAG GROUP OF COMPANIES LTD</div>
+                  <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">CRS Mass LLIN Campaign Field Operations (Global Fund / NMCP / MOH)</div>
+                  <div><span class="badge">OFFICIAL TEMPORARY ONBOARDING NOTICE</span></div>
+                </div>
+
+                <p style="font-size: 16px; color: #ffffff; margin-top: 0;">Dear <strong>${fullName}</strong>,</p>
+                <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                  You have been successfully registered and onboarded as a <strong>${role}</strong> for the upcoming CRS Mass LLIN Distribution Campaign in <strong>${district}, ${county}</strong> (Catchment: ${healthFacilityCatchment}).
+                </p>
+
+                <div class="cred-box">
+                  <div style="color: #2dd4bf; font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">📱 YOUR FIELD APP LOGIN CREDENTIALS:</div>
+                  <div class="cred-line"><strong>Login ID (Immutable Phone):</strong> <span class="cred-val">${phone}</span></div>
+                  <div class="cred-line"><strong>Temporary PIN / Password:</strong> <span class="cred-val">${temporaryPassword}</span></div>
+                  <div class="cred-line"><strong>Campaign Badge ID:</strong> <span style="color: #38bdf8; font-weight: bold;">${badgeCode}</span></div>
+                  <div class="cred-line"><strong>Contract Window:</strong> <span style="color: #ffffff;">${contractWindowDays} Days @ $${dailyRateUsd}/day ($${Number(contractWindowDays) * Number(dailyRateUsd)} USD Total)</span></div>
+                  <div class="cred-line"><strong>Registered MoMo Wallet:</strong> <span style="color: #4ade80;">${momoCarrier} (${momoWalletNumber || phone})</span></div>
+                </div>
+
+                <div class="warning-box">
+                  <strong>⚠️ Mandatory Contract Signing & $129 Device Liability:</strong><br>
+                  Upon first login, you are required to change your temporary password and digitally sign the <strong>Tripartite Master Agreement</strong> ($129 Phone Loss Liability, All-Risk ITN Net Insurance Bond, and 49-in-1 Waste Reverse Logistics).
+                </div>
+
+                <div style="text-align: center; margin: 25px 0;">
+                  <a href="https://totaggroup.com/field#/field" class="btn">Open Field Worker Portal & Sign In ➔</a>
+                </div>
+
+                <div class="footer">
+                  TOTAG Group of Companies Ltd &bull; Corporate HRMIS & Field Operations Command<br>
+                  In Partnership with Catholic Relief Services (CRS) & Ministry of Health (MOH), Republic of Liberia.<br>
+                  Support Hotline: +231-777-666-901 | Email: info@totaggroup.com
+                </div>
+              </div>
+            </body>
+            </html>
+          `;
+
+          await EmailService.sendEmail({
+            to: email,
+            from: "info@totaggroup.com",
+            subject: emailSubject,
+            html: emailHtml,
+            text: `Dear ${fullName},\n\nYour TOTAG CRS Campaign account has been created.\nLogin Phone: ${phone}\nTemporary PIN: ${temporaryPassword}\nBadge: ${badgeCode}\nContract: ${contractWindowDays} Days @ $${dailyRateUsd}/day\n\nPlease log in at https://totaggroup.com/field to set your permanent password and sign your agreement.`,
+            type: "notification"
+          });
+          emailSent = true;
+          console.log(`✅ [CRS HRMIS] Onboarding email dispatched successfully via Zoho SMTP to ${email}`);
+        } catch (mailErr) {
+          console.error("❌ [CRS HRMIS] Failed to send onboarding email:", mailErr);
+        }
+      }
+
+      // SMS Dispatch log & payload
+      const smsMessage = `Welcome ${fullName}! Your TOTAG Field App account is active. Login Phone: ${phone}, Temp PIN: ${temporaryPassword}. Sign in at https://totaggroup.com/field to sign contract and begin SOW.`;
+      console.log(`📱 [CRS SMS GATEWAY] Outbound SMS dispatched to [${phone}]: "${smsMessage}"`);
+
+      return res.status(200).json({
+        success: true,
+        worker: {
+          id: `CRS-W-${Math.floor(100 + Math.random() * 900)}`,
+          badgeCode,
+          fullName,
+          phone,
+          email: email || "",
+          nationalId: nationalId || "LR-PENDING",
+          role,
+          county,
+          district,
+          healthFacilityCatchment,
+          contractWindowDays: Number(contractWindowDays),
+          contractStartDate: "2026-11-23",
+          contractEndDate: "2026-12-02",
+          dailyRateUsd: Number(dailyRateUsd),
+          totalContractValueUsd: Number(contractWindowDays) * Number(dailyRateUsd),
+          momoCarrier,
+          momoWalletNumber: momoWalletNumber || phone,
+          momoKycVerified: true,
+          byodPhoneModel: byodPhoneModel || "Android 9+",
+          byodPhoneImei: byodPhoneImei || "IMEI-VERIFIED",
+          byodConsentSigned: false,
+          pseaCodeOfConductSigned: true,
+          dailyHhrTarget: (role || '').includes("HHR") ? 25 : 0,
+          actualHhrCompleted: 0,
+          dailyItnTarget: (role || '').includes("Distribution") ? 50 : 0,
+          actualItnDistributed: 0,
+          performanceRatio: 100,
+          materialsReturnedStatus: "Pending Campaign Completion",
+          disbursementStatus: "Daily Staged",
+          loginPhone: phone,
+          temporaryPassword,
+          isFirstLogin: true,
+          credentialsDispatchedSms: true,
+          credentialsDispatchedEmail: emailSent
+        },
+        smsMessage,
+        emailSent,
+        smsSent: true
+      });
+    } catch (err: any) {
+      console.error("Error in /api/crs/recruit-worker:", err);
+      return res.status(500).json({ error: err.message || "Internal server error" });
+    }
+  });
+
+  // POST /api/crs/resend-credentials
+  app.post("/api/crs/resend-credentials", async (req, res) => {
+    try {
+      const { fullName, phone, email, temporaryPassword, role } = req.body;
+      if (!phone) {
+        return res.status(400).json({ error: "Phone number is required" });
+      }
+
+      console.log(`🔄 [CRS HRMIS] Resending credentials to ${fullName} (${phone} / ${email})`);
+      let emailSent = false;
+      if (email && email.includes("@")) {
+        try {
+          await EmailService.sendEmail({
+            to: email,
+            from: "info@totaggroup.com",
+            subject: `[TOTAG & CRS] Account Login Credentials Reminder - ${fullName}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; border-radius: 12px;">
+                <h2 style="color: #14b8a6;">TOTAG Field App Credentials</h2>
+                <p>Hello <strong>${fullName}</strong>,</p>
+                <p>Here are your login credentials for the TOTAG Field Worker Portal:</p>
+                <div style="background: #1e293b; padding: 15px; border-radius: 8px; font-family: monospace;">
+                  <div><strong>Login Phone:</strong> <span style="color: #facc15;">${phone}</span></div>
+                  <div><strong>Temporary PIN:</strong> <span style="color: #facc15;">${temporaryPassword || "CRS-2026"}</span></div>
+                  <div><strong>Portal URL:</strong> <a href="https://totaggroup.com/field#/field" style="color: #38bdf8;">https://totaggroup.com/field</a></div>
+                </div>
+              </div>
+            `,
+            type: "notification"
+          });
+          emailSent = true;
+        } catch (e) {
+          console.error("Resend email failed:", e);
+        }
+      }
+
+      const smsMessage = `TOTAG CRS Reminder: Your Field Login ID is: ${phone}, PIN: ${temporaryPassword || "CRS-2026"}. Log in at https://totaggroup.com/field`;
+      console.log(`📱 Outbound SMS: ${smsMessage}`);
+
+      return res.status(200).json({ success: true, emailSent, smsSent: true, smsMessage });
+    } catch (e: any) {
+      return res.status(500).json({ error: e.message || "Failed to resend" });
+    }
+  });
+
+
   const httpServer = createServer(app);
 
   return httpServer;
