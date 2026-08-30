@@ -1,5 +1,5 @@
 import { getApiUrl } from "@/lib/config";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,8 @@ import {
   Smartphone,
   CheckCircle,
   FileSignature,
+  Eraser,
+  PenTool,
   Target,
   MapPin,
   Clock,
@@ -73,6 +75,60 @@ export default function FieldWorkerPortal() {
   const [hasAgreedLiability, setHasAgreedLiability] = useState<boolean>(false);
   const [hasAgreedInsuranceBond, setHasAgreedInsuranceBond] = useState<boolean>(false);
   const [hasAgreedWasteReverse, setHasAgreedWasteReverse] = useState<boolean>(false);
+  
+  // Canvas Signature Pad State & Ref
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
+  const [hasDrawnSignature, setHasDrawnSignature] = useState<boolean>(false);
+
+  // Canvas drawing handlers
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = "#14b8a6";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    setIsDrawing(true);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = "touches" in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+    const y = "touches" in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    setHasDrawnSignature(true);
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearSignatureCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasDrawnSignature(false);
+  };
   const [newPasswordForm, setNewPasswordForm] = useState({ newPassword: "", confirmPassword: "" });
 
   // Current Active Worker
@@ -161,8 +217,17 @@ export default function FieldWorkerPortal() {
     e.preventDefault();
     if (!hasAgreedLiability || !hasAgreedInsuranceBond || !hasAgreedWasteReverse) {
       toast({
-        title: "Mandatory Acknowledgment",
-        description: "You must check all 3 legal clauses ($129 Phone Loss, Insurance Bond, and Waste Reverse) to proceed.",
+        title: "Mandatory Clauses Incomplete",
+        description: "You must check all 3 legal acknowledgments ($129 Device Liability, Insurance Bond, and 49-in-1 Waste) to proceed.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!hasDrawnSignature) {
+      toast({
+        title: "Signature Pad Is Blank",
+        description: "Please physically draw/sign your signature on the signature pad above using your finger or mouse.",
         variant: "destructive"
       });
       return;
@@ -170,19 +235,23 @@ export default function FieldWorkerPortal() {
 
     if (!contractSignatureName || contractSignatureName.trim().length < 3) {
       toast({
-        title: "Signature Required",
-        description: "Please type your full legal name as your digital signature.",
+        title: "Full Legal Name Required",
+        description: "Please confirm your full legal name beneath the signature pad.",
         variant: "destructive"
       });
       return;
     }
 
+    const canvas = canvasRef.current;
+    const signatureDataUrl = canvas ? canvas.toDataURL("image/png") : "";
     const timestamp = new Date().toLocaleString();
+
     const updatedWorker = {
       ...worker!,
       byodConsentSigned: true,
       signatureTimestamp: timestamp,
-      digitalSignature: contractSignatureName
+      digitalSignature: contractSignatureName,
+      signatureImage: signatureDataUrl
     };
 
     setWorker(updatedWorker);
@@ -204,8 +273,8 @@ export default function FieldWorkerPortal() {
     }
 
     toast({
-      title: "✓ Contract Legally Signed & Active!",
-      description: `Digitally executed by ${contractSignatureName}. You are now authorized to commence field operations.`
+      title: "✓ Contract Legally Executed & Bound!",
+      description: `Digital signature captured for ${contractSignatureName} on ${timestamp}. Authorized for mobilization payment & SOW execution.`
     });
   };
 
@@ -833,8 +902,41 @@ export default function FieldWorkerPortal() {
                 <div><strong>Device IMEI:</strong> <span className="text-amber-300 font-bold">{worker.byodPhoneImei}</span></div>
                 <div><strong>Contract Window:</strong> {worker.contractStartDate} to {worker.contractEndDate} (10 Days)</div>
                 <div><strong>Contract Value:</strong> ${worker.totalContractValueUsd} USD (${worker.dailyRateUsd}/day)</div>
-                <div><strong>Signature Status:</strong> {worker.byodConsentSigned ? "✓ Signed by " + (worker.digitalSignature || worker.fullName) : "⚠️ Pending Signature"}</div>
+                <div><strong>Signature Status:</strong> {worker.byodConsentSigned ? "✓ Legally Executed by " + (worker.digitalSignature || worker.fullName) : "⚠️ Pending Signature"}</div>
+                {worker.signatureTimestamp && (
+                  <div><strong>Execution Stamp:</strong> <span className="text-emerald-400">{worker.signatureTimestamp}</span></div>
+                )}
               </div>
+
+              {/* RENDER EMBEDDED SIGNATURE IF SIGNED */}
+              {worker.byodConsentSigned && (
+                <div className="p-3.5 rounded-2xl bg-slate-950 border border-teal-500/40 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono">
+                    <span className="text-teal-400 font-bold flex items-center gap-1.5">
+                      <PenTool className="w-3.5 h-3.5" /> Executed Field Signature
+                    </span>
+                    <Badge className="bg-teal-500/20 text-teal-300 border-0 text-[10px]">
+                      Verified On-Device
+                    </Badge>
+                  </div>
+                  {worker.signatureImage ? (
+                    <div className="p-2 rounded-xl bg-[#030712] border border-white/10 flex items-center justify-center">
+                      <img
+                        src={worker.signatureImage}
+                        alt="Digital Signature"
+                        className="max-h-20 object-contain filter invert-[0.1]"
+                      />
+                    </div>
+                  ) : (
+                    <div className="p-2 rounded-xl bg-slate-900 border border-white/10 font-mono text-center text-teal-300 text-xs italic">
+                      [ Digitally Executed & Sealed: {worker.digitalSignature || worker.fullName} ]
+                    </div>
+                  )}
+                  <div className="text-[10px] text-slate-400 text-center font-mono">
+                    Authorized Signatory: <strong>{worker.digitalSignature || worker.fullName}</strong> &bull; Device IMEI: <strong>{worker.byodPhoneImei}</strong>
+                  </div>
+                </div>
+              )}
 
               {/* Action if unsigned */}
               {!worker.byodConsentSigned && (
@@ -1110,24 +1212,66 @@ export default function FieldWorkerPortal() {
                 </label>
               </div>
 
-              <div className="space-y-1 pt-1">
-                <Label className="text-slate-300 font-bold flex items-center justify-between">
-                  <span>Type Full Legal Name as Digital Signature:</span>
-                  <span className="text-[10px] text-teal-400 font-mono">Legally Binding</span>
+              {/* TOUCH / MOUSE CANVAS SIGNATURE PAD */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between">
+                  <Label className="text-slate-300 font-bold flex items-center gap-1.5 text-xs">
+                    <PenTool className="w-3.5 h-3.5 text-teal-400" />
+                    <span>Draw Your Physical Signature (Touch / Mouse):</span>
+                  </Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSignatureCanvas}
+                    className="h-6 text-[10px] text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 px-2 flex items-center gap-1"
+                  >
+                    <Eraser className="w-3 h-3" /> Clear
+                  </Button>
+                </div>
+
+                <div className="relative border-2 border-dashed border-teal-500/50 bg-slate-950 rounded-2xl overflow-hidden touch-none shadow-inner">
+                  <canvas
+                    ref={canvasRef}
+                    width={420}
+                    height={150}
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseLeave={stopDrawing}
+                    onTouchStart={startDrawing}
+                    onTouchMove={draw}
+                    onTouchEnd={stopDrawing}
+                    className="w-full h-[140px] cursor-crosshair bg-[#030712]"
+                  />
+                  {!hasDrawnSignature && (
+                    <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center text-slate-500 text-xs font-mono">
+                      <PenTool className="w-5 h-5 mb-1 text-slate-600 animate-bounce" />
+                      <span>Sign here with your finger or stylus</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold flex items-center justify-between text-xs">
+                  <span>Confirm Full Legal Name:</span>
+                  <span className="text-[10px] text-teal-400 font-mono">Liberia Legal Attestation</span>
                 </Label>
                 <Input
                   required
                   placeholder="e.g. Michael Gwoah"
                   value={contractSignatureName}
                   onChange={(e) => setContractSignatureName(e.target.value)}
-                  className="bg-slate-900 border-amber-500/40 text-white font-mono text-xs rounded-xl h-10 font-bold"
+                  className="bg-slate-900 border-amber-500/40 text-white font-mono text-xs rounded-xl h-9 font-bold"
                 />
               </div>
 
               <div className="pt-2">
                 <Button
                   type="submit"
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs h-11 rounded-xl shadow-lg shadow-amber-500/20"
+                  disabled={!hasDrawnSignature || !hasAgreedLiability || !hasAgreedInsuranceBond || !hasAgreedWasteReverse}
+                  className="w-full bg-amber-500 hover:bg-amber-400 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-black text-xs h-11 rounded-xl shadow-lg shadow-amber-500/20"
                 >
                   ✍️ Execute & Legally Sign Tripartite Master Agreement ➔
                 </Button>
