@@ -106,6 +106,7 @@ export interface CRSTemporaryWorker {
   badgeCode: string;
   fullName: string;
   phone: string;
+  email?: string;
   nationalId: string;
   role: "HHR Registration Agent" | "ITN Distribution Lead" | "Field Supervisor" | "District Coordinator" | "Logistics & Site-Readiness" | "QA / Data Monitor" | "Community Mobilizer";
   county: string;

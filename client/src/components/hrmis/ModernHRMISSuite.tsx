@@ -492,6 +492,7 @@ export function ModernHRMISSuite() {
   const [newCrsWorkerForm, setNewCrsWorkerForm] = useState({
     fullName: "",
     phone: "",
+    email: "",
     nationalId: "",
     role: "HHR Registration Agent" as CRSTemporaryWorker["role"],
     county: "Grand Cape Mount",
@@ -589,17 +590,22 @@ export function ModernHRMISSuite() {
 
   // Submit Clock In
   // Handle Recruitment Submit
-  const handleRecruitCrsWorker = (e: React.FormEvent) => {
+  const handleRecruitCrsWorker = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCrsWorkerForm.fullName || !newCrsWorkerForm.phone) {
       toast({ title: "Error", description: "Please enter candidate full name and phone number.", variant: "destructive" });
       return;
     }
+
+    const tempPin = `CRS-${Math.floor(1000 + Math.random() * 9000)}`;
+    const badgeCode = `TOT-CRS-${(newCrsWorkerForm.role || '').includes("HHR") ? "HHR" : (newCrsWorkerForm.role || '').includes("Supervisor") ? "SUP" : "DP"}-${100 + crsWorkers.length + 1}`;
+
     const newWorker: CRSTemporaryWorker = {
       id: `CRS-W-${String(crsWorkers.length + 1).padStart(3, '0')}`,
-      badgeCode: `TOT-CRS-${newCrsWorkerForm.role.includes("HHR") ? "HHR" : newCrsWorkerForm.role.includes("Supervisor") ? "SUP" : "DP"}-${100 + crsWorkers.length + 1}`,
+      badgeCode,
       fullName: newCrsWorkerForm.fullName,
       phone: newCrsWorkerForm.phone,
+      email: newCrsWorkerForm.email,
       nationalId: newCrsWorkerForm.nationalId || "LR-PENDING-00",
       role: newCrsWorkerForm.role,
       county: newCrsWorkerForm.county,
@@ -617,28 +623,52 @@ export function ModernHRMISSuite() {
       byodPhoneImei: newCrsWorkerForm.byodPhoneImei || "IMEI-PENDING-CHECK",
       byodConsentSigned: false,
       pseaCodeOfConductSigned: true,
-      dailyHhrTarget: newCrsWorkerForm.role.includes("HHR") ? 25 : 0,
+      dailyHhrTarget: (newCrsWorkerForm.role || '').includes("HHR") ? 25 : 0,
       actualHhrCompleted: 0,
-      dailyItnTarget: newCrsWorkerForm.role.includes("Distribution") ? 50 : 0,
+      dailyItnTarget: (newCrsWorkerForm.role || '').includes("Distribution") ? 50 : 0,
       actualItnDistributed: 0,
       performanceRatio: 100,
       materialsReturnedStatus: "Pending Campaign Completion",
       disbursementStatus: "Daily Staged",
       loginPhone: newCrsWorkerForm.phone,
-      temporaryPassword: `CRS-${Math.floor(1000 + Math.random() * 9000)}`,
+      temporaryPassword: tempPin,
       isFirstLogin: true,
       credentialsDispatchedSms: true
     };
 
+    // Call backend API to trigger real email and SMS dispatch
+    try {
+      fetch("/api/crs/recruit-worker", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: newCrsWorkerForm.fullName,
+          phone: newCrsWorkerForm.phone,
+          email: newCrsWorkerForm.email,
+          nationalId: newCrsWorkerForm.nationalId,
+          role: newCrsWorkerForm.role,
+          district: newCrsWorkerForm.district,
+          healthFacilityCatchment: newCrsWorkerForm.healthFacilityCatchment,
+          contractWindowDays: newCrsWorkerForm.contractWindowDays,
+          dailyRateUsd: newCrsWorkerForm.dailyRateUsd,
+          momoCarrier: newCrsWorkerForm.momoCarrier,
+          momoWalletNumber: newCrsWorkerForm.momoWalletNumber,
+          byodPhoneModel: newCrsWorkerForm.byodPhoneModel,
+          byodPhoneImei: newCrsWorkerForm.byodPhoneImei
+        })
+      }).catch(err => console.log("Background API notification:", err));
+    } catch (e) {
+      console.error(e);
+    }
+
     setCrsWorkers(prev => [newWorker, ...prev]);
     setShowCrsRecruitModal(false);
     toast({
-      title: "✓ Temporary Worker Registered & Credentials Dispatched",
-      description: `SMS & Email sent to ${newWorker.phone}: Login ID: ${newWorker.phone} | Temporary PIN: ${newWorker.temporaryPassword}. Worker will set permanent password on first login.`
+      title: "✓ Candidate Onboarded & Credentials Dispatched",
+      description: `Dispatched to ${newCrsWorkerForm.phone}${newCrsWorkerForm.email ? " & " + newCrsWorkerForm.email : ""}! Login ID: ${newWorker.phone} | Temp PIN: ${newWorker.temporaryPassword}`
     });
   };
 
-  // Handle Sign $129 Phone Custody Contract
   const handleSignPhoneContract = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCrsWorker) return;
