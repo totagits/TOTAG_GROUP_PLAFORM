@@ -1097,30 +1097,30 @@ export function ModernHRMISSuite() {
       {/* ========================================================================= */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <div className="bg-slate-100 dark:bg-slate-900/80 p-1.5 rounded-2xl border border-slate-200 dark:border-white/10">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-1 bg-transparent h-auto p-0">
-            <TabsTrigger value="directory" className="rounded-xl text-xs font-bold py-2.5">
-              <Users className="w-3.5 h-3.5 mr-1.5 text-blue-500" />
-              1. Employee Directory
+          <TabsList className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 bg-transparent h-auto p-0">
+            <TabsTrigger value="directory" className="rounded-xl text-xs font-bold py-2.5 truncate">
+              <Users className="w-3.5 h-3.5 mr-1.5 text-blue-500 shrink-0" />
+              <span>1. Directory</span>
             </TabsTrigger>
-            <TabsTrigger value="payroll" className="rounded-xl text-xs font-bold py-2.5">
-              <DollarSign className="w-3.5 h-3.5 mr-1.5 text-emerald-500" />
-              2. Statutory Payroll
+            <TabsTrigger value="payroll" className="rounded-xl text-xs font-bold py-2.5 truncate">
+              <DollarSign className="w-3.5 h-3.5 mr-1.5 text-emerald-500 shrink-0" />
+              <span>2. Payroll & Tax</span>
             </TabsTrigger>
-            <TabsTrigger value="attendance" className="rounded-xl text-xs font-bold py-2.5">
-              <Clock className="w-3.5 h-3.5 mr-1.5 text-amber-500" />
-              3. Field Attendance & GPS
+            <TabsTrigger value="attendance" className="rounded-xl text-xs font-bold py-2.5 truncate">
+              <Clock className="w-3.5 h-3.5 mr-1.5 text-amber-500 shrink-0" />
+              <span>3. Attendance</span>
             </TabsTrigger>
-            <TabsTrigger value="leave" className="rounded-xl text-xs font-bold py-2.5">
-              <Calendar className="w-3.5 h-3.5 mr-1.5 text-purple-500" />
-              4. Leave & Absences
+            <TabsTrigger value="leave" className="rounded-xl text-xs font-bold py-2.5 truncate">
+              <Calendar className="w-3.5 h-3.5 mr-1.5 text-purple-500 shrink-0" />
+              <span>4. Leave</span>
             </TabsTrigger>
-            <TabsTrigger value="delegations" className="rounded-xl text-xs font-bold py-2.5">
-              <Key className="w-3.5 h-3.5 mr-1.5 text-indigo-500" />
-              5. Corporate Delegations
+            <TabsTrigger value="delegations" className="rounded-xl text-xs font-bold py-2.5 truncate">
+              <Key className="w-3.5 h-3.5 mr-1.5 text-indigo-500 shrink-0" />
+              <span>5. Delegations</span>
             </TabsTrigger>
-            <TabsTrigger value="crs-campaign" className="rounded-xl text-xs font-black py-2.5 text-teal-700 dark:text-teal-300 bg-teal-500/10 hover:bg-teal-500/20">
-              <Briefcase className="w-3.5 h-3.5 mr-1.5 text-teal-500 animate-pulse" />
-              6. CRS Campaign (10-14D Temporary Staff)
+            <TabsTrigger value="crs-campaign" className="rounded-xl text-xs font-black py-2.5 text-teal-700 dark:text-teal-300 bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 truncate">
+              <Briefcase className="w-3.5 h-3.5 mr-1.5 text-teal-400 shrink-0 animate-pulse" />
+              <span>6. CRS Campaign</span>
             </TabsTrigger>
           </TabsList>
         </div>
