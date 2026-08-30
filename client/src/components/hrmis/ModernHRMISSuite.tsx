@@ -127,291 +127,27 @@ export interface CorporateEmployeeRecord {
 
 const SEED_CRS_CAMPAIGN_WORKERS: CRSTemporaryWorker[] = [];
 
-const SEED_CORPORATE_EMPLOYEES: CorporateEmployeeRecord[] = [
-  {
-    id: "EMP-001",
-    employeeCode: "TOT-HQ-101",
-    firstName: "Michael",
-    lastName: "Gwoah",
-    email: "m.gwoah@totaggroup.com",
-    phone: "+231-777-666-001",
-    employerSubsidiaryId: "totag_hq",
-    subsidiaryName: "TOTAG Corporate HQ & Group Holdings",
-    department: "Executive Board",
-    role: "Chief Executive Officer & Group Chairman",
-    employmentLevel: "Corporate Executive",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2021-01-01",
-    baseSalaryUsd: 4500,
-    manager: "Board of Directors",
-    location: "Monrovia HQ, 11th Street Sinkor",
-    nationalId: "LR-900101-01",
-    nasscorpNumber: "NASS-HQ-1001",
-    lraTin: "LRA-TIN-1001",
-    flightRisk: "Low",
-    performanceScore: 99,
-    attendanceRate: 100,
-    skills: ["Corporate Strategy", "M&A", "Cross-Border Logistics", "Executive Governance"],
-    mobileSalaryCarrier: "Direct Bank (Ecobank)",
-    mobileSalaryNumber: "+231-777-666-001",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ECO-HQ-2026-001"
-  },
-  {
-    id: "EMP-002",
-    employeeCode: "TOT-HQ-102",
-    firstName: "Emmanuel",
-    lastName: "Doe",
-    email: "e.doe@totaggroup.com",
-    phone: "+231-777-666-101",
-    employerSubsidiaryId: "totag_hq",
-    subsidiaryName: "TOTAG Corporate HQ & Group Holdings",
-    department: "Corporate Operations",
-    role: "Group Vice President of Operations",
-    employmentLevel: "Corporate Executive",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2022-03-15",
-    baseSalaryUsd: 3200,
-    manager: "Michael Gwoah",
-    location: "Monrovia HQ, 11th Street Sinkor",
-    nationalId: "LR-984412-23",
-    nasscorpNumber: "NASS-HQ-1002",
-    lraTin: "LRA-TIN-1002",
-    flightRisk: "Low",
-    performanceScore: 95,
-    attendanceRate: 98,
-    skills: ["Supply Chain", "Budgeting", "Team Leadership", "Risk Management"],
-    mobileSalaryCarrier: "Orange Money",
-    mobileSalaryNumber: "+231-777-666-999",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ORANGE-SAL-2026-981"
-  },
-  {
-    id: "EMP-003",
-    employeeCode: "TOT-HQ-103",
-    firstName: "James",
-    lastName: "Kollie",
-    email: "j.kollie@totaggroup.com",
-    phone: "+231-887-666-103",
-    employerSubsidiaryId: "totag_hq",
-    subsidiaryName: "TOTAG Corporate HQ & Group Holdings",
-    department: "Group Finance",
-    role: "Chief Financial Officer & Corporate Payroll Director",
-    employmentLevel: "Corporate Executive",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2022-11-10",
-    baseSalaryUsd: 2900,
-    manager: "Michael Gwoah",
-    location: "Monrovia HQ",
-    nationalId: "LR-773412-44",
-    nasscorpNumber: "NASS-HQ-1003",
-    lraTin: "LRA-TIN-1003",
-    flightRisk: "Low",
-    performanceScore: 94,
-    attendanceRate: 97,
-    skills: ["IFRS Accounting", "Tax Compliance", "Payroll Auditing", "Treasury Control"],
-    mobileSalaryCarrier: "Lonestar MTN MoMo",
-    mobileSalaryNumber: "+231-887-666-999",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "MTN-MOMO-2026-441"
-  },
-  {
-    id: "EMP-004",
-    employeeCode: "TOT-FARM-201",
-    firstName: "Samuel",
-    lastName: "Korkoyah",
-    email: "s.korkoyah@totagfarm.com",
-    phone: "+231-777-666-201",
-    employerSubsidiaryId: "totag_farm",
-    subsidiaryName: "TOTAG FARM & Agro-Industrial Ltd",
-    department: "Agronomy & Outgrower Operations",
-    role: "Senior Agronomist & Lofa Hub Manager",
-    employmentLevel: "Subsidiary Management",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2023-04-10",
-    baseSalaryUsd: 1950,
-    manager: "Emmanuel Doe",
-    location: "Voinjama Agro-Hub, Lofa",
-    nationalId: "LR-551294-88",
-    nasscorpNumber: "NASS-FARM-2001",
-    lraTin: "LRA-TIN-2001",
-    flightRisk: "Low",
-    performanceScore: 93,
-    attendanceRate: 98,
-    skills: ["Seedling Propagation", "Soil Geotagging", "Outgrower Management", "Irrigation"],
-    mobileSalaryCarrier: "Orange Money",
-    mobileSalaryNumber: "+231-777-666-201",
-    mobileSalarySplit: "50% USD / 50% LRD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ORANGE-SAL-2026-201"
-  },
-  {
-    id: "EMP-005",
-    employeeCode: "TOC-CAT-301",
-    firstName: "Patience",
-    lastName: "Johnson",
-    email: "p.johnson@toceps.com",
-    phone: "+231-777-666-301",
-    employerSubsidiaryId: "toceps_catering",
-    subsidiaryName: "TOCEPS Catering & Culinary Services",
-    department: "Culinary Operations & Quality",
-    role: "Executive Head Chef & Kitchen Director",
-    employmentLevel: "Subsidiary Management",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2023-08-01",
-    baseSalaryUsd: 1800,
-    manager: "Emmanuel Doe",
-    location: "Sinkor Central Kitchen, Monrovia",
-    nationalId: "LR-665123-12",
-    nasscorpNumber: "NASS-CAT-3001",
-    lraTin: "LRA-TIN-3001",
-    flightRisk: "Low",
-    performanceScore: 96,
-    attendanceRate: 99,
-    skills: ["HACCP Food Safety", "Industrial Menu Engineering", "Kitchen Logistics", "Staff Training"],
-    mobileSalaryCarrier: "Orange Money",
-    mobileSalaryNumber: "+231-777-666-301",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ORANGE-SAL-2026-301"
-  },
-  {
-    id: "EMP-006",
-    employeeCode: "TOT-CRG-401",
-    firstName: "Joseph",
-    lastName: "Sirleaf",
-    email: "j.sirleaf@totagcargohandling.com",
-    phone: "+231-887-666-401",
-    employerSubsidiaryId: "totag_cargo",
-    subsidiaryName: "TOTAG Cargo Handling & Stevedoring",
-    department: "Stevedoring & Port Gate",
-    role: "Chief Stevedore Operations Superintendent",
-    employmentLevel: "Subsidiary Management",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2022-09-01",
-    baseSalaryUsd: 2100,
-    manager: "Emmanuel Doe",
-    location: "Freeport of Monrovia Yard",
-    nationalId: "LR-441298-77",
-    nasscorpNumber: "NASS-CRG-4001",
-    lraTin: "LRA-TIN-4001",
-    flightRisk: "Low",
-    performanceScore: 92,
-    attendanceRate: 96,
-    skills: ["Vessel Discharge", "LRA ASYCUDA Customs", "Container Crane Rigger", "Hazardous Hazmat"],
-    mobileSalaryCarrier: "Lonestar MTN MoMo",
-    mobileSalaryNumber: "+231-887-666-401",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "MTN-MOMO-2026-401"
-  },
-  {
-    id: "EMP-007",
-    employeeCode: "TOT-PET-501",
-    firstName: "Victor",
-    lastName: "Togba",
-    email: "v.togba@totagpetroleum.com",
-    phone: "+231-777-666-501",
-    employerSubsidiaryId: "totag_petroleum",
-    subsidiaryName: "TOTAG Petroleum & Energy Logistics",
-    department: "Terminal & Tank Farm Safety",
-    role: "Terminal Superintendent & Bunkering Lead",
-    employmentLevel: "Subsidiary Management",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2023-02-15",
-    baseSalaryUsd: 2300,
-    manager: "Emmanuel Doe",
-    location: "Bushrod Island Petroleum Depot",
-    nationalId: "LR-331290-66",
-    nasscorpNumber: "NASS-PET-5001",
-    lraTin: "LRA-TIN-5001",
-    flightRisk: "Low",
-    performanceScore: 95,
-    attendanceRate: 98,
-    skills: ["AGO/PMS Bunkering", "Tank Dip Gauging", "Fire Suppression OSHA", "API Standards"],
-    mobileSalaryCarrier: "Orange Money",
-    mobileSalaryNumber: "+231-777-666-501",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ORANGE-SAL-2026-501"
-  },
-  {
-    id: "EMP-008",
-    employeeCode: "TOT-SOL-601",
-    firstName: "Elijah",
-    lastName: "Flomo",
-    email: "e.flomo@totagsolar.com",
-    phone: "+231-887-666-601",
-    employerSubsidiaryId: "totag_solar",
-    subsidiaryName: "TOTAG Solar Smart Energy Solutions",
-    department: "Engineering EPC",
-    role: "Senior Solar Microgrid Engineer",
-    employmentLevel: "Subsidiary Operational",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2024-01-10",
-    baseSalaryUsd: 1850,
-    manager: "Emmanuel Doe",
-    location: "Congo Town Energy Hub",
-    nationalId: "LR-221098-55",
-    nasscorpNumber: "NASS-SOL-6001",
-    lraTin: "LRA-TIN-6001",
-    flightRisk: "Low",
-    performanceScore: 91,
-    attendanceRate: 97,
-    skills: ["Inverter Sizing", "Lithium Battery Storage", "PV Yield Modeling", "Grid Synchronization"],
-    mobileSalaryCarrier: "Lonestar MTN MoMo",
-    mobileSalaryNumber: "+231-887-666-601",
-    mobileSalarySplit: "50% USD / 50% LRD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "MTN-MOMO-2026-601"
-  },
-  {
-    id: "EMP-009",
-    employeeCode: "CRS-SAAS-001",
-    firstName: "Helena",
-    lastName: "Benson",
-    email: "h.benson@crsconsultancy.lr",
-    phone: "+231-777-666-901",
-    employerSubsidiaryId: "crs_consultancy",
-    subsidiaryName: "CRS Consultancy Ltd (Licensed Tenant)",
-    department: "Executive Advisory",
-    role: "Managing Principal & Lead HR Strategist",
-    employmentLevel: "Corporate Executive",
-    employmentType: "Full-Time",
-    status: "Active",
-    joinDate: "2023-10-01",
-    baseSalaryUsd: 2600,
-    manager: "CRS Board",
-    location: "CRS Regional Office, Monrovia",
-    nationalId: "LR-110987-44",
-    nasscorpNumber: "NASS-CRS-9001",
-    lraTin: "LRA-TIN-9001",
-    flightRisk: "Low",
-    performanceScore: 97,
-    attendanceRate: 99,
-    skills: ["HR Audit", "Labor Law Compliance", "Executive Coaching", "Capacity Building"],
-    mobileSalaryCarrier: "Direct Bank (Ecobank)",
-    mobileSalaryNumber: "+231-777-666-901",
-    mobileSalarySplit: "100% USD",
-    mobileKycStatus: "Verified",
-    lastMobilePayoutTx: "ECO-CRS-2026-901"
-  }
-];
+const SEED_CORPORATE_EMPLOYEES: CorporateEmployeeRecord[] = [];
 
 export function ModernHRMISSuite() {
   const { toast } = useToast();
-  const [employees, setEmployees] = useState<CorporateEmployeeRecord[]>(SEED_CORPORATE_EMPLOYEES);
+  const [employees, setEmployees] = useState<CorporateEmployeeRecord[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("totag_corporate_employees_live_v2");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("totag_corporate_employees_live_v2", JSON.stringify(employees));
+    }
+  }, [employees]);
   const [selectedSubsidiary, setSelectedSubsidiary] = useState<string>("ALL");
   const [activeTab, setActiveTab] = useState<string>("directory");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -586,20 +322,23 @@ export function ModernHRMISSuite() {
     signatureName: ""
   });
 
-  const [delegations, setDelegations] = useState<CorporateDelegationGrant[]>([
-    {
-      id: "DEL-2026-01",
-      granterName: "Michael Gwoah (CEO)",
-      granterRole: "Group Executive Board",
-      granteeName: "James Kollie (CFO)",
-      targetSubsidiaryId: "totag_farm",
-      targetModule: "Payroll",
-      purpose: "Auditing Lofa Rice Harvest Payroll Allocation",
-      grantedAt: "2026-08-20",
-      expiresAt: "2026-09-20",
-      status: "Active"
+  const [delegations, setDelegations] = useState<CorporateDelegationGrant[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("totag_corporate_delegations_live");
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
     }
-  ]);
+    return [];
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("totag_corporate_delegations_live", JSON.stringify(delegations));
+    }
+  }, [delegations]);
 
   // Filtered employees based on subsidiary selection and search
   const filteredEmployees = employees.filter((emp) => {
