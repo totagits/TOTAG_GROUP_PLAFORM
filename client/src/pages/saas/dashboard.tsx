@@ -49,6 +49,55 @@ interface Module {
 export default function SaaSDashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [activeDashboardView, setActiveDashboardView] = useState<'overview' | 'hrmis-suite' | 'fims-suite'>('overview');
+  // Institution Profile & Logo
+  const [institutionLogo, setInstitutionLogo] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("totag_institution_settings_v1");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return parsed.logoUrl || "";
+        }
+        return localStorage.getItem("saas_institution_logo") || "";
+      } catch (e) {
+        return "";
+      }
+    }
+    return "";
+  });
+
+  const [institutionName, setInstitutionName] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("totag_institution_settings_v1");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return parsed.name || "TOTAG GROUP OF COMPANIES LTD";
+        }
+        return localStorage.getItem("saas_company_name") || "TOTAG GROUP OF COMPANIES LTD";
+      } catch (e) {
+        return "TOTAG GROUP OF COMPANIES LTD";
+      }
+    }
+    return "TOTAG GROUP OF COMPANIES LTD";
+  });
+
+  // Listen to storage events for instant cross-tab & settings updates
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const saved = localStorage.getItem("totag_institution_settings_v1");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.logoUrl) setInstitutionLogo(parsed.logoUrl);
+          if (parsed.name) setInstitutionName(parsed.name);
+        }
+      } catch (e) {}
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   const [, setLocation] = useLocation();
 
   // Check authentication and get user from token
@@ -172,18 +221,24 @@ export default function SaaSDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-700 text-white font-black text-sm flex items-center justify-center shadow-md">
-                {(tenantCompany.name || 'E').slice(0, 2).toUpperCase()}
-              </div>
+              {institutionLogo ? (
+                <div className="w-11 h-11 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 p-1 flex items-center justify-center shadow-md overflow-hidden shrink-0">
+                  <img src={institutionLogo} alt="Institution Logo" className="w-full h-full object-contain" />
+                </div>
+              ) : (
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-700 text-white font-black text-sm flex items-center justify-center shadow-md shrink-0">
+                  {(institutionName || 'TO').slice(0, 2).toUpperCase()}
+                </div>
+              )}
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-lg sm:text-xl font-black text-gray-900 dark:text-white">
-                    {tenantCompany.name}
+                    {institutionName}
                   </h1>
-                  <Badge className="bg-blue-100 text-blue-800 text-[10px] font-bold">PRIVATE TENANT INSTANCE</Badge>
+                  <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 text-[10px] font-bold">PRIVATE TENANT INSTANCE</Badge>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Cloud Portal &bull; Logged in as <span className="font-semibold text-slate-700 dark:text-slate-200">{user.firstName || 'Administrator'}</span>
+                  Cloud Portal &bull; Logged in as <span className="font-semibold text-slate-700 dark:text-slate-200">{user.firstName || 'MICHAEL'}</span>
                 </p>
               </div>
             </div>

@@ -113,6 +113,10 @@ export default function SaaSSettings() {
     try {
       localStorage.setItem("totag_institution_settings_v1", JSON.stringify(institution));
       localStorage.setItem("saas_company_name", institution.name);
+      if (institution.logoUrl) {
+        localStorage.setItem("saas_institution_logo", institution.logoUrl);
+      }
+      window.dispatchEvent(new Event("storage"));
 
       setTimeout(() => {
         setIsSaving(false);
