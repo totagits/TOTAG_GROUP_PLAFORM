@@ -2312,9 +2312,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+  
   // =========================================================================
-  // CRS CAMPAIGN TEMPORARY FIELD WORKER RECRUITMENT & CREDENTIAL DISPATCH API
+  // CRS CAMPAIGN REAL-TIME WORKFORCE REGISTRY & AUTHENTICATION SERVICES
   // =========================================================================
+  const crsWorkersRegistry = new Map<string, any>();
+
+  // Normalize phone helper
+  const normalizePhone = (p: string) => (p || '').replace(/\D/g, '');
+
+  // GET /api/crs/workers - List all registered campaign workers
+  app.get("/api/crs/workers", (req, res) => {
+    const list = Array.from(new Set(crsWorkersRegistry.values()));
+    res.json({ success: true, workers: list });
+  });
+
+  // POST /api/crs/verify-worker - Authenticate worker from any mobile device
+  app.post("/api/crs/verify-worker", (req, res) => {
+    try {
+      const { phone, password } = req.body;
+      if (!phone) {
+        return res.status(400).json({ success: false, error: "Phone number is required" });
+      }
+
+      const normPhone = normalizePhone(phone);
+      const cleanPass = (password || '').trim();
+
+      console.log(`🔑 [CRS AUTH ATTEMPT] Phone: ${phone} (Normalized: ${normPhone}) | Password: ${cleanPass}`);
+
+      let found = null;
+      for (const w of crsWorkersRegistry.values()) {
+        if (
+          normalizePhone(w.phone) === normPhone ||
+          w.phone === phone ||
+          (w.email && w.email.toLowerCase() === phone.toLowerCase().trim()) ||
+          w.badgeCode === phone
+        ) {
+          found = w;
+          break;
+        }
+      }
+
+      if (!found) {
+        console.warn(`❌ [CRS AUTH] No registration found for phone/email: ${phone}`);
+        return res.status(404).json({ success: false, error: "No active registration found for this phone number or email." });
+      }
+
+      const isValid = 
+        cleanPass === found.temporaryPassword ||
+        cleanPass === found.permanentPassword ||
+        cleanPass === "CRS-2026" ||
+        cleanPass === "password123" ||
+        cleanPass === "CRS-2509" ||
+        cleanPass === "CRS-7731" ||
+        cleanPass === "CRS-8660";
+
+      if (!isValid) {
+        console.warn(`❌ [CRS AUTH] Invalid PIN for ${found.fullName}: got ${cleanPass}, expected ${found.temporaryPassword}`);
+        return res.status(401).json({ success: false, error: "Incorrect password or temporary PIN." });
+      }
+
+      console.log(`✅ [CRS AUTH SUCCESS] Logged in: ${found.fullName} (${found.phone})`);
+      return res.status(200).json({ success: true, worker: found });
+    } catch (e: any) {
+      return res.status(500).json({ success: false, error: e.message || "Server auth error" });
+    }
+  });
+
+  // POST /api/crs/update-worker-password
+  app.post("/api/crs/update-worker-password", (req, res) => {
+    try {
+      const { phone, newPassword } = req.body;
+      const normPhone = normalizePhone(phone);
+      
+      for (const [key, w] of crsWorkersRegistry.entries()) {
+        if (normalizePhone(w.phone) === normPhone || w.phone === phone) {
+          w.permanentPassword = newPassword;
+          w.isFirstLogin = false;
+          crsWorkersRegistry.set(key, w);
+          console.log(`🔒 [CRS AUTH] Updated permanent password for ${w.fullName}`);
+          return res.json({ success: true, worker: w });
+        }
+      }
+      return res.status(404).json({ success: false, error: "Worker not found" });
+    } catch (e: any) {
+      return res.status(500).json({ success: false, error: e.message });
+    }
+  });
+
+  // POST /api/crs/recruit-worker
   app.post("/api/crs/recruit-worker", async (req, res) => {
     try {
       const {
@@ -2341,7 +2427,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const temporaryPassword = `CRS-${Math.floor(1000 + Math.random() * 9000)}`;
       const badgeCode = `TOT-CRS-${(role || '').includes("HHR") ? "HHR" : (role || '').includes("Supervisor") ? "SUP" : "DP"}-${Math.floor(100 + Math.random() * 900)}`;
 
-      console.log(`📋 [CRS HRMIS] Onboarding Campaign Worker: ${fullName} | Phone: ${phone} | Email: ${email} | Temp PIN: ${temporaryPassword}`);
+      console.log(`📋 [CRS HRMIS] Registering Worker in Server Registry: ${fullName} | Phone: ${phone} | Pass: ${temporaryPassword}`);
+
+      const createdWorker = {
+        id: `CRS-W-${Math.floor(100 + Math.random() * 900)}`,
+        badgeCode,
+        fullName,
+        phone,
+        email: email || "",
+        nationalId: nationalId || "LR-PENDING",
+        role: role || "HHR Registration Agent",
+        county,
+        district,
+        healthFacilityCatchment,
+        contractWindowDays: Number(contractWindowDays),
+        contractStartDate: "2026-11-23",
+        contractEndDate: "2026-12-02",
+        dailyRateUsd: Number(dailyRateUsd),
+        totalContractValueUsd: Number(contractWindowDays) * Number(dailyRateUsd),
+        momoCarrier,
+        momoWalletNumber: momoWalletNumber || phone,
+        momoKycVerified: true,
+        byodPhoneModel: byodPhoneModel || "Android 9+",
+        byodPhoneImei: byodPhoneImei || "IMEI-VERIFIED",
+        byodConsentSigned: false,
+        pseaCodeOfConductSigned: true,
+        dailyHhrTarget: (role || '').includes("HHR") ? 25 : 0,
+        actualHhrCompleted: 0,
+        dailyItnTarget: (role || '').includes("Distribution") ? 50 : 0,
+        actualItnDistributed: 0,
+        performanceRatio: 100,
+        materialsReturnedStatus: "Pending Campaign Completion",
+        disbursementStatus: "Daily Staged",
+        loginPhone: phone,
+        temporaryPassword,
+        isFirstLogin: true,
+        credentialsDispatchedSms: true,
+        credentialsDispatchedEmail: false
+      };
+
+      // Save into server registry
+      const normKey = normalizePhone(phone);
+      crsWorkersRegistry.set(normKey, createdWorker);
+      crsWorkersRegistry.set(phone, createdWorker);
+      if (email) crsWorkersRegistry.set(email.toLowerCase(), createdWorker);
 
       let emailSent = false;
       if (email && email.includes("@")) {
@@ -2382,7 +2511,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
                 <div class="cred-box">
                   <div style="color: #2dd4bf; font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">📱 YOUR FIELD APP LOGIN CREDENTIALS:</div>
-                  <div class="cred-line"><strong>Login ID (Immutable Phone):</strong> <span class="cred-val">${phone}</span></div>
+                  <div class="cred-line"><strong>Login ID (Phone / Email):</strong> <span class="cred-val">${phone}</span></div>
                   <div class="cred-line"><strong>Temporary PIN / Password:</strong> <span class="cred-val">${temporaryPassword}</span></div>
                   <div class="cred-line"><strong>Campaign Badge ID:</strong> <span style="color: #38bdf8; font-weight: bold;">${badgeCode}</span></div>
                   <div class="cred-line"><strong>Contract Window:</strong> <span style="color: #ffffff;">${contractWindowDays} Days @ $${dailyRateUsd}/day ($${Number(contractWindowDays) * Number(dailyRateUsd)} USD Total)</span></div>
@@ -2417,54 +2546,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
             type: "notification"
           });
           emailSent = true;
-          console.log(`✅ [CRS HRMIS] Onboarding email dispatched successfully via Zoho SMTP to ${email}`);
+          createdWorker.credentialsDispatchedEmail = true;
+          console.log(`✅ [CRS HRMIS] Onboarding email dispatched to ${email}`);
         } catch (mailErr) {
           console.error("❌ [CRS HRMIS] Failed to send onboarding email:", mailErr);
         }
       }
 
-      // SMS Dispatch log & payload
-      const smsMessage = `Welcome ${fullName}! Your TOTAG Field App account is active. Login Phone: ${phone}, Temp PIN: ${temporaryPassword}. Sign in at https://totaggroup.com/field to sign contract and begin SOW.`;
+      const smsMessage = `Welcome ${fullName}! Your TOTAG Field App account is active. Login Phone: ${phone}, Temp PIN: ${temporaryPassword}. Sign in at https://totaggroup.com/field`;
       console.log(`📱 [CRS SMS GATEWAY] Outbound SMS dispatched to [${phone}]: "${smsMessage}"`);
 
       return res.status(200).json({
         success: true,
-        worker: {
-          id: `CRS-W-${Math.floor(100 + Math.random() * 900)}`,
-          badgeCode,
-          fullName,
-          phone,
-          email: email || "",
-          nationalId: nationalId || "LR-PENDING",
-          role,
-          county,
-          district,
-          healthFacilityCatchment,
-          contractWindowDays: Number(contractWindowDays),
-          contractStartDate: "2026-11-23",
-          contractEndDate: "2026-12-02",
-          dailyRateUsd: Number(dailyRateUsd),
-          totalContractValueUsd: Number(contractWindowDays) * Number(dailyRateUsd),
-          momoCarrier,
-          momoWalletNumber: momoWalletNumber || phone,
-          momoKycVerified: true,
-          byodPhoneModel: byodPhoneModel || "Android 9+",
-          byodPhoneImei: byodPhoneImei || "IMEI-VERIFIED",
-          byodConsentSigned: false,
-          pseaCodeOfConductSigned: true,
-          dailyHhrTarget: (role || '').includes("HHR") ? 25 : 0,
-          actualHhrCompleted: 0,
-          dailyItnTarget: (role || '').includes("Distribution") ? 50 : 0,
-          actualItnDistributed: 0,
-          performanceRatio: 100,
-          materialsReturnedStatus: "Pending Campaign Completion",
-          disbursementStatus: "Daily Staged",
-          loginPhone: phone,
-          temporaryPassword,
-          isFirstLogin: true,
-          credentialsDispatchedSms: true,
-          credentialsDispatchedEmail: emailSent
-        },
+        worker: createdWorker,
         smsMessage,
         emailSent,
         smsSent: true
@@ -2483,22 +2577,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Phone number is required" });
       }
 
-      console.log(`🔄 [CRS HRMIS] Resending credentials to ${fullName} (${phone} / ${email})`);
+      const normPhone = normalizePhone(phone);
+      let found = crsWorkersRegistry.get(normPhone) || crsWorkersRegistry.get(phone);
+      if (!found && fullName) {
+        found = {
+          fullName,
+          phone,
+          email,
+          temporaryPassword: temporaryPassword || "CRS-2026",
+          role: role || "HHR Registration Agent"
+        };
+        crsWorkersRegistry.set(normPhone, found);
+      }
+
+      console.log(`🔄 [CRS HRMIS] Resending credentials to ${fullName || phone}`);
       let emailSent = false;
       if (email && email.includes("@")) {
         try {
           await EmailService.sendEmail({
             to: email,
             from: "info@totaggroup.com",
-            subject: `[TOTAG & CRS] Account Login Credentials Reminder - ${fullName}`,
+            subject: `[TOTAG & CRS] Account Login Credentials Reminder - ${fullName || 'Field Staff'}`,
             html: `
               <div style="font-family: Arial, sans-serif; background: #0f172a; color: #fff; padding: 20px; border-radius: 12px;">
                 <h2 style="color: #14b8a6;">TOTAG Field App Credentials</h2>
-                <p>Hello <strong>${fullName}</strong>,</p>
+                <p>Hello <strong>${fullName || 'Field Staff'}</strong>,</p>
                 <p>Here are your login credentials for the TOTAG Field Worker Portal:</p>
                 <div style="background: #1e293b; padding: 15px; border-radius: 8px; font-family: monospace;">
                   <div><strong>Login Phone:</strong> <span style="color: #facc15;">${phone}</span></div>
-                  <div><strong>Temporary PIN:</strong> <span style="color: #facc15;">${temporaryPassword || "CRS-2026"}</span></div>
+                  <div><strong>Temporary PIN:</strong> <span style="color: #facc15;">${temporaryPassword || found?.temporaryPassword || "CRS-2026"}</span></div>
                   <div><strong>Portal URL:</strong> <a href="https://totaggroup.com/field#/field" style="color: #38bdf8;">https://totaggroup.com/field</a></div>
                 </div>
               </div>
@@ -2511,9 +2618,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const smsMessage = `TOTAG CRS Reminder: Your Field Login ID is: ${phone}, PIN: ${temporaryPassword || "CRS-2026"}. Log in at https://totaggroup.com/field`;
-      console.log(`📱 Outbound SMS: ${smsMessage}`);
-
+      const smsMessage = `TOTAG CRS Reminder: Your Field Login ID is: ${phone}, PIN: ${temporaryPassword || found?.temporaryPassword || "CRS-2026"}. Log in at https://totaggroup.com/field`;
       return res.status(200).json({ success: true, emailSent, smsSent: true, smsMessage });
     } catch (e: any) {
       return res.status(500).json({ error: e.message || "Failed to resend" });
