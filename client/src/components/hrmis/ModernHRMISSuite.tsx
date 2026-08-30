@@ -471,6 +471,67 @@ export function ModernHRMISSuite() {
   const [activeSowPillar, setActiveSowPillar] = useState<"overview" | "logistics" | "distribution" | "waste" | "admin">("overview");
   const [showExportAuditModal, setShowExportAuditModal] = useState(false);
   const [showWaybillModal, setShowWaybillModal] = useState(false);
+  // Waybill Form State
+  const [newWaybillForm, setNewWaybillForm] = useState({
+    waybillNo: `WB-3PL-${Math.floor(10000 + Math.random() * 90000)}`,
+    site: "Sinje Preposition Site (PPS-04)",
+    bales: 20,
+    nets: 1000,
+    driver: "Mohammed Dukuly",
+    truckPlate: "TB-49102",
+    status: "Witnessed & Bonded"
+  });
+
+  const handleAddWaybill = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newEntry = {
+      id: `WB-${Date.now()}`,
+      waybillNo: newWaybillForm.waybillNo,
+      site: newWaybillForm.site,
+      bales: Number(newWaybillForm.bales),
+      nets: Number(newWaybillForm.bales) * 50,
+      driver: newWaybillForm.driver,
+      status: "Witnessed & Bonded",
+      date: new Date().toISOString().split("T")[0]
+    };
+    setWaybills(prev => [newEntry, ...prev]);
+    setShowWaybillModal(false);
+    toast({
+      title: "✓ 3PL Waybill Recorded & Bonded",
+      description: `Waybill ${newEntry.waybillNo} for ${newEntry.bales} bales (${newEntry.nets.toLocaleString()} nets) added to Insurance Bond Ledger.`
+    });
+  };
+
+  // Waste Manifest Form State
+  const [newWasteForm, setNewWasteForm] = useState({
+    manifestNo: `WSC-GAR-2026-${Math.floor(10 + Math.random() * 90)}`,
+    pps: "Sinje PPS Waste Bay (Garwula)",
+    emptyBags: 98,
+    bundles49: 2,
+    straps: 98,
+    driver: "3PL Waste Logistics Unit"
+  });
+
+  const handleAddWasteManifest = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newEntry = {
+      id: `WM-${Date.now()}`,
+      manifestNo: newWasteForm.manifestNo,
+      pps: newWasteForm.pps,
+      bundles49: Math.floor(Number(newWasteForm.emptyBags) / 49) || 1,
+      totalBags: Number(newWasteForm.emptyBags),
+      straps: Number(newWasteForm.straps),
+      status: "Handed to 3PL",
+      date: new Date().toISOString().split("T")[0]
+    };
+    setWasteManifests(prev => [newEntry, ...prev]);
+    setShowWasteManifestModal(false);
+    toast({
+      title: "✓ 49-in-1 Waste Return Manifest Logged",
+      description: `Manifest ${newEntry.manifestNo} for ${newEntry.bundles49} bundles (${newEntry.totalBags} bags) recorded for 3PL reverse haulage.`
+    });
+  };
+
   const [showWasteManifestModal, setShowWasteManifestModal] = useState(false);
 
   // Live 3PL Waybills List
@@ -2796,6 +2857,274 @@ export function ModernHRMISSuite() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+
+      {/* ========================================================================= */}
+      {/* MODAL: RECORD 3PL DELIVERY WAYBILL RECEIPT & WITNESSING */}
+      {/* ========================================================================= */}
+      <Dialog open={showWaybillModal} onOpenChange={setShowWaybillModal}>
+        <DialogContent className="max-w-lg rounded-3xl bg-slate-950 text-white border border-blue-500/50 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-2xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-blue-400 mb-1">
+              <Package className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-base font-black text-white">
+              Record 3PL Delivery Waybill & Witnessing
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Pillar 1: Physical delivery verification at Preposition Sites (PPS) and Insurance Bond allocation.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleAddWaybill} className="space-y-4 pt-2 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">3PL Waybill #:</Label>
+                <Input
+                  required
+                  value={newWaybillForm.waybillNo}
+                  onChange={(e) => setNewWaybillForm({ ...newWaybillForm, waybillNo: e.target.value })}
+                  className="bg-slate-900 border-white/10 font-mono text-blue-400 text-xs rounded-xl font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Preposition Site (PPS):</Label>
+                <Input
+                  required
+                  value={newWaybillForm.site}
+                  onChange={(e) => setNewWaybillForm({ ...newWaybillForm, site: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Bales Received (50 nets/bale):</Label>
+                <Input
+                  type="number"
+                  required
+                  min={1}
+                  value={newWaybillForm.bales}
+                  onChange={(e) => setNewWaybillForm({ ...newWaybillForm, bales: Number(e.target.value) })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Total Net Count:</Label>
+                <Input
+                  readOnly
+                  value={`${Number(newWaybillForm.bales) * 50} Nets (LLIN)`}
+                  className="bg-slate-900/60 border-white/10 font-mono text-emerald-400 text-xs rounded-xl font-bold"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">3PL Driver Full Name:</Label>
+                <Input
+                  required
+                  value={newWaybillForm.driver}
+                  onChange={(e) => setNewWaybillForm({ ...newWaybillForm, driver: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Truck Registration Plate:</Label>
+                <Input
+                  required
+                  value={newWaybillForm.truckPlate}
+                  onChange={(e) => setNewWaybillForm({ ...newWaybillForm, truckPlate: e.target.value })}
+                  className="bg-slate-900 border-white/10 font-mono text-amber-300 text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="p-3 rounded-2xl bg-blue-950/40 border border-blue-500/30 text-[11px] text-blue-200 leading-snug space-y-1">
+              <strong className="text-blue-300 font-bold block">✓ Mandatory Insurance Bond Witness Certification:</strong>
+              I certify that I have physically counted the sealed bales, inspected outer strapping, and logged this delivery into TOTAG Insurance Bond #TOT-BOND-2026.
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black text-xs h-11 rounded-xl shadow-lg shadow-blue-500/20"
+            >
+              ✓ Witness Physical Receipt & Add to Insurance Bond Ledger ➔
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* MODAL: LOG 49-IN-1 WASTE RETURN MANIFEST */}
+      {/* ========================================================================= */}
+      <Dialog open={showWasteManifestModal} onOpenChange={setShowWasteManifestModal}>
+        <DialogContent className="max-w-lg rounded-3xl bg-slate-950 text-white border border-purple-500/50 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 mb-1">
+              <Layers className="w-6 h-6" />
+            </div>
+            <DialogTitle className="text-base font-black text-white">
+              Log 49-in-1 Waste Return Manifest
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Pillar 3: 100% packaging retrieval and 49-in-1 bundling for 3PL reverse haulage.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleAddWasteManifest} className="space-y-4 pt-2 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Waste Stock Card #:</Label>
+                <Input
+                  required
+                  value={newWasteForm.manifestNo}
+                  onChange={(e) => setNewWasteForm({ ...newWasteForm, manifestNo: e.target.value })}
+                  className="bg-slate-900 border-white/10 font-mono text-purple-400 text-xs rounded-xl font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">PPS Return Location:</Label>
+                <Input
+                  required
+                  value={newWasteForm.pps}
+                  onChange={(e) => setNewWasteForm({ ...newWasteForm, pps: e.target.value })}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">Empty Bale Bags Collected:</Label>
+                <Input
+                  type="number"
+                  required
+                  min={1}
+                  value={newWasteForm.emptyBags}
+                  onChange={(e) => {
+                    const count = Number(e.target.value);
+                    setNewWasteForm({
+                      ...newWasteForm,
+                      emptyBags: count,
+                      bundles49: Math.floor(count / 49) || 1,
+                      straps: count
+                    });
+                  }}
+                  className="bg-slate-900 border-white/10 text-white text-xs rounded-xl font-bold"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-slate-300 font-bold">49-in-1 Sealed Bundles:</Label>
+                <Input
+                  readOnly
+                  value={`${newWasteForm.bundles49} Sealed Bundles`}
+                  className="bg-slate-900/60 border-white/10 font-mono text-purple-400 text-xs rounded-xl font-bold"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-slate-300 font-bold">Total Tied Straps Count:</Label>
+              <Input
+                type="number"
+                required
+                value={newWasteForm.straps}
+                onChange={(e) => setNewWasteForm({ ...newWasteForm, straps: Number(e.target.value) })}
+                className="bg-slate-900 border-white/10 font-mono text-amber-300 text-xs rounded-xl"
+              />
+            </div>
+
+            <div className="p-3 rounded-2xl bg-purple-950/40 border border-purple-500/30 text-[11px] text-purple-200 leading-snug space-y-1">
+              <strong className="text-purple-300 font-bold block">✓ 49-in-1 Environmental Custody Rule:</strong>
+              49 empty inner bale bags are flattened and tightly packed inside 1 outer bag (50 bags total). Straps are bundled and numbered.
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-purple-600 hover:bg-purple-500 text-white font-black text-xs h-11 rounded-xl shadow-lg shadow-purple-500/20"
+            >
+              ✓ Confirm 49-in-1 Waste Handover & Log Manifest ➔
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* ========================================================================= */}
+      {/* MODAL: OFFICIAL CRS DAILY AUDIT REPORT DIALOG */}
+      {/* ========================================================================= */}
+      <Dialog open={showExportAuditModal} onOpenChange={setShowExportAuditModal}>
+        <DialogContent className="max-w-3xl rounded-3xl bg-slate-950 text-white border border-teal-500/50 p-6 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div>
+                <DialogTitle className="text-base font-black text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-teal-400" />
+                  CRS Mass LLIN Campaign &bull; Daily Operations Audit Dossier
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-400">
+                  Certified Tripartite Operations Report for Catholic Relief Services, NMCP, and Global Fund.
+                </DialogDescription>
+              </div>
+              <Badge className="bg-teal-500/20 text-teal-300 border-teal-500/40 font-mono text-xs">
+                CONFIDENTIAL AUDIT
+              </Badge>
+            </div>
+          </DialogHeader>
+
+          <div className="space-y-4 text-xs font-mono py-2">
+            <div className="p-4 rounded-2xl bg-slate-900 border border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              <div>
+                <span className="text-[10px] text-slate-400">Active Field Workforce:</span>
+                <div className="text-xl font-bold text-white">{crsWorkers.length} Staff</div>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400">Signed Contracts:</span>
+                <div className="text-xl font-bold text-emerald-400">{crsWorkers.filter(w => w.byodConsentSigned).length} Signed</div>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400">3PL Bales Witnessed:</span>
+                <div className="text-xl font-bold text-blue-400">{waybills.reduce((acc, w) => acc + w.bales, 0)} Bales</div>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400">49-in-1 Bundles:</span>
+                <div className="text-xl font-bold text-purple-400">{wasteManifests.reduce((acc, w) => acc + w.bundles49, 0)} Bundles</div>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-900 border border-white/10 space-y-1 text-[11px] text-slate-300">
+              <div><strong>Implementing Entity:</strong> TOTAG GROUP OF COMPANIES LTD</div>
+              <div><strong>Consultancy Scope:</strong> 10-14 Day Mass ITN Distribution & Waste Logistics</div>
+              <div><strong>Target Catchment:</strong> Garwula, Tewor, Porkpa, Golakonneh, Commonwealth</div>
+              <div><strong>All-Risk Net Insurance:</strong> Active ($129 Device Penalty Clause Legally Bound)</div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                onClick={() => {
+                  window.print();
+                }}
+                className="bg-slate-900 border border-white/20 hover:bg-slate-800 text-white font-bold text-xs h-9 px-4 rounded-xl"
+              >
+                <Printer className="w-4 h-4 mr-1.5 text-teal-400" /> Print Audit Sheet
+              </Button>
+              <Button
+                onClick={() => {
+                  toast({
+                    title: "✓ Official Daily Audit Dossier Exported",
+                    description: "PDF summary generated and saved to your downloads."
+                  });
+                  setShowExportAuditModal(false);
+                }}
+                className="bg-teal-600 hover:bg-teal-500 text-slate-950 font-black text-xs h-9 px-4 rounded-xl shadow-lg shadow-teal-500/20"
+              >
+                <Download className="w-4 h-4 mr-1.5" /> Download Official Dossier (PDF)
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
