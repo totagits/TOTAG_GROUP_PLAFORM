@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { ModuleLayout } from '@/components/ModuleLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ProformaInvoiceModal } from '@/components/ProformaInvoiceModal';
 import { 
   Receipt, 
   Globe, 
@@ -14,10 +16,12 @@ import {
   Send,
   Users,
   CreditCard,
-  BarChart3
+  BarChart3,
+  FileText
 } from 'lucide-react';
 
 export default function FIMSAccountsReceivablePage() {
+  const [showProformaModal, setShowProformaModal] = useState(false);
   const quickActions = [
     { label: 'Create Invoice', icon: <Plus className="w-4 h-4" />, href: '/saas/modules/fims-accounts-receivable/action/new-invoice' },
     { label: 'Send Statement', icon: <Send className="w-4 h-4" />, href: '/saas/modules/fims-accounts-receivable/action/send-statement' },
@@ -86,10 +90,20 @@ export default function FIMSAccountsReceivablePage() {
                 <Badge variant="outline">89 active</Badge>
               </div>
             </div>
-            <Button className="w-full" data-testid="button-create-invoice">
-              <Receipt className="w-4 h-4 mr-2" />
-              Create New Invoice
-            </Button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <Button className="w-full" data-testid="button-create-invoice">
+                <Receipt className="w-4 h-4 mr-2" />
+                Create New Invoice
+              </Button>
+              <Button 
+                onClick={() => setShowProformaModal(true)} 
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold" 
+                data-testid="button-proforma-invoice"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Generate Proforma Invoice
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -362,6 +376,11 @@ export default function FIMSAccountsReceivablePage() {
           </div>
         </CardContent>
       </Card>
+
+      <ProformaInvoiceModal 
+        isOpen={showProformaModal} 
+        onClose={() => setShowProformaModal(false)} 
+      />
     </ModuleLayout>
   );
 }

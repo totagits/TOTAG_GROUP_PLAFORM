@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { ProformaInvoiceModal } from "../ProformaInvoiceModal";
 import {
   DollarSign,
   Building2,
@@ -282,6 +283,7 @@ export function ModernFIMSSuite() {
 
   // New AR Invoice Modal
   const [showNewARModal, setShowNewARModal] = useState(false);
+  const [showProformaModal, setShowProformaModal] = useState(false);
   const [newARInvoice, setNewARInvoice] = useState({
     clientName: "",
     subsidiary: "Cargo & Port Handling",
@@ -519,6 +521,14 @@ export function ModernFIMSSuite() {
             >
               <Receipt className="w-3.5 h-3.5 mr-1.5 text-blue-300" />
               + Issue Invoice (AR)
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setShowProformaModal(true)}
+              className="bg-amber-600/40 border border-amber-400/50 hover:bg-amber-600/60 text-amber-200 text-xs font-bold"
+            >
+              <FileText className="w-3.5 h-3.5 mr-1.5 text-amber-300" />
+              + Proforma Invoice
             </Button>
             <Button
               size="sm"
@@ -1454,6 +1464,11 @@ export function ModernFIMSSuite() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <ProformaInvoiceModal
+        isOpen={showProformaModal}
+        onClose={() => setShowProformaModal(false)}
+      />
 
     </div>
   );
