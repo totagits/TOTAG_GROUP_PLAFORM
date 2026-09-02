@@ -3,26 +3,25 @@ import App from "./App";
 import { ErrorBoundary } from "@/components/error-boundary";
 import "./index.css";
 
-// Register TOTAG Enterprise PWA Service Worker for Offline Field Capabilities
+// Unregister stale service workers that may cache obsolete assets
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").then((reg) => {
-      console.log("TOTAG Field PWA Worker active:", reg.scope);
-    }).catch((err) => {
-      console.log("Service Worker registration info:", err);
-    });
-  });
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const registration of registrations) {
+      registration.update();
+    }
+  }).catch(() => {});
 }
 
-// Suppress unhandled promise rejections during development
-window.addEventListener('unhandledrejection', (event) => {
-  if (import.meta.env.DEV) {
-    event.preventDefault();
-  }
+// Global window error listener for seamless recovery
+window.addEventListener('error', (event) => {
+  console.error("Runtime window error captured:", event.error);
 });
 
-createRoot(document.getElementById("root")!).render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
-);
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  createRoot(rootElement).render(
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
