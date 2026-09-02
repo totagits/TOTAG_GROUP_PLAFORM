@@ -254,17 +254,12 @@ export default function VoiceChatWidget() {
       }
     }
 
-    // 5. Intelligent Fallback Response
+    // 5. Clean Professional Fallback Response
     return {
       id: `bot-${Date.now()}`,
       sender: "bot",
-      text: `Thank you for inquiring about "${userText}". TOTAG Group of Companies Ltd provides turnkey solutions across 6 major divisions under CEO M. Tarwoyouberkowu Gwoah. You can generate a formal Proforma Invoice, speak directly with our team at +231 777 511 391, or file a support ticket. How else can I assist you?`,
-      timestamp,
-      links: [
-        { label: "📄 Generate Proforma Invoice", url: "#proforma", isProformaModal: true },
-        { label: "🎫 Submit Support Ticket", url: "#ticket", isTicketForm: true },
-        { label: "🏢 Explore All Divisions", url: "/#services" }
-      ]
+      text: `Thank you for reaching out. How may I assist you with that inquiry?`,
+      timestamp
     };
   };
 
@@ -580,43 +575,6 @@ export default function VoiceChatWidget() {
                 )}
 
                 <div ref={messagesEndRef} />
-              </div>
-
-              {/* Quick Prompt Chips */}
-              <div className="p-2 border-t border-white/10 bg-slate-950/80 shrink-0">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-                  <button
-                    onClick={() => setShowProformaModal(true)}
-                    className="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 transition-all flex items-center gap-1"
-                  >
-                    <FileText className="w-3 h-3" />
-                    <span>Generate Proforma</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleUserSend("Digital Farmer Registry FAO UN")}
-                    className="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition-all flex items-center gap-1"
-                  >
-                    <Wheat className="w-3 h-3" />
-                    <span>Farmer Registry</span>
-                  </button>
-
-                  <button
-                    onClick={() => handleUserSend("IT & SaaS Solutions")}
-                    className="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-500/30 hover:bg-sky-500/30 transition-all flex items-center gap-1"
-                  >
-                    <Laptop className="w-3 h-3" />
-                    <span>IT &amp; SaaS</span>
-                  </button>
-
-                  <button
-                    onClick={() => setShowTicketForm(true)}
-                    className="shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30 transition-all flex items-center gap-1"
-                  >
-                    <LifeBuoy className="w-3 h-3" />
-                    <span>File Ticket</span>
-                  </button>
-                </div>
               </div>
 
               {/* Input Footer */}
