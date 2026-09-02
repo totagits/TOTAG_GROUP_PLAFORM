@@ -185,6 +185,18 @@ export default function VoiceChatWidget() {
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
 
+    // Enforce Standard US / UK English Received Pronunciation Voice
+    const voices = window.speechSynthesis.getVoices();
+    const standardVoice = 
+      voices.find((v) => (v.lang === "en-US" || v.lang === "en-GB") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("Karen") || v.name.includes("Alex"))) ||
+      voices.find((v) => v.lang === "en-US" || v.lang === "en-GB") ||
+      voices.find((v) => v.lang.startsWith("en"));
+
+    if (standardVoice) {
+      utterance.voice = standardVoice;
+      utterance.lang = standardVoice.lang;
+    }
+
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
