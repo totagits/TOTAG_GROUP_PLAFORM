@@ -143,17 +143,9 @@ export default function VoiceChatWidget() {
     {
       id: "welcome-1",
       sender: "bot",
-      text: "Welcome to TOTAG Group of Companies Ltd! 👋 I am your Virtual Customer Service Concierge. How may I assist you today?",
+      text: "Hello and welcome to TOTAG Group of Companies Ltd. How may I assist you today?",
       timestamp: "Just now",
-      isGreeting: true,
-      links: [
-        { label: "📄 Generate Proforma Invoice", url: "#proforma", isProformaModal: true },
-        { label: "🌾 Digital Farmer Registry (FAO UN)", url: "/farm" },
-        { label: "💻 IT & SaaS Enterprise Suite", url: "/it-services" },
-        { label: "🍲 TOCEPS Catering Services", url: "/catering" },
-        { label: "🚚 Freight & Cargo Shipping", url: "/general-merchandise" },
-        { label: "🎫 Submit Support Ticket", url: "#ticket", isTicketForm: true }
-      ]
+      isGreeting: true
     }
   ]);
 
@@ -209,23 +201,15 @@ export default function VoiceChatWidget() {
     const lower = userText.toLowerCase().trim();
     const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-    // 1. Natural Greeting Match
+    // 1. Clean, Professional Standard English Greeting
     const greetingWords = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "greetings", "salut", "start"];
     if (greetingWords.some(w => lower === w || lower.startsWith(w + " ") || lower.endsWith(" " + w))) {
       return {
         id: `bot-${Date.now()}`,
         sender: "bot",
-        text: "Hello and welcome! 👋 I am TOTAG Group's AI Customer Service Concierge. How can I assist your business or organization today?",
+        text: "Hello! How may I assist you today?",
         timestamp,
-        isGreeting: true,
-        links: [
-          { label: "📄 Generate Proforma Invoice", url: "#proforma", isProformaModal: true },
-          { label: "🌾 Digital Farmer Registry (FAO UN)", url: "/farm" },
-          { label: "💻 IT & SaaS Solutions", url: "/it-services" },
-          { label: "🍲 TOCEPS Catering Services", url: "/catering" },
-          { label: "💳 Accounts Receivable & Payment", url: "/saas/modules/fims-accounts-receivable" },
-          { label: "🎫 File Support Ticket", url: "#ticket", isTicketForm: true }
-        ]
+        isGreeting: true
       };
     }
 
