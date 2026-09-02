@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOTAG AI Customer Support Concierge - Antigravity ADK</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- LANDING PAGE DEMO CONTAINER -->
+  <div className="demo-container">
+    <div className="hero-card">
+      <img src="/images/totag-logo.png" alt="TOTAG Group" class="logo">
+      <h1>TOTAG Group of Companies Ltd</h1>
+      <p class="subtitle">Antigravity ADK AI Customer Service Agent &amp; MCP Integration Bridge</p>
+      <div className="badge-row">
+        <span class="badge">Google Antigravity ADK 2.0</span>
+        <span class="badge">Model Context Protocol (MCP)</span>
+        <span class="badge">FastAPI Bridge</span>
+      </div>
+      <p class="desc">Click the floating chat bubble in the bottom-right corner to interact with the AI Concierge, track order <code>TOT-8891</code>, search policies, or log support tickets.</p>
+    </div>
+  </div>
+
+  <!-- FLOATING CHAT WIDGET CONTAINER -->
+  <div id="totag-chat-widget">
+    <div id="chat-container" class="hidden">
+      <div class="chat-header">
+        <div class="header-info">
+          <div class="avatar-ring">
+            <img src="/images/totag-logo.png" alt="TOTAG Logo" class="avatar-img">
+            <span class="status-dot"></span>
+          </div>
+          <div>
+            <h3>TOTAG AI Concierge</h3>
+            <span class="status-text">Online • Antigravity ADK</span>
+          </div>
+        </div>
+        <button id="close-chat" class="icon-btn" title="Close Chat">&times;</button>
+      </div>
+
+      <div id="chat-messages" class="chat-messages">
+        <!-- Messages rendered dynamically -->
+      </div>
+
+      <div id="typing-indicator" class="typing-indicator hidden">
+        <span></span><span></span><span></span>
+        <span class="typing-text">AI Agent is processing...</span>
+      </div>
+
+      <form id="chat-form" class="chat-form">
+        <input type="text" id="chat-input" placeholder="Type your inquiry or order ID..." autocomplete="off" required>
+        <button type="submit" id="send-btn" class="send-btn" title="Send Message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- FLOATING TOGGLE BUTTON -->
+    <button id="chat-toggle" class="chat-toggle" title="Open Customer Support Chat">
+      <img src="/images/totag-logo.png" alt="Chat" class="toggle-icon">
+    </button>
+  </div>
+
+  <script src="widget.js"></script>
+</body>
+</html>
