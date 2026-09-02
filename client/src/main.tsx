@@ -3,13 +3,22 @@ import App from "./App";
 import { ErrorBoundary } from "@/components/error-boundary";
 import "./index.css";
 
-// Unregister stale service workers that may cache obsolete assets
-if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (const registration of registrations) {
-      registration.update();
-    }
-  }).catch(() => {});
+// Force unregister stale service workers and purge browser cache storage
+if (typeof window !== "undefined") {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    }).catch(() => {});
+  }
+  if ("caches" in window) {
+    caches.keys().then((keys) => {
+      for (const key of keys) {
+        caches.delete(key);
+      }
+    }).catch(() => {});
+  }
 }
 
 // Global window error listener for seamless recovery
