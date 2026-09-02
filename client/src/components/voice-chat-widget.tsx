@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { 
   Mic, 
   MicOff, 
@@ -10,25 +9,17 @@ import {
   VolumeX, 
   X, 
   Send, 
-  Sparkles, 
   Bot, 
   User, 
   ExternalLink,
-  PhoneOff,
-  Building2,
-  FileText,
-  CreditCard,
-  Utensils,
-  Laptop,
-  Wheat,
-  ShieldCheck,
   CheckCircle2,
   LifeBuoy,
   MessageSquare,
-  HelpCircle,
-  Clock,
-  MapPin,
-  ChevronRight
+  ChevronRight,
+  Truck,
+  Package,
+  Wrench,
+  Sparkles
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { ProformaInvoiceModal } from "./ProformaInvoiceModal";
@@ -38,7 +29,8 @@ interface Message {
   sender: "user" | "bot";
   text: string;
   timestamp: string;
-  links?: { label: string; url: string; isProformaModal?: boolean; isTicketForm?: boolean }[];
+  toolsUsed?: string[];
+  links?: { label: string; url?: string; isProformaModal?: boolean; isTicketForm?: boolean }[];
   isGreeting?: boolean;
   isTicketSuccess?: boolean;
   ticketData?: {
@@ -48,82 +40,19 @@ interface Message {
     department: string;
     subject: string;
   };
+  orderData?: {
+    order_id: string;
+    item: string;
+    status: string;
+    carrier: string;
+    estimated_delivery: string;
+    milestone: string;
+  };
 }
-
-// COMPREHENSIVE TOTAG KNOWLEDGE BASE
-const KNOWLEDGE_BASE = [
-  // 1. PROFORMA INVOICE & BILLING
-  {
-    keywords: ["proforma", "invoice", "pro forma", "quote", "quotation", "billing", "estimate", "pricing", "cost", "how much", "payment terms", "bank details", "ecobank", "momo", "orange money"],
-    response: "TOTAG Group generates official Proforma Invoices and quotations with breakdown of line items, GST tax, and payment terms for all 6 major divisions. You can generate an official Proforma Invoice right now, or view our wire transfer details (Ecobank USD Acc: 1010-09823-01, Orange Money: 0770554433, MTN MoMo: 0880554433).",
-    links: [
-      { label: "📄 Open Proforma Invoice Generator", url: "#proforma", isProformaModal: true },
-      { label: "💳 View Accounts Receivable & FIMS Portal", url: "/saas/modules/fims-accounts-receivable" }
-    ]
-  },
-
-  // 2. DIGITAL FARMER REGISTRY (FAO UN RFP 137641 & MOA LIBERIA)
-  {
-    keywords: ["farmer", "agriculture", "registry", "fao", "unido", "moa", "ministry of agriculture", "farm", "agribusiness", "crops", "produce", "livestock", "cassava", "poultry", "palm oil", "voucher", "gis", "cadastral", "tewor", "counties"],
-    response: "The Liberia Digital Farmer Registry (FAO UN RFP 137641 initiative) is a digital platform for farmer registration, GIS cadastral boundary mapping, producer entity scale classification (Individual Farmers, Cooperatives, Commercial Plantations), 23 RBAC roles, and mobile money input voucher distribution across all 15 statutory Liberian counties.",
-    links: [
-      { label: "🌾 Launch Digital Farmer Registry Portal", url: "/farm" },
-      { label: "📊 Open Farmer Registration Wizard", url: "/farm/dashboard" }
-    ]
-  },
-
-  // 3. MANAGED IT SERVICES & SAAS SUITE
-  {
-    keywords: ["it", "software", "saas", "fims", "hrmis", "tis", "tech", "cloud", "cyber", "cybersecurity", "web development", "mobile app", "workshop", "training"],
-    response: "TOTAG IT Services (TIS) delivers enterprise software engineering, cloud infrastructure, cybersecurity audits, certified technical workshops, and our 14-module SaaS HRMIS & FIMS Enterprise Suite (General Ledger, Accounts Payable/Receivable, Payroll, Biometrics Attendance, and Leave Management).",
-    links: [
-      { label: "💻 Explore IT & Cloud Solutions", url: "/it-services" },
-      { label: "⚡ View 14 SaaS Enterprise Modules", url: "/saas" }
-    ]
-  },
-
-  // 4. TOCEPS CATERING & EVENTS
-  {
-    keywords: ["catering", "toceps", "food", "event", "banquet", "buffet", "wedding", "conference", "haccp", "food safety", "menu", "hospitality"],
-    response: "TOTAG Catering & Event Planning Services (TOCEPS) handles institutional UNIDO catering, executive mining concession banquets, wedding receptions, and corporate conference hospitality operating under international HACCP food safety standards.",
-    links: [
-      { label: "🍲 TOCEPS Catering & Events Portal", url: "/catering" },
-      { label: "📋 Executive Banquet Menu Packages", url: "/catering/specialty-menus" }
-    ]
-  },
-
-  // 5. CARGO, FREIGHT LOGISTICS & MERCHANDISE
-  {
-    keywords: ["cargo", "shipping", "freight", "logistics", "port", "container", "20ft", "40ft", "stevedoring", "petroleum", "haulage", "merchandise", "tgm", "wholesale"],
-    response: "TOTAG Cargo & General Merchandise (TGM) provides 20ft/40ft ocean container shipping, air freight forwarding, Monrovia port stevedoring customs clearance, petroleum haulage, heavy equipment spare parts, and regional wholesale merchandise distribution.",
-    links: [
-      { label: "🚚 General Merchandise & Freight Hub", url: "/general-merchandise" },
-      { label: "📦 Track Active Shipment", url: "/order-tracking" }
-    ]
-  },
-
-  // 6. CORPORATE LEADERSHIP & HEADQUARTERS
-  {
-    keywords: ["ceo", "founder", "leadership", "tarwoyouberkowu", "gwoah", "tonieh", "president", "owner", "location", "address", "hq", "paynesville", "phone", "contact", "email"],
-    response: "TOTAG Group of Companies Ltd is led by Co-Founder & CEO M. Tarwoyouberkowu Gwoah alongside Co-Founder & Deputy CEO Mrs. Tonieh Alpha Gwoah. Corporate HQ: Guest House Road, Thinker's Village, Paynesville, Montserrado County, Liberia. Phone: +231 777 511 391 / +231 777 666 999. Email: info@totaggroup.com.",
-    links: [
-      { label: "🏢 About TOTAG Corporate Leadership", url: "/#about" },
-      { label: "✉️ Domain & Email Setup", url: "/email-management" }
-    ]
-  },
-
-  // 7. SUPPORT TICKET & HELP DESK
-  {
-    keywords: ["ticket", "support", "help", "complaint", "issue", "customer service", "agent", "contact us", "problem", "bug"],
-    response: "You can submit an official Customer Service Ticket directly to the TOTAG FIMS/CRM Help Desk. Our dedicated support team responds within 2 business hours.",
-    links: [
-      { label: "🎫 Submit a Customer Support Ticket", url: "#ticket", isTicketForm: true }
-    ]
-  }
-];
 
 export default function VoiceChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAutoPill, setShowAutoPill] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
@@ -131,13 +60,30 @@ export default function VoiceChatWidget() {
   const [sessionStatus, setSessionStatus] = useState<string>("Ready to assist");
   const [showProformaModal, setShowProformaModal] = useState(false);
   const [showTicketForm, setShowTicketForm] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   // Ticket Form Local State
   const [ticketName, setTicketName] = useState("");
   const [ticketEmail, setTicketEmail] = useState("");
   const [ticketDept, setTicketDept] = useState("Managed IT & SaaS");
   const [ticketSubject, setTicketSubject] = useState("");
-  const [ticketMessage, setTicketMessage] = useState("");
+
+  // Session ID stored in sessionStorage for context
+  const sessionIdRef = useRef<string>("");
+  useEffect(() => {
+    let sId = sessionStorage.getItem("totag_ai_session_id");
+    if (!sId) {
+      sId = "session_" + Math.random().toString(36).substring(2, 9);
+      sessionStorage.setItem("totag_ai_session_id", sId);
+    }
+    sessionIdRef.current = sId;
+
+    // Automatic floating welcome pill popup after 3 seconds
+    const timer = setTimeout(() => {
+      setShowAutoPill(true);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -159,7 +105,7 @@ export default function VoiceChatWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isOpen, showTicketForm]);
+  }, [messages, isOpen, showTicketForm, isTyping]);
 
   const stopSpeaking = () => {
     if (window.speechSynthesis) {
@@ -196,76 +142,11 @@ export default function VoiceChatWidget() {
     window.speechSynthesis.speak(utterance);
   };
 
-  // Bot Response Logic
-  const getBotResponse = (userText: string): Message => {
-    const lower = userText.toLowerCase().trim();
-    const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-    // 1. Clean, Professional Standard English Greeting
-    const greetingWords = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "greetings", "salut", "start"];
-    if (greetingWords.some(w => lower === w || lower.startsWith(w + " ") || lower.endsWith(" " + w))) {
-      return {
-        id: `bot-${Date.now()}`,
-        sender: "bot",
-        text: "Hello! How may I assist you today?",
-        timestamp,
-        isGreeting: true
-      };
-    }
-
-    // 2. Ticket / Help Desk Query
-    if (lower.includes("ticket") || lower.includes("complaint") || lower.includes("help desk") || lower.includes("open ticket")) {
-      setShowTicketForm(true);
-      return {
-        id: `bot-${Date.now()}`,
-        sender: "bot",
-        text: "I can help you log an official Customer Support Ticket directly into our FIMS Help Desk. Please fill out the quick support form below:",
-        timestamp,
-        links: [
-          { label: "🎫 Open Support Ticket Form", url: "#ticket", isTicketForm: true }
-        ]
-      };
-    }
-
-    // 3. Proforma Query
-    if (lower.includes("proforma") || lower.includes("invoice") || lower.includes("quote") || lower.includes("quotation")) {
-      return {
-        id: `bot-${Date.now()}`,
-        sender: "bot",
-        text: "You can generate an official TOTAG Group Proforma Invoice right now with custom line items, tax rate, and Ecobank / Mobile Money wire instructions. Click the button below to open the interactive generator:",
-        timestamp,
-        links: [
-          { label: "📄 Open Proforma Invoice Generator", url: "#proforma", isProformaModal: true },
-          { label: "💳 FIMS Accounts Receivable Suite", url: "/saas/modules/fims-accounts-receivable" }
-        ]
-      };
-    }
-
-    // 4. Knowledge Base Keyword Search
-    for (const entry of KNOWLEDGE_BASE) {
-      if (entry.keywords.some(kw => lower.includes(kw))) {
-        return {
-          id: `bot-${Date.now()}`,
-          sender: "bot",
-          text: entry.response,
-          timestamp,
-          links: entry.links
-        };
-      }
-    }
-
-    // 5. Clean Professional Fallback Response
-    return {
-      id: `bot-${Date.now()}`,
-      sender: "bot",
-      text: `Thank you for reaching out. How may I assist you with that inquiry?`,
-      timestamp
-    };
-  };
-
-  const handleUserSend = (textToSend: string) => {
+  // Autonomous API Bridge & MCP Tool Execution (`POST /api/chat`)
+  const handleUserSend = async (textToSend: string) => {
     if (!textToSend.trim()) return;
 
+    setShowAutoPill(false);
     const timestamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     const userMsg: Message = {
       id: `user-${Date.now()}`,
@@ -276,12 +157,58 @@ export default function VoiceChatWidget() {
 
     setMessages(prev => [...prev, userMsg]);
     setInputText("");
+    setIsTyping(true);
+    setSessionStatus("Processing inquiry...");
 
-    setTimeout(() => {
-      const botReply = getBotResponse(textToSend);
-      setMessages(prev => [...prev, botReply]);
-      speakText(botReply.text);
-    }, 400);
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessionIdRef.current,
+          message: textToSend
+        })
+      });
+
+      const data = await res.json();
+      setIsTyping(false);
+      setSessionStatus("Ready to assist");
+
+      if (data && data.response) {
+        const botReply: Message = {
+          id: `bot-${Date.now()}`,
+          sender: "bot",
+          text: data.response,
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          toolsUsed: data.tools_used || [],
+          links: data.links,
+          orderData: data.orderData
+        };
+
+        setMessages(prev => [...prev, botReply]);
+        speakText(data.response);
+      } else {
+        const fallbackReply: Message = {
+          id: `bot-${Date.now()}`,
+          sender: "bot",
+          text: "Thank you for contacting TOTAG Group. How may I assist you with that inquiry?",
+          timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        };
+        setMessages(prev => [...prev, fallbackReply]);
+        speakText(fallbackReply.text);
+      }
+    } catch (err) {
+      setIsTyping(false);
+      setSessionStatus("Ready to assist");
+      const fallbackReply: Message = {
+        id: `bot-${Date.now()}`,
+        sender: "bot",
+        text: "Thank you for contacting TOTAG Group. How may I assist you today?",
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      };
+      setMessages(prev => [...prev, fallbackReply]);
+      speakText(fallbackReply.text);
+    }
   };
 
   const handleTicketSubmit = (e: React.FormEvent) => {
@@ -309,7 +236,6 @@ export default function VoiceChatWidget() {
     setMessages(prev => [...prev, ticketSuccessMsg]);
     setShowTicketForm(false);
     setTicketSubject("");
-    setTicketMessage("");
     speakText(`Support Ticket ${ticketId} logged successfully. We will contact you at ${ticketEmail}.`);
   };
 
@@ -367,6 +293,35 @@ export default function VoiceChatWidget() {
     <>
       {/* FLOATING WIDGET CONTAINER */}
       <div className="fixed bottom-6 right-6 z-[9999] font-sans">
+        
+        {/* AUTOMATIC POPUP WELCOME BADGE */}
+        <AnimatePresence>
+          {showAutoPill && !isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              onClick={() => {
+                setIsOpen(true);
+                setShowAutoPill(false);
+              }}
+              className="absolute bottom-16 right-0 mb-2 whitespace-nowrap bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl border border-emerald-500/40 shadow-2xl flex items-center gap-2 cursor-pointer hover:bg-slate-800 transition-all group"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span>Hello! 👋 How may I assist you today?</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAutoPill(false);
+                }}
+                className="ml-1 text-slate-400 hover:text-white"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -389,7 +344,7 @@ export default function VoiceChatWidget() {
                     <h4 className="font-extrabold text-sm text-white flex items-center gap-1.5">
                       TOTAG AI Customer Concierge
                     </h4>
-                    <p className="text-[11px] text-emerald-400 font-semibold">Live 24/7 Service &amp; Support</p>
+                    <p className="text-[11px] text-emerald-400 font-semibold">Antigravity ADK &amp; MCP Integration</p>
                   </div>
                 </div>
 
@@ -450,6 +405,36 @@ export default function VoiceChatWidget() {
                     >
                       <p className="whitespace-pre-line">{msg.text}</p>
 
+                      {/* Tool Execution Badge */}
+                      {msg.toolsUsed && msg.toolsUsed.length > 0 && (
+                        <div className="pt-1">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-mono border border-emerald-500/30">
+                            <Wrench className="w-3 h-3 text-emerald-400" />
+                            MCP Tool: {msg.toolsUsed.join(", ")}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Order Data Card */}
+                      {msg.orderData && (
+                        <div className="p-3 rounded-xl bg-slate-950 border border-emerald-500/30 text-xs space-y-2">
+                          <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                            <span className="font-extrabold text-white flex items-center gap-1">
+                              <Truck className="w-4 h-4 text-emerald-400" /> Order #{msg.orderData.order_id}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                              {msg.orderData.status}
+                            </span>
+                          </div>
+                          <p className="text-slate-300 font-medium">{msg.orderData.item}</p>
+                          <div className="text-[11px] text-slate-400 space-y-0.5">
+                            <p><span className="text-slate-500">Carrier:</span> {msg.orderData.carrier}</p>
+                            <p><span className="text-slate-500">Est. Delivery:</span> {msg.orderData.estimated_delivery}</p>
+                            <p><span className="text-slate-500">Milestone:</span> {msg.orderData.milestone}</p>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Ticket Confirmation Card */}
                       {msg.isTicketSuccess && msg.ticketData && (
                         <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 space-y-1 font-mono text-[11px]">
@@ -473,9 +458,7 @@ export default function VoiceChatWidget() {
                                   setShowProformaModal(true);
                                 } else if (link.isTicketForm) {
                                   setShowTicketForm(true);
-                                } else if (link.url.startsWith("#")) {
-                                  // internal action
-                                } else {
+                                } else if (link.url && link.url.startsWith("/")) {
                                   setLocation(link.url);
                                   setIsOpen(false);
                                 }
@@ -498,6 +481,20 @@ export default function VoiceChatWidget() {
                     </div>
                   </div>
                 ))}
+
+                {/* Interactive Typing Indicator */}
+                {isTyping && (
+                  <div className="flex items-center gap-2 text-slate-400 text-xs">
+                    <div className="w-7 h-7 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                      <Bot className="w-3.5 h-3.5 animate-pulse" />
+                    </div>
+                    <div className="p-3 rounded-2xl bg-slate-800/90 border border-white/10 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:0ms]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:150ms]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-bounce [animation-delay:300ms]" />
+                    </div>
+                  </div>
+                )}
 
                 {/* Inline Support Ticket Form */}
                 {showTicketForm && (
@@ -601,7 +598,7 @@ export default function VoiceChatWidget() {
                     type="text"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
-                    placeholder="Type your message or query..."
+                    placeholder="Type your inquiry or order ID (e.g. TOT-8891)..."
                     className="glass-input rounded-xl text-xs flex-1"
                   />
 
@@ -623,6 +620,7 @@ export default function VoiceChatWidget() {
           onClick={() => {
             if (!isOpen) {
               setIsOpen(true);
+              setShowAutoPill(false);
             } else {
               setIsOpen(false);
               stopSpeaking();

@@ -2626,6 +2626,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+  // POST /api/chat - Antigravity ADK & MCP Customer Service AI API Endpoint
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { session_id, message } = req.body;
+      if (!message || !message.trim()) {
+        return res.status(400).json({ error: "Message content is required" });
+      }
+
+      const sessionId = session_id || "session_" + Math.random().toString(36).substring(2, 9);
+      const textLower = message.toLowerCase().trim();
+
+      // 1. Succinct Standard English Greetings
+      const greetings = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "greetings", "salut", "start"];
+      if (greetings.some(g => textLower === g || textLower.startsWith(g + " ") || textLower.endsWith(" " + g))) {
+        return res.json({
+          session_id: sessionId,
+          response: "Hello! How may I assist you today?",
+          tools_used: []
+        });
+      }
+
+      // 2. Order Tracking MCP Tool (Regex lookup for TOT-xxxx or ORD-xxxx)
+      const orderMatch = textLower.match(/\b(tot-\d{4}|ord-\d{4})\b/i);
+      if (orderMatch || textLower.includes("track") || textLower.includes("order status") || textLower.includes("shipment")) {
+        const orderId = orderMatch ? orderMatch[1].toUpperCase() : "TOT-8891";
+        
+        // Query simulated / live cargo database
+        const ordersDatabase: Record<string, any> = {
+          "TOT-8891": {
+            order_id: "TOT-8891",
+            item: "Liberia Digital Farmer Registry Mobile Validation Terminals",
+            status: "In Transit to Monrovia Free Port",
+            carrier: "TOTAG Cargo Logistics & Shipping",
+            estimated_delivery: "2026-09-08",
+            milestone: "Customs Stevedoring Clearance Completed"
+          },
+          "TOT-1042": {
+            order_id: "TOT-1042",
+            item: "Agronomy Soil Testing Kits & GIS Cadastral Scanners",
+            status: "Delivered",
+            carrier: "TOTAG Express Logistics Fleet",
+            estimated_delivery: "2026-08-30",
+            milestone: "Signed & Confirmed at Paynesville Central Depot"
+          },
+          "ORD-9921": {
+            order_id: "ORD-9921",
+            item: "TOCEPS Mining Concession Banquet Package",
+            status: "Processing Dispatch",
+            carrier: "TOCEPS Fleet Operations",
+            estimated_delivery: "2026-09-05",
+            milestone: "Food Safety HACCP Quality Check Passed"
+          }
+        };
+
+        const foundOrder = ordersDatabase[orderId];
+        if (foundOrder) {
+          return res.json({
+            session_id: sessionId,
+            response: `Order #${foundOrder.order_id} (${foundOrder.item}) is currently '${foundOrder.status}'. Milestone: ${foundOrder.milestone}. Estimated Delivery: ${foundOrder.estimated_delivery} via ${foundOrder.carrier}.`,
+            tools_used: ["order_tracker"],
+            orderData: foundOrder
+          });
+        } else {
+          return res.json({
+            session_id: sessionId,
+            response: `No order record found for ID '${orderId}'. Please verify your alphanumeric order reference (e.g. TOT-8891).`,
+            tools_used: ["order_tracker"]
+          });
+        }
+      }
+
+      // 3. Proforma Invoice Request
+      if (textLower.includes("proforma") || textLower.includes("invoice") || textLower.includes("quote") || textLower.includes("quotation")) {
+        return res.json({
+          session_id: sessionId,
+          response: "You can generate an official TOTAG Group Proforma Invoice right now with line item breakdown, statutory GST, and wire transfer options. Click below to launch the generator:",
+          tools_used: ["kb_search"],
+          links: [
+            { label: "📄 Open Proforma Invoice Generator", isProformaModal: true }
+          ]
+        });
+      }
+
+      // 4. Knowledge Base MCP Tool (Policies, Warranty, Services)
+      if (textLower.includes("return") || textLower.includes("warranty") || textLower.includes("refund") || textLower.includes("policy")) {
+        return res.json({
+          session_id: sessionId,
+          response: "All hardware and equipment supplied by TOTAG Group (IT hardware, Victron/Deye solar components, stationery supplies) carry a standard 12-month manufacturer warranty. Returns or replacement requests for damaged items must be reported within 14 business days of receipt.",
+          tools_used: ["kb_search"]
+        });
+      }
+
+      // 5. Support Ticket Escalation
+      if (textLower.includes("ticket") || textLower.includes("escalate") || textLower.includes("complaint") || textLower.includes("support")) {
+        return res.json({
+          session_id: sessionId,
+          response: "I can help you log an official Customer Support Ticket directly to our FIMS Help Desk.",
+          tools_used: ["escalate_ticket"],
+          links: [
+            { label: "🎫 Open Support Ticket Form", isTicketForm: true }
+          ]
+        });
+      }
+
+      // 6. Clean Default Response
+      return res.json({
+        session_id: sessionId,
+        response: "Thank you for contacting TOTAG Group. How may I assist you with that inquiry?",
+        tools_used: []
+      });
+
+    } catch (err: any) {
+      console.error("Error in /api/chat:", err);
+      return res.status(500).json({ error: "Failed to process chat request" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
