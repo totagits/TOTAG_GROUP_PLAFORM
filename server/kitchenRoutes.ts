@@ -125,8 +125,8 @@ async function reconcileMtn(order:any) {
   if(info.status==="SUCCESSFUL" && info.currency==="LRD" &&
     Number.isInteger(order.payment_amount_minor) &&
     Math.round(Number(info.amount)*100)===order.payment_amount_minor) {
-    await pool.query("UPDATE kitchen_orders SET payment_status='paid',status='paid',provider_transaction_id=$2,updated_at=NOW() WHERE id=$1 AND payment_status='pending' AND status='awaiting_payment'",[order.id,info.financialTransactionId||order.payment_reference]);
-    await addEvent(order.id,"paid","MTN payment verified with provider",null);
+    const verified=await pool.query("UPDATE kitchen_orders SET payment_status='paid',status='paid',provider_transaction_id=$2,updated_at=NOW() WHERE id=$1 AND payment_status='pending' AND status='awaiting_payment' RETURNING id",[order.id,info.financialTransactionId||order.payment_reference]);
+    if(verified.rowCount) await addEvent(order.id,"paid","MTN payment verified with provider",null);
   } else if(["FAILED","REJECTED","EXPIRED"].includes(info.status)) {
     await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,updated_at=NOW() WHERE id=$1 AND payment_status='pending'",[order.id]);
   }
@@ -210,8 +210,8 @@ router.post("/orders/:id/pay",asyncRoute(async(req,res)=>{
         mode:"payment",client_reference_id:order.id,
         line_items:[{price_data:{currency:"usd",unit_amount:order.total_cents,
           product_data:{name:"TOTAG Kitchen order "+order.id}},quantity:1}],
-        success_url:host+"/catering/kitchen/track?order="+order.id+"&token="+req.body.token,
-        cancel_url:host+"/catering/kitchen/track?order="+order.id+"&token="+req.body.token,
+        success_url:host+"/catering/kitchen/track",
+        cancel_url:host+"/catering/kitchen/track",
         metadata:{kitchen_order_id:order.id,kitchen_payment_ref:ref},
       },{idempotencyKey:"kitchen-"+ref});
       await pool.query("UPDATE kitchen_orders SET provider_transaction_id=$2 WHERE id=$1",[order.id,session.id]);
