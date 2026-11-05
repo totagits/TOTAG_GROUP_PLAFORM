@@ -119,7 +119,7 @@ export default function KitchenPage(){
           <button key={id} onClick={()=>setFilter(id)} className={"px-4 py-2 rounded-full text-sm font-bold "+(filter===id?"bg-green-800 text-white":"bg-white border text-green-800")}>{label}</button>)}
       </div>
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
-      <p className="mt-5 text-sm text-gray-600">Bread is available. Juice prices vary by 500ml, 1L and gallon; prices are confirmed before payment. Fresh food images may be added by TOTAG for each dish.</p>
+      <p className="mt-5 text-sm text-gray-600">Bread is available. Our fresh natural juices come in 500ml (US$5), 1 litre (US$10), or 1 gallon (US$35). USD prices are authoritative; LRD equivalents use the current verified CBL official selling rate.</p>
       <section id="checkout" className="mt-12 bg-white rounded-3xl border shadow-md p-5 md:p-8">
         <h2 className={heading}><ShoppingBag className="inline mr-2"/> Your order</h2>
         {!lines.length?<p className="mt-4 text-gray-600">Select your meals or drinks above to begin.</p>:
