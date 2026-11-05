@@ -33,27 +33,6 @@ export default function CateringOpsLogin() {
     e.preventDefault();
     setLoading(true);
 
-    // Client-side fallback authentication for seeded admin_toceps credentials
-    if ((username === "admin_toceps" || username === "admin") && (password === "Zwedru4gedeh" || password === "password123")) {
-      const mockUser = {
-        id: 1,
-        username: "admin_toceps",
-        firstName: "TOCEPS",
-        lastName: "Admin",
-        role: "account_manager",
-        email: "toceps@totaggroup.com"
-      };
-      localStorage.setItem("catering_token", "demo_token_toceps_admin");
-      localStorage.setItem("catering_user", JSON.stringify(mockUser));
-      toast({
-        title: "TOCEPS Portal Access Granted",
-        description: "Welcome to TOCEPS Operations Command Portal"
-      });
-      navigate("/catering/ops/dashboard");
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch(getCateringApiUrl("/api/catering/auth/login"), {
         method: "POST",
@@ -74,20 +53,10 @@ export default function CateringOpsLogin() {
           toast({ title: "Login Failed", description: data.error || "Invalid username or password", variant: "destructive" });
         }
       } else {
-        // Fallback for static builds
-        const mockUser = { id: 1, username, firstName: "TOCEPS", lastName: "Staff", role: "account_manager" };
-        localStorage.setItem("catering_token", "demo_token_static");
-        localStorage.setItem("catering_user", JSON.stringify(mockUser));
-        toast({ title: "Portal Access Granted", description: "Logged in to TOCEPS Operations Portal" });
-        navigate("/catering/ops/dashboard");
+        toast({ title: "Login Failed", description: "Staff authentication server is unavailable", variant: "destructive" });
       }
     } catch {
-      // Offline fallback
-      const mockUser = { id: 1, username: username || "admin_toceps", firstName: "TOCEPS", lastName: "Staff", role: "account_manager" };
-      localStorage.setItem("catering_token", "demo_token_offline");
-      localStorage.setItem("catering_user", JSON.stringify(mockUser));
-      toast({ title: "Portal Access Granted", description: "Logged in to TOCEPS Operations Portal" });
-      navigate("/catering/ops/dashboard");
+      toast({ title: "Unable to sign in", description: "Cannot connect to the secure catering authentication service.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
