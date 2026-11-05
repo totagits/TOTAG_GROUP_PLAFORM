@@ -28,7 +28,9 @@ jobs:
       - name: Install dependencies
         id: install
         run: npm ci --no-audit --no-fund
-      - name: TypeScript typecheck
+      - name: Verify Kitchen published prices
+        run: npx tsx --test tests/kitchen-catalog.test.ts
+      - name: TypeScript typecheck (includes pre-existing platform errors)
         run: npm run check
       - name: Production build (independent of legacy typing errors)
         if: always() && steps.install.outcome == 'success'
