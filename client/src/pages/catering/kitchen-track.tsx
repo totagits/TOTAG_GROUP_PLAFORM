@@ -10,6 +10,7 @@ type Order = {id:string;status:string;paymentStatus:string;paymentMethod?:string
   items:{name:string;variant:string;quantity:number;unitPriceCents:number|null;sides:string[]}[];
   subtotalCents:number|null;deliveryFeeCents:number|null;totalCents:number|null;
   driverName:string|null;driverPhone:string|null;createdAt:string;
+  paymentCurrency?:string|null;paymentAmountMinor?:number|null;cblRateDate?:string|null;cblRateSource?:string|null;exchangeRate?:number|null;
   events:{status:string;note:string|null;at:string}[]};
 const flow=["awaiting_quote","awaiting_payment","paid","accepted","preparing","ready","dispatched","delivered"];
 function price(n:number|null){return n===null?"To be confirmed":kitchenMoney(n);}
@@ -33,9 +34,14 @@ export default function KitchenTracking(){
   const [error,setError]=useState("");
   const [payment,setPayment]=useState<"card"|"mtn">("mtn");
   const [mtnPhone,setMtnPhone]=useState("");
-  const [methods,setMethods]=useState<{card:boolean;mtn:boolean;orange:boolean;mtnLrdPerUsd:number|null}>({card:false,mtn:false,orange:false,mtnLrdPerUsd:null});
+  const [methods,setMethods]=useState<{card:boolean;mtn:boolean;orange:boolean}>({card:false,mtn:false,orange:false});
+  const [cbl,setCbl]=useState<{date:string;buying:number;selling:number;sourceUrl:string}|null>(null);
+  const [fxWarning,setFxWarning]=useState("Checking CBL exchange rates...");
+  const loadCbl=async()=>{try{const rate=await send("/fx");setCbl(rate.cbl);setFxWarning("");}
+    catch{setCbl(null);setFxWarning("CBL rates are not currently verifiable. LRD payments are disabled.");}};
   useEffect(()=>{const r=readRef();if(r)setRef(r);
     send("/catalog").then(x=>setMethods(x.payments)).catch(()=>{});
+    loadCbl();
   },[]);
   useEffect(()=>{if(!ref)return;let active=true;
     const refresh=async()=>{try{const data=await send("/orders/"+encodeURIComponent(ref.id)+"/track?token="+encodeURIComponent(ref.token));if(active){setOrder(data.order);setError("");}}catch(e:any){if(active)setError(e.message);}};
@@ -49,7 +55,16 @@ export default function KitchenTracking(){
   }
   async function pay(){
     if(!ref)return;setLoading(true);setError("");
-    try{const data=await send("/orders/"+ref.id+"/pay",{method:"POST",body:JSON.stringify({token:ref.token,method:payment,phone:mtnPhone,expectedLrdAmountMinor:order?.totalCents!==null&&methods.mtnLrdPerUsd?Math.round(order!.totalCents*methods.mtnLrdPerUsd):undefined})});
+    try{
+      if(payment==="mtn" && (!cbl || !order || order.totalCents===null))
+        throw new Error("CBL exchange rate cannot be verified. Refresh the CBL rate before paying in LRD.");
+      const amount=payment==="mtn"&&order?.totalCents!==null&&cbl
+        ? Math.round(order!.totalCents*Math.round(cbl.selling*10000)/10000)
+        : undefined;
+      const data=await send("/orders/"+ref.id+"/pay",{method:"POST",body:JSON.stringify({
+        token:ref.token,method:payment,phone:mtnPhone,expectedLrdAmountMinor:amount,
+        cblDate:payment==="mtn"?cbl?.date:undefined,cblSellingRate:payment==="mtn"?cbl?.selling:undefined
+      })});
       if(data.checkoutUrl){window.location.assign(data.checkoutUrl);return;}
       await verify();
       setError(data.message||"Payment initiated. Confirm the prompt on your phone, then verify payment.");
@@ -91,6 +106,14 @@ export default function KitchenTracking(){
             <div className="flex justify-between"><span>Food and juices</span><strong>{price(order.subtotalCents)}</strong></div>
             <div className="flex justify-between"><span>{order.fulfillment==="delivery"?"Delivery fee":"Pickup"}</span><strong>{price(order.deliveryFeeCents)}</strong></div>
             <div className="flex justify-between text-lg border-t pt-3 font-black"><span>Total (USD)</span><strong>{price(order.totalCents)}</strong></div>
+            {order.paymentCurrency==="LRD"&&order.paymentAmountMinor!=null?
+              <div className="flex justify-between text-lg font-bold text-green-800"><span>Paid or pending (LRD)</span><strong>L$ {(order.paymentAmountMinor/100).toFixed(2)}</strong></div>
+            :cbl&&order.totalCents!==null?
+              <div className="flex justify-between text-lg font-bold text-green-800"><span>CBL indicative LRD total</span><strong>L$ {(Math.round(order.totalCents*Math.round(cbl.selling*10000)/10000)/100).toFixed(2)}</strong></div>
+            :<p className="text-amber-900 text-sm">LRD equivalent requires a verified official CBL rate.</p>}
+            {order.cblRateDate&&order.exchangeRate?
+              <p className="text-xs text-green-800">Checkout rate fixed at L$ {order.exchangeRate.toFixed(4)} / US$1 (CBL selling, published {order.cblRateDate}). <a className="underline" target="_blank" rel="noopener noreferrer" href={order.cblRateSource||"https://www.cbl.org.lr/research/buying-selling-rates?page=0"}>CBL source</a></p>
+            :cbl&&<p className="text-xs text-gray-600">CBL selling rate L$ {cbl.selling.toFixed(4)} / US$1, published {cbl.date}. <a className="underline" href={cbl.sourceUrl} target="_blank" rel="noopener noreferrer">Verify rate</a>. Final amount confirmed when you initiate payment.</p>}
           </div>
         </section>
         {order.status==="awaiting_quote"&&<section className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
@@ -100,11 +123,12 @@ export default function KitchenTracking(){
           <h3 className="font-black text-xl"><WalletCards className="inline"/> Secure checkout</h3>
           {order.paymentStatus==="pending"? <><p>Payment request sent; do not start a duplicate payment.</p>
             <button disabled={loading} onClick={verify} className="rounded-lg bg-green-700 text-white px-4 py-2">Verify payment with provider</button></>:
-            <><div className="space-y-2"><label className="flex gap-2 items-center"><input type="radio" checked={payment==="mtn"} disabled={!methods.mtn} onChange={()=>setPayment("mtn")}/> MTN Mobile Money {!methods.mtn&&"(not activated)"}</label>
-              <label className="flex gap-2 items-center"><input type="radio" checked={payment==="card"} disabled={!methods.card} onChange={()=>setPayment("card")}/> Credit/debit card {!methods.card&&"(not activated)"}</label></div>
+            <><div className="space-y-2"><label className="flex gap-2 items-center"><input type="radio" checked={payment==="mtn"} disabled={!methods.mtn} onChange={()=>setPayment("mtn")}/> MTN Mobile Money (LRD) {!methods.mtn&&"(not activated)"}</label>
+              <label className="flex gap-2 items-center"><input type="radio" checked={payment==="card"} disabled={!methods.card} onChange={()=>setPayment("card")}/> Credit/debit card (USD) {!methods.card&&"(not activated)"}</label></div>
               {payment==="mtn"&&<><input className="border rounded-xl p-3 w-full" placeholder="MTN MoMo number: 231XXXXXXXXX" value={mtnPhone} onChange={e=>setMtnPhone(e.target.value)}/>
-                {methods.mtnLrdPerUsd&&order.totalCents!==null&&<p className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm font-semibold">MTN will request LRD {((Math.round(order.totalCents*methods.mtnLrdPerUsd))/100).toFixed(2)} at TOTAG’s configured rate of LRD {methods.mtnLrdPerUsd} per US$1. Verify this amount before confirming your mobile money prompt.</p>}</>}
-              <button disabled={loading||!(payment==="mtn"?methods.mtn:methods.card)} onClick={pay} className="rounded-xl bg-orange-600 text-white font-bold px-5 py-3 disabled:opacity-40">Pay {price(order.totalCents)} securely</button>
+                {cbl&&order.totalCents!==null?<p className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm font-semibold">MTN will request LRD {(Math.round(order.totalCents*Math.round(cbl.selling*10000)/10000)/100).toFixed(2)} at the official CBL selling rate L$ {cbl.selling.toFixed(4)} / US$1, published {cbl.date}. Approve only if the phone prompt shows this exact amount.</p>
+                :<p className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm text-amber-800">{fxWarning} <button className="underline" type="button" onClick={loadCbl}>Retry CBL verification</button></p>}</>}
+              <button disabled={loading||!(payment==="mtn"?methods.mtn&&!!cbl:methods.card)} onClick={pay} className="rounded-xl bg-orange-600 text-white font-bold px-5 py-3 disabled:opacity-40">Pay {payment==="mtn"&&cbl&&order.totalCents!==null?"L$ "+(Math.round(order.totalCents*Math.round(cbl.selling*10000)/10000)/100).toFixed(2):"US"+price(order.totalCents)} securely</button>
               {!methods.card&&!methods.mtn&&<p className="text-sm text-red-700">Digital payments are not yet configured. TOTAG will activate verified providers before accepting payment.</p>}</>}
         </section>}
         {(order.status==="dispatched"||order.status==="delivered")&&<section className="bg-green-50 rounded-2xl p-5 border border-green-200">
