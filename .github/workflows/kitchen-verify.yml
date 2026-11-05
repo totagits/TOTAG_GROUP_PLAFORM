@@ -19,6 +19,23 @@ jobs:
   typecheck-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kitchen_test
+          POSTGRES_PASSWORD: kitchen_test_password
+          POSTGRES_DB: kitchen_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kitchen_test -d kitchen_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://kitchen_test:kitchen_test_password@localhost:5432/kitchen_test
+      JWT_SECRET: test-only-kitchen-secret-with-over-32-characters
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,6 +47,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Verify Kitchen published prices
         run: npx tsx --test tests/kitchen-catalog.test.ts
+      - name: PostgreSQL order and security smoke tests
+        run: npx tsx --test tests/kitchen-orders.integration.test.ts
       - name: TypeScript typecheck (includes pre-existing platform errors)
         run: npm run check
       - name: Production build (independent of legacy typing errors)
