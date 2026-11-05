@@ -71,26 +71,8 @@ function getAuthHeaders() {
 }
 
 async function ensureValidCateringToken(): Promise<string | null> {
-  let token = localStorage.getItem("catering_token");
-  if (!token || token === "demo_token_static") {
-    try {
-      const loginUrl = getCateringApiUrl("/api/catering/auth/login");
-      const res = await fetch(loginUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "admin_toceps", password: "Zwedru4gedeh" }),
-      });
-      const data = await res.json();
-      if (data.success && data.token) {
-        token = data.token;
-        localStorage.setItem("catering_token", token);
-        localStorage.setItem("catering_user", JSON.stringify(data.user));
-      }
-    } catch (e) {
-      console.warn("Auto-token fetch failed:", e);
-    }
-  }
-  return token;
+  // Never log in silently with a public demo password.
+  return localStorage.getItem("catering_token");
 }
 
 function getCateringApiUrl(endpoint: string): string {
