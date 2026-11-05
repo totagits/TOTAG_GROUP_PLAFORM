@@ -16,7 +16,7 @@ async function api(path:string,init?:RequestInit){
   if(!r.ok||!data.success)throw new Error(data.error||"Kitchen service unavailable");
   return data;
 }
-function ItemCard({item,onAdd}:{item:KitchenProduct;onAdd:(v:Line)=>void}){
+function ItemCard({item,onAdd,displayPrice}:{item:KitchenProduct;onAdd:(v:Line)=>void;displayPrice:(cents:number|null)=>string}){
   const [variant,setVariant]=useState(item.variants[0].id);
   const [quantity,setQuantity]=useState(1);
   const [sides,setSides]=useState<string[]>(["Plantain","Cuscus","Vegetable Salad"]);
@@ -34,7 +34,7 @@ function ItemCard({item,onAdd}:{item:KitchenProduct;onAdd:(v:Line)=>void}){
       <div><h3 className="text-lg font-bold text-green-950">{item.name}</h3><p className="text-sm text-gray-600">{item.description}</p></div>
       <label className="block text-sm font-semibold text-gray-800">Size or choice
         <select className="mt-1 w-full rounded-xl border border-gray-300 p-2.5" value={variant} onChange={e=>setVariant(e.target.value)}>
-          {item.variants.map(v=><option value={v.id} key={v.id}>{v.label} — {cash(v.priceCents)}</option>)}
+          {item.variants.map(v=><option value={v.id} key={v.id}>{v.label} — {displayPrice(v.priceCents)}</option>)}
         </select>
       </label>
       {item.sidesEligible && <details className="rounded-xl bg-orange-50 p-3 text-sm">
@@ -45,7 +45,7 @@ function ItemCard({item,onAdd}:{item:KitchenProduct;onAdd:(v:Line)=>void}){
             <input type="checkbox" checked={sides.includes(side)} onChange={()=>toggleSide(side)}/>{side}</label>)}</div>)}
       </details>}
       <div className="flex items-center gap-2 justify-between">
-        <strong className="text-lg text-orange-600">{cash(selected.priceCents)}</strong>
+        <strong className="text-lg text-orange-600">{displayPrice(selected.priceCents)}</strong>
         <label className="text-sm">Qty <input type="number" min="1" max="50" value={quantity} onChange={e=>setQuantity(Math.min(50,Math.max(1,Number(e.target.value)||1)))} className="border rounded-lg p-2 w-16 ml-1"/></label>
       </div>
       <button onClick={()=>onAdd({productId:item.id,variantId:variant,quantity,sides:item.sidesEligible?sides:[]})} className="w-full bg-green-800 text-white rounded-xl p-3 font-bold hover:bg-green-700">{selected.priceCents===null?"Add for quotation":"Add to order"}</button>
@@ -54,6 +54,20 @@ function ItemCard({item,onAdd}:{item:KitchenProduct;onAdd:(v:Line)=>void}){
 }
 export default function KitchenPage(){
   const [cart,setCart]=useState<Line[]>([]);
+  const [currency,setCurrency]=useState<"USD"|"LRD">("USD");
+  const [cbl,setCbl]=useState<{date:string;buying:number;selling:number;sourceUrl:string}|null>(null);
+  const [fxError,setFxError]=useState("");
+  useEffect(()=>{let active=true;
+    api("/fx").then(result=>{if(active){setCbl(result.cbl);setFxError("");}}).catch(()=>{
+      if(active){setCbl(null);setFxError("CBL rate could not be verified: LRD display and checkout unavailable.");}
+    });
+    return ()=>{active=false};
+  },[]);
+  const displayPrice=(cents:number|null):string=>{
+    if(cents===null)return "Quote required";
+    if(currency==="LRD" && cbl) return "L$"+(Math.round(cents*Math.round(cbl.selling*10000)/10000)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+    return "US"+kitchenMoney(cents);
+  };
   const [filter,setFilter]=useState<"all"|"meal"|"tray"|"juice">("all");
   const [fulfillment,setFulfillment]=useState<"pickup"|"delivery">("pickup");
   const [name,setName]=useState("");const [phone,setPhone]=useState("");const [email,setEmail]=useState("");
@@ -92,11 +106,19 @@ export default function KitchenPage(){
       </div>
     </section>
     <main className="max-w-6xl mx-auto px-4 py-10">
+      <div className="mb-5 rounded-2xl bg-white p-4 border border-green-100 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div><strong className="text-green-900">Choose display currency</strong>
+          <p className="text-xs text-gray-600">Base menu prices are USD. All LRD equivalents use CBL's published selling rate.</p></div>
+        <div className="flex gap-2"><button onClick={()=>setCurrency("USD")} className={"px-4 py-2 rounded-lg font-bold "+(currency==="USD"?"bg-green-800 text-white":"border bg-white")}>US Dollars (USD)</button>
+          <button disabled={!cbl} onClick={()=>setCurrency("LRD")} className={"px-4 py-2 rounded-lg font-bold disabled:opacity-40 "+(currency==="LRD"?"bg-green-800 text-white":"border bg-white")}>Liberian Dollars (LRD)</button></div>
+      </div>
+      {cbl?<p className="mb-5 text-sm text-green-800">CBL official buying: L$ {cbl.buying.toFixed(4)} / US$1 · selling: L$ {cbl.selling.toFixed(4)} / US$1 (used for pricing) · published {cbl.date}. <a href={cbl.sourceUrl} className="underline" target="_blank" rel="noopener noreferrer">Verify source</a>. Converted prices are indicative until checkout.</p>
+        :<p className="mb-5 text-sm text-amber-800">{fxError||"Checking official Central Bank of Liberia rates…"} USD ordering remains available; LRD quotations require verified CBL rates.</p>}
       <div className="flex gap-2 flex-wrap mb-8">
         {([["all","All menu"],["meal","Meals & Platters"],["tray","Party Trays"],["juice","Fresh Juices"]] as const).map(([id,label])=>
           <button key={id} onClick={()=>setFilter(id)} className={"px-4 py-2 rounded-full text-sm font-bold "+(filter===id?"bg-green-800 text-white":"bg-white border text-green-800")}>{label}</button>)}
       </div>
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard key={p.id} item={p} onAdd={add}/>)}</div>
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
       <p className="mt-5 text-sm text-gray-600">Bread is available. Juice prices vary by 500ml, 1L and gallon; prices are confirmed before payment. Fresh food images may be added by TOTAG for each dish.</p>
       <section id="checkout" className="mt-12 bg-white rounded-3xl border shadow-md p-5 md:p-8">
         <h2 className={heading}><ShoppingBag className="inline mr-2"/> Your order</h2>
@@ -104,10 +126,10 @@ export default function KitchenPage(){
           <div className="mt-4 divide-y">{lines.map((row,i)=><div key={i} className="py-3 flex items-center justify-between gap-2">
             <div><strong>{row.product.name}</strong><span className="text-sm text-gray-600"> · {row.variant.label} · ×{row.item.quantity}</span>
               {!!row.item.sides.length && <p className="text-xs text-gray-500">{row.item.sides.join(", ")}</p>}</div>
-            <div className="flex gap-3 items-center"><b>{row.variant.priceCents===null?"Quote":cash(row.variant.priceCents*row.item.quantity)}</b>
+            <div className="flex gap-3 items-center"><b>{row.variant.priceCents===null?"Quote":displayPrice(row.variant.priceCents*row.item.quantity)}</b>
               <button aria-label={"Remove "+row.product.name} className="text-red-700 text-sm font-bold" onClick={()=>setCart(c=>c.filter((_,j)=>j!==i))}>Remove</button></div>
           </div>)}</div>}
-        <div className="text-right mt-4 font-bold">Priced items subtotal: {cash(subtotal)}</div>
+        <div className="text-right mt-4 font-bold">Priced items subtotal: {displayPrice(subtotal)} {cbl && <span className="text-sm text-gray-500 font-normal ml-2">(US{kitchenMoney(subtotal)} · L${(Math.round(subtotal*Math.round(cbl.selling*10000)/10000)/100).toFixed(2)})</span>}</div>
         {(hasQuote||fulfillment==="delivery")&&<p className="text-amber-800 text-sm mt-2">Final total will be available once TOTAG confirms {hasQuote?"juice prices ":""}{hasQuote&&fulfillment==="delivery"?"and ":""}{fulfillment==="delivery"?"delivery fees":""}.</p>}
         <form onSubmit={submit} className="mt-6 grid md:grid-cols-2 gap-4">
           <label className="font-semibold text-sm">Full name<input required minLength={2} value={name} onChange={e=>setName(e.target.value)} className="block w-full border rounded-xl p-3 mt-1"/></label>
