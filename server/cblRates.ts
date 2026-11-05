@@ -41,8 +41,9 @@ export function parseCblRates(html: string, verifiedAt = new Date().toISOString(
       return match ? Number(match[1].replace(/,/g, "")) : NaN;
     };
     const buying = parseRate(cells[1]), selling = parseRate(cells[2]);
+    // A malformed newest dated row must fail closed: never silently use an older rate.
     if (!(buying > 50 && buying < 1000 && selling >= buying && selling < 1000))
-      continue;
+      throw new Error("Newest CBL exchange-rate row is invalid or incomplete");
     return {
       date: d.toISOString().slice(0,10),
       buying, selling, sourceUrl: CBL_RATES_URL,
