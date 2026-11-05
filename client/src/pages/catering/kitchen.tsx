@@ -112,7 +112,7 @@ export default function KitchenPage(){
         <div className="flex gap-2"><button onClick={()=>setCurrency("USD")} className={"px-4 py-2 rounded-lg font-bold "+(currency==="USD"?"bg-green-800 text-white":"border bg-white")}>US Dollars (USD)</button>
           <button disabled={!cbl} onClick={()=>setCurrency("LRD")} className={"px-4 py-2 rounded-lg font-bold disabled:opacity-40 "+(currency==="LRD"?"bg-green-800 text-white":"border bg-white")}>Liberian Dollars (LRD)</button></div>
       </div>
-      {cbl?<p className="mb-5 text-sm text-green-800">CBL official buying: L$ {cbl.buying.toFixed(4)} / US$1 · selling: L$ {cbl.selling.toFixed(4)} / US$1 (used for pricing) · published {cbl.date}. <a href={cbl.sourceUrl} className="underline" target="_blank" rel="noopener noreferrer">Verify source</a>. Converted prices are indicative until checkout.</p>
+      {cbl?<p className="mb-5 text-sm text-green-800">CBL official selling rate: L$ {cbl.selling.toFixed(4)} per US$1 · published {cbl.date}. <a href={cbl.sourceUrl} className="underline" target="_blank" rel="noopener noreferrer">Verify source</a>. Converted prices are indicative until checkout.</p>
         :<p className="mb-5 text-sm text-amber-800">{fxError||"Checking official Central Bank of Liberia rates…"} USD ordering remains available; LRD quotations require verified CBL rates.</p>}
       <div className="flex gap-2 flex-wrap mb-8">
         {([["all","All menu"],["meal","Meals & Platters"],["tray","Party Trays"],["juice","Fresh Juices"]] as const).map(([id,label])=>
