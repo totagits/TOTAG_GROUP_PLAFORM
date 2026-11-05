@@ -435,6 +435,7 @@ export default function CateringDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button onClick={() => navigate("/catering/kitchen/ops")} className="bg-green-800 text-white hover:bg-green-700 text-xs"><ChefHat className="h-4 w-4 mr-1"/> TOTAG Kitchen Desk</Button>
             <Badge className="bg-green-100 text-green-600 border-0">
               <RoleIcon className="h-3 w-3 mr-1" />
               {user.firstName} {user.lastName}
