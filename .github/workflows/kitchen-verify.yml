@@ -1,0 +1,33 @@
+name: TOTAG Kitchen verification
+
+on:
+  push:
+    branches:
+      - feat/totag-kitchen-ordering-operations
+  pull_request:
+    paths:
+      - 'client/src/pages/catering/**'
+      - 'client/src/pages/catering.tsx'
+      - 'client/src/App.tsx'
+      - 'shared/kitchenCatalog.ts'
+      - 'server/kitchenRoutes.ts'
+      - 'server/cateringRoutes.ts'
+      - 'server/index.ts'
+      - 'server/routes.ts'
+
+jobs:
+  typecheck-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: TypeScript typecheck
+        run: npm run check
+      - name: Production build
+        run: npm run build
