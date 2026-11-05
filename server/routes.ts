@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { EmailService } from "./emailService";
 import saasRoutes from "./saasRoutes";
 import cateringRoutes from "./cateringRoutes";
+import kitchenRoutes from "./kitchenRoutes";
 import { getSaasStorage } from "./saasStorageFactory";
 import { 
   insertContactInquirySchema, 
@@ -58,6 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mount SaaS routes
   app.use("/api/saas", saasRoutes);
   app.use("/api/catering", cateringRoutes);
+  app.use("/api/kitchen", kitchenRoutes);
 
   // Cargo Operations Endpoints
   app.get("/api/cargo/shipments", async (req, res) => {
