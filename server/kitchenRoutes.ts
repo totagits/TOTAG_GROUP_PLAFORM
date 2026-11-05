@@ -6,6 +6,7 @@ import { z } from "zod";
 import { pool } from "./db";
 import { storage } from "./storage";
 import { KITCHEN_CATALOG, KITCHEN_SIDES } from "../shared/kitchenCatalog";
+import { CBL_RATES_URL, getOfficialCblRate, usdCentsToLrdCents } from "./cblRates";
 
 const router = Router();
 const STAFF_ROLES = ["account_manager","operations_supervisor","head_chef","logistics_coordinator","food_safety_supervisor"];
@@ -16,7 +17,6 @@ const stripe = stripeSecret ? new Stripe(stripeSecret) : null;
 const MTN_API_BASE = process.env.KITCHEN_MTN_BASE_URL || "https://momoapi.momo.africa";
 const MTN_ENVIRONMENT = process.env.KITCHEN_MTN_ENVIRONMENT || "sandbox";
 const MTN_CURRENCY = process.env.KITCHEN_MTN_CURRENCY || "LRD";
-const MTN_EXCHANGE_RATE = Number(process.env.KITCHEN_LRD_PER_USD || 0);
 
 let initPromise: Promise<void> | undefined;
 async function initDb() {
@@ -28,12 +28,16 @@ async function initDb() {
       "currency TEXT NOT NULL DEFAULT 'USD', status TEXT NOT NULL, payment_status TEXT NOT NULL, " +
       "payment_method TEXT, payment_reference TEXT, provider_transaction_id TEXT, " +
       "payment_amount_minor INTEGER, payment_currency TEXT, exchange_rate_lrd_per_usd NUMERIC(12,4), " +
+      "cbl_rate_date TEXT, cbl_rate_source TEXT, cbl_rate_side TEXT, " +
       "driver_name TEXT, driver_phone TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), " +
       "updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())"
   );
   await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS payment_amount_minor INTEGER");
   await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS payment_currency TEXT");
   await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS exchange_rate_lrd_per_usd NUMERIC(12,4)");
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS cbl_rate_date TEXT");
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS cbl_rate_source TEXT");
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS cbl_rate_side TEXT");
   await pool.query(
     "CREATE TABLE IF NOT EXISTS kitchen_order_events (" +
       "id BIGSERIAL PRIMARY KEY, order_id UUID NOT NULL REFERENCES kitchen_orders(id) ON DELETE CASCADE, " +
@@ -62,7 +66,7 @@ function scrubOrder(order:any, events:any[]) {
   return { id:order.id, items:order.items, subtotalCents:order.subtotal_cents,
     deliveryFeeCents:order.delivery_fee_cents,totalCents:order.total_cents,
     fulfillment:order.fulfillment,status:order.status,paymentStatus:order.payment_status,
-    paymentMethod:order.payment_method,paymentCurrency:order.payment_currency,paymentAmountMinor:order.payment_amount_minor,driverName:order.driver_name,
+    paymentMethod:order.payment_method,paymentCurrency:order.payment_currency,paymentAmountMinor:order.payment_amount_minor,cblRateDate:order.cbl_rate_date,cblRateSource:order.cbl_rate_source,cblRateSide:order.cbl_rate_side,exchangeRate:order.exchange_rate_lrd_per_usd?Number(order.exchange_rate_lrd_per_usd):null,driverName:order.driver_name,
     driverPhone:order.driver_phone,events:events.map(e=>({status:e.status,note:e.note,at:e.created_at})),
     createdAt:order.created_at,updatedAt:order.updated_at };
 }
@@ -103,8 +107,7 @@ async function addEvent(id:string,status:string,note:string|null,staffId:number|
 function mtnConfigured() {
   return !!(process.env.KITCHEN_MTN_API_USER && process.env.KITCHEN_MTN_API_KEY && process.env.KITCHEN_MTN_SUBSCRIPTION_KEY &&
     MTN_ENVIRONMENT === "mtnliberia" && MTN_CURRENCY === "LRD" &&
-    /^https:\/\//.test(MTN_API_BASE) && !MTN_API_BASE.includes("sandbox") &&
-    Number.isFinite(MTN_EXCHANGE_RATE) && MTN_EXCHANGE_RATE > 0 && MTN_EXCHANGE_RATE < 10000);
+    /^https:\/\//.test(MTN_API_BASE) && !MTN_API_BASE.includes("sandbox"));
 }
 async function mtnToken() {
   const encoded = Buffer.from(process.env.KITCHEN_MTN_API_USER + ":" + process.env.KITCHEN_MTN_API_KEY).toString("base64");
@@ -134,10 +137,17 @@ async function reconcileMtn(order:any) {
 }
 router.get("/catalog",(_req,res)=>{
   res.json({success:true,products:KITCHEN_CATALOG,sides:KITCHEN_SIDES,
-    payments:{card:!!stripe,mtn:mtnConfigured(),orange:false,
-      mtnLrdPerUsd:mtnConfigured()?MTN_EXCHANGE_RATE:null},
+    payments:{card:!!stripe,mtn:mtnConfigured(),orange:false},
     note:"Juice prices and delivery fees require confirmation before checkout. No live payment is claimed without provider verification."});
 });
+router.get("/fx",asyncRoute(async(_req,res)=>{
+  try {
+    const cbl = await getOfficialCblRate();
+    return res.json({success:true,cbl});
+  } catch {
+    return problem(res,503,"Official CBL rates could not be verified. LRD checkout is temporarily unavailable.");
+  }
+}));
 router.post("/orders",asyncRoute(async(req,res)=>{
   await ensureDb();
   const data=orderSchema.safeParse(req.body);
@@ -177,7 +187,8 @@ router.post("/orders",asyncRoute(async(req,res)=>{
       data.data.fulfillment==="pickup"?0:null,total,status]
   );
   await addEvent(id,status,needsQuote?"Awaiting final juice pricing and/or delivery fee":"Order placed, awaiting payment",null);
-  return res.status(201).json({success:true,id,trackingToken:token,order:await loadOrder(id)});
+  const created=await loadOrder(id);
+  return res.status(201).json({success:true,id,trackingToken:token,order:scrubOrder(created,await eventsFor(id))});
 }));
 router.get("/orders/:id/track",asyncRoute(async(req,res)=>{
   await ensureDb();
@@ -194,14 +205,23 @@ router.post("/orders/:id/pay",asyncRoute(async(req,res)=>{
   if(method!=="card" && method!=="mtn") return problem(res,400,"Select a supported payment method");
   if(method==="card" && !stripe) return problem(res,503,"Card checkout is not activated for this merchant");
   if(method==="mtn" && !mtnConfigured()) return problem(res,503,"MTN Mobile Money checkout is not activated");
+  // All LRD charges use a freshly verified official CBL daily selling rate.
+  // Historical orders store the actual rate snapshot used at payment initiation.
+  let cbl: Awaited<ReturnType<typeof getOfficialCblRate>> | null = null;
+  if(method==="mtn") {
+    try { cbl = await getOfficialCblRate(); }
+    catch { return problem(res,503,"Official CBL exchange rate unavailable or stale; LRD payments are temporarily disabled"); }
+  }
   const ref=crypto.randomUUID();
-  const amountMinor = method==="mtn" ? Math.round(order.total_cents*MTN_EXCHANGE_RATE) : order.total_cents;
-  const currency = method==="mtn" ? "LRD" : "USD";
+  const amountMinor = cbl ? usdCentsToLrdCents(order.total_cents,cbl.selling) : order.total_cents;
+  const currency = cbl ? "LRD" : "USD";
   if(!Number.isSafeInteger(amountMinor) || amountMinor<=0) return problem(res,400,"Payment amount cannot be calculated");
-  if(method==="mtn" && Number(req.body?.expectedLrdAmountMinor)!==amountMinor)
-    return problem(res,409,"The current LRD conversion has changed. Review the amount before approving payment");
-  const claimed=await pool.query("UPDATE kitchen_orders SET payment_status='pending',payment_method=$2,payment_reference=$3,payment_amount_minor=$4,payment_currency=$5,exchange_rate_lrd_per_usd=$6,updated_at=NOW() WHERE id=$1 AND status='awaiting_payment' AND payment_status='unpaid' AND payment_reference IS NULL RETURNING id",
-    [order.id,method,ref,amountMinor,currency,method==="mtn"?MTN_EXCHANGE_RATE:null]);
+  if(cbl && (Number(req.body?.expectedLrdAmountMinor)!==amountMinor ||
+      String(req.body?.cblDate||"")!==cbl.date ||
+      Number(req.body?.cblSellingRate)!==cbl.selling))
+    return problem(res,409,"The official CBL exchange rate or converted amount has changed. Refresh the rate and review checkout.");
+  const claimed=await pool.query("UPDATE kitchen_orders SET payment_status='pending',payment_method=$2,payment_reference=$3,payment_amount_minor=$4,payment_currency=$5,exchange_rate_lrd_per_usd=$6,cbl_rate_date=$7,cbl_rate_source=$8,cbl_rate_side=$9,updated_at=NOW() WHERE id=$1 AND status='awaiting_payment' AND payment_status='unpaid' AND payment_reference IS NULL RETURNING id",
+    [order.id,method,ref,amountMinor,currency,cbl?.selling??null,cbl?.date??null,cbl?.sourceUrl??null,cbl?.rateSide??null]);
   if(!claimed.rowCount) return problem(res,409,"Payment has already been initiated");
   try {
     if(method==="card" && stripe) {
@@ -233,7 +253,7 @@ router.post("/orders/:id/pay",asyncRoute(async(req,res)=>{
       return res.json({success:true,paymentStatus:"pending",amountLrd:(amountMinor/100).toFixed(2),message:"Approve the MTN MoMo prompt only if the displayed LRD amount matches your checkout confirmation."});
     }
   } catch(err:any) {
-    await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,payment_method=NULL,payment_amount_minor=NULL,payment_currency=NULL,exchange_rate_lrd_per_usd=NULL,updated_at=NOW() WHERE id=$1 AND payment_reference=$2 AND payment_status='pending'",[order.id,ref]);
+    await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,payment_method=NULL,payment_amount_minor=NULL,payment_currency=NULL,exchange_rate_lrd_per_usd=NULL,cbl_rate_date=NULL,cbl_rate_source=NULL,cbl_rate_side=NULL,updated_at=NOW() WHERE id=$1 AND payment_reference=$2 AND payment_status='pending'",[order.id,ref]);
     return problem(res,502,err.message||"Payment initiation failed");
   }
 }));
