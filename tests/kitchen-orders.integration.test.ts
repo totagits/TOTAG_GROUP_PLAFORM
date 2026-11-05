@@ -29,8 +29,8 @@ test("TOTAG Kitchen PostgreSQL public order/quote/tracking security smoke", asyn
       items:[{productId:"fried-rice-tray",variantId:"small",quantity:2}]
     })});
     assert.equal(order.status,201,JSON.stringify(order.body));
-    assert.equal(order.body.order.subtotal_cents,7000);
-    assert.equal(order.body.order.total_cents,7000);
+    assert.equal(order.body.order.subtotalCents,7000);
+    assert.equal(order.body.order.totalCents,7000);
     assert.equal(order.body.order.status,"awaiting_payment");
     assert.match(order.body.trackingToken,/^[a-f0-9]{64}$/);
     const id=order.body.id, token=order.body.trackingToken;
@@ -52,20 +52,20 @@ test("TOTAG Kitchen PostgreSQL public order/quote/tracking security smoke", asyn
     })});
     assert.equal(delivery.status,201);
     assert.equal(delivery.body.order.status,"awaiting_quote");
-    assert.equal(delivery.body.order.total_cents,null);
+    assert.equal(delivery.body.order.totalCents,null);
     const juice=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Test Juice",phone:"231777000002",fulfillment:"pickup",
       items:[{productId:"juice-watermelon",variantId:"500ml",quantity:1}]
     })});
     assert.equal(juice.status,201);
     assert.equal(juice.body.order.status,"awaiting_quote");
-    assert.equal(juice.body.order.total_cents,null);
+    assert.equal(juice.body.order.totalCents,null);
     const forged=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Malicious Tester",phone:"231777000003",fulfillment:"pickup",
       items:[{productId:"snail",variantId:"regular",quantity:1,unitPriceCents:1}]
     })});
     assert.equal(forged.status,201);
-    assert.equal(forged.body.order.total_cents,1500,"Server must ignore client-supplied prices");
+    assert.equal(forged.body.order.totalCents,1500,"Server must ignore client-supplied prices");
     const invalidSides=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Invalid Sides",phone:"231777000004",fulfillment:"pickup",
       items:[{productId:"snail",variantId:"regular",quantity:1,sides:["Fries","Plantain","Vegetable Salad"]}]
