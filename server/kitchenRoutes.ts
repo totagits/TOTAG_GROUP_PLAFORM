@@ -138,7 +138,7 @@ async function reconcileMtn(order:any) {
 router.get("/catalog",(_req,res)=>{
   res.json({success:true,products:KITCHEN_CATALOG,sides:KITCHEN_SIDES,
     payments:{card:!!stripe,mtn:mtnConfigured(),orange:false},
-    note:"Juice prices and delivery fees require confirmation before checkout. No live payment is claimed without provider verification."});
+    note:"Juice prices are fixed to the published menu. Delivery fees require staff quotation where applicable. No live payment is claimed without provider verification."});
 });
 router.get("/fx",asyncRoute(async(_req,res)=>{
   try {
