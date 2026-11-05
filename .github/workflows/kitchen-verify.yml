@@ -26,8 +26,10 @@ jobs:
           node-version: '20'
           cache: npm
       - name: Install dependencies
+        id: install
         run: npm ci --no-audit --no-fund
       - name: TypeScript typecheck
         run: npm run check
-      - name: Production build
+      - name: Production build (independent of legacy typing errors)
+        if: always() && steps.install.outcome == 'success'
         run: npm run build
