@@ -10,7 +10,6 @@ import { KITCHEN_CATALOG, KITCHEN_SIDES } from "../shared/kitchenCatalog";
 const router = Router();
 const STAFF_ROLES = ["account_manager","operations_supervisor","head_chef","logistics_coordinator","food_safety_supervisor"];
 const MANAGERS = ["account_manager","operations_supervisor"];
-const STATUS_STEPS = ["awaiting_quote","awaiting_payment","paid","accepted","preparing","ready","dispatched","delivered"];
 const JWT_SECRET = process.env.JWT_SECRET;
 const stripeSecret = process.env.KITCHEN_STRIPE_SECRET_KEY;
 const stripe = stripeSecret ? new Stripe(stripeSecret) : null;
@@ -304,7 +303,7 @@ export async function kitchenStripeWebhook(req:Request,res:Response) {
   }catch{return problem(res,400,"Invalid Stripe webhook signature");}
   if(event.type==="checkout.session.completed"){
     const session=event.data.object as Stripe.Checkout.Session;
-    if(session.payment_status==="paid" && session.metadata?.kitchen_order_id && session.metadata.kitchen_payment_ref){
+    if(session.payment_status==="paid" && session.currency==="usd" && session.metadata?.kitchen_order_id && session.metadata.kitchen_payment_ref){
       try {
         await ensureDb();
         const update=await pool.query(
@@ -312,6 +311,15 @@ export async function kitchenStripeWebhook(req:Request,res:Response) {
           [session.metadata.kitchen_order_id,session.metadata.kitchen_payment_ref,session.id,session.amount_total]);
         if(update.rowCount) await addEvent(update.rows[0].id,"paid","Card payment verified by signed provider webhook",null);
       } catch(e) {console.error("Kitchen webhook database error",e);return problem(res,500,"Webhook could not be persisted");}
+    }
+  }
+  if(event.type==="checkout.session.expired"){
+    const session=event.data.object as Stripe.Checkout.Session;
+    if(session.metadata?.kitchen_order_id && session.metadata.kitchen_payment_ref){
+      try{
+        await ensureDb();
+        await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,payment_method=NULL,provider_transaction_id=NULL,updated_at=NOW() WHERE id=$1 AND payment_reference=$2 AND provider_transaction_id=$3 AND payment_status='pending' AND status='awaiting_payment'",[session.metadata.kitchen_order_id,session.metadata.kitchen_payment_ref,session.id]);
+      }catch(e){console.error("Kitchen expiration webhook persistence error");return problem(res,500,"Unable to persist payment expiration");}
     }
   }
   return res.json({received:true});
