@@ -24,7 +24,7 @@ The repository’s previous demonstration login bypass has been removed in this 
 
 The catalog in `shared/kitchenCatalog.ts` holds the authoritative food prices (USD cents).
 Juice (Watermelon, Pineapple, Orange, Mix Any Two, Tropical Fusion), available in
-500ml, 1L and gallon sizes, has **no invented default price**.
+500ml, 1L and gallon sizes, is priced at **US$5 (500ml), US$10 (1L), and US$35 (1 gallon)** across all approved flavors.
 
 Delivery fee is always determined by the manager before payment. Checkout does not
 open until all quoted prices and delivery fees are finalized. Users can select one
@@ -34,8 +34,8 @@ The any-meal platter is USD 25.00.
 ### Operational sequence
 
 1. Customer submits an order and receives a private tracking token.
-2. If juice price or delivery fee is missing, status is `awaiting_quote`.
-3. A Catering Account Manager or Operations Supervisor sets the missing price(s).
+2. If a delivery fee is missing, status is `awaiting_quote`.
+3. A Catering Account Manager or Operations Supervisor sets any missing delivery fee.
 4. Customer reviews final amount and starts a **verified** payment.
 5. Only a signed Stripe webhook or a direct confirmed MTN status inquiry marks the order `paid`.
 6. Staff process `accepted → preparing → ready → dispatched → delivered` with role checks.
