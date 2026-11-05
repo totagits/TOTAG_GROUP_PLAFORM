@@ -28,8 +28,8 @@ export const KITCHEN_CATALOG: KitchenProduct[] = [
     ["mix-any-two","Mix Any Two","🍹"],["tropical-fusion","Tropical Fusion","🥭"]
   ].map(([id,name,emoji])=>({
     id: `juice-${id}`,name: `${name} Juice`,category:"juice" as const,
-    description:"Fresh natural juice — request current pricing before paying",emoji,
-    variants:[{id:"500ml",label:"500ml bottle",priceCents:null},{id:"1l",label:"1 litre bottle",priceCents:null},{id:"gallon",label:"Gallon",priceCents:null}],
+    description:"Fresh natural juice, prepared with TOTAG Kitchen branding",emoji,
+    variants:[{id:"500ml",label:"500ml bottle",priceCents:500},{id:"1l",label:"1 litre bottle",priceCents:1000},{id:"gallon",label:"1 gallon",priceCents:3500}],
   }))
 ];
 export const KITCHEN_SIDES = ["Plantain","Fries","Cuscus","Ajika","Vegetable Salad"] as const;
