@@ -47,8 +47,13 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Verify Kitchen published prices
         run: npx tsx --test tests/kitchen-catalog.test.ts
+      - name: Verify official CBL rate parsing and conversion
+        run: npx tsx --test tests/kitchen-cbl.test.ts
       - name: PostgreSQL order and security smoke tests
         run: npx tsx --test tests/kitchen-orders.integration.test.ts
+      - name: Diagnostic - check live CBL accessibility (non-blocking)
+        continue-on-error: true
+        run: npx tsx -e 'import {getOfficialCblRate} from "./server/cblRates.ts"; (async()=>{const r=await getOfficialCblRate(); console.log("CBL source",r.sourceUrl,"date",r.date,"selling",r.selling);})().catch(e=>{console.error("CBL source cannot be verified:",e.message); process.exit(1);});'
       - name: TypeScript typecheck (includes pre-existing platform errors)
         run: npm run check
       - name: Production build (independent of legacy typing errors)
