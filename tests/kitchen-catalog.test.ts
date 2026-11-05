@@ -38,12 +38,12 @@ test("special trays follow the advertised menu",()=>{
   assert.equal(variant("smoked-chicken-ribs-tray","chicken"),3000);
   assert.equal(variant("smoked-chicken-ribs-tray","ribs"),3000);
 });
-test("juices cannot be charged without approved price",()=>{
+test("all five juices use management-approved 500ml, 1 litre, and gallon prices",()=>{
   const juices=KITCHEN_CATALOG.filter(p=>p.category==="juice");
   assert.equal(juices.length,5);
   for(const juice of juices){
     assert.deepEqual(juice.variants.map(v=>v.id),["500ml","1l","gallon"]);
-    assert.ok(juice.variants.every(v=>v.priceCents===null));
+    assert.deepEqual(juice.variants.map(v=>v.priceCents),[500,1000,3500]);
   }
 });
 test("side groups and monetary formatting",()=>{
