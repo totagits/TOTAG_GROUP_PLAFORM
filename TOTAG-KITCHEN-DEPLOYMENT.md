@@ -3,7 +3,9 @@
 **Repository:** `totagits/TOTAG_GROUP_PLAFORM`  
 **Development branch:** `feat/totag-kitchen-ordering-operations`  
 **Parent business:** TOTAG Catering & Event Planning  
-**Production domain:** `https://totaggroup.com`
+**Production domain:** `https://totaggroup.com`  
+**Existing Coolify project:** `https://coolify.totaggroup.com/project/snzazi6rpmmtk3geaj0fqiwo`  
+**Domain DNS administration:** `https://hpanel.hostinger.com/domain/totaggroup.com/dns?tab=dns_records`
 
 ## Workspaces
 
@@ -51,7 +53,7 @@ Do **not** replace the existing production app while verification is incomplete.
 1. Take a verified database backup and document the current application version.
 2. In the existing Coolify instance, create a separate staging application from this
    development branch, with its own isolated **staging PostgreSQL database**.
-3. Configure a private or access-controlled staging hostname, HTTPS and port mapping.
+3. Configure a private or access-controlled staging hostname, HTTPS and port mapping. Do not change production DNS until staging is reviewed. If DNS must be added, create only a new isolated staging A/CNAME record in Hostinger hPanel.
    The Express server listens on `PORT` (default 5000); align Coolify target port.
 4. Set `NODE_ENV=production` and a strong `DATABASE_URL` in the server's environment.
    Do not commit credentials or production connection strings.
@@ -67,8 +69,7 @@ Do **not** replace the existing production app while verification is incomplete.
    confirm they persist after application restart.
 10. Verify quote approval and item totals, ensure the customer tracking token is
     needed to view an order, and test all state transitions.
-11. Configure and test actual merchant provider sandbox accounts. Never use real
-    customer money for prelaunch testing.
+11. Confirm CBL official rates are reachable from the Hostinger VPS and `/api/kitchen/fx` returns a current dated record. Configure and test actual merchant provider sandbox accounts. Never use real customer money for prelaunch testing.
 12. Only after security review, checkout verification and backup validation should
     the branch be merged and deployed to the existing production site.
 13. Perform a live smoke test of the public menu, quote, checkout, dispatch and receipt,
@@ -92,13 +93,29 @@ KITCHEN_MTN_CURRENCY=LRD
 KITCHEN_MTN_API_USER=<new partner portal user ID>
 KITCHEN_MTN_API_KEY=<new credential token>
 KITCHEN_MTN_SUBSCRIPTION_KEY=<collections subscription key>
-KITCHEN_LRD_PER_USD=<current TOTAG-approved conversion rate>
 ```
 
-The app keeps USD totals, converts to the configured LRD amount, displays that
-amount to the customer and verifies provider result against the frozen
-payment amount. The MTN button remains disabled unless all required configuration
-exists. **A staff member must review the conversion rate regularly.**
+The application keeps all menu prices and initial order totals in USD. It fetches
+the **CBL-published daily market buying and selling rates** directly from
+`https://www.cbl.org.lr/research/buying-selling-rates?page=0`.
+The chosen pricing basis is the **official published selling rate** (four decimals).
+Customers may switch the menu display between USD and LRD. At checkout:
+- Debit/credit card offers USD where an approved provider is configured.
+- MTN Liberia Mobile Money offers LRD only after CBL rates are verified.
+- The system displays the rate and its publication date, and records the
+  frozen CBL rate/date/source and provider-request amount with the order.
+- The server recomputes the LRD amount using its own fetched CBL rates
+  and rejects checkout if the quote and current rate differ.
+- If the official page is inaccessible, unparsable or the newest publication
+  is older than four calendar days, LRD checkout is **disabled**; there is
+  no hardcoded/manually-entered exchange-rate fallback.
+- MTN settlement is verified against the frozen LRD amount rather than a
+  later exchange rate.
+
+**Note:** CBL reports market reference rates; the payment provider's
+actual bank/merchant settlement and any charges require confirmation
+with the provider. A successful software build does not constitute
+live settlement verification.
 
 Sources:
 - [MTN API October 2026 upgrade](https://momodevelopercommunity.mtn.com/product-updates)
@@ -137,7 +154,8 @@ provider, settlement currency, webhook and sandbox account are required.
 - No successful payment state is set from a frontend callback alone.
 - Do not log full API response bodies containing tracking tokens or personal data.
 - Ensure TLS/HTTPS, rate limits, encrypted backups and monitoring.
-- Tests: `npx tsx --test tests/kitchen-catalog.test.ts`
+- Tests: `npx tsx --test tests/kitchen-catalog.test.ts tests/kitchen-cbl.test.ts`
+- PostgreSQL workflow test: `npx tsx --test tests/kitchen-orders.integration.test.ts` (disposable test DB only)
 - Production build: `npm run build`
 - Type checking: `npm run check`; the older repository currently has unrelated
   TypeScript failures, which must remain documented and be resolved before release.
@@ -149,4 +167,4 @@ provider, settlement currency, webhook and sandbox account are required.
 This branch contains code only until independently verified and deployed.
 A GitHub commit does **not** update Hostinger automatically unless the
 existing Coolify application is deliberately configured to deploy that branch.
-Keep production on `main` until all launch checks pass.
+Keep production on `main` until all launch checks pass. The supplied Hostinger DNS and Coolify project links are **administrator URLs**, not API credentials or proof that ChatGPT can control those accounts. Deployment requires authenticated Coolify/Hostinger browser interaction, ideally through ChatGPT Work mode with user authorization. Do not share passwords, private API keys or PostgreSQL URLs in chat.
