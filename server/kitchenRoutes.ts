@@ -13,9 +13,10 @@ const MANAGERS = ["account_manager","operations_supervisor"];
 const JWT_SECRET = process.env.JWT_SECRET;
 const stripeSecret = process.env.KITCHEN_STRIPE_SECRET_KEY;
 const stripe = stripeSecret ? new Stripe(stripeSecret) : null;
-const MTN_API_BASE = process.env.KITCHEN_MTN_BASE_URL || "https://sandbox.momodeveloper.mtn.com";
+const MTN_API_BASE = process.env.KITCHEN_MTN_BASE_URL || "https://momoapi.momo.africa";
 const MTN_ENVIRONMENT = process.env.KITCHEN_MTN_ENVIRONMENT || "sandbox";
-const MTN_CURRENCY = process.env.KITCHEN_MTN_CURRENCY || "EUR";
+const MTN_CURRENCY = process.env.KITCHEN_MTN_CURRENCY || "LRD";
+const MTN_EXCHANGE_RATE = Number(process.env.KITCHEN_LRD_PER_USD || 0);
 
 let initPromise: Promise<void> | undefined;
 async function initDb() {
@@ -26,9 +27,13 @@ async function initDb() {
       "items JSONB NOT NULL, subtotal_cents INTEGER, delivery_fee_cents INTEGER, total_cents INTEGER, " +
       "currency TEXT NOT NULL DEFAULT 'USD', status TEXT NOT NULL, payment_status TEXT NOT NULL, " +
       "payment_method TEXT, payment_reference TEXT, provider_transaction_id TEXT, " +
+      "payment_amount_minor INTEGER, payment_currency TEXT, exchange_rate_lrd_per_usd NUMERIC(12,4), " +
       "driver_name TEXT, driver_phone TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), " +
       "updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW())"
   );
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS payment_amount_minor INTEGER");
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS payment_currency TEXT");
+  await pool.query("ALTER TABLE kitchen_orders ADD COLUMN IF NOT EXISTS exchange_rate_lrd_per_usd NUMERIC(12,4)");
   await pool.query(
     "CREATE TABLE IF NOT EXISTS kitchen_order_events (" +
       "id BIGSERIAL PRIMARY KEY, order_id UUID NOT NULL REFERENCES kitchen_orders(id) ON DELETE CASCADE, " +
@@ -57,7 +62,7 @@ function scrubOrder(order:any, events:any[]) {
   return { id:order.id, items:order.items, subtotalCents:order.subtotal_cents,
     deliveryFeeCents:order.delivery_fee_cents,totalCents:order.total_cents,
     fulfillment:order.fulfillment,status:order.status,paymentStatus:order.payment_status,
-    paymentMethod:order.payment_method,driverName:order.driver_name,
+    paymentMethod:order.payment_method,paymentCurrency:order.payment_currency,paymentAmountMinor:order.payment_amount_minor,driverName:order.driver_name,
     driverPhone:order.driver_phone,events:events.map(e=>({status:e.status,note:e.note,at:e.created_at})),
     createdAt:order.created_at,updatedAt:order.updated_at };
 }
@@ -97,11 +102,13 @@ async function addEvent(id:string,status:string,note:string|null,staffId:number|
 }
 function mtnConfigured() {
   return !!(process.env.KITCHEN_MTN_API_USER && process.env.KITCHEN_MTN_API_KEY && process.env.KITCHEN_MTN_SUBSCRIPTION_KEY &&
-    MTN_ENVIRONMENT === "mtnliberia" && MTN_CURRENCY === "USD" && !MTN_API_BASE.includes("sandbox"));
+    MTN_ENVIRONMENT === "mtnliberia" && MTN_CURRENCY === "LRD" &&
+    /^https:\/\//.test(MTN_API_BASE) && !MTN_API_BASE.includes("sandbox") &&
+    Number.isFinite(MTN_EXCHANGE_RATE) && MTN_EXCHANGE_RATE > 0 && MTN_EXCHANGE_RATE < 10000);
 }
 async function mtnToken() {
   const encoded = Buffer.from(process.env.KITCHEN_MTN_API_USER + ":" + process.env.KITCHEN_MTN_API_KEY).toString("base64");
-  const r=await fetch(MTN_API_BASE+"/collection/token/",{method:"POST",headers:{"Authorization":"Basic "+encoded,"Ocp-Apim-Subscription-Key":process.env.KITCHEN_MTN_SUBSCRIPTION_KEY!}});
+  const r=await fetch(MTN_API_BASE+"/collection/token/",{method:"POST",headers:{"Authorization":"Basic "+encoded,"Ocp-Apim-Subscription-Key":process.env.KITCHEN_MTN_SUBSCRIPTION_KEY!,"X-Target-Environment":MTN_ENVIRONMENT}});
   if(!r.ok) throw new Error("MTN authorization failed");
   const body:any=await r.json();
   if(!body.access_token) throw new Error("MTN access token missing");
@@ -115,7 +122,9 @@ async function reconcileMtn(order:any) {
   });
   if(!r.ok) throw new Error("MTN payment status unavailable");
   const info:any=await r.json();
-  if(info.status==="SUCCESSFUL" && Number(info.amount)===order.total_cents/100 && info.currency==="USD") {
+  if(info.status==="SUCCESSFUL" && info.currency==="LRD" &&
+    Number.isInteger(order.payment_amount_minor) &&
+    Math.round(Number(info.amount)*100)===order.payment_amount_minor) {
     await pool.query("UPDATE kitchen_orders SET payment_status='paid',status='paid',provider_transaction_id=$2,updated_at=NOW() WHERE id=$1 AND payment_status='pending' AND status='awaiting_payment'",[order.id,info.financialTransactionId||order.payment_reference]);
     await addEvent(order.id,"paid","MTN payment verified with provider",null);
   } else if(["FAILED","REJECTED","EXPIRED"].includes(info.status)) {
@@ -125,7 +134,8 @@ async function reconcileMtn(order:any) {
 }
 router.get("/catalog",(_req,res)=>{
   res.json({success:true,products:KITCHEN_CATALOG,sides:KITCHEN_SIDES,
-    payments:{card:!!stripe,mtn:mtnConfigured(),orange:false},
+    payments:{card:!!stripe,mtn:mtnConfigured(),orange:false,
+      mtnLrdPerUsd:mtnConfigured()?MTN_EXCHANGE_RATE:null},
     note:"Juice prices and delivery fees require confirmation before checkout. No live payment is claimed without provider verification."});
 });
 router.post("/orders",asyncRoute(async(req,res)=>{
@@ -185,7 +195,13 @@ router.post("/orders/:id/pay",asyncRoute(async(req,res)=>{
   if(method==="card" && !stripe) return problem(res,503,"Card checkout is not activated for this merchant");
   if(method==="mtn" && !mtnConfigured()) return problem(res,503,"MTN Mobile Money checkout is not activated");
   const ref=crypto.randomUUID();
-  const claimed=await pool.query("UPDATE kitchen_orders SET payment_status='pending',payment_method=$2,payment_reference=$3,updated_at=NOW() WHERE id=$1 AND status='awaiting_payment' AND payment_status='unpaid' AND payment_reference IS NULL RETURNING id",[order.id,method,ref]);
+  const amountMinor = method==="mtn" ? Math.round(order.total_cents*MTN_EXCHANGE_RATE) : order.total_cents;
+  const currency = method==="mtn" ? "LRD" : "USD";
+  if(!Number.isSafeInteger(amountMinor) || amountMinor<=0) return problem(res,400,"Payment amount cannot be calculated");
+  if(method==="mtn" && Number(req.body?.expectedLrdAmountMinor)!==amountMinor)
+    return problem(res,409,"The current LRD conversion has changed. Review the amount before approving payment");
+  const claimed=await pool.query("UPDATE kitchen_orders SET payment_status='pending',payment_method=$2,payment_reference=$3,payment_amount_minor=$4,payment_currency=$5,exchange_rate_lrd_per_usd=$6,updated_at=NOW() WHERE id=$1 AND status='awaiting_payment' AND payment_status='unpaid' AND payment_reference IS NULL RETURNING id",
+    [order.id,method,ref,amountMinor,currency,method==="mtn"?MTN_EXCHANGE_RATE:null]);
   if(!claimed.rowCount) return problem(res,409,"Payment has already been initiated");
   try {
     if(method==="card" && stripe) {
@@ -210,14 +226,14 @@ router.post("/orders/:id/pay",asyncRoute(async(req,res)=>{
         headers:{"Authorization":"Bearer "+bearer,"X-Target-Environment":MTN_ENVIRONMENT,
           "Ocp-Apim-Subscription-Key":process.env.KITCHEN_MTN_SUBSCRIPTION_KEY!,
           "X-Reference-Id":ref,"Content-Type":"application/json"},
-        body:JSON.stringify({amount:(order.total_cents/100).toFixed(2),currency:"USD",externalId:order.id,
+        body:JSON.stringify({amount:(amountMinor/100).toFixed(2),currency:"LRD",externalId:order.id,
           payer:{partyIdType:"MSISDN",partyId:phone},payerMessage:"TOTAG Kitchen order",payeeNote:"TOTAG Kitchen"})
       });
       if(response.status!==202) throw new Error("MTN did not accept the payment request");
-      return res.json({success:true,paymentStatus:"pending",message:"Approve the MTN MoMo prompt, then verify payment status in your tracking page."});
+      return res.json({success:true,paymentStatus:"pending",amountLrd:(amountMinor/100).toFixed(2),message:"Approve the MTN MoMo prompt only if the displayed LRD amount matches your checkout confirmation."});
     }
   } catch(err:any) {
-    await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,payment_method=NULL,updated_at=NOW() WHERE id=$1 AND payment_reference=$2 AND payment_status='pending'",[order.id,ref]);
+    await pool.query("UPDATE kitchen_orders SET payment_status='unpaid',payment_reference=NULL,payment_method=NULL,payment_amount_minor=NULL,payment_currency=NULL,exchange_rate_lrd_per_usd=NULL,updated_at=NOW() WHERE id=$1 AND payment_reference=$2 AND payment_status='pending'",[order.id,ref]);
     return problem(res,502,err.message||"Payment initiation failed");
   }
 }));
