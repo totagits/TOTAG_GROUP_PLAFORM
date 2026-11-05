@@ -33,7 +33,7 @@ export default function KitchenTracking(){
   const [error,setError]=useState("");
   const [payment,setPayment]=useState<"card"|"mtn">("mtn");
   const [mtnPhone,setMtnPhone]=useState("");
-  const [methods,setMethods]=useState<{card:boolean;mtn:boolean;orange:boolean}>({card:false,mtn:false,orange:false});
+  const [methods,setMethods]=useState<{card:boolean;mtn:boolean;orange:boolean;mtnLrdPerUsd:number|null}>({card:false,mtn:false,orange:false,mtnLrdPerUsd:null});
   useEffect(()=>{const r=readRef();if(r)setRef(r);
     send("/catalog").then(x=>setMethods(x.payments)).catch(()=>{});
   },[]);
@@ -49,7 +49,7 @@ export default function KitchenTracking(){
   }
   async function pay(){
     if(!ref)return;setLoading(true);setError("");
-    try{const data=await send("/orders/"+ref.id+"/pay",{method:"POST",body:JSON.stringify({token:ref.token,method:payment,phone:mtnPhone})});
+    try{const data=await send("/orders/"+ref.id+"/pay",{method:"POST",body:JSON.stringify({token:ref.token,method:payment,phone:mtnPhone,expectedLrdAmountMinor:order?.totalCents!==null&&methods.mtnLrdPerUsd?Math.round(order!.totalCents*methods.mtnLrdPerUsd):undefined})});
       if(data.checkoutUrl){window.location.assign(data.checkoutUrl);return;}
       await verify();
       setError(data.message||"Payment initiated. Confirm the prompt on your phone, then verify payment.");
@@ -102,7 +102,8 @@ export default function KitchenTracking(){
             <button disabled={loading} onClick={verify} className="rounded-lg bg-green-700 text-white px-4 py-2">Verify payment with provider</button></>:
             <><div className="space-y-2"><label className="flex gap-2 items-center"><input type="radio" checked={payment==="mtn"} disabled={!methods.mtn} onChange={()=>setPayment("mtn")}/> MTN Mobile Money {!methods.mtn&&"(not activated)"}</label>
               <label className="flex gap-2 items-center"><input type="radio" checked={payment==="card"} disabled={!methods.card} onChange={()=>setPayment("card")}/> Credit/debit card {!methods.card&&"(not activated)"}</label></div>
-              {payment==="mtn"&&<input className="border rounded-xl p-3 w-full" placeholder="MTN MoMo number: 231XXXXXXXXX" value={mtnPhone} onChange={e=>setMtnPhone(e.target.value)}/>}
+              {payment==="mtn"&&<><input className="border rounded-xl p-3 w-full" placeholder="MTN MoMo number: 231XXXXXXXXX" value={mtnPhone} onChange={e=>setMtnPhone(e.target.value)}/>
+                {methods.mtnLrdPerUsd&&order.totalCents!==null&&<p className="bg-amber-50 border border-amber-200 p-3 rounded-lg text-sm font-semibold">MTN will request LRD {((Math.round(order.totalCents*methods.mtnLrdPerUsd))/100).toFixed(2)} at TOTAG’s configured rate of LRD {methods.mtnLrdPerUsd} per US$1. Verify this amount before confirming your mobile money prompt.</p>}</>}
               <button disabled={loading||!(payment==="mtn"?methods.mtn:methods.card)} onClick={pay} className="rounded-xl bg-orange-600 text-white font-bold px-5 py-3 disabled:opacity-40">Pay {price(order.totalCents)} securely</button>
               {!methods.card&&!methods.mtn&&<p className="text-sm text-red-700">Digital payments are not yet configured. TOTAG will activate verified providers before accepting payment.</p>}</>}
         </section>}
