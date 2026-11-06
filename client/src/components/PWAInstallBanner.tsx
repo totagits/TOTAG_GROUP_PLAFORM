@@ -14,6 +14,7 @@ import {
 import { getOfflineQueue, flushOfflineQueue } from "@/lib/offlineSync";
 
 export function PWAInstallBanner() {
+  const kitchen = typeof window !== "undefined" && window.location.pathname.startsWith("/catering/kitchen");
   const [isOnline, setIsOnline] = useState<boolean>(typeof navigator !== "undefined" ? navigator.onLine : true);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
@@ -72,12 +73,12 @@ export function PWAInstallBanner() {
     setIsSyncing(false);
   };
 
-  if (dismissed && isOnline && pendingCount === 0) return null;
+  if (dismissed && isOnline && (kitchen || pendingCount === 0)) return null;
 
   return (
     <div className="fixed bottom-6 left-4 right-20 md:right-auto md:left-6 z-40 max-w-sm md:max-w-md pointer-events-auto">
       {/* Offline Status or Sync Notification */}
-      {!isOnline && (
+      {!isOnline && !kitchen && (
         <div className="mb-2 p-3 rounded-2xl bg-amber-500 text-slate-950 font-sans shadow-2xl flex items-center justify-between gap-3 border border-amber-400 animate-pulse">
           <div className="flex items-center gap-2 text-xs font-bold">
             <WifiOff className="w-4 h-4 text-slate-950 flex-shrink-0" />
@@ -95,7 +96,7 @@ export function PWAInstallBanner() {
       )}
 
       {/* Online with Pending Sync Items */}
-      {isOnline && pendingCount > 0 && (
+      {isOnline && !kitchen && pendingCount > 0 && (
         <div className="mb-2 p-3 rounded-2xl bg-emerald-950 text-white border border-emerald-500/50 shadow-2xl flex items-center justify-between gap-3 font-sans">
           <div className="flex items-center gap-2 text-xs">
             <Wifi className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -127,13 +128,13 @@ export function PWAInstallBanner() {
             </div>
             <div>
               <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                Install TOTAG Platform App
+                {kitchen ? "Install TOTAG Kitchen" : "Install TOTAG Platform App"}
                 <Badge className="bg-emerald-500/20 text-emerald-400 border-0 text-[9px]">
-                  Offline Ready
+                  {kitchen ? "Secure online access" : "Offline Ready"}
                 </Badge>
               </div>
               <div className="text-[10px] text-slate-400">
-                Fast 1-tap home screen access for field operations
+                {kitchen ? "Install for quick ordering, Kitchen staff and inventory workspaces" : "Fast 1-tap home screen access for field operations"}
               </div>
             </div>
           </div>
