@@ -24,13 +24,13 @@ export default function KitchenStaffLogin(){
       if(!response.ok||!result.success||!result.token||!result.user){
         throw new Error(result.error||"Unable to sign in with these credentials");
       }
-      const permitted=["account_manager","operations_supervisor","head_chef","food_safety_supervisor","logistics_coordinator","inventory_manager"];
+      const permitted=["account_manager","operations_supervisor","head_chef","food_safety_supervisor","logistics_coordinator","inventory_manager","team_lead"];
       if(!permitted.includes(result.user.role)){
         throw new Error("This account is not authorized for the Kitchen Operations workspace");
       }
       localStorage.setItem("catering_token",result.token);
       localStorage.setItem("catering_user",JSON.stringify(result.user));
-      navigate(result.user.role==="inventory_manager"?"/catering/kitchen/inventory":"/catering/kitchen/ops");
+      navigate(result.user.role==="inventory_manager"?"/catering/kitchen/inventory":result.user.role==="team_lead"?"/catering/kitchen/staff":"/catering/kitchen/ops");
     }catch(err){
       setError(err instanceof Error?err.message:"Unable to sign in");
     }finally{
