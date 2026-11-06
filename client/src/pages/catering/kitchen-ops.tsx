@@ -76,11 +76,18 @@ export default function KitchenOperations(){
     </header>
     <main className="max-w-7xl mx-auto p-4 md:p-7">
       {message&&<p role="status" className="mb-5 rounded-xl bg-yellow-100 text-yellow-950 p-3">{message}</p>}
+      <section aria-label="Order-to-delivery process" className="mb-6 rounded-2xl border border-green-200 bg-white p-4 shadow-sm">
+        <h2 className="font-bold text-green-950">Kitchen operations workflow</h2>
+        <ol className="mt-3 grid gap-2 text-sm md:grid-cols-5">
+          {["1. Confirm quote","2. Verify payment","3. Accept order","4. Prepare & mark ready","5. Dispatch or hand over"].map(step=><li key={step} className="rounded-xl bg-green-50 px-3 py-3 font-medium text-green-950">{step}</li>)}
+        </ol>
+        <p className="mt-2 text-xs text-gray-600">Payment verification is automatic through approved providers. Staff cannot manually mark unpaid orders as paid.</p>
+      </section>
       <section className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-7">
         {[[ "Quote / Payment",summary.pending],["In Kitchen",summary.kitchen],["Dispatch Queue",summary.dispatch],["Delivered",summary.delivered],["Verified Revenue",kitchenMoney(gross)]].map(([name,value])=>
           <div key={name} className="p-4 bg-white rounded-xl border shadow-sm"><p className="text-xs font-bold text-gray-500">{name}</p><strong className="text-2xl text-green-900">{value}</strong></div>)}
       </section>
-      <div className="flex gap-2 mb-5 flex-wrap">{[["orders","All Orders"],["kitchen","Kitchen Queue"],["delivery","Delivery Desk"],["reports","Sales Summary"]].map(([id,name])=>
+      <div className="flex gap-2 mb-5 flex-wrap">{[["orders","All Orders"],["payments","Quotes & Payments"],["kitchen","Kitchen Queue"],["delivery","Delivery Desk"],["reports","Sales Summary"]].map(([id,name])=>
         <button key={id} className={"rounded-full px-4 py-2 text-sm font-bold "+(tab===id?"bg-green-800 text-white":"bg-white border")} onClick={()=>setTab(id)}>{name}</button>)}</div>
       {tab==="reports"?<section className="bg-white border rounded-2xl p-6 space-y-4"><h2 className={titleStyle}>Kitchen sales overview</h2>
         <p>Paid orders: <strong>{orders.filter(o=>o.payment_status==="paid").length}</strong></p>
@@ -94,7 +101,7 @@ export default function KitchenOperations(){
             {tab==="orders"&&<select className="text-sm border rounded p-1" value={filter} onChange={e=>setFilter(e.target.value)}>
               {["all","awaiting_quote","awaiting_payment","paid","accepted","preparing","ready","dispatched","delivered"].map(s=><option key={s} value={s}>{s.replace("_"," ")}</option>)}
             </select>}</div>
-          {visible.filter(o=>tab==="kitchen"?["paid","accepted","preparing","ready"].includes(o.status):tab==="delivery"?o.fulfillment==="delivery":true).map(o=>
+          {visible.filter(o=>tab==="payments"?["awaiting_quote","awaiting_payment"].includes(o.status)||o.payment_status==="pending":tab==="kitchen"?["paid","accepted","preparing","ready"].includes(o.status):tab==="delivery"?o.fulfillment==="delivery":true).map(o=>
             <button key={o.id} onClick={()=>setSelected(o.id)} className={"w-full text-left border rounded-xl p-3 mb-2 "+(selected===o.id?"border-green-700 bg-green-50":"border-gray-100 hover:bg-gray-50")}>
               <div className="flex justify-between"><strong className="text-sm">{o.customer_name}</strong><span className="text-xs font-bold text-orange-700">{o.status.replace(/_/g," ")}</span></div>
               <p className="text-xs text-gray-500 mt-1">{new Date(o.created_at).toLocaleString()} · {o.fulfillment}</p>
@@ -126,7 +133,8 @@ export default function KitchenOperations(){
                 })}
                 {active.fulfillment==="delivery"&&<label className="block text-sm">Delivery fee (USD)
                   <input type="number" min="0" step=".01" value={fees[active.id]||""} onChange={e=>setFees(s=>({...s,[active.id]:e.target.value}))} className="block w-full border rounded-lg p-2 mt-1" placeholder="Enter confirmed delivery fee"/></label>}
-                <button disabled={busy} onClick={()=>quote(active)} className="bg-green-800 text-white rounded-xl px-4 py-2 font-bold disabled:opacity-40">Save quote and release to checkout</button>
+                <p className="text-xs text-gray-600">The customer receives access to payment only after all food prices and the delivery fee are confirmed. Enter 0 for complimentary delivery.</p>
+                <button disabled={busy} onClick={()=>quote(active)} className="bg-green-800 text-white rounded-xl px-4 py-2 font-bold disabled:opacity-40">Save approved quotation</button>
               </div>}
               {active.status==="awaiting_payment"&&<p className="text-sm border border-orange-200 bg-orange-50 p-3 rounded-lg">Awaiting real payment. Do not prepare or dispatch until the payment provider verifies success.</p>}
               {active.payment_status==="pending"&&<button disabled={busy} className="bg-blue-800 text-white p-3 rounded-lg font-bold" onClick={()=>reconcile(active.id)}>Reconcile MTN payment</button>}
