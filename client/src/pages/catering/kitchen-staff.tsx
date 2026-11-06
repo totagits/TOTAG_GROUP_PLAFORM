@@ -66,7 +66,8 @@ export default function KitchenStaffWorkspace(){
  const createShift=(e:FormEvent)=>{
   e.preventDefault();
   if(!start||!end||!employeeId){setError("Choose an employee and shift times");return;}
-  const startsAt=new Date(start).toISOString(),endsAt=new Date(end).toISOString();
+  // Liberia is UTC year-round; treat roster form times as Liberia local, not browser timezone.
+  const startsAt=new Date(start+":00Z").toISOString(),endsAt=new Date(end+":00Z").toISOString();
   execute("/shifts","POST",{staffId:Number(employeeId),station,duty,startsAt,endsAt});
  };
  const getEmployee=(id:number)=>staff.find(s=>s.id===id)?.name||(me?.id===id?[me.firstName,me.lastName].filter(Boolean).join(" "):"Staff #"+id);
