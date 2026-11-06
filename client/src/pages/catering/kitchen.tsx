@@ -12,12 +12,11 @@ const ALL_SIDES = [...KITCHEN_SIDES];
 // The marketing photographs are representative and do not alter catalog/checkout pricing.
 const KITCHEN_SPRITE_URL = "/images/kitchen/totag-kitchen-menu-sprite.webp";
 const KITCHEN_PHOTO_POSITIONS: Record<string, [number, number]> = {
+  // Approved full-dish photographs or correctly identified menu imagery only.
+  // Withhold nonmatching tray and fish-ball closeups until complete, accurate photos exist.
   "snail": [0, 0], "spare-ribs": [1, 0], "grill-chicken": [2, 0],
-  "grill-fish": [3, 0], "gizzard": [4, 0], "meal-platter": [0, 1],
-  "fried-rice-tray": [1, 1], "jolly-rice-tray": [2, 1],
-  "vegetable-rice-tray": [3, 1], "meatball-tray": [4, 1],
-  "fishball-tray": [0, 2], "smoked-chicken-ribs-tray": [1, 2],
-  "dry-rice-fried-fish": [2, 2], "spaghetti-meatball": [3, 2],
+  "grill-fish": [3, 0], "gizzard": [4, 0],
+  "spaghetti-meatball": [3, 2],
   "juice-watermelon": [4, 2], "juice-pineapple": [0, 3],
   "juice-orange": [1, 3], "juice-mix-any-two": [2, 3],
   "juice-tropical-fusion": [3, 3]
@@ -49,9 +48,12 @@ function ItemCard({item,onAdd,displayPrice,photosReady}:{item:KitchenProduct;onA
             backgroundSize: "500% 400%",
             backgroundPosition: `${KITCHEN_PHOTO_POSITIONS[item.id][0] * 25}% ${KITCHEN_PHOTO_POSITIONS[item.id][1] * (100 / 3)}%`
           }} />
-      ) : <span className="text-6xl" aria-hidden>{item.emoji}</span>}
+      ) : <div className="flex flex-col items-center justify-center gap-2 text-green-900/70" aria-label={"Photo for " + item.name + " is being prepared"}>
+        <ChefHat className="h-10 w-10" strokeWidth={1.4} aria-hidden="true" />
+        <span className="text-xs font-semibold">Photo being updated</span>
+      </div>}
       <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-green-800">{item.category==="juice"?"Fresh Juice":item.category==="tray"?"Party Tray":"Hot Meal"}</span>
-      {photosReady && <span className="absolute bottom-2 left-2 rounded-full bg-green-950/75 px-2 py-1 text-[10px] font-medium text-white">Illustrative image</span>}
+      {photosReady && KITCHEN_PHOTO_POSITIONS[item.id] && <span className="absolute bottom-2 left-2 rounded-full bg-green-950/75 px-2 py-1 text-[10px] font-medium text-white">Illustrative image</span>}
     </div>
     <div className="p-4 space-y-3">
       <div><h3 className="text-lg font-bold text-green-950">{item.name}</h3><p className="text-sm text-gray-600">{item.description}</p></div>
