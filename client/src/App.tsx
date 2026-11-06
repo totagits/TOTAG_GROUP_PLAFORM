@@ -29,6 +29,7 @@ import KitchenTracking from "@/pages/catering/kitchen-track";
 import KitchenOperations from "@/pages/catering/kitchen-ops";
 import KitchenStaffLogin from "@/pages/catering/kitchen-login";
 import KitchenInventory from "@/pages/catering/kitchen-inventory";
+import KitchenStaffWorkspace from "@/pages/catering/kitchen-staff";
 import CorporateCateringPage from "@/pages/catering/corporate-catering";
 import EventPlanningPage from "@/pages/catering/event-planning";
 import FoodSafetyPage from "@/pages/catering/food-safety";
@@ -185,6 +186,7 @@ function Router() {
         <Route path="/catering/kitchen/track" component={KitchenTracking} />
         <Route path="/catering/kitchen/login" component={KitchenStaffLogin} />
         <Route path="/catering/kitchen/inventory" component={KitchenInventory} />
+        <Route path="/catering/kitchen/staff" component={KitchenStaffWorkspace} />
         <Route path="/catering/kitchen/ops" component={KitchenOperations} />
         <Route path="/catering/corporate-catering" component={CorporateCateringPage} />
         <Route path="/catering/event-planning" component={EventPlanningPage} />
