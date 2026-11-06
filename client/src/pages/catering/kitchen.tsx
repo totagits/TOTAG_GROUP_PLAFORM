@@ -8,6 +8,20 @@ import { ShoppingBag, Truck, ChefHat, Phone, CreditCard, Search, ArrowRight } fr
 
 type Line = { productId:string; variantId:string; quantity:number; sides:string[] };
 const ALL_SIDES = [...KITCHEN_SIDES];
+// Product photo sprite assembled from TOTAG Kitchen's previously approved menu and juice mockups.
+// The marketing photographs are representative and do not alter catalog/checkout pricing.
+const KITCHEN_SPRITE_URL = "/images/kitchen/totag-kitchen-menu-sprite.webp";
+const KITCHEN_PHOTO_POSITIONS: Record<string, [number, number]> = {
+  "snail": [0, 0], "spare-ribs": [1, 0], "grill-chicken": [2, 0],
+  "grill-fish": [3, 0], "gizzard": [4, 0], "meal-platter": [0, 1],
+  "fried-rice-tray": [1, 1], "jolly-rice-tray": [2, 1],
+  "vegetable-rice-tray": [3, 1], "meatball-tray": [4, 1],
+  "fishball-tray": [0, 2], "smoked-chicken-ribs-tray": [1, 2],
+  "dry-rice-fried-fish": [2, 2], "spaghetti-meatball": [3, 2],
+  "juice-watermelon": [4, 2], "juice-pineapple": [0, 3],
+  "juice-orange": [1, 3], "juice-mix-any-two": [2, 3],
+  "juice-tropical-fusion": [3, 3]
+};
 const heading="text-2xl font-extrabold tracking-tight text-green-950";
 function cash(n:number|null|undefined){return n===null || n===undefined?"Pending quote":kitchenMoney(n);}
 async function api(path:string,init?:RequestInit){
@@ -16,7 +30,7 @@ async function api(path:string,init?:RequestInit){
   if(!r.ok||!data.success)throw new Error(data.error||"Kitchen service unavailable");
   return data;
 }
-function ItemCard({item,onAdd,displayPrice}:{item:KitchenProduct;onAdd:(v:Line)=>void;displayPrice:(cents:number|null)=>string}){
+function ItemCard({item,onAdd,displayPrice,photosReady}:{item:KitchenProduct;onAdd:(v:Line)=>void;displayPrice:(cents:number|null)=>string;photosReady:boolean}){
   const [variant,setVariant]=useState(item.variants[0].id);
   const [quantity,setQuantity]=useState(1);
   const [sides,setSides]=useState<string[]>(["Plantain","Cuscus","Vegetable Salad"]);
@@ -26,9 +40,18 @@ function ItemCard({item,onAdd,displayPrice}:{item:KitchenProduct;onAdd:(v:Line)=
     setSides(prev=>[...prev.filter(s=> (s==="Plantain"||s==="Fries"?0:s==="Cuscus"||s==="Ajika"?1:2)!==group),name]);
   };
   return <article className="rounded-2xl overflow-hidden border border-orange-100 bg-white shadow-sm hover:shadow-md transition-shadow">
-    <div className="h-32 bg-gradient-to-br from-green-50 via-amber-50 to-orange-100 flex items-center justify-center relative">
-      <span className="text-6xl" aria-hidden>{item.emoji}</span>
+    <div className="relative aspect-[300/190] overflow-hidden bg-gradient-to-br from-green-50 via-amber-50 to-orange-100 flex items-center justify-center">
+      {photosReady && KITCHEN_PHOTO_POSITIONS[item.id] ? (
+        <div role="img" aria-label={`Illustrative TOTAG Kitchen menu image for ${item.name}`}
+          className="absolute inset-0 bg-no-repeat"
+          style={{
+            backgroundImage: `url("${KITCHEN_SPRITE_URL}")`,
+            backgroundSize: "500% 400%",
+            backgroundPosition: `${KITCHEN_PHOTO_POSITIONS[item.id][0] * 25}% ${KITCHEN_PHOTO_POSITIONS[item.id][1] * (100 / 3)}%`
+          }} />
+      ) : <span className="text-6xl" aria-hidden>{item.emoji}</span>}
       <span className="absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-green-800">{item.category==="juice"?"Fresh Juice":item.category==="tray"?"Party Tray":"Hot Meal"}</span>
+      {photosReady && <span className="absolute bottom-2 left-2 rounded-full bg-green-950/75 px-2 py-1 text-[10px] font-medium text-white">Illustrative image</span>}
     </div>
     <div className="p-4 space-y-3">
       <div><h3 className="text-lg font-bold text-green-950">{item.name}</h3><p className="text-sm text-gray-600">{item.description}</p></div>
@@ -54,6 +77,14 @@ function ItemCard({item,onAdd,displayPrice}:{item:KitchenProduct;onAdd:(v:Line)=
 }
 export default function KitchenPage(){
   const [cart,setCart]=useState<Line[]>([]);
+  const [photosReady,setPhotosReady]=useState(false);
+  useEffect(()=>{
+    const photo=new Image();
+    photo.onload=()=>setPhotosReady(true);
+    photo.onerror=()=>setPhotosReady(false);
+    photo.src=KITCHEN_SPRITE_URL;
+    return ()=>{photo.onload=null;photo.onerror=null;};
+  },[]);
   const [currency,setCurrency]=useState<"USD"|"LRD">("USD");
   const [cbl,setCbl]=useState<{date:string;buying:number;selling:number;sourceUrl:string}|null>(null);
   const [fxError,setFxError]=useState("");
@@ -124,7 +155,7 @@ export default function KitchenPage(){
         {([["all","All menu"],["meal","Meals & Platters"],["tray","Party Trays"],["juice","Fresh Juices"]] as const).map(([id,label])=>
           <button key={id} onClick={()=>setFilter(id)} className={"px-4 py-2 rounded-full text-sm font-bold "+(filter===id?"bg-green-800 text-white":"bg-white border text-green-800")}>{label}</button>)}
       </div>
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard photosReady={photosReady} key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
       <p className="mt-5 text-sm text-gray-600">Bread is available. Our fresh natural juices come in 500ml (US$5), 1 litre (US$10), or 1 gallon (US$35). USD prices are authoritative; LRD equivalents use the current verified CBL official selling rate.</p>
       <section id="checkout" className="mt-12 bg-white rounded-3xl border shadow-md p-5 md:p-8">
         <h2 className={heading}><ShoppingBag className="inline mr-2"/> Your order</h2>
