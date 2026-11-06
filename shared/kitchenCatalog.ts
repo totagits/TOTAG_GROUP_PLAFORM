@@ -9,12 +9,12 @@ export type KitchenProduct = {
   sidesEligible?: boolean;
 };
 export const KITCHEN_CATALOG: KitchenProduct[] = [
-  { id: "snail", name: "Snail", category: "meal", description: "TOTAG-style seasoned snail", emoji: "🐚", sidesEligible: true, variants: [{ id:"regular",label:"Regular",priceCents:1500 }] },
+  { id: "snail", name: "Snail", category: "meal", description: "Liberian-style savory pepper-seasoned snail", emoji: "🐚", sidesEligible: true, variants: [{ id:"regular",label:"Regular",priceCents:1500 }] },
   { id: "spare-ribs", name: "Spare Ribs", category: "meal", description: "Slow-cooked, richly glazed ribs", emoji: "🍖", sidesEligible: true, variants: [{id:"regular",label:"Regular",priceCents:1000}] },
-  { id: "grill-chicken", name: "Grill Chicken", category: "meal", description: "Flame-grilled chicken", emoji: "🍗", sidesEligible: true, variants: [{id:"regular",label:"Regular",priceCents:1000}] },
+  { id: "grill-chicken", name: "Grilled Chicken Wings", category: "meal", description: "A full serving of seasoned, flame-grilled chicken wings", emoji: "🍗", sidesEligible: true, variants: [{id:"regular",label:"Regular",priceCents:1000}] },
   { id: "grill-fish", name: "Grill Fish", category: "meal", description: "Fresh grilled fish, two sizes", emoji: "🐟", sidesEligible: true, variants: [{id:"regular",label:"Regular",priceCents:1500},{id:"large",label:"Large",priceCents:2500}] },
   { id: "gizzard", name: "Gizzard", category: "meal", description: "Savory seasoned gizzards", emoji: "🥘", sidesEligible: true, variants: [{id:"regular",label:"Regular",priceCents:500}] },
-  { id: "meal-platter", name: "Any Meal Platter", category: "meal", description: "Select snail, spare ribs, grill chicken, grill fish, or gizzard at the same platter price", emoji: "🍽️", sidesEligible: true, variants: ["Snail","Spare Ribs","Grill Chicken","Grill Fish","Gizzard"].map((name)=>({id:name.toLowerCase().replace(/ /g,"-"),label:name,priceCents:2500})) },
+  { id: "meal-platter", name: "Any Meal Platter", category: "meal", description: "Select snail, spare ribs, grilled chicken wings, grill fish, or gizzard at the same platter price", emoji: "🍽️", sidesEligible: true, variants: ["Snail","Spare Ribs","Grill Chicken","Grill Fish","Gizzard"].map((name)=>({id:name.toLowerCase().replace(/ /g,"-"),label:name==="Grill Chicken"?"Grilled Chicken Wings":name,priceCents:2500})) },
   { id: "fried-rice-tray", name: "Fried Rice Tray", category:"tray",description:"Fried rice for gatherings",emoji:"🍚",variants:[{id:"small",label:"Small tray",priceCents:3500},{id:"large",label:"Large tray",priceCents:7000}] },
   { id: "jolly-rice-tray", name: "Jolly Rice Tray", category:"tray",description:"Flavorful party rice tray",emoji:"🍚",variants:[{id:"small",label:"Small tray",priceCents:3500},{id:"large",label:"Large tray",priceCents:7000}] },
   { id: "vegetable-rice-tray", name: "Vegetable Rice Tray",category:"tray",description:"Colorful vegetable rice",emoji:"🥦",variants:[{id:"small",label:"Small tray",priceCents:3500},{id:"large",label:"Large tray",priceCents:7000}] },
