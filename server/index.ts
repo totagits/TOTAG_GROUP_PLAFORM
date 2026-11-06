@@ -157,23 +157,22 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Import seed function
-  const { seedMerchantUsers } = await import("./merchant-seed");
-  const { seedCateringStaff } = await import("./catering-seed");
-  const { seedFarmUsers } = await import("./farm-seed");
-  
-  // Seed merchant users and demo accounts in background (non-blocking)
-  (async () => {
-    try {
-      await seedMerchantUsers();
-      if (process.env.ENABLE_DEMO_SEEDS === "true" && process.env.NODE_ENV !== "production") {
+  // Never provision hard-coded demo accounts in a production-mode container.
+  // All demonstration seeding requires explicit opt-in AND a development runtime.
+  if (process.env.ENABLE_DEMO_SEEDS === "true" && process.env.NODE_ENV === "development") {
+    (async () => {
+      try {
+        const { seedMerchantUsers } = await import("./merchant-seed");
+        const { seedCateringStaff } = await import("./catering-seed");
+        const { seedFarmUsers } = await import("./farm-seed");
+        await seedMerchantUsers();
         await seedCateringStaff();
+        await seedFarmUsers();
+      } catch (err) {
+        console.warn("Demo seeding failed:", err);
       }
-      await seedFarmUsers();
-    } catch (err) {
-      console.warn('⚠️ Startup seeding background note:', err);
-    }
-  })();
+    })();
+  }
 
   const server = await registerRoutes(app);
 
