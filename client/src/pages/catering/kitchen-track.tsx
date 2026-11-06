@@ -116,11 +116,28 @@ export default function KitchenTracking(){
             :cbl&&<p className="text-xs text-gray-600">CBL selling rate L$ {cbl.selling.toFixed(4)} / US$1, published {cbl.date}. <a className="underline" href={cbl.sourceUrl} target="_blank" rel="noopener noreferrer">Verify rate</a>. Final amount confirmed when you initiate payment.</p>}
           </div>
         </section>
-        {order.status==="awaiting_quote"&&<section className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
-          <h3 className="font-bold">TOTAG is preparing your final quote</h3><p className="text-sm mt-2">Your order is saved. TOTAG will confirm the final quotation and any delivery fee before payment becomes available. Contact +231 777 511 391 if you need help.</p>
+        {order.status==="awaiting_quote"&&<section aria-labelledby="kitchen-payment-heading" className="rounded-2xl border border-orange-200 bg-white p-5 shadow-sm">
+          <h3 id="kitchen-payment-heading" className="flex items-center gap-2 text-xl font-black text-green-950"><WalletCards size={23} aria-hidden="true"/> Payment & checkout</h3>
+          <p className="mt-2 rounded-lg bg-orange-50 p-3 font-bold text-orange-900">Step 1: Awaiting TOTAG's final quotation</p>
+          <p className="mt-3 text-sm text-gray-700">Your order was saved successfully. You have already completed the customer information form. For delivery, a Kitchen manager must confirm the delivery fee and final total before payment opens. No money has been charged.</p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3" aria-label="Payment process">
+            <div className="rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm"><strong className="block text-orange-900">1. Confirm quotation</strong><span className="text-gray-700">In progress</span></div>
+            <div className="rounded-xl border p-3 text-sm"><strong className="block text-gray-800">2. Choose payment</strong><span className="text-gray-600">Available after approval</span></div>
+            <div className="rounded-xl border p-3 text-sm"><strong className="block text-gray-800">3. Verify payment</strong><span className="text-gray-600">Required before food preparation</span></div>
+          </div>
+          <p className="mt-4 text-sm font-semibold text-green-950">Supported checkout methods (subject to activation)</p>
+          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+            <div className="rounded-lg border bg-gray-50 p-3 text-sm"><strong>MTN Mobile Money (LRD)</strong><p className="mt-1 text-gray-600">{methods.mtn?"Payment option enabled; final quote required first.":"Merchant payment setup not yet activated."}</p></div>
+            <div className="rounded-lg border bg-gray-50 p-3 text-sm"><strong>Debit / credit card (USD)</strong><p className="mt-1 text-gray-600">{methods.card?"Payment option enabled; final quote required first.":"Merchant payment setup not yet activated."}</p></div>
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <button type="button" onClick={verify} disabled={loading} className="rounded-xl bg-green-800 px-4 py-3 font-bold text-white disabled:opacity-50"><RefreshCw className="mr-2 inline" size={17} aria-hidden="true"/> Check for final quote</button>
+            <a href="https://wa.me/231777511391" className="text-sm font-bold text-green-800 underline">Contact TOTAG about this quote</a>
+          </div>
         </section>}
         {order.status==="awaiting_payment"&&<section className="bg-white rounded-2xl border p-6 space-y-3">
-          <h3 className="font-black text-xl"><WalletCards className="inline"/> Secure checkout</h3>
+          <h3 className="font-black text-xl"><WalletCards className="inline"/> Secure checkout — final quotation approved</h3>
+          <p className="text-sm text-gray-700">Review the confirmed total above and choose an activated payment provider. TOTAG will verify payment with the provider before preparing your order; selecting a method does not itself mean you have paid.</p>
           {order.paymentStatus==="pending"? <><p>Payment request sent; do not start a duplicate payment.</p>
             <button disabled={loading} onClick={verify} className="rounded-lg bg-green-700 text-white px-4 py-2">Verify payment with provider</button></>:
             <><div className="space-y-2"><label className="flex gap-2 items-center"><input type="radio" checked={payment==="mtn"} disabled={!methods.mtn} onChange={()=>setPayment("mtn")}/> MTN Mobile Money (LRD) {!methods.mtn&&"(not activated)"}</label>
