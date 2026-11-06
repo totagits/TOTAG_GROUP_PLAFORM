@@ -30,6 +30,7 @@ const ROLE_LABELS: Record<string, string> = {
   food_safety_supervisor: "Food Safety & Quality Supervisor",
   team_lead: "Service Team Lead",
   logistics_coordinator: "Logistics & Transport Coordinator",
+  inventory_manager: "Kitchen Inventory & Stock Controller",
 };
 
 const ROLE_ICONS: Record<string, any> = {
@@ -39,6 +40,7 @@ const ROLE_ICONS: Record<string, any> = {
   food_safety_supervisor: Shield,
   team_lead: UserCheck,
   logistics_coordinator: Truck,
+  inventory_manager: Package,
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -6063,6 +6065,7 @@ function StaffDirectory({ staff, onRefresh }: { staff: any[]; onRefresh?: () => 
                   <SelectItem value="food_safety_supervisor">Food Safety Supervisor (HACCP & Hygiene Audits)</SelectItem>
                   <SelectItem value="team_lead">Team Lead (Banquet Floor & Service Delivery)</SelectItem>
                   <SelectItem value="logistics_coordinator">Logistics Coordinator (Fleet & Venue Setup)</SelectItem>
+                  <SelectItem value="inventory_manager">Kitchen Inventory Manager (Stock & Receiving)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -6112,6 +6115,7 @@ function StaffDirectory({ staff, onRefresh }: { staff: any[]; onRefresh?: () => 
                   <SelectItem value="food_safety_supervisor">Food Safety Supervisor (HACCP & Hygiene Audits)</SelectItem>
                   <SelectItem value="team_lead">Team Lead (Banquet Floor & Service Delivery)</SelectItem>
                   <SelectItem value="logistics_coordinator">Logistics Coordinator (Fleet & Venue Setup)</SelectItem>
+                  <SelectItem value="inventory_manager">Kitchen Inventory Manager (Stock & Receiving)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
