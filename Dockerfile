@@ -21,9 +21,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy package management files and install production dependencies
-COPY package*.json ./
-RUN npm install --only=production
+# Reuse dependencies installed in the matching Alpine build stage.
+# Avoid a second npm install, which fails in the Coolify runtime stage.
+COPY --from=builder /app/node_modules ./node_modules
 
 # Copy compiled frontend and backend server files
 COPY --from=builder /app/dist ./dist
