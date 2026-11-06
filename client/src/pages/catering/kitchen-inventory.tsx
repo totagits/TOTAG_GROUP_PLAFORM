@@ -91,6 +91,7 @@ export default function KitchenInventory(){
   const canApprove=[...managerRoles,"food_safety_supervisor"].includes(role);
   const canIssue=[...managerRoles,"inventory_manager","head_chef"].includes(role);
   const canWaste=canApprove;
+  useEffect(()=>{if(role==="food_safety_supervisor")setMovementType("waste");},[role]);
   const low=items.filter(item=>item.lowStock);
   const quarantine=batches.filter(b=>b.status==="quarantine");
   const expiring=batches.filter(b=>b.status==="released"&&b.availableQty>0&&b.expiryDate&&new Date(b.expiryDate).getTime()<=Date.now()+7*86400000);
