@@ -2,6 +2,11 @@
 export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
+    // The isolated Kitchen staging domain serves its API through the same Nginx origin.
+    // Do not send staging orders or currency requests to the legacy production host.
+    if (host === "kitchen-staging.totaggroup.com") {
+      return window.location.origin;
+    }
     if (host.includes("github.io") || host === "totaggroup.com" || host.includes("totaggroup") || host === "totag.network" || host.includes("totag")) {
       return "https://srv1902704.hstgr.cloud";
     }
