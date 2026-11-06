@@ -58,8 +58,9 @@ test("TOTAG Kitchen PostgreSQL public order/quote/tracking security smoke", asyn
       items:[{productId:"juice-watermelon",variantId:"500ml",quantity:1}]
     })});
     assert.equal(juice.status,201);
-    assert.equal(juice.body.order.status,"awaiting_quote");
-    assert.equal(juice.body.order.totalCents,null);
+    assert.equal(juice.body.order.status,"awaiting_payment");
+    assert.equal(juice.body.order.subtotalCents,500);
+    assert.equal(juice.body.order.totalCents,500,"Published 500ml juice is US$5.00 and requires no quote for pickup");
     const forged=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Malicious Tester",phone:"231777000003",fulfillment:"pickup",
       items:[{productId:"snail",variantId:"regular",quantity:1,unitPriceCents:1}]
