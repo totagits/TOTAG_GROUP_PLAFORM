@@ -186,7 +186,7 @@ router.post("/orders",asyncRoute(async(req,res)=>{
       data.data.notes||null,data.data.fulfillment,JSON.stringify(snapshot),quoteRequired?null:subtotal,
       data.data.fulfillment==="pickup"?0:null,total,status]
   );
-  await addEvent(id,status,needsQuote?"Awaiting final juice pricing and/or delivery fee":"Order placed, awaiting payment",null);
+  await addEvent(id,status,needsQuote?(quoteRequired?"Awaiting final item price quotation":"Awaiting delivery fee quotation"):"Order placed, awaiting payment",null);
   const created=await loadOrder(id);
   return res.status(201).json({success:true,id,trackingToken:token,order:scrubOrder(created,await eventsFor(id))});
 }));
