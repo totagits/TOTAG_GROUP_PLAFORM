@@ -93,14 +93,17 @@ export default function KitchenPage(){
   }
   return <div className="min-h-screen bg-[#fffaf0] text-slate-900 pt-20 sm:pt-24 lg:pt-28"><Header/>
     <section className="relative bg-gradient-to-r from-green-950 via-green-800 to-green-700 text-white py-12 px-5">
-      {/* Subtle, decorative chef hat in the left margin: hidden at narrower widths to protect the heading. */}
-      <div aria-hidden="true" className="pointer-events-none absolute left-5 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-2xl border border-amber-200/20 bg-white/5 p-3 text-amber-50/80 shadow-sm 2xl:flex">
-        <ChefHat className="h-14 w-14" strokeWidth={1.5} />
-      </div>
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5">
-        <div><p className="text-orange-300 uppercase text-xs tracking-[.28em] font-bold">TOTAG Catering & Event Planning</p>
-          <h1 className="text-4xl md:text-6xl font-black my-3">TOTAG <span className="text-orange-400">Kitchen</span></h1>
-          <p className="max-w-xl text-green-50">Order freshly prepared meals, party trays and natural juices. Arrange pickup or request a delivery quote.</p>
+        <div className="flex w-full min-w-0 items-center gap-3 sm:gap-5 md:w-auto">
+          {/* Keep the chef hat in normal layout so it remains visible and never overlaps the heading. */}
+          <div aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-amber-200/30 bg-white/10 text-amber-50 shadow-sm sm:h-20 sm:w-20">
+            <ChefHat className="h-9 w-9 sm:h-12 sm:w-12" strokeWidth={1.6} />
+          </div>
+          <div className="min-w-0">
+            <p className="text-orange-300 uppercase text-xs tracking-[.28em] font-bold">TOTAG Catering & Event Planning</p>
+            <h1 className="text-4xl md:text-6xl font-black my-3">TOTAG <span className="text-orange-400">Kitchen</span></h1>
+            <p className="max-w-xl text-green-50">Order freshly prepared meals, party trays and natural juices. Arrange pickup or request a delivery quote.</p>
+          </div>
         </div>
         <div className="flex flex-col gap-3">
           <Link href="/catering/kitchen/track" className="rounded-full bg-white text-green-900 px-5 py-3 font-bold inline-flex gap-2"><Search size={18}/> Track an order</Link>
