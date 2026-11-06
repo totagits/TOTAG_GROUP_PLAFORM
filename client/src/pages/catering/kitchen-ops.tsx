@@ -63,13 +63,13 @@ export default function KitchenOperations(){
     if(order.fulfillment==="delivery"&&fees[order.id]!==undefined&&fees[order.id].trim()!=="")body.deliveryFeeCents=Math.round(Number(fees[order.id])*100);
     run("/staff/orders/"+order.id+"/quote",body);
   }
-  function logout(){localStorage.removeItem("catering_token");localStorage.removeItem("catering_user");navigate("/catering/ops/login");}
+  function logout(){localStorage.removeItem("catering_token");localStorage.removeItem("catering_user");navigate("/catering/kitchen/login");}
   return <div className="min-h-screen bg-[#f8faf5] text-slate-900">
     <header className="bg-green-950 text-white px-5 py-5">
       <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3"><div className="flex items-center gap-3">
         <img src="/images/totag-logo.png" className="h-14 w-14 object-contain bg-white rounded-lg" alt="TOTAG logo"/>
         <div><h1 className="text-2xl font-extrabold">TOTAG Kitchen Operations</h1><p className="text-xs text-green-200">Integrated with TOTAG Catering & Event Planning</p></div></div>
-        <div className="flex gap-2"><Link className="px-3 py-2 bg-white/10 rounded-lg" href="/catering/ops/dashboard">Catering ERP</Link>
+        <div className="flex flex-wrap gap-2"><Link className="px-3 py-2 bg-white/10 rounded-lg" href="/catering/kitchen/inventory">Kitchen Inventory</Link><Link className="px-3 py-2 bg-white/10 rounded-lg" href="/catering/ops/dashboard">Staff & Catering ERP</Link>
           <button onClick={reload} className="px-3 py-2 bg-white/10 rounded-lg"><RefreshCw className="inline mr-1" size={16}/> Refresh</button>
           <button onClick={logout} className="px-3 py-2 bg-orange-600 rounded-lg"><LogOut className="inline mr-1" size={16}/> Logout</button></div>
       </div>
