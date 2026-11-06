@@ -84,7 +84,8 @@ function getCateringApiUrl(endpoint: string): string {
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
-    if (host === "localhost" || host === "127.0.0.1") {
+    if (host === "localhost" || host === "127.0.0.1" || host === "kitchen-staging.totaggroup.com") {
+      // Kitchen staging must use its own API and PostgreSQL, never a separate production server.
       return cleanEndpoint;
     }
     return `https://srv1902704.hstgr.cloud${cleanEndpoint}`;
