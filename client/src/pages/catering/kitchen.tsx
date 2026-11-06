@@ -113,7 +113,24 @@ export default function KitchenPage(){
     return {item,product,variant};
   }),[cart]);
   const subtotal=lines.reduce((total,x)=>total+(x.variant.priceCents??0)*x.item.quantity,0);
+  const itemCount=lines.reduce((count,x)=>count+x.item.quantity,0);
   const hasQuote=lines.some(x=>x.variant.priceCents===null);
+  const [checkoutVisible,setCheckoutVisible]=useState(false);
+  useEffect(()=>{
+    const section=document.getElementById("checkout");
+    if(!section)return;
+    const observer=new IntersectionObserver(([entry])=>setCheckoutVisible(entry.isIntersecting),{
+      rootMargin:"0px 0px -110px 0px",threshold:0
+    });
+    observer.observe(section);
+    return()=>observer.disconnect();
+  },[]);
+  const goToCheckout=()=>{
+    const section=document.getElementById("checkout");
+    if(!section)return;
+    section.scrollIntoView({behavior:"smooth",block:"start"});
+    section.focus({preventScroll:true});
+  };
   const add=(line:Line)=>{setCart(current=>[...current,line]);setMessage("Added to your order.");};
   async function submit(e:React.FormEvent){
     e.preventDefault();setMessage("");setBusy(true);
@@ -159,7 +176,7 @@ export default function KitchenPage(){
       </div>
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard photosReady={photosReady} key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
       <p className="mt-5 text-sm text-gray-600">Bread is available. Our fresh natural juices come in 500ml (US$5), 1 litre (US$10), or 1 gallon (US$35). USD prices are authoritative; LRD equivalents use the current verified CBL official selling rate.</p>
-      <section id="checkout" className="mt-12 bg-white rounded-3xl border shadow-md p-5 md:p-8">
+      <section id="checkout" tabIndex={-1} aria-label="Your shopping cart and checkout form" className="mt-12 scroll-mt-28 bg-white rounded-3xl border shadow-md p-5 md:p-8 focus:outline-none">
         <h2 className={heading}><ShoppingBag className="inline mr-2"/> Your order</h2>
         {!lines.length?<p className="mt-4 text-gray-600">Select your meals or drinks above to begin.</p>:
           <div className="mt-4 divide-y">{lines.map((row,i)=><div key={i} className="py-3 flex items-center justify-between gap-2">
@@ -182,5 +199,17 @@ export default function KitchenPage(){
         </form>
       </section>
       <p className="mt-7 text-center text-sm"><Phone className="inline" size={16}/> Call/WhatsApp: <a href="https://wa.me/231777511391" className="font-bold underline">+231 777 511 391</a> · info@totaggroup.com · <a href="https://totaggroup.com" className="underline">totaggroup.com</a></p>
-    </main><Footer/></div>;
+    </main>
+    {itemCount>0&&!checkoutVisible&&<aside aria-label="Shopping cart shortcut" className="fixed bottom-24 left-3 z-40 w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-green-200 bg-white p-3 shadow-2xl sm:bottom-5 sm:left-5 sm:p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 font-bold text-green-950"><ShoppingBag size={19} aria-hidden="true"/> Your cart <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-900">{itemCount} {itemCount===1?"item":"items"}</span></p>
+          <p className="mt-1 text-xs text-gray-600">Priced subtotal: <strong className="text-green-950">{displayPrice(subtotal)}</strong>{hasQuote?" + quoted items":""}{fulfillment==="delivery"?" · delivery extra":""}</p>
+        </div>
+        <button type="button" onClick={goToCheckout} className="shrink-0 rounded-xl bg-orange-600 px-3 py-3 text-sm font-bold text-white hover:bg-orange-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 sm:px-4" aria-label={`View cart and checkout for ${itemCount} items`}>
+          Checkout <ArrowRight className="inline ml-1" size={16} aria-hidden="true"/>
+        </button>
+      </div>
+    </aside>}
+    <Footer/></div>;
 }
