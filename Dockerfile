@@ -1,44 +1,27 @@
-# Multi-stage build for TOTAG Group Platform
-FROM node:18-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+# TOTAG Kitchen staging-friendly multi-stage Node build
+# Keep this isolated on the Kitchen feature branch until launch checks pass.
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --no-audit --no-fund
 
-# Build the application
-FROM base AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-
-# Copy source code
 COPY . .
-
-# Build the frontend
 RUN npm run build
 
-# Production image
-FROM base AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 --ingroup nodejs kitchen
 
-# Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
+# Reuse the dependencies that passed the build; avoid a second npm install.
+COPY --from=builder --chown=kitchen:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=kitchen:nodejs /app/package*.json ./
+COPY --from=builder --chown=kitchen:nodejs /app/dist ./dist
 
-USER nextjs
-
+USER kitchen
 EXPOSE 3000
-
 CMD ["node", "dist/index.js"]
