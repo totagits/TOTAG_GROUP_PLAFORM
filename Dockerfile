@@ -1,44 +1,35 @@
 # Multi-stage build for TOTAG Group Platform
-FROM node:18-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Copy package files
+# Copy package management files
 COPY package*.json ./
-RUN npm ci --only=production
 
-# Build the application
-FROM base AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+# Install all dependencies (including devDependencies required for vite build)
+RUN npm install
 
 # Copy source code
 COPY . .
 
-# Build the frontend
+# Build the frontend assets
 RUN npm run build
 
 # Production image
-FROM base AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Copy package management files and install production dependencies
+COPY package*.json ./
+RUN npm install --only=production
 
-# Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
-COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
-COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
-
-USER nextjs
+# Copy compiled frontend and backend server files
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server ./server
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+# Launch server entrypoint
+CMD ["node", "server/index.js"]
