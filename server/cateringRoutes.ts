@@ -818,7 +818,6 @@ function buildStaffWelcomeEmailHtml(data: {
   firstName: string;
   lastName: string;
   username: string;
-  password: string;
   email: string;
   role: string;
   loginUrl: string;
@@ -840,7 +839,6 @@ function buildStaffWelcomeEmailHtml(data: {
           <table style="width:100%;font-size:14px;border-collapse:collapse;">
             <tr><td style="padding:6px 0;color:#64748b;width:35%;">Staff User</td><td style="padding:6px 0;font-weight:bold;color:#0f172a;">${data.firstName} ${data.lastName}</td></tr>
             <tr><td style="padding:6px 0;color:#64748b;">Username</td><td style="padding:6px 0;font-weight:bold;color:#0f172a;font-family:monospace;font-size:15px;">${data.username}</td></tr>
-            <tr><td style="padding:6px 0;color:#64748b;">Temporary Password</td><td style="padding:6px 0;font-weight:bold;color:#dc2626;font-family:monospace;font-size:15px;">${data.password}</td></tr>
             <tr><td style="padding:6px 0;color:#64748b;">Assigned Operational Role</td><td style="padding:6px 0;font-weight:bold;color:#15803d;">${data.role}</td></tr>
             <tr><td style="padding:6px 0;color:#64748b;">Portal Access Address</td><td style="padding:6px 0;color:#2563eb;"><a href="${data.loginUrl}" style="color:#2563eb;text-decoration:none;">${data.loginUrl}</a></td></tr>
           </table>
@@ -849,7 +847,7 @@ function buildStaffWelcomeEmailHtml(data: {
         <div style="margin-bottom:24px;padding:16px;background:#fefce8;border-left:4px solid #ca8a04;border-radius:6px;">
           <strong style="font-size:13px;color:#854d0e;display:block;margin-bottom:6px;">⚠️ MANDATORY SECURITY DIRECTIVE: CHANGE YOUR PASSWORD</strong>
           <p style="margin:0;font-size:13px;color:#713f12;line-height:1.5;">
-            You have been issued a temporary password. For enterprise security compliance, you are required to log in immediately and <strong>change your temporary password</strong> under your account settings.
+            Your administrator will supply initial access instructions privately. Never share your password by email or public chat. <strong>Change your initial password</strong> after signing in.
           </p>
         </div>
 
@@ -898,15 +896,15 @@ router.post("/staff", authenticateCateringStaff, requireCateringRole("account_ma
       food_safety_supervisor: "Food Safety & Quality Supervisor",
       team_lead: "Service Team Lead",
       logistics_coordinator: "Logistics & Transport Coordinator",
+      inventory_manager: "Kitchen Inventory & Stock Manager",
     };
 
     const roleTitle = roleLabels[role] || role;
-    const loginUrl = "https://totag.network/catering/ops/login";
+    const loginUrl = "https://kitchen-staging.totaggroup.com/catering/kitchen/login";
     const emailHtml = buildStaffWelcomeEmailHtml({
       firstName,
       lastName,
       username,
-      password, // Plain text temporary password set by admin to be emailed
       email,
       role: roleTitle,
       loginUrl,
@@ -925,10 +923,9 @@ Welcome to TOTAG Catering & Event Planning Services (TOCEPS) (TOTAG Group of Com
 
 Your staff account has been created:
 Username: ${username}
-Temporary Password: ${password}
 Role: ${roleTitle}
 
-Please log in at ${loginUrl} and change your temporary password under Profile Settings.
+Your administrator will provide initial access details privately. Sign in at ${loginUrl} and change your password under Profile Settings.
 
 Best regards,
 TOCEPS Operations Management
@@ -945,7 +942,7 @@ TOTAG Group of Companies Ltd`,
       success: true,
       staff: safeStaff,
       emailSent: sent,
-      message: `Staff account '${username}' created! Onboarding email ${sent ? "sent to " + email : "generated (service check)"}.`
+      message: `Staff account '${username}' created! Onboarding email ${sent ? "sent to " + email : "not sent"}. Provide the initial password through an approved private channel.`
     });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message || "Failed to create staff member" });
