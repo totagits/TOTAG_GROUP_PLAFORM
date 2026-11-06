@@ -158,7 +158,7 @@ router.patch("/batches/:id/decision",roles(approvers),asyncRoute(async(req,res)=
     const b=(await client.query("SELECT * FROM kitchen_inventory_batches WHERE id=$1 FOR UPDATE",[req.params.id])).rows[0];
     if(!b||b.status!=="quarantine"){await client.query("ROLLBACK");return fail(res,409,"Batch is not awaiting inspection");}
     if(b.received_by===req.staff!.id){await client.query("ROLLBACK");return fail(res,403,"Receiver must not approve their own batch");}
-    if(p.data.decision==="release"&&b.expiry_date&&String(b.expiry_date).slice(0,10)<=new Date().toISOString().slice(0,10)){
+    if(p.data.decision==="release"&&b.expiry_date&&new Date(b.expiry_date).toISOString().slice(0,10)<=new Date().toISOString().slice(0,10)){
       await client.query("ROLLBACK");return fail(res,409,"Expired inventory cannot be released");
     }
     const status=p.data.decision==="release"?"released":"rejected";
@@ -170,10 +170,11 @@ router.patch("/batches/:id/decision",roles(approvers),asyncRoute(async(req,res)=
     return res.json({success:true,id:b.id,status});
   }catch(e){await client.query("ROLLBACK");throw e;}finally{client.release();}
 }));
-router.post("/movements/:action",roles(issueRoles),asyncRoute(async(req,res)=>{
+router.post("/movements/:action",roles([...issueRoles,"food_safety_supervisor"]),asyncRoute(async(req,res)=>{
   await ensure();
   const action=req.params.action;
   if(action!=="issue"&&action!=="waste")return fail(res,400,"Invalid movement action");
+  if(action==="issue"&&!issueRoles.includes(req.staff!.role))return fail(res,403,"Only authorized kitchen or inventory staff may issue stock");
   const p=movementSchema.safeParse(req.body);
   if(!p.success)return fail(res,400,"Provide batch ID, quantity and documented reason");
   // Waste approval must be undertaken by a manager or food-safety supervisor.
@@ -184,7 +185,7 @@ router.post("/movements/:action",roles(issueRoles),asyncRoute(async(req,res)=>{
     await client.query("BEGIN");
     const b=(await client.query("SELECT * FROM kitchen_inventory_batches WHERE id=$1 FOR UPDATE",[p.data.batchId])).rows[0];
     if(!b||b.status!=="released"){await client.query("ROLLBACK");return fail(res,409,"Batch is not available for issue");}
-    if(b.expiry_date&&String(b.expiry_date).slice(0,10)<=new Date().toISOString().slice(0,10)){
+    if(b.expiry_date&&new Date(b.expiry_date).toISOString().slice(0,10)<=new Date().toISOString().slice(0,10)){
       await client.query("ROLLBACK");return fail(res,409,"Expired batch cannot be issued");
     }
     if(Number(b.quantity_available)<p.data.quantity){await client.query("ROLLBACK");return fail(res,409,"Insufficient stock in selected batch");}
