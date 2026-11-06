@@ -117,7 +117,7 @@ export default function KitchenTracking(){
           </div>
         </section>
         {order.status==="awaiting_quote"&&<section className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
-          <h3 className="font-bold">TOTAG is preparing your final quote</h3><p className="text-sm mt-2">Your order is saved. Return to this page for the confirmed juice and/or delivery fee before paying. Contact +231 777 511 391 if you need help.</p>
+          <h3 className="font-bold">TOTAG is preparing your final quote</h3><p className="text-sm mt-2">Your order is saved. TOTAG will confirm the final quotation and any delivery fee before payment becomes available. Contact +231 777 511 391 if you need help.</p>
         </section>}
         {order.status==="awaiting_payment"&&<section className="bg-white rounded-2xl border p-6 space-y-3">
           <h3 className="font-black text-xl"><WalletCards className="inline"/> Secure checkout</h3>
