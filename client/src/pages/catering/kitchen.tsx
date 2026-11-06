@@ -114,7 +114,7 @@ export default function KitchenPage(){
   }),[cart]);
   const subtotal=lines.reduce((total,x)=>total+(x.variant.priceCents??0)*x.item.quantity,0);
   const hasQuote=lines.some(x=>x.variant.priceCents===null);
-  const add=(line:Line)=>{setCart(current=>[...current,line]);setMessage(line.productId.startsWith("juice")?"Juice added for a price quotation.":"Added to your order.");};
+  const add=(line:Line)=>{setCart(current=>[...current,line]);setMessage("Added to your order.");};
   async function submit(e:React.FormEvent){
     e.preventDefault();setMessage("");setBusy(true);
     try{
@@ -178,7 +178,7 @@ export default function KitchenPage(){
           {fulfillment==="delivery"&&<label className="md:col-span-2 font-semibold text-sm">Delivery address<input required value={address} onChange={e=>setAddress(e.target.value)} className="block w-full border rounded-xl p-3 mt-1"/></label>}
           <label className="md:col-span-2 font-semibold text-sm">Special instructions / allergies<textarea value={notes} onChange={e=>setNotes(e.target.value)} rows={2} className="block w-full border rounded-xl p-3 mt-1"/></label>
           {message&&<p role="alert" className="md:col-span-2 text-sm text-orange-800">{message}</p>}
-          <button disabled={busy||!cart.length} className="md:col-span-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white p-4 rounded-xl font-bold">{busy?"Placing order...":"Submit order & continue to payment"} <ArrowRight className="inline ml-2" size={18}/></button>
+          <button disabled={busy||!cart.length} className="md:col-span-2 bg-orange-600 hover:bg-orange-700 disabled:opacity-50 text-white p-4 rounded-xl font-bold">{busy?"Submitting order...":(fulfillment==="delivery"||hasQuote)?"Submit order for final quotation":"Submit order & continue to payment"} <ArrowRight className="inline ml-2" size={18}/></button>
         </form>
       </section>
       <p className="mt-7 text-center text-sm"><Phone className="inline" size={16}/> Call/WhatsApp: <a href="https://wa.me/231777511391" className="font-bold underline">+231 777 511 391</a> · info@totaggroup.com · <a href="https://totaggroup.com" className="underline">totaggroup.com</a></p>
