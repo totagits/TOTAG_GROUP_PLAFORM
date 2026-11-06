@@ -1,0 +1,61 @@
+name: TOTAG Kitchen verification
+
+on:
+  push:
+    branches:
+      - feat/totag-kitchen-ordering-operations
+  pull_request:
+    paths:
+      - 'client/src/pages/catering/**'
+      - 'client/src/pages/catering.tsx'
+      - 'client/src/App.tsx'
+      - 'shared/kitchenCatalog.ts'
+      - 'server/kitchenRoutes.ts'
+      - 'server/cateringRoutes.ts'
+      - 'server/index.ts'
+      - 'server/routes.ts'
+
+jobs:
+  typecheck-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kitchen_test
+          POSTGRES_PASSWORD: kitchen_test_password
+          POSTGRES_DB: kitchen_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kitchen_test -d kitchen_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://kitchen_test:kitchen_test_password@localhost:5432/kitchen_test
+      JWT_SECRET: test-only-kitchen-secret-with-over-32-characters
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        id: install
+        run: npm ci --no-audit --no-fund
+      - name: Verify Kitchen published prices
+        run: npx tsx --test tests/kitchen-catalog.test.ts
+      - name: Verify official CBL rate parsing and conversion
+        run: npx tsx --test tests/kitchen-cbl.test.ts
+      - name: PostgreSQL order and security smoke tests
+        run: npx tsx --test tests/kitchen-orders.integration.test.ts
+      - name: Diagnostic - check live CBL accessibility (non-blocking)
+        continue-on-error: true
+        run: npx tsx -e 'import {getOfficialCblRate} from "./server/cblRates.ts"; (async()=>{const r=await getOfficialCblRate(); console.log("CBL source",r.sourceUrl,"date",r.date,"selling",r.selling);})().catch(e=>{console.error("CBL source cannot be verified:",e.message); process.exit(1);});'
+      - name: TypeScript typecheck (includes pre-existing platform errors)
+        run: npm run check
+      - name: Production build (independent of legacy typing errors)
+        if: always() && steps.install.outcome == 'success'
+        run: npm run build

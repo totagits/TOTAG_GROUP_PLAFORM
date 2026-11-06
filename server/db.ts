@@ -7,10 +7,9 @@ import * as schema from "@shared/schema";
 
 const { Pool } = pg;
 
-const databaseUrl = process.env.DATABASE_URL || "postgresql://totaguser:Zwedru4@gedeh@localhost:5432/totaggroup";
-
-if (!process.env.DATABASE_URL) {
-  console.warn("⚠️ DATABASE_URL not set in process.env - using totaguser default connection.");
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL must be set before starting the TOTAG platform");
 }
 
 export const pool = new Pool({ connectionString: databaseUrl });

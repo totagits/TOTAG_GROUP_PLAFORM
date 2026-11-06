@@ -73,6 +73,7 @@ import { Router, Request, Response } from "express";
 import { storage } from "./storage";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "node:crypto";
 import { insertCateringRequestSchema, insertCateringEventSchema, insertCateringTaskSchema, insertCateringIncidentSchema } from "@shared/schema";
 import { EmailService } from "./emailService";
 
@@ -315,7 +316,7 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
 }
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key-change-in-production";
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === "production" ? "" : crypto.randomBytes(48).toString("hex"));
 
 interface CateringAuthRequest extends Request {
   staffUser?: { id: number; role: string; username: string; firstName: string; lastName: string };
@@ -330,7 +331,8 @@ function requireCateringRole(...roles: string[]) {
   };
 }
 
-function authenticateCateringStaff(req: CateringAuthRequest, res: Response, next: Function) {
+async function authenticateCateringStaff(req: CateringAuthRequest, res: Response, next: Function) {
+  if (!JWT_SECRET) return res.status(503).json({success:false,error:"Staff authentication configuration missing"});
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ success: false, error: "Access token required" });
@@ -340,7 +342,9 @@ function authenticateCateringStaff(req: CateringAuthRequest, res: Response, next
     if (decoded.type !== "catering_staff") {
       return res.status(403).json({ success: false, error: "Invalid token type" });
     }
-    req.staffUser = { id: decoded.staffId, role: decoded.role, username: decoded.username, firstName: decoded.firstName, lastName: decoded.lastName };
+    const staff = await storage.getCateringStaffById(decoded.staffId);
+    if (!staff || !staff.isActive) return res.status(403).json({ success: false, error: "Staff account inactive or revoked" });
+    req.staffUser = { id: staff.id, role: staff.role, username: staff.username, firstName: staff.firstName, lastName: staff.lastName };
     next();
   } catch {
     return res.status(401).json({ success: false, error: "Invalid or expired token" });
@@ -474,23 +478,10 @@ router.post("/requests", async (req: Request, res: Response) => {
 // ===== AUTH: Staff login =====
 router.post("/auth/login", async (req: Request, res: Response) => {
   try {
+    if (!JWT_SECRET) return res.status(503).json({ success: false, error: "Staff authentication not configured" });
     const { username, password } = req.body;
     if (!username || !password) {
       return res.status(400).json({ success: false, error: "Username and password required" });
-    }
-
-    // Direct fallback for seeded admin_toceps credentials
-    if ((username === "admin_toceps" || username === "admin") && (password === "Zwedru4gedeh" || password === "password123")) {
-      const token = jwt.sign(
-        { type: "catering_staff", staffId: 1, role: "account_manager", username: "admin_toceps", firstName: "TOCEPS", lastName: "Admin" },
-        JWT_SECRET,
-        { expiresIn: "7d" }
-      );
-      return res.json({
-        success: true,
-        token,
-        user: { id: 1, username: "admin_toceps", firstName: "TOCEPS", lastName: "Admin", role: "account_manager", email: "toceps@totaggroup.com", phone: "+231-886-100-000" }
-      });
     }
 
     const staff = await storage.getCateringStaffByUsername(username);

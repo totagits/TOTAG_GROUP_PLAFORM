@@ -447,6 +447,16 @@ export default function CateringPage() {
             className="space-y-12"
           >
 
+          {/* TOTAG Kitchen, a public-facing food ordering service of Catering & Event Planning */}
+          <div className="rounded-3xl bg-gradient-to-r from-green-900 via-green-800 to-emerald-700 text-white p-6 md:p-9 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+            <div className="flex items-start gap-4"><div className="rounded-2xl bg-white/10 p-3"><ChefHat className="h-8 w-8 text-orange-300" /></div>
+              <div><p className="uppercase tracking-widest text-orange-300 text-xs font-bold">Now serving — TOTAG Kitchen</p>
+                <h2 className="text-2xl md:text-3xl font-black mt-1">Fresh Meals, Party Trays & Natural Juices</h2>
+                <p className="text-green-100 mt-2 max-w-2xl">Browse our complete menu, request juice and delivery prices, place orders, pay securely when available, and follow the kitchen-to-delivery journey.</p>
+              </div></div>
+            <Link href="/catering/kitchen" className="shrink-0 rounded-xl bg-orange-500 hover:bg-orange-600 px-6 py-3 font-extrabold text-white shadow-lg">Explore TOTAG Kitchen →</Link>
+          </div>
+
           {/* AUTHENTIC CULINARY & EVENT PHOTOGRAPHY GALLERY SHOWCASE (HIGH DEFINITION CLARITY) */}
           <div className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 p-6 rounded-3xl space-y-4 shadow-xl mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-3">

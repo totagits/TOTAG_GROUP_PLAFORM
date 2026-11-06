@@ -5,6 +5,7 @@ import express, { type Request, Response, NextFunction } from "express";
 
 
 import { registerRoutes } from "./routes";
+import { kitchenStripeWebhook } from "./kitchenRoutes";
 import { setupVite, serveStatic, log } from "./vite";
 
 import { runMigrations } from 'stripe-replit-sync';
@@ -87,6 +88,9 @@ app.post(
   }
 );
 
+// Dedicated signed TOTAG Kitchen Stripe webhook must receive the raw request body.
+app.post("/api/kitchen/payments/stripe/webhook", express.raw({ type: "application/json" }), kitchenStripeWebhook);
+
 // Add CORS headers for production domain support
 app.use((req, res, next) => {
   const allowedOrigins = [
@@ -139,9 +143,7 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
+      // Never write order tokens, contact details, or payment responses to logs.
 
       if (logLine.length > 80) {
         logLine = logLine.slice(0, 79) + "…";
@@ -164,7 +166,9 @@ app.use((req, res, next) => {
   (async () => {
     try {
       await seedMerchantUsers();
-      await seedCateringStaff();
+      if (process.env.ENABLE_DEMO_SEEDS === "true" && process.env.NODE_ENV !== "production") {
+        await seedCateringStaff();
+      }
       await seedFarmUsers();
     } catch (err) {
       console.warn('⚠️ Startup seeding background note:', err);

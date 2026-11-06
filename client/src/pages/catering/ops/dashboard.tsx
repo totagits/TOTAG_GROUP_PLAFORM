@@ -71,26 +71,8 @@ function getAuthHeaders() {
 }
 
 async function ensureValidCateringToken(): Promise<string | null> {
-  let token = localStorage.getItem("catering_token");
-  if (!token || token === "demo_token_static") {
-    try {
-      const loginUrl = getCateringApiUrl("/api/catering/auth/login");
-      const res = await fetch(loginUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: "admin_toceps", password: "Zwedru4gedeh" }),
-      });
-      const data = await res.json();
-      if (data.success && data.token) {
-        token = data.token;
-        localStorage.setItem("catering_token", token);
-        localStorage.setItem("catering_user", JSON.stringify(data.user));
-      }
-    } catch (e) {
-      console.warn("Auto-token fetch failed:", e);
-    }
-  }
-  return token;
+  // Never log in silently with a public demo password.
+  return localStorage.getItem("catering_token");
 }
 
 function getCateringApiUrl(endpoint: string): string {
@@ -453,6 +435,7 @@ export default function CateringDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <Button onClick={() => navigate("/catering/kitchen/ops")} className="bg-green-800 text-white hover:bg-green-700 text-xs"><ChefHat className="h-4 w-4 mr-1"/> TOTAG Kitchen Desk</Button>
             <Badge className="bg-green-100 text-green-600 border-0">
               <RoleIcon className="h-3 w-3 mr-1" />
               {user.firstName} {user.lastName}
