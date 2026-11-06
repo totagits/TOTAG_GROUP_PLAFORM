@@ -8,9 +8,10 @@ import { storage } from "./storage";
 import { KITCHEN_CATALOG, KITCHEN_SIDES } from "../shared/kitchenCatalog";
 import { CBL_RATES_URL, getOfficialCblRate, usdCentsToLrdCents } from "./cblRates";
 import kitchenInventoryRoutes from "./kitchenInventoryRoutes";
+import kitchenStaffRoutes from "./kitchenStaffRoutes";
 
 const router = Router();
-const STAFF_ROLES = ["account_manager","operations_supervisor","head_chef","logistics_coordinator","food_safety_supervisor","inventory_manager"];
+const STAFF_ROLES = ["account_manager","operations_supervisor","head_chef","logistics_coordinator","food_safety_supervisor","inventory_manager","team_lead"];
 const MANAGERS = ["account_manager","operations_supervisor"];
 const JWT_SECRET = process.env.JWT_SECRET;
 const stripeSecret = process.env.KITCHEN_STRIPE_SECRET_KEY;
@@ -267,6 +268,7 @@ router.post("/orders/:id/verify",asyncRoute(async(req,res)=>{
   return res.json({success:true,order:scrubOrder(latest,await eventsFor(order.id))});
 }));
 router.use("/staff/inventory",staffAuth,kitchenInventoryRoutes);
+router.use("/staff/team",staffAuth,kitchenStaffRoutes);
 router.get("/staff/orders",staffAuth,allow(...MANAGERS,"head_chef","logistics_coordinator","food_safety_supervisor"),asyncRoute(async(req,res)=>{
   await ensureDb();
   const rows=(await pool.query("SELECT id,customer_name,phone,email,delivery_address,notes,fulfillment,items,subtotal_cents,delivery_fee_cents,total_cents,status,payment_status,payment_method,driver_name,driver_phone,created_at FROM kitchen_orders ORDER BY created_at DESC LIMIT 200")).rows;
