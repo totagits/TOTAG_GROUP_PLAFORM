@@ -157,7 +157,7 @@ export default function KitchenPage(){
         </div>
         <div className="flex flex-col gap-3">
           <Link href="/catering/kitchen/track" className="rounded-full bg-white text-green-900 px-5 py-3 font-bold inline-flex gap-2"><Search size={18}/> Track an order</Link>
-          <Link href="/catering/ops/login" className="rounded-full border border-white/50 px-5 py-3 text-center text-white">Staff sign-in</Link>
+          <Link href="/catering/kitchen/login" className="rounded-full border border-white/50 px-5 py-3 text-center text-white">Kitchen staff workspace</Link>
         </div>
       </div>
     </section>
@@ -174,6 +174,15 @@ export default function KitchenPage(){
         {([["all","All menu"],["meal","Meals & Platters"],["tray","Party Trays"],["juice","Fresh Juices"]] as const).map(([id,label])=>
           <button key={id} onClick={()=>setFilter(id)} className={"px-4 py-2 rounded-full text-sm font-bold "+(filter===id?"bg-green-800 text-white":"bg-white border text-green-800")}>{label}</button>)}
       </div>
+      {itemCount>0&&!checkoutVisible&&<aside aria-label="Your cart and checkout shortcut" aria-live="polite" className="sticky top-36 z-30 mb-6 rounded-2xl border border-green-200 bg-white/95 px-4 py-3 shadow-lg backdrop-blur md:flex md:items-center md:justify-between md:gap-5">
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 md:mb-0">
+          <p className="flex items-center gap-2 font-bold text-green-950"><ShoppingBag size={19} aria-hidden="true"/> Your cart <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-900">{itemCount} {itemCount===1?"item":"items"}</span></p>
+          <p className="text-sm text-gray-700">Subtotal: <strong className="text-green-950">{displayPrice(subtotal)}</strong>{hasQuote?" + quoted items":""}{fulfillment==="delivery"?" · delivery fee pending":""}</p>
+        </div>
+        <button type="button" onClick={goToCheckout} className="w-full shrink-0 rounded-xl bg-orange-600 px-5 py-3 font-bold text-white hover:bg-orange-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 md:w-auto" aria-label={`Review cart and open checkout form for ${itemCount} items`}>
+          Review cart & Checkout <ArrowRight className="inline ml-2" size={17} aria-hidden="true"/>
+        </button>
+      </aside>}
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-5">{KITCHEN_CATALOG.filter(p=>filter==="all"||p.category===filter).map(p=><ItemCard photosReady={photosReady} key={p.id} item={p} onAdd={add} displayPrice={displayPrice}/>)}</div>
       <p className="mt-5 text-sm text-gray-600">Bread is available. Our fresh natural juices come in 500ml (US$5), 1 litre (US$10), or 1 gallon (US$35). USD prices are authoritative; LRD equivalents use the current verified CBL official selling rate.</p>
       <section id="checkout" tabIndex={-1} aria-label="Your shopping cart and checkout form" className="mt-12 scroll-mt-28 bg-white rounded-3xl border shadow-md p-5 md:p-8 focus:outline-none">
@@ -200,16 +209,5 @@ export default function KitchenPage(){
       </section>
       <p className="mt-7 text-center text-sm"><Phone className="inline" size={16}/> Call/WhatsApp: <a href="https://wa.me/231777511391" className="font-bold underline">+231 777 511 391</a> · info@totaggroup.com · <a href="https://totaggroup.com" className="underline">totaggroup.com</a></p>
     </main>
-    {itemCount>0&&!checkoutVisible&&<aside aria-label="Shopping cart shortcut" className="fixed bottom-24 left-3 z-40 w-[calc(100%-1.5rem)] max-w-md rounded-2xl border border-green-200 bg-white p-3 shadow-2xl sm:bottom-5 sm:left-5 sm:p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="flex items-center gap-2 font-bold text-green-950"><ShoppingBag size={19} aria-hidden="true"/> Your cart <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-900">{itemCount} {itemCount===1?"item":"items"}</span></p>
-          <p className="mt-1 text-xs text-gray-600">Priced subtotal: <strong className="text-green-950">{displayPrice(subtotal)}</strong>{hasQuote?" + quoted items":""}{fulfillment==="delivery"?" · delivery extra":""}</p>
-        </div>
-        <button type="button" onClick={goToCheckout} className="shrink-0 rounded-xl bg-orange-600 px-3 py-3 text-sm font-bold text-white hover:bg-orange-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 sm:px-4" aria-label={`View cart and checkout for ${itemCount} items`}>
-          Checkout <ArrowRight className="inline ml-1" size={16} aria-hidden="true"/>
-        </button>
-      </div>
-    </aside>}
     <Footer/></div>;
 }
