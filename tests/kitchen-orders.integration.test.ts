@@ -53,6 +53,24 @@ test("TOTAG Kitchen PostgreSQL public order/quote/tracking security smoke", asyn
     assert.equal(delivery.status,201);
     assert.equal(delivery.body.order.status,"awaiting_quote");
     assert.equal(delivery.body.order.totalCents,null);
+    // Pending delivery quotes must not be charged, even with a valid customer token.
+    const prematurePayment=await request("/orders/"+delivery.body.id+"/pay",{method:"POST",body:JSON.stringify({
+      token:delivery.body.trackingToken,method:"mtn"
+    })});
+    assert.equal(prematurePayment.status,409,"Payment is blocked until a manager confirms the delivery fee");
+    // Future PWA customers and riders must never access internal order queues without staff authorization.
+    const privateOrder=await request("/orders/"+delivery.body.id+"/track");
+    assert.equal(privateOrder.status,404,"Public tracking requires the secret customer token");
+    for(const [action,method,body] of [
+      ["quote","PATCH",{deliveryFeeCents:0}],
+      ["status","PATCH",{status:"ready"}],
+      ["driver","PATCH",{name:"Unauthorised Rider",phone:"231777000004"}],
+      ["reconcile","POST",{}]
+    ] as const){
+      const route=action==="reconcile"?"/staff/orders/"+delivery.body.id+"/reconcile":"/staff/orders/"+delivery.body.id+"/"+action;
+      const response=await request(route,{method,body:JSON.stringify(body)});
+      assert.equal(response.status,401,action+" must reject unauthenticated access");
+    }
     const juice=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Test Juice",phone:"231777000002",fulfillment:"pickup",
       items:[{productId:"juice-watermelon",variantId:"500ml",quantity:1}]
