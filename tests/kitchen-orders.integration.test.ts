@@ -45,6 +45,10 @@ test("TOTAG Kitchen PostgreSQL public order/quote/tracking security smoke", asyn
     assert.equal(still.body.order.paymentStatus,"unpaid");
     const anonymous=await request("/staff/orders");
     assert.ok([401,503].includes(anonymous.status));
+    const anonymousRoster=await request("/staff/team/shifts");
+    assert.ok([401,503].includes(anonymousRoster.status),"Kitchen staff rosters require a staff session");
+    const anonymousInventory=await request("/staff/inventory/overview");
+    assert.ok([401,503].includes(anonymousInventory.status),"Kitchen inventory requires a staff session");
     const delivery=await request("/orders",{method:"POST",body:JSON.stringify({
       customerName:"Test Delivery",phone:"231777000001",address:"Test Street, Paynesville",
       fulfillment:"delivery",items:[{productId:"grill-chicken",variantId:"regular",quantity:1,
