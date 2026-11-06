@@ -91,11 +91,10 @@ export default function KitchenPage(){
       navigate("/catering/kitchen/track");
     }catch(e:any){setMessage(e.message);}finally{setBusy(false);}
   }
-  return <div className="min-h-screen bg-[#fffaf0] text-slate-900"><Header/>
+  return <div className="min-h-screen bg-[#fffaf0] text-slate-900 pt-20 sm:pt-24 lg:pt-28"><Header/>
     <section className="bg-gradient-to-r from-green-950 via-green-800 to-green-700 text-white py-12 px-5">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5">
-        <div><img src="/images/totag-logo.png" alt="TOTAG Group logo" className="h-20 w-20 object-contain bg-white rounded-xl p-2 mb-4"/>
-          <p className="text-orange-300 uppercase text-xs tracking-[.28em] font-bold">TOTAG Catering & Event Planning</p>
+        <div><p className="text-orange-300 uppercase text-xs tracking-[.28em] font-bold">TOTAG Catering & Event Planning</p>
           <h1 className="text-4xl md:text-6xl font-black my-3">TOTAG <span className="text-orange-400">Kitchen</span></h1>
           <p className="max-w-xl text-green-50">Order freshly prepared meals, party trays and natural juices. Arrange pickup or request a delivery quote.</p>
         </div>
