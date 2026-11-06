@@ -32,4 +32,4 @@ COPY --from=builder /app/server ./server
 EXPOSE 3000
 
 # Launch server entrypoint
-CMD ["node", "server/index.js"]
+CMD ["node", "dist/index.js"]
