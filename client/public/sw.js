@@ -1,4 +1,4 @@
-const CACHE_NAME = 'totag-pwa-v1';
+const CACHE_NAME = 'totag-pwa-v2-kitchen-privacy';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -50,6 +50,19 @@ self.addEventListener('fetch', (event) => {
           headers: { 'Content-Type': 'application/json' }
         });
       })
+    );
+    return;
+  }
+
+  // Confidential Kitchen/customer tracking and Catering staff pages must never enter shared offline caches.
+  // Authenticated PWA features require a live connection unless separately designed for encrypted offline use.
+  if (url.pathname.startsWith('/catering/kitchen') || url.pathname.startsWith('/catering/ops')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' }).catch(() =>
+        new Response('A connection is required to view private TOTAG Kitchen information.', {
+          status: 503, headers: { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' }
+        })
+      )
     );
     return;
   }
