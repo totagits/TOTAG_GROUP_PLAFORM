@@ -1,17 +1,34 @@
-# TOTAG Kitchen menu imagery
+# TOTAG Kitchen website photography
 
-This development branch includes the product-card UI for a single WebP sprite.
+## Committed website asset
 
-## File to upload
-`client/public/images/kitchen/totag-kitchen-menu-sprite.webp`
+The optimized image file **`client/public/images/kitchen/totag-kitchen-menu-sprite.webp`**
+is already committed on the TOTAG Kitchen development branch.
 
-The companion archive `TOTAG_Kitchen_Menu_Photo_Assets.zip` contains:
-- `totag-kitchen-menu-sprite.webp` (marketing imagery and labelled TOTAG juice mockups)
-- `image-map.json` (5 columns × 4 rows of product-to-image positions)
-- `menu-preview.jpg` (visual reference)
+The site uses it through `/images/kitchen/totag-kitchen-menu-sprite.webp` in
+`client/src/pages/catering/kitchen.tsx`.
 
-The image is **illustrative marketing artwork**, not a statement that the displayed photo represents a particular customer's serving. The website automatically retains the current emoji fallback until the sprite is present.
+The optimized 5-column × 4-row image sheet is mapped to matching food and
+branded juice presentations. The customer page includes:
 
-Do not change prices, checkout calculations, the CBL selling-rate feed, or payment integrations when publishing images. Do not deploy this branch to production until ordering, invoice, and payment testing has passed.
+- A professional, responsive hero with selected menu photographs.
+- A three-size Fresh Natural Juices collection: 500ml US$5, 1L US$10,
+  gallon US$35.
+- A menu grid using the matching sprite tiles, with a clear fallback for
+  products whose accurate image has not yet been added.
+- A responsive ordering checkout and quick cart shortcut.
 
-For a staging deploy: add the WebP file at the exact path above on the `feat/totag-kitchen-ordering-operations` branch, and let Coolify deploy that branch to `totag-kitchen-staging`. The photo cards will then load without further source-code changes.
+The photography is illustrative menu/promotional imagery rather than proof
+of a specific serving or batch. Product prices, order operations, and the
+CBL official **selling** rate are controlled by application code; never
+extract transactional prices from text within marketing images.
+
+## Deployment verification
+
+Deploy to an isolated staging application through Coolify using branch
+`feat/totag-kitchen-ordering-operations`. Check the menu-photo asset URL
+returns HTTP 200 with `image/webp`, visually inspect phone and desktop
+layouts, and run the catalog, CBL, PostgreSQL and build CI checks before
+any production merge.
+
+No Hostinger DNS or production deployment is implied by this image commit.
