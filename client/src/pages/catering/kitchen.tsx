@@ -143,7 +143,7 @@ export default function KitchenPage(){
   }
   return <div className="min-h-screen bg-[#fffaf0] text-slate-900 pt-20 sm:pt-24 lg:pt-28"><Header/>
     <section className="relative bg-gradient-to-r from-green-950 via-green-800 to-green-700 text-white py-12 px-5">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5">
+      <div className="max-w-6xl mx-auto grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
         <div className="flex w-full min-w-0 items-center gap-3 sm:gap-5 md:w-auto">
           {/* Keep the chef hat in normal layout so it remains visible and never overlaps the heading. */}
           <div aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-amber-200/30 bg-white/10 text-amber-50 shadow-sm sm:h-20 sm:w-20">
@@ -156,9 +156,21 @@ export default function KitchenPage(){
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <Link href="/catering/kitchen/track" className="rounded-full bg-white text-green-900 px-5 py-3 font-bold inline-flex gap-2"><Search size={18}/> Track an order</Link>
+          <button type="button" onClick={goToCheckout} className="inline-flex items-center justify-center gap-2 rounded-full bg-orange-500 px-5 py-3 font-extrabold text-white shadow-md transition hover:bg-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><ShoppingBag size={18}/> Order now</button>
+          <Link href="/catering/kitchen/track" className="rounded-full bg-white text-green-900 px-5 py-3 font-bold inline-flex justify-center gap-2"><Search size={18}/> Track an order</Link>
           <Link href="/catering/kitchen/login" className="rounded-full border border-white/50 px-5 py-3 text-center text-white">Kitchen staff workspace</Link>
+          <a href="https://wa.me/231777511391" className="text-center text-sm font-semibold text-green-50 hover:underline">WhatsApp orders: +231 777 511 391</a>
         </div>
+        {photosReady && <div className="grid w-full grid-cols-2 gap-3 rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-2xl backdrop-blur-sm" aria-label="TOTAG Kitchen food and fresh-juice photo showcase">
+          {([["snail","Savory snail"],["grill-chicken","Grilled chicken"],["juice-orange","Branded fresh orange juice"],["juice-tropical-fusion","Branded tropical fusion"]] as const).map(([id,label])=>{
+            const position=KITCHEN_PHOTO_POSITIONS[id];
+            return <div key={id} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-amber-50">
+              <div role="img" aria-label={"Illustrative "+label+" imagery"} className="absolute inset-0 bg-no-repeat transition-transform duration-500 hover:scale-105" style={{backgroundImage:`url("${KITCHEN_SPRITE_URL}")`,backgroundSize:"500% 400%",backgroundPosition:`${position[0]*25}% ${position[1]*(100/3)}%`}}/>
+              <span className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/75 to-transparent px-3 pb-2 pt-6 text-xs font-semibold text-white">{label}</span>
+            </div>;
+          })}
+          <p className="col-span-2 text-center text-[11px] text-green-50/80">Illustrative menu photography · Freshly prepared by TOTAG Kitchen</p>
+        </div>}
       </div>
     </section>
     <main className="max-w-6xl mx-auto px-4 py-10">
@@ -170,6 +182,28 @@ export default function KitchenPage(){
       </div>
       {cbl?<p className="mb-5 text-sm text-green-800">CBL official selling rate: L$ {cbl.selling.toFixed(4)} per US$1 · published {cbl.date}. <a href={cbl.sourceUrl} className="underline" target="_blank" rel="noopener noreferrer">Verify source</a>. Converted prices are indicative until checkout.</p>
         :<p className="mb-5 text-sm text-amber-800">{fxError||"Checking official Central Bank of Liberia rates…"} USD ordering remains available; LRD quotations require verified CBL rates.</p>}
+      <section aria-labelledby="juice-spotlight-title" className="mb-8 overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-sm">
+        <div className="flex flex-col items-start justify-between gap-4 bg-gradient-to-r from-emerald-950 to-green-700 p-6 text-white md:flex-row md:items-center md:p-8">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-200">TOTAG Kitchen Beverage Collection</p>
+            <h2 id="juice-spotlight-title" className="mt-2 text-2xl font-black md:text-3xl">Fresh natural juices, beautifully bottled</h2>
+            <p className="mt-2 text-green-100">Watermelon · Pineapple · Orange · Mix Any Two · Tropical Fusion</p>
+          </div>
+          <button type="button" onClick={()=>setFilter("juice")} className="shrink-0 rounded-xl bg-orange-500 px-5 py-3 font-bold text-white hover:bg-orange-400">Shop fresh juices →</button>
+        </div>
+        <div className="grid gap-4 p-4 sm:grid-cols-3 md:p-6">
+          {([["500ml","500ml Bottle",500,"juice-orange"],["1l","1 Litre Bottle",1000,"juice-tropical-fusion"],["gallon","1 Gallon Jug",3500,"juice-pineapple"]] as const).map(([id,label,amount,photo])=>{
+            const position=KITCHEN_PHOTO_POSITIONS[photo];
+            return <div key={id} className="group flex flex-col overflow-hidden rounded-2xl border border-green-100 bg-[#fffdf7] shadow-sm">
+              <div className="relative aspect-[5/3] overflow-hidden bg-amber-50">
+                {photosReady && <div role="img" aria-label={"Illustrative branded TOTAG Kitchen juice packaging"} className="absolute inset-0 bg-no-repeat transition-transform duration-500 group-hover:scale-105" style={{backgroundImage:`url("${KITCHEN_SPRITE_URL}")`,backgroundSize:"500% 400%",backgroundPosition:`${position[0]*25}% ${position[1]*(100/3)}%`}}/>}
+                {!photosReady && <div className="flex h-full items-center justify-center text-4xl" aria-label="Juice packaging illustration">🥤</div>}
+              </div>
+              <div className="flex items-center justify-between gap-3 p-4"><div><p className="font-bold text-green-950">{label}</p><p className="text-xs text-gray-500">Five flavors available</p></div><strong className="whitespace-nowrap rounded-full bg-green-800 px-3 py-1.5 text-sm text-white">{displayPrice(amount)}</strong></div>
+            </div>;
+          })}
+        </div>
+      </section>
       <div className="flex gap-2 flex-wrap mb-8">
         {([["all","All menu"],["meal","Meals & Platters"],["tray","Party Trays"],["juice","Fresh Juices"]] as const).map(([id,label])=>
           <button key={id} onClick={()=>setFilter(id)} className={"px-4 py-2 rounded-full text-sm font-bold "+(filter===id?"bg-green-800 text-white":"bg-white border text-green-800")}>{label}</button>)}
