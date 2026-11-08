@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import SchoolPlatformOffer from '@/components/school-platform-offer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
@@ -64,6 +65,7 @@ export default function SaaSLanding() {
         </div>
       </nav>
 
+      <SchoolPlatformOffer />
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">

@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { EmailService } from "./emailService";
 import saasRoutes from "./saasRoutes";
 import cateringRoutes from "./cateringRoutes";
+import { schoolPlatformRequests } from './schoolPlatformRequests';
 import { getSaasStorage } from "./saasStorageFactory";
 import { 
   insertContactInquirySchema, 
@@ -16,6 +17,7 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.use('/api/school-platform/requests', schoolPlatformRequests());
   
   // DEVELOPMENT ONLY: Credential retrieval endpoint 
   if (process.env.NODE_ENV === 'development') {

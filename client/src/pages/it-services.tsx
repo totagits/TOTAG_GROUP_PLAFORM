@@ -1,5 +1,6 @@
 import SubsidiaryHeroCarousel from "@/components/subsidiary-hero-carousel";
 import Header from "@/components/header";
+import SchoolPlatformOffer from '@/components/school-platform-offer';
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -318,6 +319,7 @@ export default function ITServicesPortal() {
           ]}
         />
 
+        <SchoolPlatformOffer />
         {/* Services Section */}
         <section id="services" className="py-20">
           <div className="container mx-auto px-4">
