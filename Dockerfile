@@ -1,12 +1,12 @@
 # Multi-stage build for TOTAG Group Platform
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Copy package management files
 COPY package*.json ./
 
 # Install all dependencies (including devDependencies required for vite build)
-RUN npm install
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # Production image
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

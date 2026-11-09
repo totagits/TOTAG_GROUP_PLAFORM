@@ -5,6 +5,7 @@ import { EmailService } from "./emailService";
 import saasRoutes from "./saasRoutes";
 import cateringRoutes from "./cateringRoutes";
 import { schoolPlatformRequests } from './schoolPlatformRequests';
+import {requireCorporateAdministrator} from './corporateAdminGuard';
 import { getSaasStorage } from "./saasStorageFactory";
 import { 
   insertContactInquirySchema, 
@@ -17,10 +18,11 @@ import {
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  for(const prefix of ['/api/admin','/api/hrmis','/api/crs','/api/executive','/api/enterprise','/api/party-master','/api/contact-inquiries'])app.use(prefix,requireCorporateAdministrator);
   app.use('/api/school-platform/requests', schoolPlatformRequests());
   
   // DEVELOPMENT ONLY: Credential retrieval endpoint 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development' && process.env.TOTAG_ALLOW_DEMO_SEED === 'true') {
     app.get('/api/dev/credentials/:email', async (req, res) => {
       try {
         const { email } = req.params;

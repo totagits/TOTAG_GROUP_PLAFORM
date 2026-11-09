@@ -4,6 +4,7 @@ try {
 import express, { type Request, Response, NextFunction } from "express";
 
 
+import {corporateCors} from './securityPolicy';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
@@ -87,38 +88,9 @@ app.post(
   }
 );
 
-// Add CORS headers for production domain support
-app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://totag.network',
-    'https://www.totag.network',
-    'https://totaggroup.com',
-    'https://www.totaggroup.com', 
-    'http://localhost:5000',
-    'http://127.0.0.1:5000',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000'
-  ];
-
-  
-  const origin = req.headers.origin;
-  if (origin && (allowedOrigins.includes(origin) || origin.endsWith('.github.io') || origin.includes('totaggroup.com') || origin.includes('totag.network'))) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else if (!origin) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-    return;
-  }
-  
-  next();
-});
+// Exact origins: substring matches and wildcard credentialed CORS are refused.
+app.use(corporateCors);
+app.use((_req,res,next)=>{res.set({'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','X-Frame-Options':'SAMEORIGIN'});next();});
 
 // Apply JSON middleware AFTER webhook route
 app.use(express.json({ limit: '10mb' }));
@@ -127,28 +99,8 @@ app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
   res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
+    if (path.startsWith("/api")) log(`${req.method} API ${res.statusCode} in ${Date.now() - start}ms`);
   });
 
   next();
@@ -160,8 +112,8 @@ app.use((req, res, next) => {
   const { seedCateringStaff } = await import("./catering-seed");
   const { seedFarmUsers } = await import("./farm-seed");
   
-  // Seed merchant users and demo accounts in background (non-blocking)
-  (async () => {
+  // Never create demo credentials in a deployed environment.
+  if(process.env.NODE_ENV==='development'&&process.env.TOTAG_ALLOW_DEMO_SEED==='true')void (async () => {
     try {
       await seedMerchantUsers();
       await seedCateringStaff();

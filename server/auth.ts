@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { Request, Response, NextFunction } from 'express';
 import { SaasUser, Tenant } from '@shared/schema';
+import {jwtSigningSecret} from './securityPolicy';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'totag-enterprise-jwt-secret-key-2026-production';
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
@@ -21,6 +21,7 @@ export interface JWTPayload {
   role: string;
   permissions: string[];
   isTenantAdmin: boolean;
+  type?: string;
 }
 
 /**
@@ -42,7 +43,8 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
  * Generate JWT token with user and tenant info
  */
 export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { 
+  return jwt.sign({...payload,type:'access'}, jwtSigningSecret(), {
+    algorithm: 'HS256',
     expiresIn: JWT_EXPIRES_IN,
     issuer: 'totag-it-services',
     audience: 'totag-enterprise-clients'
@@ -54,10 +56,12 @@ export function generateToken(payload: JWTPayload): string {
  */
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET, {
+    const decoded = jwt.verify(token, jwtSigningSecret(), {
+      algorithms: ['HS256'],
       issuer: 'totag-it-services',
       audience: 'totag-enterprise-clients'
     }) as JWTPayload;
+    if(decoded.type!=='access'||typeof decoded.userId!=='string'||!decoded.userId||typeof decoded.tenantId!=='string'||!decoded.tenantId||typeof decoded.role!=='string'||!Array.isArray(decoded.permissions)||decoded.permissions.some(p=>typeof p!=='string')||typeof decoded.isTenantAdmin!=='boolean')return null;
     return decoded;
   } catch (error) {
     return null;
@@ -187,7 +191,7 @@ export function enforceTenantIsolation(req: AuthenticatedRequest, res: Response,
 export function generateResetToken(): string {
   return jwt.sign(
     { type: 'password_reset', timestamp: Date.now() },
-    JWT_SECRET,
+    jwtSigningSecret(),
     { expiresIn: '1h' }
   );
 }
@@ -197,7 +201,7 @@ export function generateResetToken(): string {
  */
 export function verifyResetToken(token: string): boolean {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, jwtSigningSecret(), {algorithms:['HS256']}) as any;
     return decoded.type === 'password_reset';
   } catch (error) {
     return false;
@@ -210,7 +214,7 @@ export function verifyResetToken(token: string): boolean {
 export function generateEmailVerificationToken(email: string, tenantId: string): string {
   return jwt.sign(
     { email, tenantId, type: 'email_verification' },
-    JWT_SECRET,
+    jwtSigningSecret(),
     { expiresIn: '24h' }
   );
 }
@@ -220,7 +224,7 @@ export function generateEmailVerificationToken(email: string, tenantId: string):
  */
 export function verifyEmailVerificationToken(token: string): { email: string; tenantId: string } | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const decoded = jwt.verify(token, jwtSigningSecret(), {algorithms:['HS256']}) as any;
     if (decoded.type === 'email_verification') {
       return { email: decoded.email, tenantId: decoded.tenantId };
     }
