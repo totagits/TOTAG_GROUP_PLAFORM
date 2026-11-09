@@ -1,3 +1,4 @@
+import {jwtSigningSecret} from './securityPolicy';
 
 // Ensure catering_invoices table exists in Postgres
 import { pool } from "./db";
@@ -315,7 +316,7 @@ function buildQuotationEmailHtml(quotation: any, requestData?: any): string {
 }
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key-change-in-production";
+
 
 interface CateringAuthRequest extends Request {
   staffUser?: { id: number; role: string; username: string; firstName: string; lastName: string };
@@ -336,7 +337,7 @@ function authenticateCateringStaff(req: CateringAuthRequest, res: Response, next
     return res.status(401).json({ success: false, error: "Access token required" });
   }
   try {
-    const decoded = jwt.verify(authHeader.substring(7), JWT_SECRET) as any;
+    const decoded = jwt.verify(authHeader.substring(7), jwtSigningSecret(), {algorithms:['HS256']}) as any;
     if (decoded.type !== "catering_staff") {
       return res.status(403).json({ success: false, error: "Invalid token type" });
     }
@@ -483,7 +484,7 @@ router.post("/auth/login", async (req: Request, res: Response) => {
     if ((username === "admin_toceps" || username === "admin") && (password === "Zwedru4gedeh" || password === "password123")) {
       const token = jwt.sign(
         { type: "catering_staff", staffId: 1, role: "account_manager", username: "admin_toceps", firstName: "TOCEPS", lastName: "Admin" },
-        JWT_SECRET,
+        jwtSigningSecret(),
         { expiresIn: "7d" }
       );
       return res.json({
@@ -503,7 +504,7 @@ router.post("/auth/login", async (req: Request, res: Response) => {
     }
     const token = jwt.sign(
       { type: "catering_staff", staffId: staff.id, role: staff.role, username: staff.username, firstName: staff.firstName, lastName: staff.lastName },
-      JWT_SECRET,
+      jwtSigningSecret(),
       { expiresIn: "7d" }
     );
     res.json({

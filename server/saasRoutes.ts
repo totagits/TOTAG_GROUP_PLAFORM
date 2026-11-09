@@ -34,7 +34,7 @@ const saasStorage = getSaasStorage();
 // ==== AUTHENTICATION ROUTES ====
 
 // DEVELOPMENT ONLY: Reset user password
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development' && process.env.TOTAG_ALLOW_DEMO_SEED === 'true') {
   router.post('/auth/dev-reset-password', async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
@@ -425,7 +425,7 @@ Payment Method: ${frontendData.paymentMethod}`,
     console.error('Tenant registration error:', error);
     res.status(400).json({
       success: false,
-      error: error instanceof z.ZodError ? error.errors : 'Registration failed'
+      error: error instanceof z.ZodError ? error.issues : 'Registration failed'
     });
   }
 });
@@ -636,7 +636,7 @@ router.post('/auth/login', async (req: Request, res: Response) => {
     console.error('Login error:', error);
     res.status(400).json({
       success: false,
-      error: error instanceof z.ZodError ? error.errors : 'Login failed'
+      error: error instanceof z.ZodError ? error.issues : 'Login failed'
     });
   }
 });
@@ -708,7 +708,7 @@ router.post('/auth/change-password', async (req: Request, res: Response) => {
     console.error('Change password error:', error);
     res.status(400).json({
       success: false,
-      error: error instanceof z.ZodError ? error.errors : 'Password change failed'
+      error: error instanceof z.ZodError ? error.issues : 'Password change failed'
     });
   }
 });
@@ -982,7 +982,7 @@ router.post('/fims/chart-of-accounts',
       console.error('Create account error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to create account'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to create account'
       });
     }
   }
@@ -1073,7 +1073,7 @@ router.post('/tenant/users',
       console.error('Create user error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to create user'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to create user'
       });
     }
   }
@@ -1133,7 +1133,7 @@ router.post('/self-service/leave-request',
       console.error('Leave request error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to submit leave request'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to submit leave request'
       });
     }
   }
@@ -1167,7 +1167,7 @@ router.post('/self-service/hr-request',
       console.error('HR request error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to submit HR request'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to submit HR request'
       });
     }
   }
@@ -1202,7 +1202,7 @@ router.post('/self-service/timesheet',
       console.error('Timesheet error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to submit timesheet'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to submit timesheet'
       });
     }
   }
@@ -1242,7 +1242,7 @@ router.patch('/self-service/profile',
       console.error('Profile update error:', error);
       res.status(400).json({
         success: false,
-        error: error instanceof z.ZodError ? error.errors : 'Failed to update profile'
+        error: error instanceof z.ZodError ? error.issues : 'Failed to update profile'
       });
     }
   }
