@@ -57,9 +57,10 @@ interface SchoolPlatformDemoProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onRequest: () => void;
+  requestLabel?: string;
 }
 
-export default function SchoolPlatformDemo({ open, onOpenChange, onRequest }: SchoolPlatformDemoProps) {
+export default function SchoolPlatformDemo({ open, onOpenChange, onRequest, requestLabel = "Request a school solution" }: SchoolPlatformDemoProps) {
   const [view, setView] = useState<'website' | 'workspace'>('website');
   const [schoolPage, setSchoolPage] = useState<SchoolPage>('Welcome');
   const [workspaceView, setWorkspaceView] = useState<WorkspaceView>('Admissions');
@@ -140,7 +141,7 @@ export default function SchoolPlatformDemo({ open, onOpenChange, onRequest }: Sc
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">TOTAG can adapt the branding, programs and workflows for your institution.</p>
-          <Button onClick={onRequest}>Request a school solution</Button>
+          <Button onClick={onRequest}>{requestLabel}</Button>
         </div>
       </DialogContent>
     </Dialog>
